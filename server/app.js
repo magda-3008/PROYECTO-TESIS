@@ -1,18 +1,22 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// Middlewares
 app.use(cors());
 app.use(express.json());
 
-// Ruta de prueba
+// Servir los archivos del frontend
+app.use(express.static(path.join(__dirname, "../client/public")));
+
+// Página principal
 app.get("/", (req, res) => {
-    res.send("¡Backend funcionando correctamente!");
+    res.sendFile(path.join(__dirname, "../client/public/index.html"));
 });
 
+const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
-    console.log(`Servidor iniciado en el puerto ${PORT}`);
+    console.log(`Servidor ejecutándose en el puerto ${PORT}`);
 });
