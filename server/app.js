@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const pool = require("./config/db");
+const productoRoutes = require("./routes/productoRoutes");
 
 const app = express();
 
@@ -15,7 +17,26 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "../client/public/index.html"));
 });
 
+app.use("/api/productos", productoRoutes);
+
 const PORT = process.env.PORT || 3000;
+
+app.get("/api/test-db", async (req, res) => {
+    try {
+        const resultado = await pool.query("SELECT NOW()");
+
+        res.json({
+            mensaje: "Conexión exitosa",
+            fechaServidor: resultado.rows[0].now
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            mensaje: "Error de conexión"
+        });
+    }
+});
 
 app.listen(PORT, () => {
     console.log(`Servidor ejecutándose en el puerto ${PORT}`);
