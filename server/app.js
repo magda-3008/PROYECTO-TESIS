@@ -3,6 +3,7 @@ const cors = require("cors");
 const path = require("path");
 const pool = require("./config/db");
 const productoRoutes = require("./routes/productoRoutes");
+const recetaRoutes = require("./routes/recetasRoutes");
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/productos", productoRoutes);
+app.use("/api/recetas", recetaRoutes);
 
 const PORT = process.env.PORT || 3000;
 
