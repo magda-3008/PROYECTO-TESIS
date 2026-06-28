@@ -27,10 +27,12 @@
 
         recetas.forEach((receta) => {
           lista.innerHTML += `
-                    <li class="list-group-item">
-                        ${receta.nombre_receta}
-                    </li>
-                `;
+        <li class="list-group-item">
+            <a href="detalle.html?id=${receta.id_receta}">
+                ${receta.nombre_receta}
+            </a>
+        </li>
+    `;
         });
       }
 

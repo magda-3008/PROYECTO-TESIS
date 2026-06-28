@@ -20,6 +20,28 @@ app.get("/", (req, res) => {
 
 app.use("/api/productos", productoRoutes);
 app.use("/api/recetas", recetaRoutes);
+app.get("/api/detalle_receta/:id", async (req, res) => {
+
+    const { id } = req.params;
+
+    try {
+        const [rows] = await conexion.query(
+            `SELECT *
+             FROM detalle_receta
+             WHERE id_receta = ?`,
+            [id]
+        );
+
+        res.json(rows);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: "Error al obtener detalles de la receta"
+        });
+    }
+});
+
 
 const PORT = process.env.PORT || 3000;
 

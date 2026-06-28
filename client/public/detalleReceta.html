@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detalle de Receta</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet" />
+  </head>
+
+  <body class="bg-light">
+    <div class="container mt-4">
+      <h1 class="mb-4">Detalle de la receta</h1>
+
+      <!-- Información general -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title" id="tituloReceta">Cargando receta...</h5>
+          <p class="card-text">
+            ID de receta:
+            <span id="idReceta"></span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Lista de detalles -->
+      <h3>Ingredientes e insumos</h3>
+
+      <ul class="list-group" id="listaDetalles">
+        <!-- Los detalles se cargarán aquí -->
+      </ul>
+
+      <div class="mt-4">
+        <a href="index.html" class="btn btn-secondary"> Volver </a>
+      </div>
+    </div>
+
+    <script>
+      async function cargarDetalleReceta() {
+        try {
+          // Obtener el id desde la URL
+          const parametros = new URLSearchParams(window.location.search);
+          const idReceta = parametros.get("id");
+
+          if (!idReceta) {
+            document.getElementById("listaDetalles").innerHTML =
+              '<li class="list-group-item text-danger">No se recibió un ID de receta.</li>';
+            return;
+          }
+
+          document.getElementById("idReceta").textContent = idReceta;
+
+          // Consultar API
+          const respuesta = await fetch(`/api/detalle_receta/${idReceta}`);
+
+          if (!respuesta.ok) {
+            throw new Error("No se pudo obtener la información");
+          }
+
+          const detalles = await respuesta.json();
+
+          const lista = document.getElementById("listaDetalles");
+          lista.innerHTML = "";
+
+          if (detalles.length === 0) {
+            lista.innerHTML = `
+                        <li class="list-group-item">
+                            No existen detalles para esta receta.
+                        </li>
+                    `;
+            return;
+          }
+
+          // Si tu API devuelve el nombre de la receta,
+          // puedes asignarlo aquí
+          document.getElementById("tituloReceta").textContent =
+            `Receta #${idReceta}`;
+
+          detalles.forEach((detalle) => {
+            lista.innerHTML += `
+                        <li class="list-group-item">
+                            <div class="row">
+
+                                <div class="col-md-2">
+                                    <strong>ID detalle:</strong><br>
+                                    ${detalle.id_detalle_receta}
+                                </div>
+
+                                <div class="col-md-2">
+                                    <strong>ID MA:</strong><br>
+                                    ${detalle.id_ma ?? "-"}
+                                </div>
+
+                                <div class="col-md-2">
+                                    <strong>ID insumo:</strong><br>
+                                    ${detalle.id_producto_insumo ?? "-"}
+                                </div>
+
+                                <div class="col-md-2">
+                                    <strong>Cantidad:</strong><br>
+                                    ${detalle.cantidad_utilizada}
+                                </div>
+
+                                <div class="col-md-4">
+                                    <strong>Descripción:</strong><br>
+                                    ${detalle.descripcion ?? "Sin descripción"}
+                                </div>
+
+                            </div>
+                        </li>
+                    `;
+          });
+        } catch (error) {
+          document.getElementById("listaDetalles").innerHTML = `
+                    <li class="list-group-item text-danger">
+                        Error al cargar los detalles de la receta.
+                    </li>
+                `;
+
+          console.error(error);
+        }
+      }
+
+      cargarDetalleReceta();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
