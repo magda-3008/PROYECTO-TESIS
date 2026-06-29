@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recetas</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet" />
+  </head>
+
+  <body>
+    <ul class="list-group" id="tablaRecetas">
+      <!-- Aquí se agregarán las recetas -->
+    </ul>
+
+    <script>
+      async function cargarRecetas() {
+        const respuesta = await fetch("/api/recetas");
+        const recetas = await respuesta.json();
+
+        const lista = document.getElementById("tablaRecetas");
+
+        // Limpiar la lista antes de llenarla
+        lista.innerHTML = "";
+
+        recetas.forEach((receta) => {
+          lista.innerHTML += `
+        <li class="list-group-item">
+            <a href="detalleReceta.html?id=${receta.id_receta}">
+                ${receta.nombre_receta}
+            </a>
+        </li>
+    `;
+        });
+      }
+
+      cargarRecetas();
+    </script>
+  </body>
+</html>

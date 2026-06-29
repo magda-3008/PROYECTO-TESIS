@@ -27,7 +27,8 @@
           <th scope="col">Nombre</th>
           <th scope="col">Tipo</th>
           <th scope="col">Precio</th>
-          <th scope="col">Margen de ganancia</th>
+          <th scope="col">Margen de ganancia bruta</th>
+          <th scope="col">Estado</th>
         </tr>
       </thead>
       <tbody id="tablaProductos">
@@ -56,7 +57,8 @@ async function cargarProductos() {
                 <td>${producto.nombre}</td>
                 <td>${producto.tipo}</td>
                 <td>${producto.precio_venta}</td>
-                <td>${producto.margen_ganancia}</td>
+                <td>${producto.margen_gananciab_esperado}</td>
+                <td>${producto.estado}</td>
             </tr>
         `;
 
