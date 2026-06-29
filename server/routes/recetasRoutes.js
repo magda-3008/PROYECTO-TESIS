@@ -20,7 +20,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.get("/api/detalle_receta/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
 
     const { id } = req.params;
 
