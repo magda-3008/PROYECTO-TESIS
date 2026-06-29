@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/productos", productoRoutes);
 app.use("/api/recetas", recetaRoutes);
-app.use("/api/recetas/{id}", recetaRoutes)
+app.use("/api/detalle_receta/{id}", recetaRoutes)
 
 
 const PORT = process.env.PORT || 3000;
