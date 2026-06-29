@@ -20,26 +20,4 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.get("/:id", async (req, res) => {
-
-    const { id } = req.params;
-
-    try {
-        const [rows] = await pool.query(
-            `SELECT *
-             FROM detalle_receta
-             WHERE id_receta = ?`,
-            [id]
-        );
-
-        res.json(rows);
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            error: "Error al obtener detalles de la receta"
-        });
-    }
-});
-
 module.exports = router;
