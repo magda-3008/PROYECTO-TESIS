@@ -1,0 +1,151 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Baloo 2', cursive;
+}
+
+/*Centro el formulario en la pantalla y coloca la imagen de fondo*/
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: url('../Resources/Fondo.png') no-repeat center center;
+    background-size: cover;
+    padding: 20px;
+}
+
+/*Es la tarjeta donde se encuentra el formulario*/
+.login-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    background-color: #ffffff;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(28, 66, 147, 0.25); /* Sombra para dar profundidad */
+    text-align: center;
+}
+
+/*Permite colocar el logo sobresaliendo de de la tarjeta*/
+.logo-container {
+    position: absolute;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/*Tamaño del logo y proporción*/
+.logo-img {
+    width: 135px;
+    height: 135px;
+    object-fit: contain;
+    transition: transform .3s ease;
+}
+
+/*Titulo*/
+.login-container h2 {
+    margin-top: 40px;
+    margin-bottom: 30px;
+    color: #4a7f83;
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/*Agrupa la etiqueta y el campo de texto*/
+.input-group {
+    text-align: left;
+    margin-bottom: 25px;
+}
+
+/*Etiquetas labels*/
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #4a7f83;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+/*Corazones antes del texto*/
+.input-group label::before {
+    content: "♥";
+    margin-right: 6px;
+    color: #4a7f83;
+    font-size: 15px;
+}
+
+/*Inputs*/
+.input-group input {
+    width: 100%;
+    padding: 8px 4px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #61bcd7;
+    color: #000000;
+    font-size: 16px;
+    outline: none;
+    transition: border-color .3s ease;
+}
+
+/*Color del texto de referencia*/
+.input-group input::placeholder {
+    color: #667;
+}
+
+/*Cambia el color de la línea inferior cuando el usuario hace clic en el campo*/
+.input-group input:focus {
+    border-bottom: 1px solid #1a81a0;
+}
+
+/*Centra el botón horizontal*/
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+/*Boton*/
+.btn-login {
+    display: inline-block;
+    width: 100%;
+    padding: 12px;
+    background-color: #61bcd7;
+    color: #ffffff;
+    text-decoration: none;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 25px;
+    transition: background-color .3s ease,
+                transform .2s ease;
+}
+
+/*Efecto al pasar el mouse por el boton*/
+.btn-login:hover {
+    background-color: #1a81a0;
+    transform: scale(1.02);
+}
+
+/*Responsive*/
+@media (max-width: 480px) {
+    .login-container {
+        padding: 35px 20px;
+    }
+
+    .login-container h2 {
+        font-size: 34px;
+    }
+
+    .logo-img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .btn-login {
+        font-size: 15px;
+    }
+}
