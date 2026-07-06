@@ -15,12 +15,12 @@
 }
 
 body{
-    background:var(--fondo);   /* Puedes cambiar el color de fondo aquí */
+    background:var(--fondo);   
     color:var(--texto);
 }
 
 /*Imagen de fondo*/
-.fondo{
+.Fondo{
     position: fixed;
     top: 0;
     left: 0;
@@ -35,7 +35,7 @@ body{
 
 /*Menù de arriba rosa*/
 header,
-.header-right,
+.Header,
 .icono{
     display:flex;
     align-items:center;
@@ -49,19 +49,19 @@ header{
 }
 
 /*Nombre del negocio en la ezquina de la barra rosa*/
-.marca{
+.Marca{
     display: flex;
     flex-direction: column;
 }
 
-.marca h1{
+.Marca h1{
     color:#000000;
     font-size:32px;
     margin:0;
     line-height:1;
 }
 
-.marca p{
+.Marca p{
     margin-top:4px;
    text-align: center;
     color:#000000;
@@ -92,14 +92,20 @@ header{
 
 /*Logo superior derecha*/
 .logoEmpresa{
-    width:70px;
-    height:70px;
+    width:77px;
+    height:77px;
     object-fit:cover;
     border-radius:50%;
-    background:#4a7f83;
     padding:0px;
     transition:.25s ease;
     margin-left: 20px;
+    display: block;
+    text-decoration: none;
+}
+
+.logoEmpresa:hover{
+    background:var(--principalHover);
+    transform:translateX(-3px);
 }
 
 /*Todo el contenido de la pagina que esta bajo el header*/
@@ -193,7 +199,7 @@ section{
         padding:20px;
     }
 
-    .header-right{
+    .Header{
         width:100%;
         justify-content:center;
     }
