@@ -6,24 +6,41 @@
     <title>♥ Pa'tuboca</title>
     <link rel="stylesheet" href="./CSS/estilosentrada.css" />
     <!-- Fuentes -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-</head>
-<body>
-
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap"
+      rel="stylesheet" />
+  </head>
+  <body>
     <main class="Contenedor-general">
+      <!-- Logo -->
+      <div class="Contenedor-logo">
+        <img
+          src="Resources/Logo.png"
+          alt="Logo de Pa'tuboca"
+          class="logo-img" />
+      </div>
+      <h2>BIENVENIDA</h2>
 
-        <!-- Logo -->
-        <div class="Contenedor-logo"><img src="Resources/Logo.png" alt="Logo de Pa'tuboca" class="logo-img"></div>
-        <h2>BIENVENIDA</h2>
-
-        <!-- Formulario cuadrado y sus elementos -->
-        <form action="#">
-
-            <div class="Titulo-caja"><label for="username">👤USUARIO:</label><input type="text" id="username" placeholder="Ingrese su usuario" required></div>        
-            <div class="Titulo-caja"><label for="password">🗝️CONTRASEÑA:</label><input type="password" id="password" placeholder="Ingrese su contraseña" required></div>
+      <!-- Formulario cuadrado y sus elementos -->
+      <form action="#">
+        <div class="Titulo-caja">
+          <label for="username">👤USUARIO:</label
+          ><input
+            type="text"
+            id="username"
+            placeholder="Ingrese su usuario"
+            required />
+        </div>
+        <div class="Titulo-caja">
+          <label for="password">🗝️CONTRASEÑA:</label
+          ><input
+            type="password"
+            id="password"
+            placeholder="Ingrese su contraseña"
+            required />
+        </div>
 
         <p id="mensajeLogin" class="mensaje-login"></p>
 

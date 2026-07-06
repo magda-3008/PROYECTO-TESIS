@@ -70,6 +70,17 @@ body {
     font-weight: bold;
 }
 
+<<<<<<< HEAD
+=======
+/*Corazones antes del texto*/
+.Titulo-caja label::before {
+    content: "♥";
+    margin-right: 6px;
+    color: #4a7f83;
+    font-size: 15px;
+}
+
+>>>>>>> b1e8e94 (Comienzos)
 /*Inputs*/
 .Titulo-caja input {
     width: 100%;
@@ -88,6 +99,14 @@ body {
     color: #667;
 }
 
+<<<<<<< HEAD
+=======
+/*Cambia el color de la línea inferior cuando el usuario hace clic en el campo*/
+.Titulo-caja input:focus {
+    border-bottom: 1px solid #1a81a0;
+}
+
+>>>>>>> b1e8e94 (Comienzos)
 /*Centra el botón horizontal*/
 .Redondo {
     display: flex;
