@@ -11,32 +11,24 @@
   </head>
 
   <body>
-    <ul class="list-group" id="tablaRecetas">
-      <!-- Aquí se agregarán las recetas -->
-    </ul>
+    <p>Recetas</p>
+    <form action="" method="GET">
+      <input
+        type="search"
+        id="buscar-receta"
+        name="buscar-receta"
+        placeholder="Escribe aquí el nombre de la receta (ejm: gelatina)"
+        style="width: 400px" />
+      <button type="submit">Buscar</button>
+    </form>
 
-    <script>
-      async function cargarRecetas() {
-        const respuesta = await fetch("/api/recetas");
-        const recetas = await respuesta.json();
+    <p>Filtrar por:</p>
+    <select name="ingrediente" id="ingrediente">
+      <option>Ingrediente</option>
+    </select>
 
-        const lista = document.getElementById("tablaRecetas");
+    <div id="contenedor-recetas"></div>
 
-        // Limpiar la lista antes de llenarla
-        lista.innerHTML = "";
-
-        recetas.forEach((receta) => {
-          lista.innerHTML += `
-        <li class="list-group-item">
-            <a href="detalleReceta.html?id=${receta.id_receta}">
-                ${receta.nombre_receta}
-            </a>
-        </li>
-    `;
-        });
-      }
-
-      cargarRecetas();
-    </script>
+    <script src="./JavaScript/recetas.js"></script>
   </body>
 </html>

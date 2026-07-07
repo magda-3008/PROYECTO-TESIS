@@ -5,6 +5,7 @@ const pool = require("./config/db");
 const productoRoutes = require("./routes/productoRoutes");
 const recetaRoutes = require("./routes/recetasRoutes");
 const detalleRecetaRoutes = require("./routes/detalleRecetaRoutes");
+const materiaPrimaRoutes = require("./routes/materiaPrimaRoutes");
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.get("/", (req, res) => {
 app.use("/api/productos", productoRoutes);
 app.use("/api/recetas", recetaRoutes);
 app.use("/api/detalle_receta", detalleRecetaRoutes);
+app.use("/api/materiaprima", materiaPrimaRoutes);
 
 
 const PORT = process.env.PORT || 3000;
