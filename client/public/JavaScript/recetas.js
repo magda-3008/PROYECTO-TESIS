@@ -29,33 +29,36 @@ async function cargarIngredientes() {
     }
 }
 
-function cargarRecetas() {
-    
-    const respuesta = await fetch("/api/recetas");
+async function cargarRecetas() {
+    try {
+        const respuesta = await fetch("/api/recetas");
 
-    if (!respuesta.ok) {
-        throw new Error("Error al obtener las recetas");
+        if (!respuesta.ok) {
+            throw new Error("Error al obtener las recetas");
+        }
+
+        const recetas = await respuesta.json();
+
+        const contenedor = document.getElementById("contenedor-recetas");
+
+        recetas.forEach((receta) => {
+            const tarjeta = document.createElement("div");
+
+            tarjeta.className = "card";
+            tarjeta.style.width = "18rem";
+
+            tarjeta.innerHTML = `
+                <img src="${receta.imagen_url}" class="card-img-top" alt="Imagen">
+
+                <div class="card-body">
+                    <h5 class="card-title">${receta.nombre_receta}</h5>
+                </div>
+            `;
+
+            contenedor.appendChild(tarjeta);
+        });
+
+    } catch (error) {
+        console.error(error);
     }
-
-    const recetas = await respuesta.json();
-
-    const contenedor = document.getElementById("contenedor-recetas");
-
-    recetas.forEach((receta) => {
-        const tarjeta = document.createElement("div");
-
-    tarjeta.className = "card";
-    tarjeta.style.width = "18rem";
-});
-
-
-    tarjeta.innerHTML = `
-        <img src="${receta.imagen_url}" class="card-img-top" alt="Imagen">
-
-        <div class="card-body">
-            <h5 class="card-title">${receta.nombre_receta}</h5>
-        </div>
-    `;
-
-    contenedor.appendChild(tarjeta);
 }
