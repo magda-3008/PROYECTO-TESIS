@@ -44,14 +44,13 @@ async function cargarRecetas() {
         recetas.forEach((receta) => {
             const tarjeta = document.createElement("div");
 
-            tarjeta.className = "card";
-            tarjeta.style.width = "18rem";
+            tarjeta.className = "card tarjeta-receta";
 
             tarjeta.innerHTML = `
-                <img src="${receta.imagen_url}" class="card-img-top" alt="Imagen">
+                <img src="${receta.imagen_url}" class="card-img-top imagen-receta" alt="Imagen">
 
                 <div class="card-body">
-                    <h5 class="card-title">${receta.nombre_receta}</h5>
+                    <h5 class="card-title titulo-receta">${receta.nombre_receta}</h5>
                 </div>
             `;
 

@@ -1,0 +1,20 @@
+.tarjeta-receta {
+    width: 18rem;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.tarjeta-receta:hover {
+    transform: scale(1.03);
+}
+
+.imagen-receta {
+    height: 220px;
+    object-fit: cover;
+}
+
+.titulo-receta {
+    text-align: center;
+    font-weight: bold;
+}
