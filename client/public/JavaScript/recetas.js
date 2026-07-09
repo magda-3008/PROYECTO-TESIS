@@ -29,6 +29,9 @@ async function cargarIngredientes() {
     }
 }
 
+
+
+
 async function cargarRecetas() {
     try {
         const respuesta = await fetch("/api/recetas");
@@ -42,35 +45,47 @@ async function cargarRecetas() {
         const contenedor = document.getElementById("contenedor-recetas");
 
         recetas.forEach((receta) => {
+            const tarjeta = document.createElement("div");
 
-    const tarjeta = document.createElement("div");
+            tarjeta.className = "card tarjeta-receta";
 
-    tarjeta.className = "card tarjeta-receta";
+            tarjeta.innerHTML = `
+                <img src="${receta.imagen_url}" class="card-img-top imagen-receta" alt="Imagen">
 
-    tarjeta.innerHTML = `
-        <img src="${receta.imagen_url}" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title titulo-receta">${receta.nombre_receta}</h5>
+                </div>
+            `;
 
-        <div class="card-body">
-            <h5 class="card-title">${receta.nombre_receta}</h5>
-        </div>
-    `;
+             tarjeta.addEventListener("click", () => {
+                cargarDetalleReceta(receta.id_receta);
+             });
 
-    tarjeta.addEventListener("click", () => {
-
-        document.getElementById("modalRecetaLabel").textContent = receta.nombre_receta;
-        document.getElementById("modalImagen").src = receta.imagen_url;
-        document.getElementById("modalDescripcion").textContent = receta.descripcion;
-
-        const modal = new bootstrap.Modal(document.getElementById("modalReceta"));
-        modal.show();
-
-    });
-
-    contenedor.appendChild(tarjeta);
-
-});
+            contenedor.appendChild(tarjeta);
+        });
 
     } catch (error) {
         console.error(error);
     }
+}
+
+async function cargarDetalleReceta(idReceta) {
+
+    try {
+
+        const respuesta = await fetch(`/api/detalle_receta/${idReceta}`);
+
+        if (!respuesta.ok) {
+            throw new Error("No se pudo obtener el detalle.");
+        }
+
+        const detalle = await respuesta.json();
+
+        const modal = new bootstrap.Modal(document.getElementById("modalReceta"));
+        modal.show();
+
+    } catch (error) {
+        console.error(error);
+    }
+
 }
