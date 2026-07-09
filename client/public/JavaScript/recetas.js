@@ -42,20 +42,33 @@ async function cargarRecetas() {
         const contenedor = document.getElementById("contenedor-recetas");
 
         recetas.forEach((receta) => {
-            const tarjeta = document.createElement("div");
 
-            tarjeta.className = "card tarjeta-receta";
+    const tarjeta = document.createElement("div");
 
-            tarjeta.innerHTML = `
-                <img src="${receta.imagen_url}" class="card-img-top imagen-receta" alt="Imagen">
+    tarjeta.className = "card tarjeta-receta";
 
-                <div class="card-body">
-                    <h5 class="card-title titulo-receta">${receta.nombre_receta}</h5>
-                </div>
-            `;
+    tarjeta.innerHTML = `
+        <img src="${receta.imagen_url}" class="card-img-top">
 
-            contenedor.appendChild(tarjeta);
-        });
+        <div class="card-body">
+            <h5 class="card-title">${receta.nombre_receta}</h5>
+        </div>
+    `;
+
+    tarjeta.addEventListener("click", () => {
+
+        document.getElementById("modalRecetaLabel").textContent = receta.nombre_receta;
+        document.getElementById("modalImagen").src = receta.imagen_url;
+        document.getElementById("modalDescripcion").textContent = receta.descripcion;
+
+        const modal = new bootstrap.Modal(document.getElementById("modalReceta"));
+        modal.show();
+
+    });
+
+    contenedor.appendChild(tarjeta);
+
+});
 
     } catch (error) {
         console.error(error);
