@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require("../config/db");
 
 // Obtener los detalles de una receta por su ID
-router.get("/detalle_receta/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
 
     const { id } = req.params;
 
