@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/productos", productoRoutes);
 app.use("/api/recetas", recetaRoutes);
-app.use("/api/detalle_receta", detalleRecetaRoutes);
+app.use("/api/detalle_receta/:id", detalleRecetaRoutes);
 app.use("/api/materiaprima", materiaPrimaRoutes);
 
 
