@@ -91,7 +91,7 @@ const contenido = document.getElementById("contenidoModal");
 contenido.innerHTML = `
     <img src="${receta.imagen_url}" class="imagen-modal">
 
-    <p><strong>Cantidad producida:</strong> ${receta.cantidad_producida_base}</p>
+    <p><strong>Las medidas de esta receta producen una cantidad base de:</strong> ${receta.cantidad_producida_base} ${receta.nombre_receta}</p>
 
     <h5>Ingredientes</h5>
 
@@ -109,7 +109,9 @@ detalle.forEach(item => {
             - ${item.cantidad_utilizada}
             ${item.unidad_medida}
         </li>
+    `;
 
+        contenido.innerHTML += `
         <h5>Método de preparación:</h5>
         <p>${receta.descripcion}</p>
     `;
