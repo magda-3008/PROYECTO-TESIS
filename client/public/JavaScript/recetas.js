@@ -111,12 +111,12 @@ detalle.forEach(item => {
         </li>
     `;
 
-        contenido.innerHTML += `
+});
+
+ contenido.innerHTML += `
         <h5>Método de preparación:</h5>
         <p>${receta.descripcion}</p>
     `;
-
-});
         const modal = new bootstrap.Modal(
             document.getElementById("modalReceta")
         );
