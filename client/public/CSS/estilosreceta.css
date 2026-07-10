@@ -21,12 +21,13 @@
 
 .imagen-modal {
     height: 250px;
+    width: 250px;
     object-fit: cover;
-    justify-content: center;
-    align-items: center;
+    display: block;
+    margin: auto;
 }
 
-.modal-title {
+.titulo-modal {
     text-align: center;
-    font-size: 20px;
+    font-weight: bold;
 }
