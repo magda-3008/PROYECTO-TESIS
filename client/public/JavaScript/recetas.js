@@ -81,11 +81,53 @@ async function cargarDetalleReceta(idReceta) {
 
         const detalle = await respuesta.json();
 
-        const modal = new bootstrap.Modal(document.getElementById("modalReceta"));
+        document.getElementById("tituloModal").textContent =
+            detalle.nombre_receta;
+
+        const contenido = document.getElementById("contenidoModal");
+
+        contenido.innerHTML = `
+            <img
+                src="${detalle.imagen_url}"
+                class="imagen-modal"
+                alt="${detalle.nombre_receta}"
+            >
+
+            <h4>Rendimiento</h4>
+
+            <p>${detalle.cantidad_utilizada}</p>
+            <p>${detalle.descripcion}</p>
+
+            <h4>Ingredientes</h4>
+
+            <ul id="listaIngredientes"></ul>
+        `;
+
+        const lista = document.getElementById("listaIngredientes");
+
+        detalle.ingredientes.forEach(ingrediente => {
+
+            lista.innerHTML += `
+                <li>
+                    ${ingrediente.nombre}
+                    -
+                    ${ingrediente.cantidad}
+                    ${ingrediente.unidad}
+                </li>
+            `;
+
+        });
+
+        const modal = new bootstrap.Modal(
+            document.getElementById("modalReceta")
+        );
+
         modal.show();
 
     } catch (error) {
+
         console.error(error);
+
     }
 
 }
