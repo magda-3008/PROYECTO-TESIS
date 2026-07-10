@@ -110,6 +110,13 @@ detalle.forEach(item => {
             ${item.unidad_medida}
         </li>
     `;
+
+    contenido.innerHTML = `
+    <p><strong>Cantidad producida:</strong> ${receta.cantidad_producida_base}</p>
+
+    <h5>Método de preparación:</h5>
+    <p>${receta.descripcion}</p>
+`;
 });
         const modal = new bootstrap.Modal(
             document.getElementById("modalReceta")
