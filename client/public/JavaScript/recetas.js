@@ -81,43 +81,36 @@ async function cargarDetalleReceta(idReceta) {
 
         const detalle = await respuesta.json();
 
-        document.getElementById("tituloModal").textContent =
-            detalle.nombre_receta;
+const receta = detalle[0];
 
-        const contenido = document.getElementById("contenidoModal");
+document.getElementById("tituloModal").textContent =
+    receta.nombre_receta;
 
-        contenido.innerHTML = `
-            <img
-                src="${detalle.imagen_url}"
-                class="imagen-modal"
-                alt="${detalle.nombre_receta}"
-            >
+const contenido = document.getElementById("contenidoModal");
 
-            <h4>Rendimiento</h4>
+contenido.innerHTML = `
+    <img src="${receta.imagen_url}" class="imagen-modal">
 
-            <p>${detalle.cantidad_utilizada}</p>
-            <p>${detalle.descripcion}</p>
+    <p><strong>Cantidad producida:</strong> ${receta.cantidad_producida_base}</p>
 
-            <h4>Ingredientes</h4>
+    <h5>Ingredientes</h5>
 
-            <ul id="listaIngredientes"></ul>
-        `;
+    <ul id="listaIngredientes"></ul>
+`;
 
-        const lista = document.getElementById("listaIngredientes");
+const lista = document.getElementById("listaIngredientes");
 
-        detalle.ingredientes.forEach(ingrediente => {
+detalle.forEach(item => {
 
-            lista.innerHTML += `
-                <li>
-                    ${ingrediente.nombre}
-                    -
-                    ${ingrediente.cantidad}
-                    ${ingrediente.unidad}
-                </li>
-            `;
-
-        });
-
+    lista.innerHTML += `
+        <li>
+            ${item.nombre_insumo}
+            (${item.tipo_insumo})
+            - ${item.cantidad_utilizada}
+            ${item.unidad_medida}
+        </li>
+    `;
+});
         const modal = new bootstrap.Modal(
             document.getElementById("modalReceta")
         );
