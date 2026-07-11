@@ -77,6 +77,21 @@ function formatearUnidadHumana(cantidad, unidad, nombreInsumo) {
     // =================================================================
     // 1. DICCIONARIO DE CASOS ESPECIALES (Mapeo por nombre exacto)
     // =================================================================
+
+    // Caso Especial: Chocobananos y postres con Chispas (Libras a Cucharadas)
+    if (nombreLimpio.includes('chispa')) {
+        if (num === 0.016) return '1/2 cucharada';
+        if (num === 0.05) return '1 cucharada y media';
+        if (num === 0.1) return '3 cucharadas'; // Respaldo proporcional si escala
+        return `${num} lb`; // Por si acaso cambia drásticamente la cantidad
+    }
+
+    // Caso Especial: Pioquinto / Tortas (Evitar "0.25 unidades" o "1/4 de unidad")
+    if (nombreLimpio.includes('torta')) {
+        if (num === 0.25) return '1/4 de torta entera';
+        if (num === 0.5) return '1/2 torta entera';
+        return num === 1 ? '1 torta entera' : `${num} tortas enteras`;
+    }
     
     // Caso Especial: Pajillas (Evitar que diga "1 caja" en la receta)
     if (nombreLimpio.includes('pajilla')) {
@@ -94,8 +109,13 @@ function formatearUnidadHumana(cantidad, unidad, nombreInsumo) {
     }
 
     // Caso Especial: Platos o Moldes
-    if (nombreLimpio.includes('plato') || nombreLimpio.includes('molde')) {
+    if (nombreLimpio.includes('plato') || nombreLimpio.includes('molde') || nombreLimpio.includes('palillo') || nombreLimpio.includes('cono') || nombreLimpio.includes('malvavisco')) {
         return num === 1 ? '1 unidad' : `${num} unidades`;
+    }
+
+    // Caso Especial: Bolsas (Helados, hielo, o empaques genéricos)
+    if (nombreLimpio.includes('bolsa')) {
+        return num === 1 ? '1 bolsa' : `${num} bolsas`;
     }
 
 
@@ -113,6 +133,7 @@ function formatearUnidadHumana(cantidad, unidad, nombreInsumo) {
     }
 
     if (unidadLimpia === 'libra' || unidadLimpia === 'libras') {
+        if (num === 0.03) return '1 cucharada';
         if (num === 0.06) return '2 cucharadas';
         if (num === 0.11) return '4 cucharadas';
         if (num === 0.25) return '1/4 de libra';
