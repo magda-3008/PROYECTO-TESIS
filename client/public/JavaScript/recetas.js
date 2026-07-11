@@ -51,7 +51,7 @@ async function cargarIngredientes() {
 
 async function cargarRecetas(idIngrediente = "") {
     try {
-        // Construimos la URL. Si hay ID, queda tipo: /api/recetas?ingrediente=3
+
         let url = "/api/recetas";
         if (idIngrediente) {
             url += `?ingrediente=${idIngrediente}`;
@@ -66,8 +66,7 @@ async function cargarRecetas(idIngrediente = "") {
         const recetas = await respuesta.json();
 
         const contenedor = document.getElementById("contenedor-recetas");
-        
-        // ¡CRUCIAL! Limpiamos el contenedor para que no se acumulen las recetas anteriores
+     
         contenedor.innerHTML = "";
 
         // Si la API no devuelve ninguna receta con ese ingrediente
@@ -80,12 +79,17 @@ async function cargarRecetas(idIngrediente = "") {
             const tarjeta = document.createElement("div");
             tarjeta.className = "card tarjeta-receta";
 
-            tarjeta.innerHTML = `
-                <img src="${receta.imagen_url}" class="card-img-top imagen-receta" alt="Imagen">
-                <div class="card-body">
-                    <h5 class="card-title titulo-receta">${receta.nombre_receta}</h5>
-                </div>
-            `;
+            // Si imagen_url es null o no existe, usamos una imagen genérica o transparente
+         const urlImagen = receta.imagen_url && receta.imagen_url !== "null" 
+        ? receta.imagen_url 
+        : "https://placehold.co/300x200?text=Sin+Imagen";
+
+           tarjeta.innerHTML = `
+        <img src="${urlImagen}" class="card-img-top imagen-receta" alt="${receta.nombre_receta}">
+        <div class="card-body">
+            <h5 class="card-title titulo-receta">${receta.nombre_receta}</h5>
+        </div>
+    `;
 
             tarjeta.addEventListener("click", () => {
                 cargarDetalleReceta(receta.id_receta);
@@ -110,12 +114,16 @@ async function cargarDetalleReceta(idReceta) {
         const detalle = await respuesta.json();
         const receta = detalle[0];
 
+        const urlImagenModal = receta.imagen_url && receta.imagen_url !== "null" 
+    ? receta.imagen_url 
+    : "https://placehold.co/600x400?text=Sin+Imagen";
+
         document.getElementById("tituloModal").textContent = receta.nombre_receta;
 
         const contenido = document.getElementById("contenidoModal");
         
         contenido.innerHTML = `
-            <img src="${receta.imagen_url}" class="imagen-modal">
+            <img src="${urlImagenModal}" class="imagen-modal">
             <p><strong>Las medidas de esta receta producen una cantidad base de:</strong> ${receta.cantidad_producida_base} ${receta.nombre_receta}</p>
             <h5>Ingredientes</h5>
             <ul id="listaIngredientes"></ul>
