@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../config/db");
 
-//
 router.get("/", async (req, res) => {
     try {
         const resultado = await pool.query(`
@@ -22,15 +21,14 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-    
     const { ingrediente } = req.query;
 
     try {
         let consultaSQL = "";
         let parametros = [];
 
-        if (ingrediente) {
-            // Si el usuario seleccionó un ingrediente, filtramos con un JOIN
+        // Evaluamos que 'ingrediente' exista, no sea un string vacío, ni sea el texto "null"
+        if (ingrediente && ingrediente !== "" && ingrediente !== "null") {
             consultaSQL = `
                 SELECT DISTINCT 
                     r.id_receta, 
@@ -40,12 +38,11 @@ router.get("/", async (req, res) => {
                     r.descripcion
                 FROM receta r
                 INNER JOIN detalle_receta dr ON r.id_receta = dr.id_receta
-                WHERE dr.id_ma = $1 OR dr.id_producto_insumo = $1
+                WHERE dr.id_ma = $1::integer OR dr.id_producto_insumo = $1::integer
                 ORDER BY r.id_receta
             `;
             parametros.push(ingrediente);
         } else {
-            // Si no hay filtro, mantiene tu consulta original intacta
             consultaSQL = `
                 SELECT *
                 FROM receta
@@ -57,7 +54,7 @@ router.get("/", async (req, res) => {
         res.json(resultado.rows);
 
     } catch (error) {
-        console.error(error);
+        console.error("Error en la consulta de recetas:", error);
         res.status(500).json({
             mensaje: "Error al obtener las recetas"
         });

@@ -50,9 +50,6 @@ async function cargarIngredientes() {
 }
 
 async function cargarRecetas(idIngrediente = "") {
-
-    console.log("Llamando a fetch con ID:", idIngrediente);
-    
     try {
 
         let url = "/api/recetas";
@@ -155,16 +152,3 @@ async function cargarDetalleReceta(idReceta) {
         console.error(error);
     }
 }
-
-// En recetas.js
-selectIngrediente.addEventListener("change", (e) => {
-    const idSeleccionado = e.target.value;
-    
-    console.log("ID seleccionado en el select:", idSeleccionado); // <-- Para auditar
-
-    if (!idSeleccionado || idSeleccionado === "null" || idSeleccionado === "Ingrediente" || idSeleccionado === "") {
-        cargarRecetas(); 
-    } else {
-        cargarRecetas(idSeleccionado);
-    }
-});
