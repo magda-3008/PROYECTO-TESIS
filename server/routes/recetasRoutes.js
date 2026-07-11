@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/", async (req, res) => {
     
     const { ingrediente } = req.query;
 
