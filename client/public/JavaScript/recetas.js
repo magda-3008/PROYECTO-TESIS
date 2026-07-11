@@ -2,18 +2,29 @@ document.addEventListener("DOMContentLoaded", () => {
     cargarIngredientes();
     cargarRecetas();
 
+     const formulario = document.querySelector("form");
+
+formulario.addEventListener("submit", (e) => {
+
+    e.preventDefault();
+
+    const nombre = document.getElementById("buscar-receta").value.trim();
+    const ingrediente = document.getElementById("ingrediente").value;
+
+    cargarRecetas(ingrediente, nombre);
+
+});
+
     const selectIngrediente = document.getElementById("ingrediente");
     
-    selectIngrediente.addEventListener("change", (e) => {
-        const idSeleccionado = e.target.value;
-        
-        // Control de seguridad: Si es vacío, es la palabra "null", o el string "Ingrediente"
-        if (!idSeleccionado || idSeleccionado === "null" || idSeleccionado === "Ingrediente" || idSeleccionado === "") {
-            cargarRecetas(); // Carga todas las recetas sin filtros
-        } else {
-            cargarRecetas(idSeleccionado);
-        }
-    });
+   selectIngrediente.addEventListener("change", (e) => {
+
+    const ingrediente = e.target.value;
+    const nombre = document.getElementById("buscar-receta").value.trim();
+
+    cargarRecetas(ingrediente, nombre);
+
+});
 
 });
 
@@ -52,10 +63,21 @@ async function cargarIngredientes() {
 async function cargarRecetas(idIngrediente = "") {
     try {
 
-        let url = "/api/recetas";
-        if (idIngrediente) {
-            url += `?ingrediente=${idIngrediente}`;
-        }
+       let url = "/api/recetas";
+
+const parametros = new URLSearchParams();
+
+if (idIngrediente) {
+    parametros.append("ingrediente", idIngrediente);
+}
+
+if (nombre) {
+    parametros.append("buscar", nombre);
+}
+
+if (parametros.toString()) {
+    url += "?" + parametros.toString();
+}
 
         const respuesta = await fetch(url);
 

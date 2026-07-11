@@ -4,42 +4,59 @@ const pool = require("../config/db");
 
 router.get("/", async (req, res) => {
 
-    const { ingrediente } = req.query;
+   const { ingrediente, buscar } = req.query;
 
     try {
 
-        let consultaSQL;
+        let consultaSQL = `
+            SELECT DISTINCT
+                r.id_receta,
+                r.nombre_receta,
+                r.imagen_url,
+                r.cantidad_producida_base,
+                r.descripcion
+            FROM receta r
+            INNER JOIN detalle_receta dr
+                ON dr.id_receta = r.id_receta
+        `;
+
+        let condiciones = [];
         let parametros = [];
 
-        if (ingrediente) {
-
-            consultaSQL = `
-                SELECT DISTINCT
-                    r.id_receta,
-                    r.nombre_receta,
-                    r.imagen_url,
-                    r.cantidad_producida_base,
-                    r.descripcion
-                FROM receta r
-                INNER JOIN detalle_receta dr
-                    ON dr.id_receta = r.id_receta
-                WHERE dr.id_ma = $1
-                   OR dr.id_producto_insumo = $1
-                ORDER BY r.id_receta;
-            `;
+       if (ingrediente) {
 
             parametros.push(Number(ingrediente));
 
-        } else {
+            condiciones.push(
+                `(dr.id_ma = $${parametros.length}
+                OR dr.id_producto_insumo = $${parametros.length})`
+            );
 
-            consultaSQL = `
-                SELECT *
-                FROM receta
-                ORDER BY id_receta;
+        }
+
+        if (buscar) {
+
+            parametros.push(`%${buscar}%`);
+
+            condiciones.push(
+                `r.nombre_receta ILIKE $${parametros.length}`
+            );
+
+        }
+
+        if (condiciones.length > 0) {
+
+            consultaSQL += `
+                WHERE
+                ${condiciones.join(" AND ")}
             `;
 
         }
 
+        consultaSQL += `
+            ORDER BY r.id_receta;
+        `;
+        
         const resultado = await pool.query(consultaSQL, parametros);
 
         res.json(resultado.rows);
