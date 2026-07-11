@@ -69,20 +69,47 @@ async function cargarRecetas() {
     }
 }
 
-// Función avanzada para convertir cantidades técnicas a lenguaje de cocina real
 function formatearUnidadHumana(cantidad, unidad, nombreInsumo) {
     const num = parseFloat(cantidad);
     const unidadLimpia = unidad.trim().toLowerCase();
     const nombreLimpio = nombreInsumo.trim().toLowerCase();
 
-    // 1. Validaciones específicas combinando ingrediente y cantidad (según tu tabla)
+    // =================================================================
+    // 1. DICCIONARIO DE CASOS ESPECIALES (Mapeo por nombre exacto)
+    // =================================================================
+    
+    // Caso Especial: Pajillas (Evitar que diga "1 caja" en la receta)
+    if (nombreLimpio.includes('pajilla')) {
+        return num === 1 ? '1 pajilla' : `${num} pajillas`;
+    }
+
+    // Caso Especial: Vasos (Asegurar que diga unidades/vasos, no paquetes)
+    if (nombreLimpio.includes('vaso')) {
+        return num === 1 ? '1 vaso' : `${num} vasos`;
+    }
+
+    // Caso Especial: Cucharas / Cucharitas físicas
+    if (nombreLimpio.includes('cuchara')) {
+        return num === 1 ? '1 cuchara' : `${num} cucharas`;
+    }
+
+    // Caso Especial: Platos o Moldes
+    if (nombreLimpio.includes('plato') || nombreLimpio.includes('molde')) {
+        return num === 1 ? '1 unidad' : `${num} unidades`;
+    }
+
+
+    // =================================================================
+    // 2. REGLAS GENERALES POR UNIDAD DE MEDIDA
+    // =================================================================
+
     if (unidadLimpia === 'mililitros' || unidadLimpia === 'mililitro') {
         if (num === 7.5) return '1/2 cucharada';
         if (num === 15) return '1 cucharada';
         if (num === 30) return '2 cucharadas';
-        if (num === 0.5) return '1/2 vaso'; // Caso específico de saborizantes/líquidos en vasos
+        if (num === 0.5) return '1/2 vaso'; 
         if (num === 1) return '1 vaso';
-        return `${num} ml`; // Respaldo si cambia la cantidad
+        return `${num} ml`; 
     }
 
     if (unidadLimpia === 'libra' || unidadLimpia === 'libras') {
@@ -105,25 +132,21 @@ function formatearUnidadHumana(cantidad, unidad, nombreInsumo) {
 
     if (unidadLimpia === 'litro' || unidadLimpia === 'litros') {
         if (num === 0.25) return '1 taza';
-        if (num === 0.5) return '2 tazas' || '1/2 litro'; // Ajustable según prefieras
+        if (num === 0.5) return '2 tazas';
         return `${num} L`;
     }
 
-    // 2. Fracciones para paquetes o bolsas
     if (unidadLimpia === 'paquete' || unidadLimpia === 'bolsa') {
         if (num === 0.25) return `1/4 de ${unidadLimpia}`;
         if (num === 0.5) return `1/2 ${unidadLimpia}`;
         return num === 1 ? `1 ${unidadLimpia}` : `${num} ${unidadLimpia}s`;
     }
 
-    // 3. Unidades genéricas (Vasos, Pajillas, Cucharas, etc.)
     if (unidadLimpia === 'unidad(es)' || unidadLimpia === 'unidad') {
-        // Si el insumo ya es "Vasos 4 oz", "Cucharas", "Pajillas", solo mostramos el número y su nombre natural
-        if (num === 1) return `1 ${nombreInsumo.toLowerCase().replace(/s\b/, '')}`; // Quita la 's' final si es singular
-        return `${num} ${nombreInsumo.toLowerCase()}`;
+        return num === 1 ? `${num} unidad` : `${num} unidades`;
     }
 
-    // Retorno por defecto si no cumple ninguna regla anterior
+    // Respaldo final si no entró en ninguna regla
     return `${num} ${unidad}`;
 }
 
