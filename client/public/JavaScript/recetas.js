@@ -3,12 +3,13 @@ document.addEventListener("DOMContentLoaded", () => {
     cargarRecetas();
 
     const selectIngrediente = document.getElementById("ingrediente");
+    
     selectIngrediente.addEventListener("change", (e) => {
         const idSeleccionado = e.target.value;
         
-        // Si vuelve a seleccionar la opción por defecto ("Ingrediente"), cargamos todas
-        if (idSeleccionado === "Ingrediente" || idSeleccionado === "") {
-            cargarRecetas();
+        // Control de seguridad: Si es vacío, es la palabra "null", o el string "Ingrediente"
+        if (!idSeleccionado || idSeleccionado === "null" || idSeleccionado === "Ingrediente" || idSeleccionado === "") {
+            cargarRecetas(); // Carga todas las recetas sin filtros
         } else {
             cargarRecetas(idSeleccionado);
         }
@@ -25,23 +26,28 @@ async function cargarIngredientes() {
         }
 
         const ingredientes = await respuesta.json();
-
         const select = document.getElementById("ingrediente");
+
+        // Limpiamos para asegurarnos de que solo quede la opción por defecto limpia
+        select.innerHTML = '<option value="">Ingrediente</option>';
 
         ingredientes.forEach((ingrediente) => {
             const option = document.createElement("option");
-
-            option.value = ingrediente.id_ma;
+            
+            // Usamos id_ma, o si es nulo, usamos el id del producto elaborado
+            option.value = ingrediente.id_ma || ingrediente.id_producto_insumo || ingrediente.id;
             option.textContent = ingrediente.nombre;
 
-            select.appendChild(option);
+            // Solo agregamos la opción si logramos rescatar un ID válido
+            if (option.value && option.value !== "null") {
+                select.appendChild(option);
+            }
         });
 
     } catch (error) {
         console.error(error);
     }
 }
-
 
 async function cargarRecetas(idIngrediente = "") {
     try {
