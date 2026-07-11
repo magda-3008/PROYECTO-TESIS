@@ -80,7 +80,7 @@ function formatearUnidadHumana(cantidad, unidad, nombreInsumo) {
 
     // Caso Especial: Chocobananos y postres con Chispas (Libras a Cucharadas)
     if (nombreLimpio.includes('chispa')) {
-        if (num === 0.016) return '1/2 cucharada';
+        if (num === 0.015) return '1/2 cucharada';
         if (num === 0.05) return '1 cucharada y media';
         if (num === 0.1) return '3 cucharadas'; // Respaldo proporcional si escala
         return `${num} lb`; // Por si acaso cambia drásticamente la cantidad
@@ -88,9 +88,9 @@ function formatearUnidadHumana(cantidad, unidad, nombreInsumo) {
 
     // Caso Especial: Pioquinto / Tortas (Evitar "0.25 unidades" o "1/4 de unidad")
     if (nombreLimpio.includes('torta')) {
-        if (num === 0.25) return '1/4 de torta entera';
-        if (num === 0.5) return '1/2 torta entera';
-        return num === 1 ? '1 torta entera' : `${num} tortas enteras`;
+        if (num === 0.25) return '1/4 de torta';
+        if (num === 0.5) return '1/2 torta';
+        return num === 1 ? '1 torta' : `${num} tortas`;
     }
     
     // Caso Especial: Pajillas (Evitar que diga "1 caja" en la receta)
@@ -192,7 +192,7 @@ async function cargarDetalleReceta(idReceta) {
             <h5>Ingredientes</h5>
             <ul id="listaIngredientes"></ul>
             <h5>Método de preparación:</h5>
-            <p>${receta.descripcion}</p>
+            <p style="text-align: justify;">${receta.descripcion}</p>
         `;
 
         const lista = document.getElementById("listaIngredientes");
@@ -204,7 +204,6 @@ async function cargarDetalleReceta(idReceta) {
             lista.innerHTML += `
                 <li>
                     <strong>${item.nombre_insumo}</strong> 
-                    <span class="text-muted">(${item.tipo_insumo})</span> 
                     - ${textoMedida}
                 </li>
             `;
@@ -217,65 +216,3 @@ async function cargarDetalleReceta(idReceta) {
         console.error(error);
     }
 }
-
-/* async function cargarDetalleReceta(idReceta) {
-
-    try {
-
-        const respuesta = await fetch(`/api/detalle_receta/${idReceta}`);
-
-        if (!respuesta.ok) {
-            throw new Error("No se pudo obtener el detalle.");
-        }
-
-        const detalle = await respuesta.json();
-
-const receta = detalle[0];
-
-document.getElementById("tituloModal").textContent =
-    receta.nombre_receta;
-
-const contenido = document.getElementById("contenidoModal");
-
-contenido.innerHTML = `
-    <img src="${receta.imagen_url}" class="imagen-modal">
-
-    <p><strong>Las medidas de esta receta producen una cantidad base de:</strong> ${receta.cantidad_producida_base} ${receta.nombre_receta}</p>
-
-    <h5>Ingredientes</h5>
-
-    <ul id="listaIngredientes"></ul>
-`;
-
-const lista = document.getElementById("listaIngredientes");
-
-detalle.forEach(item => {
-
-    lista.innerHTML += `
-        <li>
-            ${item.nombre_insumo}
-            (${item.tipo_insumo})
-            - ${item.cantidad_utilizada}
-            ${item.unidad_medida}
-        </li>
-    `;
-
-});
-
- contenido.innerHTML += `
-        <h5>Método de preparación:</h5>
-        <p>${receta.descripcion}</p>
-    `;
-        const modal = new bootstrap.Modal(
-            document.getElementById("modalReceta")
-        );
-
-        modal.show();
-
-    } catch (error) {
-
-        console.error(error);
-
-    }
-
-} */
