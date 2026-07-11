@@ -60,7 +60,7 @@ async function cargarIngredientes() {
     }
 }
 
-async function cargarRecetas(idIngrediente = "") {
+async function cargarRecetas(idIngrediente = "", nombre = "") {
     try {
 
        let url = "/api/recetas";
