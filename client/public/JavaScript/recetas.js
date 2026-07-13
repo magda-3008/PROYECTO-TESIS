@@ -1,30 +1,36 @@
 document.addEventListener("DOMContentLoaded", () => {
+
     cargarIngredientes();
     cargarRecetas();
 
-     const formulario = document.querySelector("form");
-
-formulario.addEventListener("submit", (e) => {
-
-    e.preventDefault();
-
-    const nombre = document.getElementById("buscar-receta").value.trim();
-    const ingrediente = document.getElementById("ingrediente").value;
-
-    cargarRecetas(ingrediente, nombre);
-
-});
-
+    const inputBuscar = document.getElementById("buscar-receta");
     const selectIngrediente = document.getElementById("ingrediente");
-    
-   selectIngrediente.addEventListener("change", (e) => {
 
-    const ingrediente = e.target.value;
-    const nombre = document.getElementById("buscar-receta").value.trim();
+    let temporizador;
 
-    cargarRecetas(ingrediente, nombre);
+    inputBuscar.addEventListener("input", (e) => {
 
-});
+        clearTimeout(temporizador);
+
+        temporizador = setTimeout(() => {
+
+            const nombre = e.target.value.trim();
+            const ingrediente = selectIngrediente.value;
+
+            cargarRecetas(ingrediente, nombre);
+
+        }, 300);
+
+    });
+
+    selectIngrediente.addEventListener("change", (e) => {
+
+        const ingrediente = e.target.value;
+        const nombre = inputBuscar.value.trim();
+
+        cargarRecetas(ingrediente, nombre);
+
+    });
 
 });
 
