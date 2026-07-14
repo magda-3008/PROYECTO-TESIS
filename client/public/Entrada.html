@@ -39,19 +39,19 @@
         </div>
 
         <div class="input-group">
-          <input
-            type="password"
-            id="password"
-            class="form-control"
-            placeholder="Ingresa tu contraseña"
-            required />
+          <label for="password">Contraseña</label>
 
-          <button
-            class="btn btn-outline-secondary"
-            type="button"
-            id="togglePassword">
-            <i class="bi bi-eye"></i>
-          </button>
+          <div class="password-container">
+            <input
+              type="password"
+              id="password"
+              placeholder="Ingresa tu contraseña"
+              required />
+
+            <button type="button" id="togglePassword" class="btn-ojo">
+              <i class="bi bi-eye"></i>
+            </button>
+          </div>
         </div>
 
         <p id="mensajeLogin" class="mensaje-login"></p>

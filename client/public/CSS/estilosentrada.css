@@ -157,3 +157,30 @@ body {
     text-align: center;
     min-height: 20px;
 }
+
+.password-container{
+    position: relative;
+}
+
+.password-container input{
+    padding-right: 40px;
+}
+
+.btn-ojo{
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    border: none;
+    background: transparent;
+
+    cursor: pointer;
+
+    color: #4a7f83;
+    font-size: 18px;
+}
+
+.btn-ojo:hover{
+    color: #1a81a0;
+}
