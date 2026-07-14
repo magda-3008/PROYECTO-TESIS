@@ -2,14 +2,14 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../config/db");
 
-router.get("/", async (req, res) => {
+router.post("/", async (req, res) => {
     const { nombre_usuario, contrasena } = req.body;
 
     try {
         // Ejecutamos la consulta usando la función crypt() de PostgreSQL.
         // Pasamos la columna 'contrasena' como segundo parámetro para que use la misma salt.
         const consulta = `
-            SELECT id, nombre_usuario 
+            SELECT id_usuario, nombre_usuario 
             FROM usuarios 
             WHERE nombre_usuario = $1 
               AND contrasena = crypt($2, contrasena);

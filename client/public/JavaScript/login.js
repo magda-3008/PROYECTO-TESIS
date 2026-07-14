@@ -18,7 +18,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 
         if (respuesta.ok) {
             alert(resultado.mensaje);
-            window.location.href = Principal.html 
+            window.location.href = "Principal.html" 
         } else {
             alert(resultado.mensaje); 
         }
