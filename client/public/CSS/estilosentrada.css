@@ -149,3 +149,11 @@ body {
         font-size: 15px;
     }
 }
+
+.mensaje-login {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    text-align: center;
+    min-height: 20px;
+}
