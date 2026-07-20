@@ -27,15 +27,12 @@ async function cargarProductos() {
     new DataTable("#tabla", {
         pageLength: 10,
         lengthMenu: [5, 10, 25, 50],
+        autoWidth: false,
+        scrollX: true,
         language: {
             url: "https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json"
         }
     });
-
-    $('#tabla').DataTable({
-    autoWidth: false,
-    scrollX: true
-});
 }
 
 cargarProductos();
