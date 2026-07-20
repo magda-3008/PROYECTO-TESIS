@@ -7,6 +7,3 @@ Luego de esto, cerrar la terminal, sin importar los que diga
 
 Subir cambios traidos a la rama
 
-git branch -vv
-
-Para comprobar que los cambios se suban a mi repo personal

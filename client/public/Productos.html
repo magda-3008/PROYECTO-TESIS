@@ -8,10 +8,10 @@
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       rel="stylesheet" />
-    <!-- Bootstrap Table CSS -->
+    <!-- DataTables -->
     <link
       rel="stylesheet"
-      href="https://unpkg.com/bootstrap-table@1.24.2/dist/bootstrap-table.min.css" />
+      href="https://cdn.datatables.net/2.3.2/css/dataTables.bootstrap5.css" />
   </head>
   <body>
     <h1>Inventario de productos</h1>
@@ -31,20 +31,15 @@
       <option value="">Tipo de producto</option>
     </select>
 
-    <table
-      id="tabla"
-      class="table"
-      data-toggle="table"
-      data-pagination="true"
-      data-page-size="10">
+    <table id="tabla" class="table table-striped table-hover">
       <thead>
         <tr>
-          <th data-field="id_producto">N°</th>
-          <th data-field="nombre">Nombre</th>
-          <th data-field="tipo">Tipo</th>
-          <th data-field="precio_venta">Precio</th>
-          <th data-field="margen_gananciab_esperado">Margen</th>
-          <th data-field="estado">Estado</th>
+          <th>N°</th>
+          <th>Nombre</th>
+          <th>Tipo</th>
+          <th>Precio</th>
+          <th>Margen de ganancia bruta</th>
+          <th>Estado</th>
         </tr>
       </thead>
 
@@ -52,10 +47,12 @@
     </table>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <!-- Bootstrap JS -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Bootstrap Table -->
-    <script src="https://unpkg.com/bootstrap-table@1.24.2/dist/bootstrap-table.min.js"></script>
+
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
+
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.bootstrap5.js"></script>
 
     <script src="./JavaScript/productos.js"></script>
   </body>
