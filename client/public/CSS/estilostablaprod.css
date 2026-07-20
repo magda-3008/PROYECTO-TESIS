@@ -1,34 +1,8 @@
-.dataTables_filter input {
-    border-radius: 10px;
-    border: 2px solid #f48fb1;
-    padding: 6px 10px;
+#tabla {
+    white-space: nowrap;
 }
 
-.dataTables_length select {
-    border-radius: 8px;
-    border: 2px solid #f48fb1;
-}
-
-.page-link {
-    color: #d81b60;
-}
-
-.page-item.active .page-link {
-    background-color: #d81b60;
-    border-color: #d81b60;
-    color: white;
-}
-
-.page-link:hover {
-    background-color: #f8bbd0;
-}
-
-#tabla thead th {
-    background-color: #343a40;
-    color: white;
-    text-align: center;
-}
-
-#tabla tbody tr:hover {
-    background-color: #ffe6f0;
+#tabla td,
+#tabla th {
+    width: auto;
 }

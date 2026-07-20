@@ -32,6 +32,10 @@ async function cargarProductos() {
         }
     });
 
+    $('#tabla').DataTable({
+    autoWidth: false,
+    scrollX: true
+});
 }
 
 cargarProductos();
