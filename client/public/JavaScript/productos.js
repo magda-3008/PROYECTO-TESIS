@@ -1,13 +1,10 @@
 async function cargarProductos() {
-
     const respuesta = await fetch("/api/productos");
-
     const productos = await respuesta.json();
 
     const tabla = document.getElementById("tablaProductos");
 
     productos.forEach(producto => {
-
         tabla.innerHTML += `
             <tr>
                 <td>${producto.id_producto}</td>
@@ -18,9 +15,9 @@ async function cargarProductos() {
                 <td>${producto.estado}</td>
             </tr>
         `;
-
     });
 
+    $('#tabla').bootstrapTable();
 }
 
 cargarProductos();
