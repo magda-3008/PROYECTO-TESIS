@@ -1,5 +1,8 @@
+#tabla {
+    width: max-content !important;
+}
 
-
-.dataTables_scrollBody td {
+#tabla th,
+#tabla td {
     white-space: nowrap;
 }
