@@ -25,13 +25,22 @@ async function cargarProductos() {
     tbody.innerHTML = filas;
 
     new DataTable("#tabla", {
-        pageLength: 10,
-        lengthMenu: [5, 10, 25, 50],
-        autoWidth: false,
-        language: {
-            url: "https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json"
-        }
-    });
+    pageLength: 10,
+    lengthMenu: [5, 10, 25, 50],
+    autoWidth: false,
+    scrollX: true,
+   columnDefs: [
+    { width: "60px", targets: 0 },
+    { width: "300px", targets: 1 },
+    { width: "150px", targets: 2 },
+    { width: "100px", targets: 3 },
+    { width: "220px", targets: 4 },
+    { width: "100px", targets: 5 }
+],
+    language: {
+        url: "https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json"
+    }
+});
 }
 
 cargarProductos();

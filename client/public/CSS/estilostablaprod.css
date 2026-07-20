@@ -1,9 +1,0 @@
-#tabla {
-    table-layout: auto !important;
-    width: max-content !important;
-}
-
-#tabla th,
-#tabla td {
-    white-space: nowrap;
-}
