@@ -1,4 +1,5 @@
 #tabla {
+    table-layout: auto !important;
     width: max-content !important;
 }
 
