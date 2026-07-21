@@ -30,11 +30,11 @@ async function cargarProductos() {
     autoWidth: false,
     scrollX: true,
    columnDefs: [
-    { width: "600px", targets: 0 },
-    { width: "300px", targets: 1 },
+    { width: "30px", targets: 0 },
+    { width: "270px", targets: 1 },
     { width: "150px", targets: 2 },
     { width: "100px", targets: 3 },
-    { width: "220px", targets: 4 },
+    { width: "100px", targets: 4 },
     { width: "100px", targets: 5 }
 ],
     language: {
