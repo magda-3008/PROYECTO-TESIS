@@ -64,12 +64,16 @@ header{
 
 .Marca p{
 <<<<<<< HEAD
+<<<<<<< HEAD
     font-size:14px;
 =======
     margin-top:4px;
    text-align: center;
     color:#000000;
 >>>>>>> b1e8e94 (Comienzos)
+=======
+    font-size:14px;
+>>>>>>> 7d18a12 (NuevosC)
     font-style:italic;
     color:#333;
     margin-top:3px;
@@ -101,6 +105,7 @@ header{
 /*Logo superior derecha*/
 .logoEmpresa{
 <<<<<<< HEAD
+<<<<<<< HEAD
     width:75px;
     height:75px;
     border-radius:50%;
@@ -122,18 +127,31 @@ header{
     width:77px;
     height:77px;
     object-fit:cover;
+=======
+    width:75px;
+    height:75px;
+>>>>>>> 7d18a12 (NuevosC)
     border-radius:50%;
-    padding:0px;
-    transition:.25s ease;
-    margin-left: 20px;
-    display: block;
-    text-decoration: none;
+    object-fit:cover;
+    margin-left: 35px;
+    border:none;
+    transition:transform .3s ease;
 }
 
 .logoEmpresa:hover{
+<<<<<<< HEAD
     background:var(--principalHover);
     transform:translateX(-3px);
 >>>>>>> b1e8e94 (Comienzos)
+=======
+    transform:scale(1.05);
+}
+
+#btnCerrarSesion{
+    display:flex;
+    align-items:center;
+    cursor:pointer;
+>>>>>>> 7d18a12 (NuevosC)
 }
 
 /*Todo el contenido de la pagina que esta bajo el header*/
