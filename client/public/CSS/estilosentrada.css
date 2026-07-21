@@ -70,21 +70,13 @@ body {
     font-weight: bold;
 }
 
-/*Corazones antes del texto*/
-.Titulo-caja label::before {
-    content: "♥";
-    margin-right: 6px;
-    color: #4a7f83;
-    font-size: 15px;
-}
-
 /*Inputs*/
 .Titulo-caja input {
     width: 100%;
     padding: 8px 4px;
     background: transparent;
     border: none;
-    border-bottom: 1px solid #61bcd7;
+    border-bottom: 1px solid #1a81a0;
     color: #000000;
     font-size: 16px;
     outline: none;
@@ -94,11 +86,6 @@ body {
 /*Color del texto de referencia*/
 .Titulo-caja input::placeholder {
     color: #667;
-}
-
-/*Cambia el color de la línea inferior cuando el usuario hace clic en el campo*/
-.Titulo-caja input:focus {
-    border-bottom: 1px solid #1a81a0;
 }
 
 /*Centra el botón horizontal*/
@@ -130,7 +117,7 @@ body {
     transform: scale(1.02);
 }
 
-/*Responsive*/
+/*Responsive general*/
 @media (max-width: 480px) {
     .Contenedor-general {
         padding: 35px 20px;
