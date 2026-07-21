@@ -3,36 +3,21 @@ async function cargarProductos() {
     const respuesta = await fetch("/api/productos");
     const productos = await respuesta.json();
 
-    const tbody = document.getElementById("tablaProductos");
-
-    let filas = "";
-
-    productos.forEach(producto => {
-
-        filas += `
-            <tr data-id="${producto.id_producto}">
-                <td>${producto.id_producto}</td>
-                <td>${producto.nombre}</td>
-                <td>${producto.tipo}</td>
-                <td>${producto.precio_venta}</td>
-                <td>${producto.margen_gananciab_esperado}</td>
-                <td>${producto.estado}</td>
-            </tr>
-        `;
-
+    new Tabulator("#tablaProductos", {
+        data: productos,
+        layout: "fitData",
+        pagination: true,
+        paginationSize: 10,
+        movableColumns: true,
+        columns: [
+            { title: "N°", field: "id_producto" },
+            { title: "Nombre", field: "nombre" },
+            { title: "Tipo", field: "tipo" },
+            { title: "Precio", field: "precio_venta" },
+            { title: "Margen", field: "margen_gananciab_esperado" },
+            { title: "Estado", field: "estado" }
+        ]
     });
-
-    tbody.innerHTML = filas;
-
-    new DataTable("#tabla", {
-    pageLength: 30,
-    lengthMenu: [5, 10, 25, 50],    
-    language: {
-        url: "https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json"
-    }
-});
-
-table.columns.adjust().draw();
 }
 
 cargarProductos();
