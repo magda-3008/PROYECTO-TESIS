@@ -1,0 +1,8 @@
+#tabla {
+    table-layout: auto !important;  /* Permite que las celdas se expandan según el contenido */
+    width: 100%;                    /* O el ancho que desees para el contenedor */
+}
+
+#tabla td, #tabla th {
+    white-space: nowrap;            /* Evita saltos de línea, para que el ancho se base en el texto */
+}
