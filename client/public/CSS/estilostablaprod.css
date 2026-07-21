@@ -1,8 +1,14 @@
-#tabla {
-    table-layout: auto !important;  /* Permite que las celdas se expandan según el contenido */
-    width: 100%;                    /* O el ancho que desees para el contenedor */
+.tabla-container {
+    margin: 0 20px; /* espacio lateral */
+    width: auto;
 }
 
-#tabla td, #tabla th {
-    white-space: nowrap;            /* Evita saltos de línea, para que el ancho se base en el texto */
+#tabla {
+    width: 100% !important;
+    table-layout: auto !important;
+}
+
+#tabla th, #tabla td {
+    white-space: nowrap;
+    padding: 8px 12px;
 }
