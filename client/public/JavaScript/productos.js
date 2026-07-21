@@ -30,7 +30,7 @@ async function cargarProductos() {
     autoWidth: false,
     scrollX: true,
    columnDefs: [
-    { width: "60px", targets: 0 },
+    { width: "600px", targets: 0 },
     { width: "300px", targets: 1 },
     { width: "150px", targets: 2 },
     { width: "100px", targets: 3 },
