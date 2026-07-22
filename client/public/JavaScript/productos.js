@@ -1,21 +1,38 @@
+const buscador = document.getElementById("buscar-producto");
+
+buscador.addEventListener("input", function () {
+
+    const texto = this.value;
+
+    if (texto === "") {
+        tabla.clearFilter();
+        return;
+    }
+
+    tabla.setFilter([
+        { field: "nombre", type: "like", value: texto }
+    ]);
+
+});
+
 async function cargarProductos() {
 
     const respuesta = await fetch("/api/productos");
     const productos = await respuesta.json();
 
-    new Tabulator("#tablaProductos", {
+    const tabla = new Tabulator("#tablaProductos", {
         data: productos,
-        layout: "fitData",
+        layout: "fitDataFill",
         pagination: true,
-        paginationSize: 10,
+        paginationSize: 30,
         movableColumns: true,
         columns: [
             { title: "N°", field: "id_producto" },
             { title: "Nombre", field: "nombre" },
             { title: "Tipo", field: "tipo" },
             { title: "Precio", field: "precio_venta" },
-            { title: "Margen", field: "margen_gananciab_esperado" },
-            { title: "Estado", field: "estado" }
+            { title: "Margen de ganancia", field: "margen_gananciab_esperado" },
+            { title: "Estado de producto", field: "estado" }
         ]
     });
 }
