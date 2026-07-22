@@ -15,31 +15,17 @@
     <link rel="stylesheet" href="./CSS/estilostablaprod.css" />
   </head>
   <body>
-    <h1>Inventario de productos</h1>
-
-    <form action="" method="GET">
-      <input
-        type="search"
-        id="buscar-producto"
-        name="buscar-producto"
-        placeholder="Escribe aquí el nombre del producto (ejm: pioquinto)"
-        style="width: 400px" />
-      <button type="button">Buscar</button>
-    </form>
-
-    <p>Filtrar por:</p>
-    <select name="tipo-prod" id="tipo-prod">
-      <option value="">Tipo de producto</option>
-    </select>
-
     <div class="container-fluid mt-3">
-      <h1>Productos</h1>
+      <h1>Inventario de productos</h1>
 
       <ul class="nav nav-tabs mb-3" id="tabsProductos">
         <li class="nav-item">
-          <button class="nav-link active" data-vista="inventario">
-            Inventario
-          </button>
+          <button class="nav-link active" data-vista="inventario">Todos</button>
+
+          <p>Filtrar por:</p>
+          <select name="ingrediente" id="ingrediente">
+            <option value="">Tipo de producto</option>
+          </select>
         </li>
 
         <li class="nav-item">

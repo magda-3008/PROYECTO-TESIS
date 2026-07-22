@@ -4,68 +4,37 @@ const vistas = {
     inventario: {
         endpoint: "/api/productos",
         columns: [
-            {
-                title: "N°",
-                field: "id_producto"
-            },
-            {
-                title: "Nombre",
-                field: "nombre"
-            },
-            {
-                title: "Tipo",
-                field: "tipo"
-            },
-            {
-                title: "Precio",
-                field: "precio_venta"
-            },
-            {
-                title: "Margen",
-                field: "margen_gananciab_esperado"
-            },
-            {
-                title: "Estado",
-                field: "estado"
-            }
+            { title: "N°", field: "id_producto"},
+            { title: "Nombre", field: "nombre"},
+            { title: "Tipo", field: "tipo"},
+            { title: "Precio", field: "precio_venta"},
+            { title: "Margen", field: "margen_gananciab_esperado"},
+            { title: "Estado", field: "estado"}
+        ]
+    },
+
+    reventa: {
+        endpoint: "/api/productosreventa",
+        columns: [
+            { title: "N°", field: "id_producto"},
+            { title: "Nombre", field: "nombre"},
+            { title: "Tipo", field: "tipo"},
+            { title: "Precio", field: "precio_venta"},
+            { title: "Margen", field: "margen_gananciab_esperado"},
+            { title: "Estado", field: "estado"}
         ]
     },
 
     analisis: {
-
         endpoint: "/api/productos/analisis",
-
         columns: [
-
-            {
-                title: "Producto",
-                field: "nombre"
-            },
-
-            {
-                title: "Costo actual",
-                field: "costo_actual"
-            },
-
-            {
-                title: "Precio venta",
-                field: "precio_venta"
-            },
-
-            {
-                title: "Margen esperado",
-                field: "margen"
-            },
-
-            {
-                title: "Ganancia",
-                field: "ganancia"
-            }
-
+            { title: "Producto", field: "nombre"},
+            { title: "Costo actual", field: "costo_actual"},
+            { title: "Precio venta", field: "precio_venta"},
+            { title: "Margen esperado", field: "margen"},
+            { title: "Ganancia", field: "ganancia"}
         ]
-
     }
-
 };
 
 cargarVista("inventario");
