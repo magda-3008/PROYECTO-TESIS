@@ -1,0 +1,786 @@
+:root{
+    --header:#ff9fbe;
+    --principal:#1a81a0;
+    --principalHover:#1a81a0;
+    --titulo:#4a7f83;
+    --blanco:#ffffff;
+    --texto:#000;
+    --fondo:rgba(207, 11, 11, 0.12);
+    --sombra:0 8px 18px rgba(0,0,0,.12);
+    --radio:18px;
+    --transicion:.30s ease;
+    --menu:240px;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Baloo 2',cursive;
+}
+
+body{
+    background:var(--fondo);
+    color:var(--texto);
+    overflow-x:hidden;
+}
+
+.Fondo{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    background-size:cover;
+    background-position:center;
+}
+
+/*Menú lateral*/
+.Menu-lateral{
+    position:fixed;
+    top:0;
+    left:calc(var(--menu) * -1);
+    width:var(--menu);
+    height:100vh;
+    background:#ff9fbe;
+    box-shadow:3px 0 10px rgba(207, 11, 11, 0.12);
+    transition:var(--transicion);
+    z-index:1000;
+}
+
+.Menu-lateral.activo{
+    left:0;
+}
+
+.Menu-lateral nav{
+    display:flex;
+    flex-direction:column;
+    padding-top:15px;
+}
+
+.Seccion-menu{
+    color:#000000;
+    padding:15px 25px 8px;
+    font-size:20px;
+    font-weight:700;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+    text-align: center;
+}
+
+.Item-menu{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:13px 25px;
+    color:#ffffff;
+    text-decoration:none;
+    font-size:20px;
+    transition:.25s;
+}
+
+.Item-menu i{
+    width:22px;
+    text-align:center;
+}
+
+.Item-menu:hover,
+.Item-menu.activo{
+    background:#d18da3;
+    font-weight:700;
+}
+
+.Menu-lateral hr{
+    margin:18px 20px;
+    border:none;
+    border-top:1px solid rgba(207, 11, 11, 0.12);
+}
+
+/*Encabezado rosa horizontal*/
+.Encabezado{
+    position:sticky;
+    top:0;
+    z-index:999;
+    background:var(--header);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:16px 35px;
+    box-shadow:0 3px 8px rgba(207, 11, 11, 0.12);
+    transition:var(--transicion);
+}
+
+.Encabezado-izquierda,
+.Encabezado-derecha{
+    display:flex;
+    align-items:center;
+}
+
+.Encabezado-izquierda{
+    gap:18px;
+}
+
+.Encabezado-derecha{
+    gap:18px;
+}
+
+.btnMenu{
+    background:none;
+    border:none;
+    color:#000000;
+    font-size:28px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.btnMenu:hover{
+    transform:scale(1.1);
+}
+
+/*Nombre del negocio en la ezquina de la barra rosa*/
+.Marca{
+    display:flex;
+    flex-direction:column;
+}
+
+.Marca h1{
+    font-size:32px;
+    line-height:1;
+}
+
+.Marca p{
+    font-size:14px;
+    font-style:italic;
+    color:#333;
+    margin-top:3px;
+    margin-left:24px;   
+    text-align:left;
+}
+
+/*Btn añadir venta*/
+.btnVenta{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:#61bcd7;
+    color:#fff;
+    border:none;
+    border-radius:25px;
+    padding:12px 20px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.25s ease;
+}
+    
+.btnVenta:hover{
+    background-color: #1a81a0;
+    transform: scale(1.02);
+}
+
+/*Logo*/
+.logoEmpresa{
+    width:75px;
+    height:75px;
+    border-radius:50%;
+    object-fit:cover;
+    margin-left: 20px;
+    border:none;
+    transition:transform .3s ease;
+}
+
+.logoEmpresa:hover{
+    transform:scale(1.05);
+}
+
+#btnCerrarSesion{
+    display:flex;
+    align-items:center;
+    cursor:pointer;
+}
+
+/*Contenido principal*/
+.Contenido{
+    padding:35px;
+    transition:var(--transicion);
+}
+
+body.menu-abierto .Contenido,
+body.menu-abierto .Encabezado{
+    margin-left:var(--menu);
+}
+
+/*Tabs circulos diario, semanal, mensual*/
+.Tabs{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:18px;
+    margin-bottom:35px;
+}
+
+.Tab{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:12px 24px;
+    border:2px solid var(--principal);
+    border-radius:30px;
+    background:#61bcd7;
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:var(--transicion);
+}
+
+.Tab:hover,
+.Tab.activa{
+    background:var(--principal);
+    color:#ffffff;
+}
+
+/*Titulo Resumen del dìa*/
+.Titulo-resumen{
+    text-align:center;
+    margin-bottom:35px;
+}
+
+.Titulo-resumen h2{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    color:var(--titulo);
+    font-size:28px;
+}
+
+/*Tarjetas*/
+.Resumen{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:25px;
+    margin-bottom:40px;
+}
+
+.Tarjeta{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    background:#fff;
+    border-radius:var(--radio);
+    padding:25px;
+    box-shadow:var(--sombra);
+}
+
+.Icono{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-width:65px;
+    width:65px;
+    height:65px;
+    background:var(--principal);
+    color:#fff;
+    border-radius:50%;
+    font-size:24px;
+}
+
+.ContenidoTarjeta{
+    font-size:24px;
+    flex:1;
+}
+
+.ContenidoTarjeta h3{
+    color:var(--titulo);
+    font-size:25px;
+    margin-bottom:8px;
+}
+
+/*Tabla de registros*/
+.Contenedor-tabla{
+    background:white;
+    border-radius:var(--radio);
+    box-shadow:var(--sombra);
+    overflow:hidden;
+}
+
+.Cabecera-tabla{
+    display:flex;
+    background-color: #befbfc;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 25px;
+    border-bottom:1px solid #befbfc;
+}
+
+.Cabecera-tabla h2{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--titulo);
+    font-size:24px;
+}
+
+.Tabla-responsive{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+thead{
+    background: white;
+    color:#fff;
+}
+
+thead th{
+    height:60px;
+    background:#1a81a0;
+    color:white;
+    text-align: center;
+    font-size:20px;
+    font-weight:700;
+    vertical-align:middle;
+}
+
+tbody td{
+    padding:18px 20px;
+    border-bottom:1px solid rgba(28, 66, 147, 0.25);
+    font-size:20px;
+}
+
+/* Encabezados */
+.colProducto{
+    width:40%;
+    text-align:left;
+    padding-left:30px;
+}
+
+.colPrecio{
+    width:20%;
+    text-align:center;
+}
+
+.colCantidad{
+    width:20%;
+    text-align:center;
+}
+
+.colTotal{
+    width:20%;
+    text-align:center;
+}
+
+.colAcciones{
+    width:20%;
+    text-align:center;
+}
+
+/* Datos ficticios de la tabla estan hasta que hayan registros reales*/
+.tdProducto{
+    text-align:left;
+    padding-left:30px;
+}
+
+.tdPrecio{
+    text-align:center;
+}
+
+.tdCantidad{
+    text-align:center;
+}
+
+.tdTotal{
+    text-align:center;
+}
+
+.tdAcciones{
+    text-align:center;
+}
+
+/*Botones de acciones de la tabla*/
+.Acciones{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+}
+
+.btnEditar,
+.btnEliminar{
+
+    width:40px;
+    height:40px;
+    border:none;
+    border-radius:10px;
+    color:#fff;
+    cursor:pointer;
+    transition:var(--transicion);
+    font-size:15px;
+}
+
+.btnEditar{
+    background:#fe8733;
+}
+
+.btnEditar:hover{
+    background:#c16320;
+    transform:scale(1.08);
+}
+
+.btnEliminar{
+    background:#ef5b5b;
+}
+
+.btnEliminar:hover{
+    background:#bf4a4a;
+    transform:scale(1.08);
+}
+
+/*Formulario pequeño que se abre al añadir una venta dentro de esta misma pag principal*/
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    opacity:0;
+    visibility:hidden;
+    transition:.30s ease;
+    z-index:2000;
+}
+
+.modal.activo{
+    opacity:1;
+    visibility:visible;
+}
+
+.modal-contenido{
+    width:700px;
+    max-width:95%;
+    background:#ffffff;
+    border-radius:20px;
+    box-shadow:0 15px 35px rgba(28, 66, 147, 0.25);
+    overflow:hidden;
+    animation:mostrarModal .30s ease;
+}
+
+/*Formulario*/
+.formVenta{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    column-gap:22px;
+    padding: 30px;
+}
+
+/*Encabezado*/
+.modal-header{
+    background:#befbfc;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:25px 30px 15px;
+    border-bottom:1px solid #befbfc;
+}
+
+.modal-header h2{
+    font-size:30px;
+    color:var(--titulo);
+    font-weight:700;
+}
+
+.cerrarModal{
+    border:none;
+    font-size:24px;
+    cursor:pointer;
+    color:#4a7f83;
+    transition:.25s;
+    width:40px;
+    height:40px;
+    border-radius:40%;
+    background:#befbfc;
+}
+
+.cerrarModal:hover{
+    background:#abdbdc;
+    color:#4a7f83;
+    transform:none;
+}
+
+/*Lupa*/
+.grupoBusqueda{
+    position:relative;
+    margin:20px 30px;
+}
+
+.iconoBuscar{
+    position:absolute;
+    left:18px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#667;
+    font-size:18px;
+}
+
+.buscarProducto{
+    width:100%;
+    height:52px;
+    padding-left:48px;
+    padding-right:15px;
+    border:2px solid var(--principalHover);
+    border-radius:14px;
+    outline:none;
+    font-size:16px;
+    transition:.30s;
+}
+
+.buscarProducto:focus{
+    border-color:var(--principalHover);
+}
+
+/*Cajas de texto y titulos*/
+.campo{
+    display:flex;
+    flex-direction:column;
+}
+
+.campo label{
+    color:#4a7f83;
+    font-size:18px;
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+.campo input{
+    width:100%;
+    height:48px;
+    padding:0 15px;
+    border:1px solid #d9d9d9;
+    border-radius:12px;
+    outline:none;
+    transition:.25s;
+}
+
+.campo input:focus{
+    border:1px solid #d9d9d9;
+    box-shadow:none;
+    outline:none;
+}
+
+/* Campos que llena el sistema nombre, precio y el total*/
+.campo input[readonly]{
+    background:#f6f5f5;
+    color:black;
+    border:1px solid #d9d9d9;
+    cursor:default;
+}
+
+/* Campo que llena el usuario cantidad en este caso*/
+.campo input[type="number"]{
+    background:#fff;
+}
+
+/*Botones cancelar y agregar venta*/
+.modal-botones{
+    display:flex;
+    justify-content:center;
+    gap:25px;
+    margin-top:10px;
+    padding-bottom:30px;
+}
+
+.btnCancelar,
+.btnGuardar{
+    width:160px;
+    height:48px;
+    border:none;
+    border-radius:25px;
+    font-size:16px;
+    font-weight:600;
+}
+
+.btnCancelar{
+    padding:11px 22px;
+    border:none;
+    color: #fff;
+    border-radius:12px;
+    background:#ef5b5b;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.btnCancelar:hover{
+    background:#bf4a4a;
+}
+
+.btnGuardar{
+    padding:11px 22px;
+    border:none;
+    border-radius:12px;
+    background:#4bd16d;
+    color:#fff;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.btnGuardar:hover{
+    background:#3da156;
+}
+
+/*Responsive general de muchos elementos*/
+@media (min-width:901px){
+    body.menu-abierto .Encabezado,
+    body.menu-abierto .Contenido{
+        margin-left:var(--menu);
+    }
+}
+
+@media (max-width:900px){
+    .Encabezado{
+        padding:15px 20px;
+    }
+
+    .Contenido{
+        padding:25px;
+    }
+
+    body.menu-abierto .Encabezado,
+    body.menu-abierto .Contenido{
+        margin-left:0;
+    }
+
+    .Menu-lateral{
+        width:var(--menu);
+    }
+}
+
+@media (max-width:768px){
+    .Encabezado{
+        flex-direction:column;
+        align-items:center;
+        gap:18px;
+    }
+
+    .Encabezado-izquierda{
+        width:100%;
+        justify-content:space-between;
+    }
+
+    .Encabezado-derecha{
+        width:100%;
+        justify-content:center;
+        flex-wrap:wrap;
+    }
+
+    .Marca{
+        flex:1;
+        text-align:center;
+    }
+
+    .Marca h1{
+        font-size:24px;
+    }
+
+    .Marca p{
+        font-size:12px;
+    }
+
+    .btnVenta{
+        width:100%;
+        justify-content:center;
+    }
+
+    .logoEmpresa{
+        width:65px;
+        height:65px;
+    }
+
+    .Tabs{
+        gap:12px;
+    }
+
+    .Tab{
+        flex:1;
+        justify-content:center;
+    }
+
+    .Resumen{
+        grid-template-columns:1fr;
+    }
+
+    .Titulo-resumen h2{
+        font-size:28px;
+    }
+
+    .Cabecera-tabla{
+        flex-direction:column;
+        gap:12px;
+        text-align:center;
+    }
+}
+
+@media (max-width:480px){
+    .Contenido{
+        padding:18px;
+    }
+
+    .Marca h1{
+        font-size:21px;
+    }
+
+    .Tab{
+        width:100%;
+    }
+
+    .Tarjeta{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .Icono{
+        margin-bottom:10px;
+    }
+
+    .ContenidoTarjeta p{
+        font-size:22px;
+    }
+
+    thead th,
+    tbody td{
+        padding:12px;
+        font-size:14px;
+    }
+}
+
+/*Animaciones*/
+html{
+    scroll-behavior:smooth;
+}
+
+button,
+a,
+.Tarjeta,
+.Item-menu{
+    transition:var(--transicion);
+}
+
+button:active{
+    transform:scale(.97);
+}
+
+.logoEmpresa:active{
+    transform:scale(.95);
+}
+
+/*Animaciòn en el modal*/
+@keyframes mostrarModal{
+    from{
+        opacity:0;
+        transform:translateY(-20px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
