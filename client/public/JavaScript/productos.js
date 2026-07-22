@@ -22,7 +22,7 @@ async function cargarProductos() {
 
     const tabla = new Tabulator("#tablaProductos", {
         data: productos,
-        layout: "fitDataFill",
+        layout: "fitColumns",
         pagination: true,
         paginationSize: 30,
         movableColumns: true,
@@ -31,7 +31,7 @@ async function cargarProductos() {
             { title: "Nombre", field: "nombre" },
             { title: "Tipo", field: "tipo" },
             { title: "Precio", field: "precio_venta" },
-            { title: "Margen de ganancia", field: "margen_gananciab_esperado" },
+            { title: "Margen de ganancia bruta esperado (%)", field: "margen_gananciab_esperado" },
             { title: "Estado de producto", field: "estado" }
         ]
     });
