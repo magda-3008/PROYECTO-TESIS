@@ -32,7 +32,27 @@
       <option value="">Tipo de producto</option>
     </select>
 
-    <div class="contenedor-tabla">
+    <div class="container-fluid mt-3">
+      <h1>Productos</h1>
+
+      <ul class="nav nav-tabs mb-3" id="tabsProductos">
+        <li class="nav-item">
+          <button class="nav-link active" data-vista="inventario">
+            Inventario
+          </button>
+        </li>
+
+        <li class="nav-item">
+          <button class="nav-link" data-vista="analisis">
+            Análisis de elaborados
+          </button>
+        </li>
+      </ul>
+
+      <div class="mb-3">
+        <input class="form-control" id="buscar" placeholder="Buscar..." />
+      </div>
+
       <div id="tablaProductos"></div>
     </div>
 

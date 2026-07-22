@@ -1,40 +1,151 @@
-const buscador = document.getElementById("buscar-producto");
+let tabla = null;
 
-buscador.addEventListener("input", function () {
+const vistas = {
+    inventario: {
+        endpoint: "/api/productos",
+        columns: [
+            {
+                title: "N°",
+                field: "id_producto"
+            },
+            {
+                title: "Nombre",
+                field: "nombre"
+            },
+            {
+                title: "Tipo",
+                field: "tipo"
+            },
+            {
+                title: "Precio",
+                field: "precio_venta"
+            },
+            {
+                title: "Margen",
+                field: "margen_gananciab_esperado"
+            },
+            {
+                title: "Estado",
+                field: "estado"
+            }
+        ]
+    },
 
-    const texto = this.value;
+    analisis: {
 
-    if (texto === "") {
-        tabla.clearFilter();
-        return;
+        endpoint: "/api/productos/analisis",
+
+        columns: [
+
+            {
+                title: "Producto",
+                field: "nombre"
+            },
+
+            {
+                title: "Costo actual",
+                field: "costo_actual"
+            },
+
+            {
+                title: "Precio venta",
+                field: "precio_venta"
+            },
+
+            {
+                title: "Margen esperado",
+                field: "margen"
+            },
+
+            {
+                title: "Ganancia",
+                field: "ganancia"
+            }
+
+        ]
+
     }
 
-    tabla.setFilter([
-        { field: "nombre", type: "like", value: texto }
-    ]);
+};
+
+cargarVista("inventario");
+
+async function cargarVista(vista){
+
+    if(tabla){
+
+        tabla.destroy();
+
+    }
+
+    const configuracion = vistas[vista];
+
+    const respuesta = await fetch(configuracion.endpoint);
+
+    const datos = await respuesta.json();
+
+    tabla = new Tabulator("#tablaProductos", {
+
+        data: datos,
+
+        layout: "fitColumns",
+
+        pagination: true,
+
+        paginationSize: 10,
+
+        movableColumns: true,
+
+        reactiveData: true,
+
+        columns: configuracion.columns
+
+    });
+
+}
+
+const tabs = document.querySelectorAll("#tabsProductos .nav-link");
+
+tabs.forEach(tab => {
+
+    tab.addEventListener("click", () => {
+
+        document
+            .querySelector("#tabsProductos .active")
+            .classList.remove("active");
+
+        tab.classList.add("active");
+
+        cargarVista(tab.dataset.vista);
+
+    });
 
 });
 
-async function cargarProductos() {
+const buscador = document.getElementById("buscar");
 
-    const respuesta = await fetch("/api/productos");
-    const productos = await respuesta.json();
+buscador.addEventListener("input", function(){
 
-    const tabla = new Tabulator("#tablaProductos", {
-        data: productos,
-        layout: "fitColumns",
-        pagination: true,
-        paginationSize: 30,
-        movableColumns: true,
-        columns: [
-            { title: "N°", field: "id_producto" },
-            { title: "Nombre", field: "nombre" },
-            { title: "Tipo", field: "tipo" },
-            { title: "Precio", field: "precio_venta" },
-            { title: "Margen de ganancia bruta esperado (%)", field: "margen_gananciab_esperado" },
-            { title: "Estado de producto", field: "estado" }
-        ]
+    const texto = this.value.toLowerCase();
+
+    if(texto === ""){
+
+        tabla.clearFilter();
+
+        return;
+
+    }
+
+    tabla.setFilter(function(data){
+
+        return Object.values(data).some(valor =>
+
+            String(valor)
+                .toLowerCase()
+                .includes(texto)
+
+        );
+
     });
-}
 
-cargarProductos();
+});
