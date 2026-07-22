@@ -1,173 +1,183 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Baloo 2', cursive;
+/*Cuerpo*/
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Baloo 2', cursive;
 }
 
-/*Centro el formulario en la pantalla y coloca la imagen de fondo*/
-body {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    background: url('../Resources/Fondo1.png') no-repeat center center;
-    background-size: cover;
-    padding: 20px;
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:url("../Resources/Fondo1.png") no-repeat center center;
+    background-size:cover;
+    padding:20px;
 }
 
-/*Es la tarjeta donde se encuentra el formulario*/
-.Contenedor-general {
-    position: relative;
-    width: 100%;
-    max-width: 400px;
-    background-color: #ffffff;
-    padding: 40px 30px;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(28, 66, 147, 0.25); /* Sombra para dar profundidad */
-    text-align: center;
+/*formulario blanco*/
+.login-container{
+    position:relative;
+    width:100%;
+    max-width:400px;
+    background:#ffffff;
+    padding:40px 30px;
+    border-radius:12px;
+    box-shadow:0 8px 24px rgba(28,66,147,.25);
+    text-align:center;
 }
 
-/*Permite colocar el logo sobresaliendo de de la tarjeta*/
-.Contenedor-logo {
-    position: absolute;
-    top: -50px;
-    left: 50%;
-    transform: translateX(-50%);
+/* Logo */
+.logo-container{
+    position:absolute;
+    top:-50px;
+    left:50%;
+    transform:translateX(-50%);
 }
 
-/*Tamaño del logo y proporción*/
-.logo-img {
-    width: 135px;
-    height: 135px;
-    object-fit: contain;
-    transition: transform .3s ease;
+.logo-img{
+    width:135px;
+    height:135px;
+    object-fit:contain;
+    transition:transform .3s ease;
 }
 
-/*Titulo*/
-.Contenedor-general h2 {
-    margin-top: 40px;
-    margin-bottom: 30px;
-    color: #4a7f83;
-    font-size: 42px;
-    font-weight: 700;
-    letter-spacing: 1px;
+.logo-img:hover{
+    transform:scale(1.05);
 }
 
-/*Agrupa la etiqueta y el campo de texto*/
-.Titulo-caja {
-    text-align: left;
-    margin-bottom: 25px;
+.login-container h2{
+    margin-top:40px;
+    margin-bottom:30px;
+    color:#4a7f83;
+    font-size:42px;
+    font-weight:700;
+    letter-spacing:1px;
 }
 
-/*Etiquetas labels*/
-.Titulo-caja label {
-    display: block;
-    margin-bottom: 8px;
-    color: #4a7f83;
-    font-size: 15px;
-    font-weight: bold;
+/*Cajas de texto*/
+.input-group{
+    margin-bottom:25px;
+    text-align:left;
 }
 
-/*Inputs*/
-.Titulo-caja input {
-    width: 100%;
-    padding: 8px 4px;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid #1a81a0;
-    color: #000000;
-    font-size: 16px;
-    outline: none;
-    transition: border-color .3s ease;
+.input-group label{
+    display:block;
+    margin-bottom:8px;
+    color:#4a7f83;
+    font-size:15px;
+    font-weight:bold;
 }
 
-/*Color del texto de referencia*/
-.Titulo-caja input::placeholder {
-    color: #667;
+.input-group input{
+    width:100%;
+    padding:8px 4px;
+    border:none;
+    border-bottom:1px solid #1a81a0;
+    background:transparent;
+    outline:none;
+    color:#000;
+    font-size:16px;
+    transition:border-color .3s;
 }
 
-/*Centra el botón horizontal*/
-.Redondo {
-    display: flex;
-    justify-content: center;
-    margin-top: 40px;
+.input-group input::placeholder{
+    color:#777;
 }
 
-/*Boton*/
-.btn-login {
-    display: inline-block;
-    width: 100%;
-    padding: 12px;
-    background-color: #61bcd7;
-    color: #ffffff;
-    text-decoration: none;
-    text-align: center;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 25px;
-    transition: background-color .3s ease,
-                transform .2s ease;
-}
-
-/*Efecto al pasar el mouse por el boton*/
-.btn-login:hover {
-    background-color: #1a81a0;
-    transform: scale(1.02);
-}
-
-/*Responsive general*/
-@media (max-width: 480px) {
-    .Contenedor-general {
-        padding: 35px 20px;
-    }
-
-    .Contenedor-general h2 {
-        font-size: 34px;
-    }
-
-    .logo-img {
-        width: 100px;
-        height: 100px;
-    }
-
-    .btn-login {
-        font-size: 15px;
-    }
-}
-
-.mensaje-login {
-    color: #dc3545;
-    font-size: 0.9rem;
-    margin-top: 10px;
-    text-align: center;
-    min-height: 20px;
+.input-group input:focus{
+    border-bottom:2px solid #61bcd7;
 }
 
 .password-container{
-    position: relative;
+    position:relative;
 }
 
 .password-container input{
-    padding-right: 40px;
+    width:100%;
+    padding:8px 40px 8px 4px;
+    border:none;
+    border-bottom:1px solid #1a81a0;
+    background:transparent;
+    outline:none;
+    color:#000;
+    font-size:16px;
+    transition:border-color .3s;
 }
 
+.password-container input:focus{
+    border-bottom:2px solid #61bcd7;
+}
+
+/* Botón ojo */
 .btn-ojo{
-    position: absolute;
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-
-    border: none;
-    background: transparent;
-
-    cursor: pointer;
-
-    color: #4a7f83;
-    font-size: 18px;
+    position:absolute;
+    top:50%;
+    right:5px;
+    transform:translateY(-50%);
+    border:none;
+    background:transparent;
+    cursor:pointer;
+    color:#1a81a0;
+    font-size:20px;
 }
 
 .btn-ojo:hover{
-    color: #1a81a0;
+    color:#1a81a0;
+}
+
+/* Mensaje */
+.mensaje-login{
+    min-height:20px;
+    margin-top:10px;
+    text-align:center;
+    color:#dc3545;
+    font-size:.9rem;
+}
+
+/* Botón de inicio de sesiòn */
+.button-container{
+    display:flex;
+    justify-content:center;
+    margin-top:40px;
+}
+
+.btn-login{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:25px;
+    cursor:pointer;
+    background:#61bcd7;
+    color:#fff;
+    font-size:16px;
+    font-weight:bold;
+    transition:background .3s,
+               transform .2s;
+}
+
+.btn-login:hover{
+    background:#1a81a0;
+    transform:scale(1.02);
+}
+
+/* Responsive general*/
+@media(max-width:480px){
+    .login-container{
+        padding:35px 20px;
+    }
+
+    .login-container h2{
+        font-size:34px;
+    }
+
+    .logo-img{
+        width:100px;
+        height:100px;
+    }
+
+    .btn-login{
+        font-size:15px;
+    }
 }
