@@ -4,19 +4,6 @@ const vistas = {
     inventario: {
         endpoint: "/api/productos",
         columns: [
-            { title: "N°", field: "id_producto"},
-            { title: "Nombre", field: "nombre"},
-            { title: "Tipo", field: "tipo"},
-            { title: "Precio", field: "precio_venta"},
-            { title: "Margen", field: "margen_gananciab_esperado"},
-            { title: "Estado", field: "estado"}
-        ]
-    },
-
-    reventa: {
-        endpoint: "/api/productosreventa",
-        columns: [
-            { title: "N°", field: "id_producto"},
             { title: "Nombre", field: "nombre"},
             { title: "Tipo", field: "tipo"},
             { title: "Precio", field: "precio_venta"},
@@ -29,10 +16,11 @@ const vistas = {
         endpoint: "/api/productos/analisis",
         columns: [
             { title: "Producto", field: "nombre"},
-            { title: "Costo actual", field: "costo_actual"},
-            { title: "Precio venta", field: "precio_venta"},
-            { title: "Margen esperado", field: "margen"},
-            { title: "Ganancia", field: "ganancia"}
+            { title: "Costo unitario de producción", field: "costo_unitario_prod"},
+            { title: "Margen de ganancia esperado (C$)", field: "margen_esperado_cordobas"},
+            { title: "Precio de venta actual", field: "precio_venta_actual"},
+            { title: "Precio de venta sugerido", field: "precio_venta_sugerido"},
+            { title: "Ganancia real (C$)", field: "ganancia_real_cordobas"}
         ]
     }
 };
@@ -40,11 +28,8 @@ const vistas = {
 cargarVista("inventario");
 
 async function cargarVista(vista){
-
     if(tabla){
-
         tabla.destroy();
-
     }
 
     const configuracion = vistas[vista];
@@ -54,19 +39,13 @@ async function cargarVista(vista){
     const datos = await respuesta.json();
 
     tabla = new Tabulator("#tablaProductos", {
-
         data: datos,
-
         layout: "fitColumns",
-
+        rowHeader:{formatter:"rownum", headerSort:false, hozAlign:"center", resizable:false, frozen:true},
         pagination: true,
-
         paginationSize: 10,
-
         movableColumns: true,
-
         reactiveData: true,
-
         columns: configuracion.columns
 
     });
@@ -86,34 +65,6 @@ tabs.forEach(tab => {
         tab.classList.add("active");
 
         cargarVista(tab.dataset.vista);
-
-    });
-
-});
-
-const buscador = document.getElementById("buscar");
-
-buscador.addEventListener("input", function(){
-
-    const texto = this.value.toLowerCase();
-
-    if(texto === ""){
-
-        tabla.clearFilter();
-
-        return;
-
-    }
-
-    tabla.setFilter(function(data){
-
-        return Object.values(data).some(valor =>
-
-            String(valor)
-                .toLowerCase()
-                .includes(texto)
-
-        );
 
     });
 
