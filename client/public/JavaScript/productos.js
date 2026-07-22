@@ -6,16 +6,18 @@ const vistas = {
         columns: [
             { title: "Nombre", field: "nombre"},
             { title: "Tipo", field: "tipo"},
-            { title: "Precio", field: "precio_venta"},
-            { title: "Margen", field: "margen_gananciab_esperado"},
-            { title: "Estado", field: "estado"}
+            { title: "Precio de venta", field: "precio_venta"},
+            { title: "Costo de compra/producción", field: "costo"},
+            { title: "Margen de ganancia bruta esperado (%)", field: "margen_gananciab_esperado"},
+            { title: "Estado", field: "estado"},
+            { title: "Existencias", field: "stock_actual"}
         ]
     },
 
     analisis: {
         endpoint: "/api/productos/analisis",
         columns: [
-            { title: "Producto", field: "nombre"},
+            { title: "Producto", field: "nombre_producto"},
             { title: "Costo unitario de producción", field: "costo_unitario_prod"},
             { title: "Margen de ganancia esperado (C$)", field: "margen_esperado_cordobas"},
             { title: "Precio de venta actual", field: "precio_venta_actual"},
@@ -41,10 +43,10 @@ async function cargarVista(vista){
     tabla = new Tabulator("#tablaProductos", {
         data: datos,
         layout: "fitColumns",
-        rowHeader:{formatter:"rownum", headerSort:false, hozAlign:"center", resizable:false, frozen:true},
+        rowHeader:{formatter:"rownum", headerSort:false, resizable:false, frozen:true},
         pagination: true,
-        paginationSize: 10,
-        movableColumns: true,
+        paginationSize: 30,
+        movableColumns: false,
         reactiveData: true,
         columns: configuracion.columns
 
