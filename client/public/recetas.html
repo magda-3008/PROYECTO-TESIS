@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Recetas</title>
+    <link rel="stylesheet" href="./CSS/estilosreceta.css" />
 
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
@@ -11,32 +12,55 @@
   </head>
 
   <body>
-    <ul class="list-group" id="tablaRecetas">
-      <!-- Aquí se agregarán las recetas -->
-    </ul>
+    <p>Recetas</p>
+    <form action="" method="GET">
+      <input
+        type="search"
+        id="buscar-receta"
+        name="buscar-receta"
+        placeholder="Escribe aquí el nombre de la receta (ejm: gelatina)"
+        style="width: 400px" />
+      <button type="button">Buscar</button>
+    </form>
 
-    <script>
-      async function cargarRecetas() {
-        const respuesta = await fetch("/api/recetas");
-        const recetas = await respuesta.json();
+    <p>Filtrar por:</p>
+    <select name="ingrediente" id="ingrediente">
+      <option value="">Ingrediente</option>
+    </select>
 
-        const lista = document.getElementById("tablaRecetas");
+    <div id="contenedor-recetas"></div>
 
-        // Limpiar la lista antes de llenarla
-        lista.innerHTML = "";
+    <!-- Modal de recetas. Muestra información de cada una -->
+    <div
+      class="modal fade"
+      id="modalReceta"
+      tabindex="-1"
+      aria-labelledby="modalRecetaLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2
+              class="modal-title titulo-modal"
+              id="tituloModal"
+              style="text-align: center"></h2>
 
-        recetas.forEach((receta) => {
-          lista.innerHTML += `
-        <li class="list-group-item">
-            <a href="detalleReceta.html?id=${receta.id_receta}">
-                ${receta.nombre_receta}
-            </a>
-        </li>
-    `;
-        });
-      }
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"></button>
+          </div>
 
-      cargarRecetas();
-    </script>
+          <div class="modal-body" id="contenidoModal"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="./JavaScript/utilities/formateoUnidad.js"></script>
+    <script src="./JavaScript/recetas.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"></script>
   </body>
 </html>
