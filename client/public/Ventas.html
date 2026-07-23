@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>♥ Pa'TuBoca</title>
+    <link rel="stylesheet" href="./CSS/estilosventas.css">
+    <!-- Fuentes -->
+    <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap"rel="stylesheet">
+
+</head>
+<body>
+    <div class="Fondo"></div>
+
+    <!-- Menú lateral vertical -->
+    <aside class="Menu-lateral" id="menuLateral">
+        <nav>
+
+            <div class="Seccion-menu">GESTIÓN</div>
+            <a href="#" class="Item-menu"><i class="fa-solid fa-box-open"></i><span>Productos</span></a>
+            <a href="#" class="Item-menu"><i class="fa-solid fa-carrot"></i><span>Ingredientes</span></a>
+            <a href="#" class="Item-menu"><i class="fa-solid fa-book-open"></i><span>Recetas</span></a>
+            <hr>
+            <div class="Seccion-menu">TABLERO DE CONTROL</div>
+            <a href="Ventas.html" class="Item-menu activo"><i class="fa-solid fa-cash-register"></i><span>Ventas</span></a>
+            <a href="#" class="Item-menu"><i class="fa-solid fa-sack-dollar"></i><span>Costos y Rentabilidad</span></a>
+
+        </nav>
+    </aside>
+
+    <!-- Encabezado rosa horizontal general -->
+    <header class="Encabezado">
+        <!-- Lado izquierdo -->
+        <div class="Encabezado-izquierda">
+
+            <!-- Botón menú 3 rayas -->
+            <button class="btnMenu" id="btnMenu" aria-label="Abrir menú"><i class="fa-solid fa-bars"></i></button>
+            <!-- Marca -->
+            <div class="Marca"><h1>Pa'TuBoca | Ventas</h1><p>Delicias y más</p></div>
+
+        </div>
+
+        <!-- Lado derecho -->
+        <div class="Encabezado-derecha">
+ 
+            <!-- Botón de agregar venta -->
+            <button class="btnVenta" type="button"><i class="fa-solid fa-plus"></i><span>Añadir venta</span></button>
+            <!-- Logo de la empresa deberia cerrar sesión-->
+            <a href="" id="btnCerrarSesion"><img src="Resources/Logo.png" alt="Logo" class="logoEmpresa"></a>
+
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="Contenido">
+
+        <!-- Circulos: diario, semanal, mensual -->
+        <section class="Tabs">
+            <button class="Tab activa"><i class="fa-solid fa-calendar-day"></i>DIARIAS</button>
+            <button class="Tab"><i class="fa-solid fa-calendar-week"></i>SEMANALES</button>
+            <button class="Tab"><i class="fa-solid fa-calendar-days"></i>MENSUALES</button>
+        </section>
+
+        <!-- Titulo resumen del dia -->
+        <section class="Titulo-resumen">
+            <h2><i class=""></i>RESUMEN DEL DÍA</h2>
+        </section>
+
+        <!-- Tarjetas -->
+        <section class="Resumen">
+            <!-- Tarjeta Total Vendido -->
+            <article class="Tarjeta">
+
+                <div class="Icono"><i class="fa-solid fa-coins"></i></div>
+                <div class="ContenidoTarjeta"><h3>TOTAL DE VENTAS GENERALES</h3>C$ 0.00</div>
+
+            </article>
+
+            <!-- Tarjeta Producto Más Vendido -->
+            <article class="Tarjeta">
+
+                <div class="Icono"><i class="fa-solid fa-award"></i></div>
+                <div class="ContenidoTarjeta"><h3>PRODUCTO MÁS VENDIDO EN EL DÍA</h3>Sin información</div>
+
+            </article>
+        </section>
+
+        <!-- Tabla de los registros de ventas -->
+        <section class="Contenedor-tabla">
+            <div class="Cabecera-tabla"><h2><i class=""></i>📒REGISTROS DE VENTAS</h2></div>
+            <div class="Tabla-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="colProducto">Nombre del producto</th>
+                            <th class="colPrecio">Precio unitario</th>
+                            <th class="colCantidad">Cantidad vendida</th>
+                            <th class="colTotal">Total</th>
+                            <th class="colAcciones">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>   <!-- Ejemplo de registros ficticios luego los puedes borrar -->
+                            <td class="tdProducto">Chocobananos</td>
+                            <td class="tdPrecio">C$20</td>
+                            <td class="tdCantidad">5</td>
+                            <td class="tdTotal">C$100</td>
+                            <td class="tdAcciones">   <!-- Esta no elimines ya que son los botones de las acciones de la tabla -->
+                                <div class="Acciones">
+                                    <button class="btnEditar"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="btnEliminar"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Añadir venta botón de arriba esto de aca es la estructura del formulario que se abre aqui mismo y no crear otra pag -->
+    <div class="modal" id="modalVenta">
+    <div class="modal-contenido">
+        <!-- Encabezado del form -->
+        <div class="modal-header">
+            <h2>🛒AGREGAR VENTA</h2>
+            <button class="cerrarModal" id="cerrarModal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <!-- Buscar producto la lupa o algo asi -->
+        <div class="grupoBusqueda">
+            <i class="fa-solid fa-magnifying-glass iconoBuscar"></i>
+            <input type="text" class="buscarProducto" placeholder="Buscar producto...">
+        </div>
+
+        <!-- Formulario de añadir venta que se abre desde el botón-->
+        <form class="formVenta">
+            <div class="campo">
+                <label>Nombre</label><input type="text" readonly>
+            </div>
+
+            <div class="campo">
+                <label>Cantidad</label><input type="number" min="1">
+            </div>
+
+            <div class="campo">
+                <label>Precio</label><input type="text" readonly>
+            </div>
+
+            <div class="campo">
+                <label>Total</label><input type="text" readonly>
+            </div>
+        </form>
+
+        <!-- Botones -->
+        <div class="modal-botones">
+            <button type="button" class="btnCancelar" id="btnCancelar">Cancelar</button>
+            <button type="submit" class="btnGuardar">Guardar</button>
+        </div>
+    </div>
+    </div>
+    
+    <!-- Javascript no como backend sino para animar algunos elementos por ej el menú lateral y el formulario de añadir v-->
+    <script>
+        const btnMenu = document.getElementById("btnMenu");
+        const menuLateral = document.getElementById("menuLateral");
+        btnMenu.addEventListener("click", () => {
+        menuLateral.classList.toggle("activo");
+        document.body.classList.toggle("menu-abierto");
+        });
+
+        const modal = document.getElementById("modalVenta");
+        const btnVenta = document.querySelector(".btnVenta");
+        const cerrarModal = document.getElementById("cerrarModal");
+        const btnCancelar = document.getElementById("btnCancelar");
+
+        btnVenta.addEventListener("click", () => {
+        modal.classList.add("activo");
+        });
+        cerrarModal.addEventListener("click", () => {
+        modal.classList.remove("activo");
+        });
+        // Botòn cancelar //
+        btnCancelar.addEventListener("click", (event) => {
+            event.preventDefault();
+            // Limpia el buscador
+            document.querySelector(".buscarProducto").value = "";
+            // Limpia el formulario
+            document.querySelector(".formVenta").reset();
+            // Limpia los campos de solo lectura
+            document.querySelectorAll(".campo input[readonly]").forEach(input => {
+            input.value = "";
+            });
+        });
+    </script>
+
+</body>
+</html>
