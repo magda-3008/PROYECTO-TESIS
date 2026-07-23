@@ -25,7 +25,7 @@ const vistas = {
             { title: "Tipo", field: "tipo" },
             { title: "Precio de venta", field: "precio_venta", formatter: formatoMoneda },
             { title: "Costo de compra/producción", field: "costo", formatter: formatoMoneda },
-            { title: "Margen de ganancia bruta esperado (%)", field: "margen_gananciab_esperado", formatter: "textarea", variableHeight: true, formatter: formatoPorcentaje},
+            { title: "Margen de ganancia bruta esperado (%)", field: "margen_gananciab_esperado", variableHeight: true, formatter: formatoPorcentaje},
             { title: "Estado", field: "estado" },
             { title: "Existencias", field: "stock_actual" },
             {
