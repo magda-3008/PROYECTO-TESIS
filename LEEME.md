@@ -6,3 +6,4 @@ git merge origin/main
 Luego de esto, cerrar la terminal, sin importar los que diga
 
 Subir cambios traidos a la rama
+

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Productos</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet" />
+    <!-- Bootstrap icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <!-- Tabulator -->
+    <link
+      href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator.min.css"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="./CSS/estilostablaprod.css" />
+  </head>
+  <body>
+    <div class="container-fluid mt-3">
+      <h1>Inventario de productos</h1>
+
+      <ul class="nav nav-tabs mb-3" id="tabsProductos">
+        <li class="nav-item">
+          <button class="nav-link active" data-vista="inventario">Todos</button>
+        </li>
+
+        <li class="nav-item">
+          <button class="nav-link" data-vista="analisis">
+            Análisis de productos elaborados
+          </button>
+        </li>
+      </ul>
+
+      <div class="mb-3">
+        <input
+          class="form-control"
+          id="buscar"
+          placeholder="Escribe el nombre del producto o busca según el tipo de producto..." />
+      </div>
+
+      <div id="panelFiltros" class="mb-3"></div>
+
+      <div id="tablaProductos"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+    <script src="./JavaScript/utilities/formateoMoneda.js"></script>
+    <script src="./JavaScript/utilities/formateoPorcentaje.js"></script>
+    <script src="./JavaScript/productos.js"></script>
+  </body>
+</html>
