@@ -96,23 +96,18 @@ async function cargarVista(vista){
 //crear filtros
 function crearFiltros(vista){
     const panel = document.getElementById("panelFiltros");
+
     switch(vista){
+
         case "inventario":
             panel.innerHTML = `
                 <div class="row g-2">
-                    <div class="col-md-5">
-                        <input
-                            id="buscar"
-                            class="form-control"
-                            placeholder="Buscar producto...">
-                    </div>
 
                     <div class="col-md-3">
                         <select id="filtroEstado" class="form-select">
                             <option value="">Todos los estados</option>
                             <option value="Activo">Activo</option>
                             <option value="Inactivo">Inactivo</option>
-
                         </select>
                     </div>
 
@@ -124,6 +119,7 @@ function crearFiltros(vista){
                             <option value="normal">Con stock</option>
                         </select>
                     </div>
+
                 </div>
             `;
 
@@ -131,80 +127,141 @@ function crearFiltros(vista){
 
         case "analisis":
             panel.innerHTML = `
-                <div class="row">
-                    <div class="col-md-5">
+                <div class="row g-2">
+
+                    <div class="col-md-3">
                         <input
-                            id="buscar"
+                            id="gananciaMin"
+                            type="number"
                             class="form-control"
-                            placeholder="Buscar producto...">
+                            placeholder="Ganancia mínima">
+                    </div>
+
+                    <div class="col-md-3">
+                        <input
+                            id="gananciaMax"
+                            type="number"
+                            class="form-control"
+                            placeholder="Ganancia máxima">
+                    </div>
+
+                    <div class="col-md-3">
+                        <select id="filtroPrecio" class="form-select">
+                            <option value="">Todos los precios</option>
+                            <option value="mayor">Precio sugerido mayor</option>
+                            <option value="menor">Precio sugerido menor</option>
+                        </select>
                     </div>
                 </div>
-
             `;
-
             break;
-
     }
-
 }
 
-//eventos de filtros
 function inicializarEventosFiltros(vista){
-
-    document
-        .getElementById("buscar")
-        .addEventListener("input", aplicarFiltros);
 
     if(vista === "inventario"){
 
-        document
-            .getElementById("filtroEstado")
+        document.getElementById("filtroEstado")
             .addEventListener("change", aplicarFiltros);
 
-        document
-            .getElementById("filtroStock")
+        document.getElementById("filtroStock")
+            .addEventListener("change", aplicarFiltros);
+
+    }
+
+    if(vista === "analisis"){
+
+        document.getElementById("gananciaMin")
+            .addEventListener("input", aplicarFiltros);
+
+        document.getElementById("gananciaMax")
+            .addEventListener("input", aplicarFiltros);
+
+        document.getElementById("filtroPrecio")
             .addEventListener("change", aplicarFiltros);
 
     }
 
 }
 
-//filtrar
 function aplicarFiltros(){
 
-    const texto = document.getElementById("buscar").value.toLowerCase();
-    const estado = document.getElementById("filtroEstado")?.value ?? "";
-    const stock = document.getElementById("filtroStock")?.value ?? "";
+    const vistaActual = document
+        .querySelector("#tabsProductos .active")
+        .dataset.vista;
+
     tabla.setFilter(function(data){
 
         let coincide = true;
 
-        if(texto){
-            coincide = Object.values(data).some(valor =>
-                String(valor)
-                    .toLowerCase()
-                    .includes(texto)
-            );
-        }
+        if(vistaActual === "inventario"){
 
-        if(coincide && estado){
-            coincide = data.estado === estado;
-        }
+            const estado = document.getElementById("filtroEstado")?.value ?? "";
+            const stock = document.getElementById("filtroStock")?.value ?? "";
 
-        if(coincide){
-            switch(stock){
-                case "0":
-                    coincide = Number(data.stock_actual) === 0;
-                    break;
-                case "bajo":
-                    coincide = Number(data.stock_actual) <= 5;
-                    break;
-                case "normal":
-                    coincide = Number(data.stock_actual) > 5;
-                    break;
+            if(coincide && estado){
+
+                coincide = data.estado === estado;
+
             }
+
+            if(coincide){
+
+                switch(stock){
+
+                    case "0":
+                        coincide = Number(data.stock_actual) === 0;
+                        break;
+
+                    case "bajo":
+                        coincide = Number(data.stock_actual) <= 5;
+                        break;
+
+                    case "normal":
+                        coincide = Number(data.stock_actual) > 5;
+                        break;
+
+                }
+
+            }
+
         }
+
+        else if(vistaActual === "analisis"){
+
+            const min = Number(document.getElementById("gananciaMin")?.value || 0);
+            const max = Number(document.getElementById("gananciaMax")?.value || Infinity);
+            const precio = document.getElementById("filtroPrecio")?.value ?? "";
+
+            if(coincide){
+
+                coincide =
+                    Number(data.ganancia_real_cordobas) >= min &&
+                    Number(data.ganancia_real_cordobas) <= max;
+
+            }
+
+            if(coincide && precio === "mayor"){
+
+                coincide =
+                    Number(data.precio_venta_sugerido) >
+                    Number(data.precio_venta_actual);
+
+            }
+
+            if(coincide && precio === "menor"){
+
+                coincide =
+                    Number(data.precio_venta_sugerido) <
+                    Number(data.precio_venta_actual);
+
+            }
+
+        }
+
         return coincide;
+
     });
 
 }
