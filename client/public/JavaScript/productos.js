@@ -188,6 +188,11 @@ function inicializarEventosFiltros(vista){
 
 function aplicarFiltros(){
 
+    const texto = document
+    .getElementById("buscar")
+    .value
+    .toLowerCase();
+
     const vistaActual = document
         .querySelector("#tabsProductos .active")
         .dataset.vista;
@@ -195,6 +200,17 @@ function aplicarFiltros(){
     tabla.setFilter(function(data){
 
         let coincide = true;
+
+        // Buscador
+        if(texto){
+
+            coincide = Object.values(data).some(valor =>
+                String(valor)
+                    .toLowerCase()
+                    .includes(texto)
+            );
+
+        }
 
         if(vistaActual === "inventario"){
 
