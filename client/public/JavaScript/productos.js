@@ -1,5 +1,26 @@
 let tabla = null;
 
+const menuAcciones = [
+    {
+        label: "📉 Registrar pérdida",
+        action: function (e, cell) {
+            abrirModalPerdida(cell.getRow().getData());
+        }
+    },
+    {
+        label: "📦 Registrar entrada",
+        action: function (e, cell) {
+            abrirModalEntrada(cell.getRow().getData());
+        }
+    },
+    {
+        label: "📄 Ver historial",
+        action: function (e, cell) {
+            abrirHistorial(cell.getRow().getData());
+        }
+    }
+];
+
 const vistas = {
     inventario: {
         endpoint: "/api/productos",
@@ -34,27 +55,6 @@ const vistas = {
         ]
     }
 };
-
-const menuAcciones = [
-    {
-        label: "📉 Registrar pérdida",
-        action: function (e, cell) {
-            abrirModalPerdida(cell.getRow().getData());
-        }
-    },
-    {
-        label: "📦 Registrar entrada",
-        action: function (e, cell) {
-            abrirModalEntrada(cell.getRow().getData());
-        }
-    },
-    {
-        label: "📄 Ver historial",
-        action: function (e, cell) {
-            abrirHistorial(cell.getRow().getData());
-        }
-    }
-];
 
 cargarVista("inventario");
 
