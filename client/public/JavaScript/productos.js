@@ -101,6 +101,7 @@ function crearFiltros(vista){
 
         case "inventario":
             panel.innerHTML = `
+            <h3>Filtrar por:</h3>
                 <div class="row g-2">
 
                     <div class="col-md-3">
@@ -127,8 +128,8 @@ function crearFiltros(vista){
 
         case "analisis":
             panel.innerHTML = `
+            <h3>Filtrar por:</h3>
                 <div class="row g-2">
-
                     <div class="col-md-3">
                         <input
                             id="gananciaMin"
