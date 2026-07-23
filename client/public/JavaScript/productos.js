@@ -23,9 +23,9 @@ const vistas = {
         columns: [
             { title: "Nombre", field: "nombre" },
             { title: "Tipo", field: "tipo" },
-            { title: "Precio de venta", field: "precio_venta" },
-            { title: "Costo de compra/producción", field: "costo" },
-            { title: "Margen de ganancia bruta esperado (%)", field: "margen_gananciab_esperado", formatter: "textarea", variableHeight: true},
+            { title: "Precio de venta", field: "precio_venta", formatter: formatoMoneda },
+            { title: "Costo de compra/producción", field: "costo", formatter: formatoMoneda },
+            { title: "Margen de ganancia bruta esperado (%)", field: "margen_gananciab_esperado", formatter: "textarea", variableHeight: true, formatter: formatoPorcentaje},
             { title: "Estado", field: "estado" },
             { title: "Existencias", field: "stock_actual" },
             {
@@ -43,11 +43,11 @@ const vistas = {
         endpoint: "/api/productos/analisis",
         columns: [
             { title: "Producto", field: "nombre_producto" },
-            { title: "Costo unitario de producción", field: "costo_unitario_prod" },
-            { title: "Margen esperado (C$)", field: "margen_esperado_cordobas" },
-            { title: "Precio actual", field: "precio_venta_actual" },
-            { title: "Precio sugerido", field: "precio_venta_sugerido" },
-            { title: "Ganancia real", field: "ganancia_real_cordobas" }
+            { title: "Costo unitario de producción", field: "costo_unitario_prod", formatter: formatoMoneda },
+            { title: "Margen esperado (C$)", field: "margen_esperado_cordobas", formatter: formatoMoneda },
+            { title: "Precio actual", field: "precio_venta_actual", formatter: formatoMoneda },
+            { title: "Precio sugerido", field: "precio_venta_sugerido", formatter: formatoMoneda },
+            { title: "Ganancia real", field: "ganancia_real_cordobas", formatter: formatoMoneda }
         ]
     }
 };
