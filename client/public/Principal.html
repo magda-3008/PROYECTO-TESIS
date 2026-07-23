@@ -4,15 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>♥ Pa'TuBoca</title>
-    <link rel="stylesheet" href="./CSS/estilosprincipal.css">
+    <link rel="stylesheet" href="./CSS/estilosprincipal.css" />
     <!-- Fuentes -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap"
+      rel="stylesheet" />
+  </head>
+  <body>
     <div class="Fondo"></div>
 
     <!--Encabezado titulo-->
@@ -21,15 +24,16 @@
         <h1>Pa'TuBoca</h1>
         <p>Delicias y más</p>
       </div>
-
-        <div class="Marca"><h1>Pa'TuBoca</h1><p>Delicias y más</p></div>
-        <!-- Botón para añadir ventas y logo en la barra rosa el logo deberia cerrar sesión -->
-        <div class="Header">
-            <button class="btnVenta" type="button"><i class="fa-solid fa-plus"></i><span>Añadir venta</span></button>
-            <!-- Logo de la empresa -->
-            <a href="" id="btnCerrarSesion"><img src="Resources/Logo.png" alt="Logo" class="logoEmpresa"></a>
-        </div>
-
+      <!-- Botón para añadir ventas y logo en la barra rosa el logo deberia cerrar sesión -->
+      <div class="Header">
+        <button class="btnVenta" type="button">
+          <i class="fa-solid fa-plus"></i><span>Añadir venta</span>
+        </button>
+        <!-- Logo de la empresa -->
+        <a href="" id="btnCerrarSesion"
+          ><img src="Resources/Logo.png" alt="Logo" class="logoEmpresa"
+        /></a>
+      </div>
     </header>
 
     <!--Contenido que esta bajo el header color rosa -->
@@ -47,8 +51,12 @@
             ><i class="fa-solid fa-chevron-right flecha"></i>
           </a>
 
-        <!-- Apartado de gestión -->
-        <section>
+          <!-- Tarjeta Ingredientes -->
+          <a href="#" class="card">
+            <div class="icono"><i class="fa-solid fa-carrot"></i></div>
+            <span>Ingredientes</span
+            ><i class="fa-solid fa-chevron-right flecha"></i>
+          </a>
 
           <!-- Tarjeta Recetas -->
           <a href="#" class="card">
@@ -58,116 +66,101 @@
         </div>
       </section>
 
-                <!-- Tarjeta Productos -->
-                <a href="#" class="card">
-                    <div class="icono"><i class="fa-solid fa-box-open"></i></div><span>Productos</span><i class="fa-solid fa-chevron-right flecha"></i>
-                </a>
+      <!-- Apartado del Panel de control -->
+      <section>
+        <h3 class="tituloSeccion">TABLERO DE CONTROL</h3>
+        <div class="contenedor">
+          <!-- Tarjeta Ventas -->
+          <a href="Ventas.html" class="card">
+            <div class="icono"><i class="fa-solid fa-cash-register"></i></div>
+            <span>Ventas</span><i class="fa-solid fa-chevron-right flecha"></i>
+          </a>
 
-                <!-- Tarjeta Ingredientes -->
-                <a href="#" class="card">
-                    <div class="icono"><i class="fa-solid fa-carrot"></i></div><span>Ingredientes</span><i class="fa-solid fa-chevron-right flecha"></i>
-                </a>
-
-                <!-- Tarjeta Recetas -->
-                <a href="#" class="card">
-                    <div class="icono"><i class="fa-solid fa-book-open"></i></div><span>Recetas</span><i class="fa-solid fa-chevron-right flecha"></i>
-                </a>
-
-            </div>
-
-        </section>
-
-        <!-- Apartado del Panel de control -->
-        <section>
-
-            <h3 class="tituloSeccion">TABLERO DE CONTROL</h3>
-            <div class="contenedor">
-
-                <!-- Tarjeta Ventas -->
-                <a href="Ventas.html" class="card">
-                    <div class="icono"><i class="fa-solid fa-cash-register"></i></div><span>Ventas</span><i class="fa-solid fa-chevron-right flecha"></i>
-                </a>
-
-                <!-- Tarjeta Costos y Rentabilidad -->
-                <a href="" class="card">
-                    <div class="icono"><i class="fa-solid fa-sack-dollar"></i></div><span>Costos Y Rentabilidad</span><i class="fa-solid fa-chevron-right flecha"></i>
-                </a>
-
-            </div>
-
-        </section>
-        
+          <!-- Tarjeta Costos y Rentabilidad -->
+          <a href="" class="card">
+            <div class="icono"><i class="fa-solid fa-sack-dollar"></i></div>
+            <span>Costos Y Rentabilidad</span
+            ><i class="fa-solid fa-chevron-right flecha"></i>
+          </a>
+        </div>
+      </section>
     </main>
-    
+
     <!-- Añadir venta botón de arriba esto de aca es la estructura del formulario que se abre aqui mismo y no crear otra pag -->
     <div class="modal" id="modalVenta">
-    <div class="modal-contenido">
+      <div class="modal-contenido">
         <!-- Encabezado -->
         <div class="modal-header">
-            <h2>🛒AGREGAR VENTA</h2>
-            <button class="cerrarModal" id="cerrarModal"><i class="fa-solid fa-xmark"></i></button>
+          <h2>🛒AGREGAR VENTA</h2>
+          <button class="cerrarModal" id="cerrarModal">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
         </div>
 
         <!-- Buscar producto la lupa o algo asi -->
         <div class="grupoBusqueda">
-            <i class="fa-solid fa-magnifying-glass iconoBuscar"></i>
-            <input type="text" class="buscarProducto" placeholder="Buscar producto...">
+          <i class="fa-solid fa-magnifying-glass iconoBuscar"></i>
+          <input
+            type="text"
+            class="buscarProducto"
+            placeholder="Buscar producto..." />
         </div>
 
         <!-- Formulario de añadir venta que se abre desde el botón-->
         <form class="formVenta">
-            <div class="campo">
-                <label>Nombre</label><input type="text" readonly>
-            </div>
+          <div class="campo">
+            <label>Nombre</label><input type="text" readonly />
+          </div>
 
-            <div class="campo">
-                <label>Cantidad</label><input type="number" min="1">
-            </div>
+          <div class="campo">
+            <label>Cantidad</label><input type="number" min="1" />
+          </div>
 
-            <div class="campo">
-                <label>Precio</label><input type="text" readonly>
-            </div>
+          <div class="campo">
+            <label>Precio</label><input type="text" readonly />
+          </div>
 
-            <div class="campo">
-                <label>Total</label><input type="text" readonly>
-            </div>
+          <div class="campo">
+            <label>Total</label><input type="text" readonly />
+          </div>
         </form>
 
         <!-- Botones -->
         <div class="modal-botones">
-            <button type="button" class="btnCancelar" id="btnCancelar">Cancelar</button>
-            <button type="submit" class="btnGuardar">Guardar</button>
+          <button type="button" class="btnCancelar" id="btnCancelar">
+            Cancelar
+          </button>
+          <button type="submit" class="btnGuardar">Guardar</button>
         </div>
+      </div>
     </div>
-    </div>
-    
+
     <!-- Javascript no como backend sino para animar algunos elementos por ej el formulario de añadir v-->
     <script>
-        const modal = document.getElementById("modalVenta");
-        const btnVenta = document.querySelector(".btnVenta");
-        const cerrarModal = document.getElementById("cerrarModal");
-        const btnCancelar = document.getElementById("btnCancelar");
+      const modal = document.getElementById("modalVenta");
+      const btnVenta = document.querySelector(".btnVenta");
+      const cerrarModal = document.getElementById("cerrarModal");
+      const btnCancelar = document.getElementById("btnCancelar");
 
-        btnVenta.addEventListener("click", () => {
+      btnVenta.addEventListener("click", () => {
         modal.classList.add("activo");
-        });
-        cerrarModal.addEventListener("click", () => {
+      });
+      cerrarModal.addEventListener("click", () => {
         modal.classList.remove("activo");
-        });
+      });
 
-        // Botòn cancelar //
-        btnCancelar.addEventListener("click", (event) => {
-            event.preventDefault();
-            // Limpia el buscador
-            document.querySelector(".buscarProducto").value = "";
-            // Limpia el formulario
-            document.querySelector(".formVenta").reset();
-            // Limpia los campos de solo lectura
-            document.querySelectorAll(".campo input[readonly]").forEach(input => {
-            input.value = "";
-            });
+      // Botòn cancelar //
+      btnCancelar.addEventListener("click", (event) => {
+        event.preventDefault();
+        // Limpia el buscador
+        document.querySelector(".buscarProducto").value = "";
+        // Limpia el formulario
+        document.querySelector(".formVenta").reset();
+        // Limpia los campos de solo lectura
+        document.querySelectorAll(".campo input[readonly]").forEach((input) => {
+          input.value = "";
         });
+      });
     </script>
-
-</body>
+  </body>
 </html>
