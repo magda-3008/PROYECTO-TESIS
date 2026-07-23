@@ -43,16 +43,43 @@ async function cargarVista(vista){
     tabla = new Tabulator("#tablaProductos", {
         data: datos,
         layout: "fitColumns",
-        rowHeader:{formatter:"rownum", headerSort:false, resizable:false, frozen:true},
+        rowHeader:{formatter:"rownum", headerSort:false, resizable:false, frozen:true, width:20},
         pagination: true,
         paginationSize: 30,
-        movableColumns: false,
         reactiveData: true,
         columns: configuracion.columns
 
     });
 
 }
+
+const buscador = document.getElementById("buscar");
+
+buscador.addEventListener("input", function(){
+
+    const texto = this.value.toLowerCase();
+
+    if(texto === ""){
+
+        tabla.clearFilter();
+
+        return;
+
+    }
+
+    tabla.setFilter(function(data){
+
+        return Object.values(data).some(valor =>
+
+            String(valor)
+                .toLowerCase()
+                .includes(texto)
+
+        );
+
+    });
+
+});
 
 const tabs = document.querySelectorAll("#tabsProductos .nav-link");
 
