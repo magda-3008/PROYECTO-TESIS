@@ -11,6 +11,10 @@
     <link
       href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap"
       rel="stylesheet" />
+    <!-- Bootstrap icons para el icono de ojo -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
   </head>
   <body>
     <main class="Contenedor-general">
@@ -24,7 +28,7 @@
       <h2>BIENVENIDA</h2>
 
       <!-- Formulario cuadrado y sus elementos -->
-      <form action="#">
+      <form id="loginForm">
         <div class="Titulo-caja">
           <label for="username">👤USUARIO:</label
           ><input
@@ -34,12 +38,23 @@
             required />
         </div>
         <div class="Titulo-caja">
-          <label for="password">🗝️CONTRASEÑA:</label
-          ><input
-            type="password"
-            id="password"
-            placeholder="Ingrese su contraseña"
-            required />
+          <label for="password">🗝️CONTRASEÑA:</label>
+
+          <div class="password-container">
+            <input
+              type="password"
+              id="password"
+              placeholder="Ingrese su contraseña"
+              required />
+
+            <button
+              type="button"
+              id="togglePassword"
+              class="btn-ojo"
+              aria-label="Mostrar contraseña">
+              <i class="bi bi-eye"></i>
+            </button>
+          </div>
         </div>
 
         <p id="mensajeLogin" class="mensaje-login"></p>

@@ -11,7 +11,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-
     background: url('../Resources/Fondo1.png') no-repeat center center;
     background-size: cover;
     padding: 20px;
@@ -156,4 +155,36 @@ body {
     margin-top: 10px;
     text-align: center;
     min-height: 20px;
+}
+
+.password-container{
+    position: relative;
+}
+
+.password-container input{
+    width: 100%;
+    padding-right: 45px;
+}
+
+.btn-ojo{
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    border: none;
+    background: transparent;
+
+    cursor: pointer;
+
+    color: #4a7f83;
+    font-size: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-ojo:hover{
+    color: #1a81a0;
 }
