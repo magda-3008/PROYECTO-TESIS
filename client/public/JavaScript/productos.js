@@ -319,5 +319,9 @@ function abrirHistorial(producto){
 
 }
 
+const buscador = document.getElementById("buscar");
+
+buscador.addEventListener("input", aplicarFiltros);
+
 //inicio
 cargarVista("inventario");
