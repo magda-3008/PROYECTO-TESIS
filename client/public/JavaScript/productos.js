@@ -10,7 +10,63 @@ const vistas = {
             { title: "Costo de compra/producción", field: "costo"},
             { title: "Margen de ganancia bruta esperado (%)", field: "margen_gananciab_esperado"},
             { title: "Estado", field: "estado"},
-            { title: "Existencias", field: "stock_actual"}
+            { title: "Existencias", field: "stock_actual"},
+            { title: "Acciones", field: "acciones", hozAlign: "center", headerSort: false, width: 90, formatter: function () {
+
+        return `
+            <div class="dropdown">
+
+            <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                <i class="bi bi-three-dots-vertical"></i>
+            </button>    
+
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item registrar-perdida" href="#">
+                            📉 Registrar pérdida
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item registrar-entrada" href="#">
+                            📦 Registrar entrada
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item ver-historial" href="#">
+                            📄 Ver historial
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        `;
+
+    },
+
+    cellClick: function(e, cell){
+
+        const producto = cell.getRow().getData();
+
+        if(e.target.closest(".registrar-perdida")){
+
+            abrirModalPerdida(producto);
+
+        }
+
+        if(e.target.closest(".registrar-entrada")){
+
+            abrirModalEntrada(producto);
+
+        }
+
+        if(e.target.closest(".ver-historial")){
+
+            abrirHistorial(producto);
+
+        }
+
+    }
+
+}
         ]
     },
 
@@ -98,3 +154,21 @@ tabs.forEach(tab => {
     });
 
 });
+
+function abrirModalPerdida(producto){
+
+    console.log(producto);
+
+}
+
+function abrirModalEntrada(producto){
+
+    console.log(producto);
+
+}
+
+function abrirHistorial(producto){
+
+    console.log(producto);
+
+}
