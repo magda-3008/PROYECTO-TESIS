@@ -21,34 +21,37 @@ const vistas = {
     inventario: {
         endpoint: "/api/productos",
         columns: [
-            { title: "Nombre", field: "nombre" },
-            { title: "Tipo", field: "tipo" },
-            { title: "Precio de venta", field: "precio_venta", formatter: formatoMoneda },
-            { title: "Costo de compra/producción", field: "costo", formatter: formatoMoneda },
-            { title: "Margen de ganancia bruta esperado (%)", field: "margen_gananciab_esperado", variableHeight: true, formatter: formatoPorcentaje},
-            { title: "Estado", field: "estado" },
-            { title: "Existencias", field: "stock_actual" },
+            { title: "Nombre del producto", field: "nombre" },
+            { title: "Tipo", field: "tipo", hozAlign: "center" },
+            { title: "Precio de venta", field: "precio_venta", formatter: formatoMoneda, hozAlign: "center" },
+            { title: "Costo de compra/producción", field: "costo", formatter: formatoMoneda, hozAlign: "center" },
+            { title: "Margen de ganancia bruta esperado (%)", field: "margen_gananciab_esperado", variableHeight: true, formatter: formatoPorcentaje, hozAlign: "center"},
+            { title: "Estado", field: "estado", hozAlign: "center" },
+            { title: "Existencias", field: "stock_actual", hozAlign: "center" },
             {
                 title:"Acciones",
                 hozAlign:"center",
                 headerSort:false,
                 formatter:function(){
 
-                    return `
-                        <div class="acciones-tabla">
+                return `
+                    <div class="acciones-tabla">
 
-                            <i class="bi bi-graph-down-arrow accion-perdida"
-                            title="Registrar pérdida"></i>
+                        <button class="accionTabla accionPerdida" title="Registrar pérdida">
+                            <i class="bi bi-graph-down-arrow"></i>
+                        </button>
 
-                            <i class="bi bi-box-arrow-in-down accion-entrada"
-                            title="Registrar entrada"></i>
+                        <button class="accionTabla accionEntrada" title="Registrar entrada">
+                            <i class="bi bi-box-arrow-in-down"></i>
+                        </button>
 
-                            <i class="bi bi-clock-history accion-historial"
-                            title="Ver historial"></i>
+                        <button class="accionTabla accionHistorial" title="Ver historial">
+                            <i class="bi bi-clock-history"></i>
+                        </button>
 
-                        </div>
-                    `;
-                },
+                    </div>
+                `;
+            },
 
                 cellClick:function(e, cell){
 
