@@ -80,12 +80,12 @@ const vistas = {
     analisis: {
         endpoint: "/api/productos/analisis",
         columns: [
-            { title: "Producto", field: "nombre_producto" },
-            { title: "Costo unitario de producción", field: "costo_unitario_prod", formatter: formatoMoneda },
-            { title: "Margen esperado (C$)", field: "margen_esperado_cordobas", formatter: formatoMoneda },
-            { title: "Precio actual", field: "precio_venta_actual", formatter: formatoMoneda },
-            { title: "Precio sugerido", field: "precio_venta_sugerido", formatter: formatoMoneda },
-            { title: "Ganancia real", field: "ganancia_real_cordobas", formatter: formatoMoneda }
+            { title: "Nombre del producto", field: "nombre_producto" },
+            { title: "Costo unitario de producción", field: "costo_unitario_prod", formatter: formatoMoneda, hozAlign: "center" },
+            { title: "Margen esperado (C$)", field: "margen_esperado_cordobas", formatter: formatoMoneda, hozAlign: "center" },
+            { title: "Precio actual", field: "precio_venta_actual", formatter: formatoMoneda, hozAlign: "center" },
+            { title: "Precio sugerido", field: "precio_venta_sugerido", formatter: formatoMoneda, hozAlign: "center" },
+            { title: "Ganancia real", field: "ganancia_real_cordobas", formatter: formatoMoneda, hozAlign: "center" }
         ]
     }
 };
