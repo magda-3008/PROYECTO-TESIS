@@ -1,0 +1,209 @@
+/*==================================================
+=            TEMA PERSONALIZADO TABULATOR          =
+==================================================*/
+
+/* Contenedor principal */
+.tabulator{
+    background: #fff;
+    border: none;
+    border-radius: var(--radio);
+    box-shadow: var(--sombra);
+    overflow: hidden;
+    font-size: 18px;
+}
+
+/*==================================================
+=                 ENCABEZADO                       =
+==================================================*/
+
+.tabulator .tabulator-header{
+    background: #1a81a0;
+    border-bottom: none;
+}
+
+.tabulator .tabulator-header .tabulator-col{
+    background: #1a81a0;
+    color: white;
+    border-right: none;
+    border-bottom: none;
+    min-height: 60px;
+}
+
+.tabulator .tabulator-header .tabulator-col:last-child{
+    border-right: none;
+}
+
+.tabulator .tabulator-header .tabulator-col-content{
+    padding: 18px 15px;
+}
+
+.tabulator .tabulator-header .tabulator-col-title{
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.tabulator-col-title{
+    white-space: normal !important;
+    text-align: center;
+    line-height: 1.3;
+}
+
+/*==================================================
+=                    FILAS                         =
+==================================================*/
+
+.tabulator-row{
+    background: white;
+    min-height: 60px;
+}
+
+.tabulator-row:nth-child(even){
+    background: white;
+}
+
+.tabulator-row:hover{
+    background: #eefcff;
+}
+
+.tabulator-row.tabulator-selected{
+    background: #d9f5ff;
+}
+
+/*==================================================
+=                   CELDAS                         =
+==================================================*/
+
+.tabulator-cell{
+    padding: 18px 20px !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(28,66,147,.20) !important;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+}
+
+/*==================================================
+=              HEADER DE NUMERACIÓN                =
+==================================================*/
+
+.tabulator-row-header,
+.tabulator-row-header-holder{
+
+    background: #1a81a0;
+    color: white;
+}
+
+.tabulator-row-header .tabulator-cell{
+    justify-content: center;
+    font-weight: bold;
+}
+
+/*==================================================
+=                 PAGINACIÓN                       =
+==================================================*/
+
+.tabulator-footer{
+    background: white;
+    border-top: 1px solid rgba(28,66,147,.15);
+    padding: 10px;
+}
+
+.tabulator-page{
+    border-radius: 8px;
+    padding: 6px 12px;
+    margin: 0 3px;
+    transition: .2s;
+}
+
+.tabulator-page:hover{
+    background: #befbfc;
+}
+
+.tabulator-page.active{
+    background: #1a81a0;
+    color: white;
+}
+
+/*==================================================
+=                MENÚ CONTEXTUAL                   =
+==================================================*/
+
+.tabulator-menu{
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 18px rgba(0,0,0,.18);
+}
+
+.tabulator-menu-item{
+    padding: 12px 16px;
+    font-size: 16px;
+    transition: .2s;
+}
+
+.tabulator-menu-item:hover{
+    background: #befbfc;
+}
+
+/*==================================================
+=               ICONO DE ACCIONES                  =
+==================================================*/
+
+.bi-three-dots-vertical{
+    font-size: 22px;
+    color: #1a81a0;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.bi-three-dots-vertical:hover{
+    color: #0e617a;
+    transform: scale(1.2);
+}
+
+/*==================================================
+=                  SCROLLBAR                       =
+==================================================*/
+
+.tabulator-tableHolder::-webkit-scrollbar{
+    height: 10px;
+    width: 10px;
+}
+
+.tabulator-tableHolder::-webkit-scrollbar-thumb{
+    background: #b9dbe6;
+    border-radius: 10px;
+}
+
+.tabulator-tableHolder::-webkit-scrollbar-thumb:hover{
+    background: #87bfd2;
+}
+
+/*==================================================
+=              INPUTS DE EDICIÓN                   =
+==================================================*/
+
+.tabulator-editing{
+    padding: 0 !important;
+}
+
+.tabulator-editing input,
+.tabulator-editing select{
+    border: 2px solid #1a81a0;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+}
+
+/*==================================================
+=             ORDENAMIENTO COLUMNAS                =
+==================================================*/
+
+.tabulator-arrow{
+    border-top-color: white !important;
+}
+
+.tabulator-col.tabulator-sortable:hover{
+    background: #156b84;
+}

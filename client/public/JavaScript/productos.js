@@ -69,25 +69,31 @@ async function cargarVista(vista){
 
     tabla = new Tabulator("#tablaProductos",{
 
-        data: datos,
+    data: datos,
 
-        layout: "fitColumns",
+    layout: "fitDataStretch",
 
-        rowHeader:{
-            formatter:"rownum",
-            headerSort:false,
-            resizable:false,
-            frozen:true,
-            width:20
-        },
+    responsiveLayout: "collapse",
 
-        pagination:true,
-        paginationSize:30,
-        reactiveData:true,
+    columnHeaderVertAlign: "middle",
 
-        columns: configuracion.columns
+    pagination: true,
 
-    });
+    paginationSize: 30,
+
+    reactiveData: true,
+
+    rowHeader:{
+        formatter:"rownum",
+        width:40,
+        hozAlign:"center",
+        headerSort:false,
+        frozen:true
+    },
+
+    columns: configuracion.columns
+
+});
 
     inicializarEventosFiltros(vista);
 
