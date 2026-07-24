@@ -1,21 +1,5 @@
 let tabla = null;
 
-// //menú de acciones
-// const menuAcciones = [
-//     {
-//         label: "📉 Registrar pérdida",
-//         action: (e, cell) => abrirModalPerdida(cell.getRow().getData())
-//     },
-//     {
-//         label: "📦 Registrar entrada",
-//         action: (e, cell) => abrirModalEntrada(cell.getRow().getData())
-//     },
-//     {
-//         label: "📄 Ver historial",
-//         action: (e, cell) => abrirHistorial(cell.getRow().getData())
-//     }
-// ];
-
 //configuración de vistas
 const vistas = {
     inventario: {
@@ -93,39 +77,102 @@ const vistas = {
 //cargar vista
 async function cargarVista(vista){
 
+    // Elimina la tabla anterior
     if(tabla){
         tabla.destroy();
+        tabla = null;
     }
 
     crearFiltros(vista);
 
     const configuracion = vistas[vista];
 
-    const respuesta = await fetch(configuracion.endpoint);
+    // Mostrar indicador de carga
+    document.getElementById("tablaProductos").innerHTML = `
+        <div class="tabla-cargando">
+            <div class="spinner-border text-info" role="status"></div>
+            <p>Cargando información...</p>
+        </div>
+    `;
 
-    const datos = await respuesta.json();
+    let datos = [];
+
+    try{
+
+        const respuesta = await fetch(configuracion.endpoint);
+
+        if(!respuesta.ok){
+            throw new Error("No se pudieron obtener los datos.");
+        }
+
+        datos = await respuesta.json();
+
+    }catch(error){
+
+        console.error(error);
+
+        document.getElementById("tablaProductos").innerHTML = `
+            <div class="tabla-error">
+
+                <i class="bi bi-exclamation-triangle-fill"></i>
+
+                <h4>Error al cargar la información</h4>
+
+                <p>Verifica tu conexión o inténtalo nuevamente.</p>
+
+                <button
+                    class="btn btn-primary mt-3"
+                    onclick="cargarVista('${vista}')">
+
+                    Reintentar
+
+                </button>
+
+            </div>
+        `;
+
+        return;
+    }
 
     tabla = new Tabulator("#tablaProductos",{
 
-    data: datos,
-    layout: "fitColumns",
-    responsiveLayout: "collapse",
-    columnHeaderVertAlign: "middle",
-    pagination: true,
-    paginationSize: 30,
-    reactiveData: true,
+        data: datos,
 
-    rowHeader:{
-        formatter:"rownum",
-        width:40,
-        hozAlign:"center",
-        headerSort:false,
-        frozen:true
-    },
+        layout:"fitColumns",
 
-    columns: configuracion.columns
+        responsiveLayout:"collapse",
 
-});
+        columnHeaderVertAlign:"middle",
+
+        pagination:true,
+
+        paginationSize:30,
+
+        reactiveData:true,
+
+        rowHeader:{
+            formatter:"rownum",
+            width:40,
+            hozAlign:"center",
+            headerSort:false,
+            frozen:true
+        },
+
+        columns:configuracion.columns,
+
+        placeholder:`
+            <div class="tabla-vacia">
+
+                <i class="bi bi-search"></i>
+
+                <h4>No se encontraron resultados</h4>
+
+                <p>Prueba modificando los filtros o el texto de búsqueda.</p>
+
+            </div>
+        `
+
+    });
 
     inicializarEventosFiltros(vista);
 
