@@ -206,3 +206,8 @@
 .tabulator-col.tabulator-sortable:hover{
     background: #156b84;
 }
+
+.container-fluid{
+    padding-left: 40px;
+    padding-right: 40px;
+}
