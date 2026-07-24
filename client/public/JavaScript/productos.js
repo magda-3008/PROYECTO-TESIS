@@ -139,15 +139,10 @@ async function cargarVista(vista){
         data: datos,
 
         layout:"fitColumns",
-
         responsiveLayout:"collapse",
-
         columnHeaderVertAlign:"middle",
-
         pagination:true,
-
         paginationSize:30,
-
         reactiveData:true,
 
         rowHeader:{
@@ -160,17 +155,7 @@ async function cargarVista(vista){
 
         columns:configuracion.columns,
 
-        placeholder:`
-            <div class="tabla-vacia">
-
-                <i class="bi bi-search"></i>
-
-                <h4>No se encontraron resultados</h4>
-
-                <p>Prueba modificando los filtros o el texto de búsqueda.</p>
-
-            </div>
-        `
+        placeholder:"No hay registros"
 
     });
 
