@@ -33,24 +33,27 @@ const vistas = {
                 hozAlign:"center",
                 headerSort:false,
                 formatter:function(){
-
                 return `
                     <div class="acciones-tabla">
 
-                        <button class="accionTabla accionPerdida" title="Registrar pérdida">
-                            <i class="bi bi-graph-down-arrow"></i>
+                        <button class="btnAccion btnPerdida"
+                                title="Registrar pérdida">
+                            <i class="bi bi-cart-dash"></i>
                         </button>
 
-                        <button class="accionTabla accionEntrada" title="Registrar entrada">
-                            <i class="bi bi-box-arrow-in-down"></i>
+                        <button class="btnAccion btnEntrada"
+                                title="Registrar entrada">
+                            <i class="bi bi-cart-plus"></i>
                         </button>
 
-                        <button class="accionTabla accionHistorial" title="Ver historial">
+                        <button class="btnAccion btnHistorial"
+                                title="Ver historial">
                             <i class="bi bi-clock-history"></i>
                         </button>
 
                     </div>
                 `;
+
             },
 
                 cellClick:function(e, cell){
