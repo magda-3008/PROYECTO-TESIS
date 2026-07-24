@@ -26,7 +26,7 @@
     color: white;
     border-right: none;
     border-bottom: none;
-    min-height: 45px;
+    min-height: 50px;
 }
 
 .tabulator .tabulator-header .tabulator-col:last-child{
