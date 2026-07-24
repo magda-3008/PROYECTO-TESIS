@@ -102,24 +102,29 @@ if (parametros.toString()) {
         }
 
         recetas.forEach((receta) => {
-            const columna = document.createElement("div");
-            columna.className = "col-lg-4 col-md-6 d-flex justify-content-center";
 
-            columna.innerHTML = `
-                <div class="card tarjeta-receta">
-                    <img src="${urlImagen}" class="card-img-top imagen-receta" alt="${receta.nombre_receta}">
-                    <div class="card-body">
-                        <h5 class="card-title titulo-receta">${receta.nombre_receta}</h5>
-                    </div>
+        const urlImagen = receta.imagen_url && receta.imagen_url !== "null"
+            ? receta.imagen_url
+            : "https://placehold.co/300x200?text=Sin+Imagen";
+
+        const columna = document.createElement("div");
+        columna.className = "col-lg-4 col-md-6 d-flex justify-content-center";
+
+        columna.innerHTML = `
+            <div class="card tarjeta-receta">
+                <img src="${urlImagen}" class="card-img-top imagen-receta" alt="${receta.nombre_receta}">
+                <div class="card-body">
+                    <h5 class="card-title titulo-receta">${receta.nombre_receta}</h5>
                 </div>
-            `;
+            </div>
+        `;
 
-            columna.querySelector(".tarjeta-receta").addEventListener("click", () => {
-                cargarDetalleReceta(receta.id_receta);
-            });
-
-            contenedor.appendChild(columna);
+        columna.querySelector(".tarjeta-receta").addEventListener("click", () => {
+            cargarDetalleReceta(receta.id_receta);
         });
+
+    contenedor.appendChild(columna);
+});
 
     } catch (error) {
         console.error(error);
