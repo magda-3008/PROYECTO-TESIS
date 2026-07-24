@@ -45,7 +45,6 @@ async function cargarIngredientes() {
         const ingredientes = await respuesta.json();
         const select = document.getElementById("ingrediente");
 
-        // Limpiamos para asegurarnos de que solo quede la opción por defecto limpia
         select.innerHTML = '<option value="">Ingrediente</option>';
 
         ingredientes.forEach((ingrediente) => {
@@ -55,7 +54,6 @@ async function cargarIngredientes() {
             option.value = ingrediente.id_ma || ingrediente.id_producto_insumo || ingrediente.id;
             option.textContent = ingrediente.nombre;
 
-            // Solo agregamos la opción si logramos rescatar un ID válido
             if (option.value && option.value !== "null") {
                 select.appendChild(option);
             }
@@ -104,26 +102,23 @@ if (parametros.toString()) {
         }
 
         recetas.forEach((receta) => {
-            const tarjeta = document.createElement("div");
-            tarjeta.className = "card tarjeta-receta";
+            const columna = document.createElement("div");
+            columna.className = "col-lg-4 col-md-6 d-flex justify-content-center";
 
-            // Si imagen_url es null o no existe, usamos una imagen genérica o transparente
-         const urlImagen = receta.imagen_url && receta.imagen_url !== "null" 
-        ? receta.imagen_url 
-        : "https://placehold.co/300x200?text=Sin+Imagen";
+            columna.innerHTML = `
+                <div class="card tarjeta-receta">
+                    <img src="${urlImagen}" class="card-img-top imagen-receta" alt="${receta.nombre_receta}">
+                    <div class="card-body">
+                        <h5 class="card-title titulo-receta">${receta.nombre_receta}</h5>
+                    </div>
+                </div>
+            `;
 
-           tarjeta.innerHTML = `
-        <img src="${urlImagen}" class="card-img-top imagen-receta" alt="${receta.nombre_receta}">
-        <div class="card-body">
-            <h5 class="card-title titulo-receta">${receta.nombre_receta}</h5>
-        </div>
-    `;
-
-            tarjeta.addEventListener("click", () => {
+            columna.querySelector(".tarjeta-receta").addEventListener("click", () => {
                 cargarDetalleReceta(receta.id_receta);
             });
 
-            contenedor.appendChild(tarjeta);
+            contenedor.appendChild(columna);
         });
 
     } catch (error) {

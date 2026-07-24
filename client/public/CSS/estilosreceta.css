@@ -1,29 +1,24 @@
-.tarjeta-receta {
-    width: 18rem;
-    border-radius: 10px;
+.tarjeta-receta{
+    width: 100%;
+    max-width: 360px;
+    border-radius: 18px;
     overflow: hidden;
-    transition: transform 0.3s ease;
+    cursor: pointer;
+    transition: all .3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
 }
 
-.tarjeta-receta:hover {
-    transform: scale(1.03);
+.tarjeta-receta:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 10px 24px rgba(0,0,0,.25);
 }
 
-.imagen-receta {
-    height: 220px;
+.imagen-receta{
+    height: 260px;
     object-fit: cover;
 }
 
-.titulo-receta {
+.titulo-receta{
     text-align: center;
-    font-weight: bold;
-}
-
-.imagen-modal {
-    height: 300px;
-    width: 300px;
-    object-fit: cover;
-    display: block;
-    margin: auto;
-    padding-bottom: 20px;
+    font-weight: 600;
 }

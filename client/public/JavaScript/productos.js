@@ -155,7 +155,7 @@ async function cargarVista(vista){
 
         columns:configuracion.columns,
 
-        placeholder:"No hay registros"
+        placeholder:"No se encontraron resultados"
 
     });
 
