@@ -47,10 +47,33 @@ async function cargarIngredientes() {
 
         select.innerHTML = '<option value="">Ingrediente</option>';
 
+        const ingredientesOcultos = [
+            "Vasos 4 oz",
+            "Pajillas",
+            "Leña",
+            "Cucharas",
+            "Palillos",
+            "Plato redondo",
+            "Bolsas para helados",
+            "Plato largo",
+            "Vasos 5 oz",
+            "Vasos 7 oz",
+            "Vasos 10 oz",
+            "Vasos 12 oz",
+            "Vasos 14 oz",
+            "Bolsas 2 libras"
+
+
+        ];
+
         ingredientes.forEach((ingrediente) => {
+
+            if (ingredientesOcultos.includes(ingrediente.nombre.toLowerCase())) {
+                return;
+            }
+
             const option = document.createElement("option");
-            
-            // Usamos id_ma, o si es nulo, usamos el id del producto elaborado
+
             option.value = ingrediente.id_ma || ingrediente.id_producto_insumo || ingrediente.id;
             option.textContent = ingrediente.nombre;
 
@@ -160,9 +183,7 @@ async function cargarDetalleReceta(idReceta) {
                 </p>
             </div>
 
-            <hr>
-
-            <h5>Ingredientes</h5>
+            <h5>Ingredientes y materiales</h5>
 
             <ul id="listaIngredientes"></ul>
 
