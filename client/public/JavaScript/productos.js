@@ -1,20 +1,20 @@
 let tabla = null;
 
-//menú de acciones
-const menuAcciones = [
-    {
-        label: "📉 Registrar pérdida",
-        action: (e, cell) => abrirModalPerdida(cell.getRow().getData())
-    },
-    {
-        label: "📦 Registrar entrada",
-        action: (e, cell) => abrirModalEntrada(cell.getRow().getData())
-    },
-    {
-        label: "📄 Ver historial",
-        action: (e, cell) => abrirHistorial(cell.getRow().getData())
-    }
-];
+// //menú de acciones
+// const menuAcciones = [
+//     {
+//         label: "📉 Registrar pérdida",
+//         action: (e, cell) => abrirModalPerdida(cell.getRow().getData())
+//     },
+//     {
+//         label: "📦 Registrar entrada",
+//         action: (e, cell) => abrirModalEntrada(cell.getRow().getData())
+//     },
+//     {
+//         label: "📄 Ver historial",
+//         action: (e, cell) => abrirHistorial(cell.getRow().getData())
+//     }
+// ];
 
 //configuración de vistas
 const vistas = {
@@ -29,15 +29,47 @@ const vistas = {
             { title: "Estado", field: "estado" },
             { title: "Existencias", field: "stock_actual" },
             {
-                title: "Acciones",
-                formatter: () => '<i class="bi bi-three-dots-vertical"></i>',
-                hozAlign: "center",
-                width: 70,
-                headerSort: false,
-                clickMenu: menuAcciones
+                title:"Acciones",
+                hozAlign:"center",
+                headerSort:false,
+                formatter:function(){
+
+                    return `
+                        <div class="acciones-tabla">
+
+                            <i class="bi bi-graph-down-arrow accion-perdida"
+                            title="Registrar pérdida"></i>
+
+                            <i class="bi bi-box-arrow-in-down accion-entrada"
+                            title="Registrar entrada"></i>
+
+                            <i class="bi bi-clock-history accion-historial"
+                            title="Ver historial"></i>
+
+                        </div>
+                    `;
+                },
+
+                cellClick:function(e, cell){
+
+                    const producto = cell.getRow().getData();
+
+                    if(e.target.classList.contains("accion-perdida")){
+                        abrirModalPerdida(producto);
+                    }
+
+                    if(e.target.classList.contains("accion-entrada")){
+                        abrirModalEntrada(producto);
+                    }
+
+                    if(e.target.classList.contains("accion-historial")){
+                        abrirHistorial(producto);
+                    }
+
+                }
             }
-        ]
-    },
+                    ]
+                },
 
     analisis: {
         endpoint: "/api/productos/analisis",
@@ -70,7 +102,7 @@ async function cargarVista(vista){
     tabla = new Tabulator("#tablaProductos",{
 
     data: datos,
-    layout: "fitDataStretch",
+    layout: "fitColumns",
     responsiveLayout: "collapse",
     columnHeaderVertAlign: "middle",
     pagination: true,

@@ -38,7 +38,7 @@
 }
 
 .tabulator .tabulator-header .tabulator-col-title{
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 700;
 }
 
@@ -76,7 +76,7 @@
     padding: 18px 20px !important;
     border-right: none !important;
     border-bottom: 1px solid rgba(28,66,147,.20) !important;
-    font-size: 18px;
+    font-size: 16px;
     display: flex;
     align-items: center;
 }
@@ -210,4 +210,62 @@
 .container-fluid{
     padding-left: 40px;
     padding-right: 40px;
+}
+
+/* ================================
+        BOTONES DE ACCIONES
+================================ */
+
+.acciones-tabla{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+}
+
+.btnAccion{
+    width:36px;
+    height:36px;
+    border:none;
+    border-radius:10px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.btnAccion i{
+    font-size:16px;
+}
+
+/* Registrar pérdida */
+.btnPerdida{
+    background:#ef5b5b;
+}
+
+.btnPerdida:hover{
+    background:#d84242;
+    transform:scale(1.08);
+}
+
+/* Registrar entrada */
+.btnEntrada{
+    background:#3cb878;
+}
+
+.btnEntrada:hover{
+    background:#2c9961;
+    transform:scale(1.08);
+}
+
+/* Historial */
+.btnHistorial{
+    background:#4d8ef7;
+}
+
+.btnHistorial:hover{
+    background:#3574da;
+    transform:scale(1.08);
 }
