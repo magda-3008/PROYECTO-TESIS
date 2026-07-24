@@ -26,7 +26,7 @@
     color: white;
     border-right: none;
     border-bottom: none;
-    min-height: 60px;
+    min-height: 45px;
 }
 
 .tabulator .tabulator-header .tabulator-col:last-child{
@@ -34,18 +34,17 @@
 }
 
 .tabulator .tabulator-header .tabulator-col-content{
-    padding: 18px 15px;
+    padding: 10px 12px;
 }
 
 .tabulator .tabulator-header .tabulator-col-title{
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 700;
 }
 
 .tabulator-col-title{
     white-space: normal !important;
-    text-align: center;
-    line-height: 1.3;
+    line-height: 1.1;
 }
 
 /*==================================================
