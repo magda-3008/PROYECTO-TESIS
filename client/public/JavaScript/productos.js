@@ -70,17 +70,11 @@ async function cargarVista(vista){
     tabla = new Tabulator("#tablaProductos",{
 
     data: datos,
-
-    layout: "fitDataStretch",
-
+    layout: "fitColumns",
     responsiveLayout: "collapse",
-
     columnHeaderVertAlign: "middle",
-
     pagination: true,
-
     paginationSize: 30,
-
     reactiveData: true,
 
     rowHeader:{
