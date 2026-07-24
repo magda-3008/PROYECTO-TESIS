@@ -152,11 +152,27 @@ async function cargarDetalleReceta(idReceta) {
         
         contenido.innerHTML = `
             <img src="${urlImagenModal}" class="imagen-modal">
-            <p><strong>Las medidas de esta receta producen una cantidad base de:</strong> ${receta.cantidad_producida_base} ${receta.nombre_receta}</p>
+
+            <div class="info-receta">
+                <p>
+                    <strong>Rendimiento:</strong>
+                    ${receta.cantidad_producida_base} ${receta.nombre_receta}
+                </p>
+            </div>
+
+            <hr>
+
             <h5>Ingredientes</h5>
+
             <ul id="listaIngredientes"></ul>
-            <h5>Método de preparación:</h5>
-            <p style="text-align: justify;">${receta.descripcion}</p>
+
+            <hr>
+
+            <h5>Método de preparación</h5>
+
+            <p class="descripcion-receta">
+                ${receta.descripcion}
+            </p>
         `;
 
         const lista = document.getElementById("listaIngredientes");

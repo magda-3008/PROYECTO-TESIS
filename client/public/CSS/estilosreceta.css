@@ -22,3 +22,106 @@
     text-align: center;
     font-weight: 600;
 }
+
+/* ==========================
+   Modal de recetas
+========================== */
+
+#modalReceta .modal-content{
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(28, 66, 147, .25);
+}
+
+/* Encabezado */
+#modalReceta .modal-header{
+    background: #befbfc;
+    padding: 22px 28px;
+    border-bottom: none;
+}
+
+#modalReceta .modal-title{
+    width: 100%;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #284b63;
+}
+
+/* Botón cerrar */
+#modalReceta .btn-close{
+    background-color: #befbfc;
+    border-radius: 50%;
+    padding: .8rem;
+    transition: .25s;
+    opacity: .8;
+}
+
+#modalReceta .btn-close:hover{
+    background: #abdbdc;
+    opacity: 1;
+}
+
+/* Cuerpo */
+#modalReceta .modal-body{
+    padding: 30px;
+    background: #fff;
+}
+
+/* Imagen */
+
+.imagen-modal{
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin-bottom: 25px;
+}
+
+/* Títulos */
+#modalReceta h5{
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #284b63;
+}
+
+/* Texto */
+#modalReceta p{
+    color: #444;
+    line-height: 1.7;
+}
+
+/* Lista */
+#listaIngredientes{
+    padding-left: 22px;
+}
+
+#listaIngredientes li{
+    margin-bottom: 10px;
+    color: #444;
+}
+
+/* Resalta el nombre del ingrediente */
+#listaIngredientes strong{
+    color: #284b63;
+}
+
+.info-receta{
+    background:#f5fbfc;
+    border-left:6px solid #befbfc;
+    padding:18px 20px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+.descripcion-receta{
+    text-align:justify;
+    line-height:1.8;
+}
+
+#modalReceta hr{
+    margin:25px 0;
+    border-color:#d7ecec;
+}
