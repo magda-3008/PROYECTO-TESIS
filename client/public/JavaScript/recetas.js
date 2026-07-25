@@ -86,23 +86,36 @@ async function cargarIngredientes() {
 }
 
 async function cargarRecetas(idIngrediente = "", nombre = "") {
+
+     const contenedor = document.getElementById("contenedor-recetas");
+
     try {
 
        let url = "/api/recetas";
 
-const parametros = new URLSearchParams();
+        const parametros = new URLSearchParams();
 
-if (idIngrediente) {
-    parametros.append("ingrediente", idIngrediente);
-}
+        if (idIngrediente) {
+            parametros.append("ingrediente", idIngrediente);
+        }
 
-if (nombre) {
-    parametros.append("buscar", nombre);
-}
+        if (nombre) {
+            parametros.append("buscar", nombre);
+        }
 
-if (parametros.toString()) {
-    url += "?" + parametros.toString();
-}
+        if (parametros.toString()) {
+            url += "?" + parametros.toString();
+        }
+
+        contenedor.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-info" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+
+                <p class="mt-3 text-muted">Cargando recetas...</p>
+            </div>
+        `;
 
         const respuesta = await fetch(url);
 
@@ -112,8 +125,6 @@ if (parametros.toString()) {
 
         const recetas = await respuesta.json();
 
-        const contenedor = document.getElementById("contenedor-recetas");
-     
         contenedor.innerHTML = "";
 
         // Si la API no devuelve ninguna receta con ese ingrediente
@@ -148,12 +159,38 @@ if (parametros.toString()) {
 });
 
     } catch (error) {
-        console.error(error);
-    }
+    console.error(error);
+
+    contenedor.innerHTML = `
+        <div class="col-12 text-center py-5">
+            <h5>No fue posible cargar las recetas.</h5>
+            <p class="text-muted">
+                Intenta nuevamente en unos segundos.
+            </p>
+        </div>
+    `;
+}
 }
 
 async function cargarDetalleReceta(idReceta) {
     try {
+
+        const modal = new bootstrap.Modal(document.getElementById("modalReceta"));
+
+document.getElementById("tituloModal").textContent = "Cargando...";
+
+document.getElementById("contenidoModal").innerHTML = `
+    <div class="text-center py-5">
+        <div class="spinner-border text-info" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+
+        <p class="mt-3 text-muted">Obteniendo receta...</p>
+    </div>
+`;
+
+modal.show();
+
         const respuesta = await fetch(`/api/detalle_receta/${idReceta}`);
 
         if (!respuesta.ok) {
@@ -208,10 +245,16 @@ async function cargarDetalleReceta(idReceta) {
             `;
         });
 
-        const modal = new bootstrap.Modal(document.getElementById("modalReceta"));
-        modal.show();
 
-    } catch (error) {
+        } catch (error) {
         console.error(error);
+
+        document.getElementById("tituloModal").textContent = "Error";
+
+        document.getElementById("contenidoModal").innerHTML = `
+            <div class="text-center py-4">
+                <p>No se pudo cargar la información de la receta.</p>
+            </div>
+        `;
     }
 }
