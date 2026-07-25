@@ -62,9 +62,7 @@ async function cargarIngredientes() {
             "Vasos 12 oz",
             "Vasos 14 oz",
             "Bolsas 2 libras"
-
-
-        ];
+        ].map(nombre => nombre.toLowerCase());
 
         ingredientes.forEach((ingrediente) => {
 
