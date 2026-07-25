@@ -56,7 +56,7 @@
       <div id="tablaProductos"></div>
     </div>
 
-    //////////////// Modales ////////////////
+    <!-- Modales -->
     <!-- Modal Registrar Pérdida -->
     <div
       class="modal fade"
@@ -109,7 +109,6 @@
             </div>
 
             <!-- Cantidad -->
-
             <div class="mb-3">
               <label for="cantidadPerdida" class="form-label">
                 Cantidad perdida
@@ -124,7 +123,6 @@
             </div>
 
             <!-- Motivo -->
-
             <div class="mb-3">
               <label for="motivoPerdida" class="form-label"> Motivo </label>
 
@@ -153,9 +151,125 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal Registrar Entrada -->
+    <div
+      class="modal fade"
+      id="modalEntrada"
+      tabindex="-1"
+      aria-labelledby="modalEntradaLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalEntradaLabel">
+              <i class="bi bi-cart-plus me-2 text-success"></i>
+              Registrar entrada
+            </h5>
+
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"></button>
+          </div>
+
+          <div class="modal-body">
+            <!-- Información del producto -->
+            <div class="card border-0 bg-light mb-4">
+              <div class="card-body">
+                <h6 class="text-muted mb-3">Producto seleccionado</h6>
+
+                <div class="row align-items-center">
+                  <div class="col-8">
+                    <strong id="nombreProductoEntrada">
+                      Nombre del producto
+                    </strong>
+                  </div>
+
+                  <div class="col-4 text-end">
+                    <span class="badge bg-primary" id="tipoProductoEntrada">
+                      Tipo
+                    </span>
+                  </div>
+                </div>
+
+                <hr />
+
+                <div class="d-flex justify-content-between">
+                  <span>Existencias actuales</span>
+
+                  <strong id="stockActualEntrada"> 0 </strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tipo de entrada -->
+
+            <div class="mb-3">
+              <label for="tipoEntrada" class="form-label">
+                Tipo de entrada
+              </label>
+
+              <select id="tipoEntrada" class="form-select">
+                <option value="" selected disabled>
+                  Seleccione una opción
+                </option>
+
+                <option value="Compra">Compra</option>
+                <option value="Producción">Producción</option>
+
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+
+            <!-- Cantidad -->
+            <div class="mb-3">
+              <label for="cantidadEntrada" class="form-label">
+                Cantidad ingresada
+              </label>
+
+              <input
+                type="number"
+                class="form-control"
+                id="cantidadEntrada"
+                min="1"
+                placeholder="Ingrese la cantidad" />
+            </div>
+
+            <!-- Observación -->
+            <div class="mb-3">
+              <label for="observacionEntrada" class="form-label">
+                Observación
+              </label>
+
+              <textarea
+                id="observacionEntrada"
+                class="form-control"
+                rows="4"
+                placeholder="Escriba una observación (opcional)"></textarea>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal">
+              Cancelar
+            </button>
+
+            <button type="button" class="btn btn-success" id="guardarEntrada">
+              <i class="bi bi-check-lg me-1"></i>
+              Registrar entrada
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
     <script src="./JavaScript/ModalesProducto/modalPerdida.js"></script>
+    <script src="./JavaScript/ModalesProducto/modalEntrada.js"></script>
     <script src="./JavaScript/utilities/formateoMoneda.js"></script>
     <script src="./JavaScript/utilities/formateoPorcentaje.js"></script>
     <script src="./JavaScript/productos.js"></script>

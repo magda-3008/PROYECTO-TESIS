@@ -391,7 +391,17 @@ function abrirModalPerdida(producto){
 
 function abrirModalEntrada(producto){
 
-    console.log(producto);
+    productoSeleccionado = producto;
+
+    document.getElementById("nombreProductoEntrada").textContent = producto.nombre;
+    document.getElementById("stockActualEntrada").textContent = producto.stock_actual;
+    document.getElementById("tipoProductoEntrada").textContent = producto.tipo;
+
+    const modal = new bootstrap.Modal(
+        document.getElementById("modalEntrada")
+    );
+
+    modal.show();
 
 }
 
