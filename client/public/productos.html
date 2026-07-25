@@ -56,8 +56,106 @@
       <div id="tablaProductos"></div>
     </div>
 
+    //////////////// Modales ////////////////
+    <!-- Modal Registrar Pérdida -->
+    <div
+      class="modal fade"
+      id="modalPerdida"
+      tabindex="-1"
+      aria-labelledby="modalPerdidaLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalPerdidaLabel">
+              <i class="bi bi-cart-dash me-2 text-danger"></i>
+              Registrar pérdida
+            </h5>
+
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"></button>
+          </div>
+
+          <div class="modal-body">
+            <!-- Información del producto -->
+            <div class="card border-0 bg-light mb-4">
+              <div class="card-body">
+                <h6 class="text-muted mb-3">Producto seleccionado</h6>
+
+                <div class="row">
+                  <div class="col-8">
+                    <strong id="nombreProductoPerdida">
+                      Nombre del producto
+                    </strong>
+                  </div>
+
+                  <div class="col-4 text-end">
+                    <span class="badge bg-primary" id="tipoProductoPerdida">
+                      Tipo
+                    </span>
+                  </div>
+                </div>
+
+                <hr />
+
+                <div class="d-flex justify-content-between">
+                  <span>Existencias actuales</span>
+
+                  <strong id="stockActualPerdida"> 0 </strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cantidad -->
+
+            <div class="mb-3">
+              <label for="cantidadPerdida" class="form-label">
+                Cantidad perdida
+              </label>
+
+              <input
+                type="number"
+                class="form-control"
+                id="cantidadPerdida"
+                min="1"
+                placeholder="Ingrese la cantidad" />
+            </div>
+
+            <!-- Motivo -->
+
+            <div class="mb-3">
+              <label for="motivoPerdida" class="form-label"> Motivo </label>
+
+              <textarea
+                id="motivoPerdida"
+                class="form-control"
+                rows="4"
+                placeholder="Describe la razón de la pérdida"></textarea>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal">
+              Cancelar
+            </button>
+
+            <button type="button" class="btn btn-danger" id="guardarPerdida">
+              <i class="bi bi-check-lg me-1"></i>
+
+              Registrar pérdida
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+    <script src="./JavaScript/ModalesProducto/modalPerdida.js"></script>
     <script src="./JavaScript/utilities/formateoMoneda.js"></script>
     <script src="./JavaScript/utilities/formateoPorcentaje.js"></script>
     <script src="./JavaScript/productos.js"></script>

@@ -1,4 +1,5 @@
 let tabla = null;
+let productoSeleccionado = null;
 
 //configuración de vistas
 const vistas = {
@@ -40,24 +41,26 @@ const vistas = {
 
             },
 
-                cellClick:function(e, cell){
+                cellClick: function (e, cell) {
 
-                    const producto = cell.getRow().getData();
+                const producto = cell.getRow().getData();
 
-                    if(e.target.classList.contains("accion-perdida")){
-                        abrirModalPerdida(producto);
-                    }
-
-                    if(e.target.classList.contains("accion-entrada")){
-                        abrirModalEntrada(producto);
-                    }
-
-                    if(e.target.classList.contains("accion-historial")){
-                        abrirHistorial(producto);
-                    }
-
+                if (e.target.closest(".btnPerdida")) {
+                    abrirModalPerdida(producto);
+                    return;
                 }
+
+                if (e.target.closest(".btnEntrada")) {
+                    abrirModalEntrada(producto);
+                    return;
+                }
+
+                if (e.target.closest(".btnHistorial")) {
+                    abrirHistorial(producto);
+                }
+
             }
+         }
                     ]
                 },
 
