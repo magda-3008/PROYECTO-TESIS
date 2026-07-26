@@ -1,298 +1,290 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Productos</title>
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-      rel="stylesheet" />
-    <!-- Bootstrap icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-    <!-- Tabulator -->
-    <link
-      href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator.min.css"
-      rel="stylesheet" />
-    <link rel="stylesheet" href="./CSS/estilosproducto.css" />
-    <link rel="stylesheet" href="./CSS/tabulator-tema.css" />
-    <!-- Fuentes -->
+
+    <title>♥ Pa'TuBoca</title>
+
+    <!-- CSS propio -->
+    <link rel="stylesheet" href="./CSS/estilosreceta.css" />
+
+    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+
+    <!-- Fuente Baloo -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
     <link
       href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap"
       rel="stylesheet" />
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet" />
   </head>
+
   <body>
-    <div class="container-fluid mt-3">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-          <h1>Inventario de productos</h1>
-          <p class="text-muted mb-0">
-            Consulta y administra las existencias del período seleccionado.
-          </p>
-        </div>
+    <!-- Fondo -->
+    <div class="Fondo"></div>
 
-        <div class="card shadow-sm">
-          <div class="card-body py-2 px-3">
-            <div class="small text-muted">Período actual</div>
+    <!-- ========================= -->
+    <!-- MENÚ LATERAL -->
+    <!-- ========================= -->
 
-            <div class="d-flex align-items-center gap-2">
-              <select
-                id="periodoInventario"
-                class="form-select form-select-sm"></select>
+    <aside class="Menu-lateral" id="menuLateral">
+      <nav>
+        <div class="Seccion-menu">GESTIÓN</div>
 
-              <span id="estadoPeriodo" class="badge bg-success"> Abierto </span>
-            </div>
-          </div>
+        <a href="#" class="Item-menu">
+          <i class="fa-solid fa-box-open"></i>
+          <span>Productos</span>
+        </a>
+
+        <a href="#" class="Item-menu">
+          <i class="fa-solid fa-carrot"></i>
+          <span>Ingredientes</span>
+        </a>
+
+        <a href="recetas.html" class="Item-menu activo">
+          <i class="fa-solid fa-book-open"></i>
+          <span>Recetas</span>
+        </a>
+
+        <hr />
+
+        <div class="Seccion-menu">TABLERO DE CONTROL</div>
+
+        <a href="Ventas.html" class="Item-menu">
+          <i class="fa-solid fa-cash-register"></i>
+          <span>Ventas</span>
+        </a>
+
+        <a href="#" class="Item-menu">
+          <i class="fa-solid fa-sack-dollar"></i>
+          <span>Costos y Rentabilidad</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- ========================= -->
+    <!-- ENCABEZADO -->
+    <!-- ========================= -->
+
+    <header class="Encabezado">
+      <!-- Izquierda -->
+      <div class="Encabezado-izquierda">
+        <button class="btnMenu" id="btnMenu" aria-label="Abrir menú">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <div class="Marca">
+          <h1>Pa'TuBoca | Recetas</h1>
+
+          <p>Delicias y más</p>
         </div>
       </div>
 
-      <ul class="nav nav-tabs mb-3" id="tabsProductos">
-        <li class="nav-item">
-          <button class="nav-link active" data-vista="inventario">Todos</button>
-        </li>
+      <!-- Derecha -->
+      <div class="Encabezado-derecha">
+        <button class="btnVenta" type="button">
+          <i class="fa-solid fa-plus"></i>
 
-        <li class="nav-item">
-          <button class="nav-link" data-vista="analisis">
-            Análisis de producción
+          <span>Añadir venta</span>
+        </button>
+
+        <a href="" id="btnCerrarSesion">
+          <img src="Resources/Logo.png" alt="Logo" class="logoEmpresa" />
+        </a>
+      </div>
+    </header>
+
+    <main class="Contenido">
+      <!-- ========================= -->
+      <!-- BUSCADOR DE RECETAS -->
+      <!-- ========================= -->
+
+      <section class="busqueda-recetas">
+        <!-- Buscador -->
+        <div class="contenedor-busqueda">
+          <div class="campo-busqueda">
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+              type="search"
+              id="buscar-receta"
+              name="buscar-receta"
+              placeholder="Escribe aquí el nombre de la receta (Ej.: Gelatina)" />
+          </div>
+
+          <button type="button" class="btnBuscar">Buscar</button>
+        </div>
+
+        <!-- Filtro -->
+        <div class="contenedor-filtro">
+          <label for="ingrediente"> Filtrar por: </label>
+
+          <select name="ingrediente" id="ingrediente">
+            <option value="">Ingrediente</option>
+          </select>
+        </div>
+      </section>
+    </main>
+
+    <!-- Aquí recetas.js insertará las tarjetas -->
+    <div id="contenedor-recetas"></div>
+
+    <!-- ========================================= -->
+    <!-- MODAL DE RECETAS -->
+    <!-- ========================================= -->
+
+    <div
+      class="modal fade"
+      id="modalReceta"
+      tabindex="-1"
+      aria-labelledby="modalRecetaLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <!-- Encabezado -->
+          <div class="venta-header">
+            <h2 class="modal-title titulo-modal" id="tituloModal"></h2>
+
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"></button>
+          </div>
+
+          <!-- Contenido -->
+          <div class="modal-body" id="contenidoModal"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- MODAL AGREGAR VENTA -->
+    <!-- ========================================= -->
+
+    <div class="modalVenta" id="modalVenta">
+      <div class="modal-contenido">
+        <!-- Encabezado -->
+        <div class="venta-header">
+          <h2>🛒 AGREGAR VENTA</h2>
+
+          <button type="button" class="cerrarModal" id="cerrarModal">
+            <i class="fa-solid fa-xmark"></i>
           </button>
-        </li>
-      </ul>
+        </div>
 
-      <div class="mb-3">
-        <input
-          class="form-control"
-          id="buscar"
-          placeholder="Escribe el nombre del producto o busca según el tipo de producto..." />
-      </div>
+        <!-- Buscar producto -->
 
-      <div id="panelFiltros" class="mb-3"></div>
+        <div class="grupoBusqueda">
+          <i class="fa-solid fa-magnifying-glass iconoBuscar"></i>
 
-      <div id="tablaProductos"></div>
-    </div>
+          <input
+            type="text"
+            class="buscarProducto"
+            placeholder="Buscar producto..." />
+        </div>
 
-    <!-- Modales -->
-    <!-- Modal Registrar Pérdida -->
-    <div
-      class="modal fade"
-      id="modalPerdida"
-      tabindex="-1"
-      aria-labelledby="modalPerdidaLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalPerdidaLabel">
-              <i class="bi bi-cart-dash me-2 text-danger"></i>
-              Registrar pérdida
-            </h5>
+        <!-- Formulario -->
 
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"></button>
+        <form class="formVenta">
+          <div class="campo">
+            <label>Nombre</label>
+
+            <input type="text" readonly />
           </div>
 
-          <div class="modal-body">
-            <!-- Información del producto -->
-            <div class="card border-0 bg-light mb-4">
-              <div class="card-body">
-                <h6 class="text-muted mb-3">Producto seleccionado</h6>
+          <div class="campo">
+            <label>Cantidad</label>
 
-                <div class="row">
-                  <div class="col-8">
-                    <strong id="nombreProductoPerdida">
-                      Nombre del producto
-                    </strong>
-                  </div>
-
-                  <div class="col-4 text-end">
-                    <span class="badge bg-primary" id="tipoProductoPerdida">
-                      Tipo
-                    </span>
-                  </div>
-                </div>
-
-                <hr />
-
-                <div class="d-flex justify-content-between">
-                  <span>Existencias actuales</span>
-
-                  <strong id="stockActualPerdida"> 0 </strong>
-                </div>
-              </div>
-            </div>
-
-            <!-- Cantidad -->
-            <div class="mb-3">
-              <label for="cantidadPerdida" class="form-label">
-                Cantidad perdida
-              </label>
-
-              <input
-                type="number"
-                class="form-control"
-                id="cantidadPerdida"
-                min="1"
-                placeholder="Ingrese la cantidad" />
-            </div>
-
-            <!-- Motivo -->
-            <div class="mb-3">
-              <label for="motivoPerdida" class="form-label"> Motivo </label>
-
-              <textarea
-                id="motivoPerdida"
-                class="form-control"
-                rows="4"
-                placeholder="Describe la razón de la pérdida"></textarea>
-            </div>
+            <input type="number" min="1" />
           </div>
 
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal">
-              Cancelar
-            </button>
+          <div class="campo">
+            <label>Precio</label>
 
-            <button type="button" class="btn btn-danger" id="guardarPerdida">
-              <i class="bi bi-check-lg me-1"></i>
-
-              Registrar pérdida
-            </button>
+            <input type="text" readonly />
           </div>
+
+          <div class="campo">
+            <label>Total</label>
+
+            <input type="text" readonly />
+          </div>
+        </form>
+
+        <!-- Botones -->
+
+        <div class="modal-botones">
+          <button type="button" class="btnCancelar" id="btnCancelar">
+            Cancelar
+          </button>
+
+          <button type="submit" class="btnGuardar">Guardar</button>
         </div>
       </div>
     </div>
 
-    <!-- Modal Registrar Entrada -->
-    <div
-      class="modal fade"
-      id="modalEntrada"
-      tabindex="-1"
-      aria-labelledby="modalEntradaLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalEntradaLabel">
-              <i class="bi bi-cart-plus me-2 text-success"></i>
-              Registrar entrada
-            </h5>
+    <!-- ========================================= -->
+    <!-- JAVASCRIPT -->
+    <!-- ========================================= -->
 
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"></button>
-          </div>
+    <script>
+      /* ========= Menú lateral ========= */
 
-          <div class="modal-body">
-            <!-- Información del producto -->
-            <div class="card border-0 bg-light mb-4">
-              <div class="card-body">
-                <h6 class="text-muted mb-3">Producto seleccionado</h6>
+      const btnMenu = document.getElementById("btnMenu");
+      const menuLateral = document.getElementById("menuLateral");
 
-                <div class="row align-items-center">
-                  <div class="col-8">
-                    <strong id="nombreProductoEntrada">
-                      Nombre del producto
-                    </strong>
-                  </div>
+      btnMenu.addEventListener("click", () => {
+        menuLateral.classList.toggle("activo");
+        document.body.classList.toggle("menu-abierto");
+      });
 
-                  <div class="col-4 text-end">
-                    <span class="badge bg-primary" id="tipoProductoEntrada">
-                      Tipo
-                    </span>
-                  </div>
-                </div>
+      /* ========= Modal Agregar Venta ========= */
 
-                <hr />
+      const modal = document.getElementById("modalVenta");
+      const btnVenta = document.querySelector(".btnVenta");
+      const cerrarModal = document.getElementById("cerrarModal");
+      const btnCancelar = document.getElementById("btnCancelar");
 
-                <div class="d-flex justify-content-between">
-                  <span>Existencias actuales</span>
+      btnVenta.addEventListener("click", () => {
+        modal.classList.add("activo");
+      });
 
-                  <strong id="stockActualEntrada"> 0 </strong>
-                </div>
-              </div>
-            </div>
+      cerrarModal.addEventListener("click", () => {
+        modal.classList.remove("activo");
+      });
 
-            <!-- Tipo de entrada -->
+      btnCancelar.addEventListener("click", (event) => {
+        event.preventDefault();
 
-            <div class="mb-3">
-              <label for="tipoEntrada" class="form-label">
-                Tipo de entrada
-              </label>
+        document.querySelector(".buscarProducto").value = "";
 
-              <select id="tipoEntrada" class="form-select">
-                <option value="" selected disabled>
-                  Seleccione una opción
-                </option>
+        document.querySelector(".formVenta").reset();
 
-                <option value="Compra">Compra</option>
-                <option value="Producción">Producción</option>
+        document.querySelectorAll(".campo input[readonly]").forEach((input) => {
+          input.value = "";
+        });
+      });
+    </script>
 
-                <option value="Otro">Otro</option>
-              </select>
-            </div>
+    <!-- Scripts del proyecto -->
+    <script src="./JavaScript/utilities/formateoUnidad.js"></script>
 
-            <!-- Cantidad -->
-            <div class="mb-3">
-              <label for="cantidadEntrada" class="form-label">
-                Cantidad ingresada
-              </label>
+    <script src="./JavaScript/recetas.js"></script>
 
-              <input
-                type="number"
-                class="form-control"
-                id="cantidadEntrada"
-                min="1"
-                placeholder="Ingrese la cantidad" />
-            </div>
-
-            <!-- Observación -->
-            <div class="mb-3">
-              <label for="observacionEntrada" class="form-label">
-                Observación
-              </label>
-
-              <textarea
-                id="observacionEntrada"
-                class="form-control"
-                rows="4"
-                placeholder="Escriba una observación (opcional)"></textarea>
-            </div>
-          </div>
-
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal">
-              Cancelar
-            </button>
-
-            <button type="button" class="btn btn-success" id="guardarEntrada">
-              <i class="bi bi-check-lg me-1"></i>
-              Registrar entrada
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
-    <script src="./JavaScript/ModalesProducto/modalPerdida.js"></script>
-    <script src="./JavaScript/ModalesProducto/modalEntrada.js"></script>
-    <script src="./JavaScript/utilities/formateoMoneda.js"></script>
-    <script src="./JavaScript/utilities/formateoPorcentaje.js"></script>
-    <script src="./JavaScript/productos.js"></script>
+    <!-- Bootstrap -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"></script>
   </body>
 </html>
