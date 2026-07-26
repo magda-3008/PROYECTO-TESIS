@@ -135,13 +135,11 @@
       </section>
     </main>
 
-    <!-- Aquí recetas.js insertará las tarjetas -->
-    <div id="contenedor-recetas"></div>
+    <div class="container mt-4">
+      <div id="contenedor-recetas" class="row justify-content-center g-4"></div>
+    </div>
 
-    <!-- ========================================= -->
-    <!-- MODAL DE RECETAS -->
-    <!-- ========================================= -->
-
+    <!-- Modal de recetas. Muestra información de cada una -->
     <div
       class="modal fade"
       id="modalReceta"
@@ -150,18 +148,18 @@
       aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
-          <!-- Encabezado -->
-          <div class="venta-header">
-            <h2 class="modal-title titulo-modal" id="tituloModal"></h2>
+          <div class="modal-header">
+            <h2
+              class="modal-title titulo-modal"
+              id="tituloModal"
+              style="text-align: center"></h2>
 
             <button
               type="button"
               class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Cerrar"></button>
+              data-bs-dismiss="modal"></button>
           </div>
 
-          <!-- Contenido -->
           <div class="modal-body" id="contenidoModal"></div>
         </div>
       </div>
