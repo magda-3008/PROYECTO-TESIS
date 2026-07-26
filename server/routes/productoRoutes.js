@@ -7,9 +7,8 @@ router.get("/", async (req, res) => {
         const resultado = await pool.query(`
             SELECT *
             FROM v_productos_inventario_periodo
-            WHERE anio = $1
-            AND mes = $2
             ORDER BY nombre;
+
         `);
 
         res.json(resultado.rows);
@@ -42,3 +41,17 @@ router.get("/analisis", async (req, res) => {
 
 
 module.exports = router;
+
+/* Consulta futura
+            const { anio, mes } = req.query;
+
+            const resultado = await pool.query(
+                `
+                SELECT *
+                FROM v_productos_inventario_periodo
+                WHERE anio = $1
+                AND mes = $2
+                ORDER BY nombre;
+            `,
+             [anio, mes] 
+);*/
