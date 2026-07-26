@@ -81,6 +81,18 @@ const vistas = {
 //cargar vista
 async function cargarVista(vista){
 
+    const configuracion = vistas[vista];
+
+    const periodo = document.getElementById("periodoInventario").value;
+
+    const [anio, mes] = periodo.split("-");
+
+    let endpoint = configuracion.endpoint;
+
+    if(vista === "inventario"){
+        endpoint += `?anio=${anio}&mes=${mes}`;
+    }
+
     // Elimina la tabla anterior
     if(tabla){
         tabla.destroy();
@@ -88,8 +100,6 @@ async function cargarVista(vista){
     }
 
     crearFiltros(vista);
-
-    const configuracion = vistas[vista];
 
     // Mostrar indicador de carga
     document.getElementById("tablaProductos").innerHTML = `
@@ -103,7 +113,7 @@ async function cargarVista(vista){
 
     try{
 
-        const respuesta = await fetch(configuracion.endpoint);
+        const respuesta = await fetch(endpoint);
 
         if(!respuesta.ok){
             throw new Error("No se pudieron obtener los datos.");
@@ -164,6 +174,63 @@ async function cargarVista(vista){
     });
 
     inicializarEventosFiltros(vista);
+
+}
+
+//Cargar periodos
+async function cargarPeriodos() {
+
+    const select = document.getElementById("periodoInventario");
+
+    try {
+
+        const respuesta = await fetch("/api/productos/periodos");
+
+        if(!respuesta.ok){
+            throw new Error("No se pudieron obtener los períodos.");
+        }
+
+        const periodos = await respuesta.json();
+
+        select.innerHTML = "";
+
+        const meses = [
+            "",
+            "Enero",
+            "Febrero",
+            "Marzo",
+            "Abril",
+            "Mayo",
+            "Junio",
+            "Julio",
+            "Agosto",
+            "Septiembre",
+            "Octubre",
+            "Noviembre",
+            "Diciembre"
+        ];
+
+        periodos.forEach((p, index) => {
+
+            const option = document.createElement("option");
+
+            option.value = `${p.anio}-${p.mes}`;
+
+            option.textContent = `${meses[p.mes]} ${p.anio}`;
+
+            if(index === 0){
+                option.selected = true;
+            }
+
+            select.appendChild(option);
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
 
 }
 
@@ -417,4 +484,22 @@ const buscador = document.getElementById("buscar");
 buscador.addEventListener("input", aplicarFiltros);
 
 //inicio
-cargarVista("inventario");
+document.addEventListener("DOMContentLoaded", async () => {
+
+    await cargarPeriodos();
+
+    cargarVista("inventario");
+
+});
+
+document
+.getElementById("periodoInventario")
+.addEventListener("change", () => {
+
+    const vistaActual = document
+        .querySelector("#tabsProductos .active")
+        .dataset.vista;
+
+    cargarVista(vistaActual);
+
+});
