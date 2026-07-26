@@ -20,7 +20,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         const resultado = await respuesta.json();
 
         if (respuesta.ok) {
-            window.location.href = "Principal.html" 
+            window.location.href = "principal.html" 
         } else {
             mensajeLogin.textContent = resultado.mensaje; 
         }
