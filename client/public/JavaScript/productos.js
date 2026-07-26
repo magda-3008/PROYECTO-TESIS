@@ -12,7 +12,8 @@ const vistas = {
             { title: "Costo de compra/producción", field: "costo", formatter: formatoMoneda, hozAlign: "center" },
             { title: "Margen de ganancia bruta esperado (%)", field: "margen_gananciab_esperado", variableHeight: true, formatter: formatoPorcentaje, hozAlign: "center"},
             { title: "Estado", field: "estado", hozAlign: "center" },
-            { title: "Existencias", field: "stock_actual", hozAlign: "center" },
+            { title: "Existencia inicial", field: "stock_inicial", hozAlign: "center" },
+            { title: "Existencia actual", field: "stock_actual", hozAlign: "center" },
             {
                 title:"Acciones",
                 hozAlign:"center",

@@ -6,8 +6,10 @@ router.get("/", async (req, res) => {
     try {
         const resultado = await pool.query(`
             SELECT *
-            FROM v_productos_inventario
-            ORDER BY id_producto;
+            FROM v_productos_inventario_periodo
+            WHERE anio = $1
+            AND mes = $2
+            ORDER BY nombre;
         `);
 
         res.json(resultado.rows);
