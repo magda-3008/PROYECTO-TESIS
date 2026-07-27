@@ -13,7 +13,21 @@ const vistas = {
             { title: "Margen de ganancia bruta esperado (%)", field: "margen_gananciab_esperado", variableHeight: true, formatter: formatoPorcentaje, hozAlign: "center"},
             { title: "Estado", field: "estado", hozAlign: "center" },
             { title: "Existencia inicial", field: "stock_inicial", hozAlign: "center" },
-            { title: "Existencia actual", field: "stock_actual", hozAlign: "center" },
+            { title: "Existencia actual", field: "stock_actual", hozAlign: "center", 
+                formatter: function(cell){
+
+                    const data = cell.getRow().getData();
+
+                    if(
+                        data.nombre === "Chocobanano preparado" ||
+                        data.nombre === "Frappé"
+                    ){
+                        return "—";
+                    }
+
+                    return data.stock_actual;
+                }
+            },
             {
                 title:"Acciones",
                 hozAlign:"center",
