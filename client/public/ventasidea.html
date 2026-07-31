@@ -40,7 +40,11 @@
 
         <!-- Gráfico -->
         <section class="grafico">
-          <canvas id="graficoSemanal"></canvas>
+          <div class="cardGrafico">
+            <h3>Ventas por día</h3>
+
+            <canvas id="graficoSemanal"></canvas>
+          </div>
         </section>
 
         <!-- Tabla -->
@@ -66,6 +70,7 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./JavaScript/ventas.js"></script>
     <script>
       const botones = document.querySelectorAll(".Tab");
 
