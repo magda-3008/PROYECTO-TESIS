@@ -6,14 +6,14 @@ const vistas = {
     inventario: {
         endpoint: "/api/productos",
         columns: [
-            { title: "Nombre del producto", field: "nombre", responsive: 0 },
+            { title: "Nombre del producto", field: "nombre" },
             { title: "Tipo", field: "tipo", hozAlign: "center" },
             { title: "Precio de venta", field: "precio_venta", formatter: formatoMoneda, hozAlign: "center" },
             { title: "Costo de compra/producción", field: "costo", formatter: formatoMoneda, hozAlign: "center" },
             { title: "Margen de ganancia bruta esperado (%)", field: "margen_gananciab_esperado", variableHeight: true, formatter: formatoPorcentaje, hozAlign: "center"},
-            { title: "Estado", field: "estado", hozAlign: "center", responsive: 0 },
+            { title: "Estado", field: "estado", hozAlign: "center" },
             { title: "Existencia inicial", field: "stock_inicial", hozAlign: "center" },
-            { title: "Existencia actual", field: "stock_actual", responsive: 0, hozAlign: "center", 
+            { title: "Existencia actual", field: "stock_actual", hozAlign: "center", 
                 formatter: function(cell){
 
                     const data = cell.getRow().getData();
@@ -32,7 +32,6 @@ const vistas = {
                 title:"Acciones",
                 hozAlign:"center",
                 headerSort:false,
-                responsive: 0,
                 formatter:function(){
                 return `
                     <div class="acciones-tabla">
@@ -97,9 +96,7 @@ const vistas = {
 async function cargarVista(vista){
 
     const configuracion = vistas[vista];
-
     const periodo = document.getElementById("periodoInventario").value;
-
     const [anio, mes] = periodo.split("-");
 
     let endpoint = configuracion.endpoint;
@@ -142,19 +139,13 @@ async function cargarVista(vista){
 
         document.getElementById("tablaProductos").innerHTML = `
             <div class="tabla-error">
-
                 <i class="bi bi-exclamation-triangle-fill"></i>
-
                 <h4>Error al cargar la información</h4>
-
                 <p>Verifica tu conexión o inténtalo nuevamente.</p>
-
                 <button
                     class="btn btn-primary mt-3"
                     onclick="cargarVista('${vista}')">
-
                     Reintentar
-
                 </button>
 
             </div>
@@ -163,30 +154,31 @@ async function cargarVista(vista){
         return;
     }
 
-    tabla = new Tabulator("#tablaProductos",{
-
-        data: datos,
-
-        layout:"fitColumns",
-        responsiveLayout:"collapse",
-        columnHeaderVertAlign:"middle",
-        pagination:true,
-        paginationSize:30,
-        reactiveData:true,
-
-        rowHeader:{
-            formatter:"rownum",
-            width:40,
-            hozAlign:"center",
-            headerSort:false,
-            frozen:true
-        },
-
-        columns:configuracion.columns,
-
-        placeholder:"No se encontraron resultados"
-
+    tabla = new Tabulator("#tablaProductos", {
+  data: datos,
+  layout: "fitColumns", // Intenta ajustar las columnas
+  responsiveLayout: "collapse", // Oculta columnas que no quepan en móviles
+  responsiveLayoutCollapseFormatter: function(rows) {
+    // Genera una lista bonita con los datos ocultos al presionar el botón +
+    let container = document.createElement("div");
+    container.className = "p-2 bg-light rounded border";
+    
+    rows.forEach(function(row) {
+      let item = document.createElement("div");
+      item.className = "py-1 border-bottom d-flex justify-content-between";
+      item.innerHTML = `<strong>${row.getTitle()}:</strong> <span>${row.getValue() ?? '—'}</span>`;
+      container.appendChild(item);
     });
+    
+    return rows.length ? container : "";
+  },
+  columnHeaderVertAlign: "middle",
+  pagination: true,
+  paginationSize: 15, // Reducir un poco el tamaño en móviles para mejor scroll
+  reactiveData: true,
+  columns: configuracion.columns,
+  placeholder: "No se encontraron resultados"
+});
 
     inicializarEventosFiltros(vista);
 
