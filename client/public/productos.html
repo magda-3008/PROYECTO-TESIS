@@ -30,7 +30,8 @@
   </head>
   <body>
     <div class="container-fluid mt-3">
-      <div class="d-flex justify-content-between align-items-center mb-3">
+      <div
+        class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3 mb-3">
         <div>
           <h1>Inventario de productos</h1>
           <p class="text-muted mb-0">
@@ -65,14 +66,18 @@
         </li>
       </ul>
 
-      <div class="mb-3">
-        <input
-          class="form-control"
-          id="buscar"
-          placeholder="Escribe el nombre del producto o busca según el tipo de producto..." />
-      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-12 col-lg-5">
+          <input
+            class="form-control"
+            id="buscar"
+            placeholder="Buscar producto..." />
+        </div>
 
-      <div id="panelFiltros" class="mb-3"></div>
+        <div class="col-12 col-lg-7">
+          <div id="panelFiltros"></div>
+        </div>
+      </div>
 
       <div id="tablaProductos"></div>
     </div>

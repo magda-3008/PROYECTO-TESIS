@@ -6,14 +6,14 @@ const vistas = {
     inventario: {
         endpoint: "/api/productos",
         columns: [
-            { title: "Nombre del producto", field: "nombre" },
+            { title: "Nombre del producto", field: "nombre", responsive: 0 },
             { title: "Tipo", field: "tipo", hozAlign: "center" },
             { title: "Precio de venta", field: "precio_venta", formatter: formatoMoneda, hozAlign: "center" },
             { title: "Costo de compra/producción", field: "costo", formatter: formatoMoneda, hozAlign: "center" },
             { title: "Margen de ganancia bruta esperado (%)", field: "margen_gananciab_esperado", variableHeight: true, formatter: formatoPorcentaje, hozAlign: "center"},
-            { title: "Estado", field: "estado", hozAlign: "center" },
+            { title: "Estado", field: "estado", hozAlign: "center", responsive: 0 },
             { title: "Existencia inicial", field: "stock_inicial", hozAlign: "center" },
-            { title: "Existencia actual", field: "stock_actual", hozAlign: "center", 
+            { title: "Existencia actual", field: "stock_actual", responsive: 0, hozAlign: "center", 
                 formatter: function(cell){
 
                     const data = cell.getRow().getData();
@@ -32,6 +32,7 @@ const vistas = {
                 title:"Acciones",
                 hozAlign:"center",
                 headerSort:false,
+                responsive: 0,
                 formatter:function(){
                 return `
                     <div class="acciones-tabla">
