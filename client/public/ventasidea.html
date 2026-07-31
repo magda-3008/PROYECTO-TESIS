@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>♥ Pa'TuBoca</title>
+    <link rel="stylesheet" href="./CSS/ventasideaestilo.css" />
+    <!-- Fuentes -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap"
+      rel="stylesheet" />
+  </head>
+  <body>
+    <main class="Contenido">
+      <!-- Pestañas -->
+      <section class="Tabs">
+        <button class="Tab activa" data-vista="diaria">Diaria</button>
+        <button class="Tab" data-vista="semanal">Semanal</button>
+        <button class="Tab" data-vista="mensual">Mensual</button>
+      </section>
+
+      <!-- CONTENIDO DIARIO -->
+      <section id="vistaDiaria" class="vista">
+        <!-- Tarjetas -->
+        <section class="Resumen"></section>
+
+        <!-- Tabla -->
+        <section class="Contenedor-tabla"></section>
+      </section>
+
+      <!-- CONTENIDO SEMANAL -->
+      <section id="vistaSemanal" class="vista oculto">
+        <!-- Tarjetas -->
+        <section class="Resumen"></section>
+
+        <!-- Gráfico -->
+        <section class="grafico">
+          <canvas id="graficoSemanal"></canvas>
+        </section>
+
+        <!-- Tabla -->
+        <section class="Contenedor-tabla"></section>
+      </section>
+
+      <!-- CONTENIDO MENSUAL -->
+      <section id="vistaMensual" class="vista oculto">
+        <section class="Resumen"></section>
+
+        <section class="graficos-grid">
+          <div class="cardGrafico">
+            <canvas id="graficoMes"></canvas>
+          </div>
+
+          <div class="cardGrafico">
+            <canvas id="graficoProductos"></canvas>
+          </div>
+        </section>
+
+        <section class="Contenedor-tabla"></section>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const botones = document.querySelectorAll(".Tab");
+
+      const vistas = {
+        diaria: document.getElementById("vistaDiaria"),
+        semanal: document.getElementById("vistaSemanal"),
+        mensual: document.getElementById("vistaMensual"),
+      };
+
+      botones.forEach((boton) => {
+        boton.addEventListener("click", () => {
+          botones.forEach((b) => b.classList.remove("activa"));
+
+          boton.classList.add("activa");
+
+          Object.values(vistas).forEach((v) => v.classList.add("oculto"));
+
+          vistas[boton.dataset.vista].classList.remove("oculto");
+        });
+      });
+    </script>
+  </body>
+</html>
