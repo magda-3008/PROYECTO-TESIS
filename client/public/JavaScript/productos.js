@@ -57,7 +57,6 @@ const vistas = {
             },
 
                 cellClick: function (e, cell) {
-
                 const producto = cell.getRow().getData();
 
                 if (e.target.closest(".btnPerdida")) {
@@ -147,38 +146,32 @@ async function cargarVista(vista){
                     onclick="cargarVista('${vista}')">
                     Reintentar
                 </button>
-
             </div>
         `;
-
         return;
     }
 
-    tabla = new Tabulator("#tablaProductos", {
-  data: datos,
-  layout: "fitColumns", // Intenta ajustar las columnas
-  responsiveLayout: "collapse", // Oculta columnas que no quepan en móviles
-  responsiveLayoutCollapseFormatter: function(rows) {
-    // Genera una lista bonita con los datos ocultos al presionar el botón +
-    let container = document.createElement("div");
-    container.className = "p-2 bg-light rounded border";
-    
-    rows.forEach(function(row) {
-      let item = document.createElement("div");
-      item.className = "py-1 border-bottom d-flex justify-content-between";
-      item.innerHTML = `<strong>${row.getTitle()}:</strong> <span>${row.getValue() ?? '—'}</span>`;
-      container.appendChild(item);
+    tabla = new Tabulator("#tablaProductos",{
+
+        data: datos,
+
+        layout:"fitColumns",
+        responsiveLayout:"collapse",
+        columnHeaderVertAlign:"middle",
+        pagination:true,
+        paginationSize:30,
+        reactiveData:true,
+        rowHeader:{
+            formatter:"rownum",
+            width:40,
+            hozAlign:"center",
+            headerSort:false,
+            frozen:true
+        },
+        columns:configuracion.columns,
+        placeholder:"No se encontraron resultados"
+
     });
-    
-    return rows.length ? container : "";
-  },
-  columnHeaderVertAlign: "middle",
-  pagination: true,
-  paginationSize: 15, // Reducir un poco el tamaño en móviles para mejor scroll
-  reactiveData: true,
-  columns: configuracion.columns,
-  placeholder: "No se encontraron resultados"
-});
 
     inicializarEventosFiltros(vista);
 
@@ -186,21 +179,14 @@ async function cargarVista(vista){
 
 //Cargar periodos
 async function cargarPeriodos() {
-
     const select = document.getElementById("periodoInventario");
-
     try {
-
         const respuesta = await fetch("/api/productos/periodos");
-
         if(!respuesta.ok){
             throw new Error("No se pudieron obtener los períodos.");
         }
-
         const periodos = await respuesta.json();
-
         select.innerHTML = "";
-
         const meses = [
             "",
             "Enero",
@@ -216,25 +202,19 @@ async function cargarPeriodos() {
             "Noviembre",
             "Diciembre"
         ];
-
         periodos.forEach((p, index) => {
-
             const option = document.createElement("option");
-
             option.value = `${p.anio}-${p.mes}`;
-
             option.textContent = `${meses[p.mes]} ${p.anio}`;
 
             if(index === 0){
                 option.selected = true;
             }
-
             select.appendChild(option);
 
         });
 
     } catch (error) {
-
         console.error(error);
 
     }
@@ -251,7 +231,6 @@ function crearFiltros(vista){
             panel.innerHTML = `
             <h3>Filtrar por:</h3>
                 <div class="row g-2">
-
                     <div class="col-md-3">
                         <select id="filtroEstado" class="form-select">
                             <option value="">Todos los estados</option>
@@ -268,10 +247,8 @@ function crearFiltros(vista){
                             <option value="normal">Con stock</option>
                         </select>
                     </div>
-
                 </div>
             `;
-
             break;
 
         case "analisis":
@@ -310,17 +287,14 @@ function crearFiltros(vista){
 function inicializarEventosFiltros(vista){
 
     if(vista === "inventario"){
-
         document.getElementById("filtroEstado")
             .addEventListener("change", aplicarFiltros);
 
         document.getElementById("filtroStock")
             .addEventListener("change", aplicarFiltros);
-
     }
 
     if(vista === "analisis"){
-
         document.getElementById("gananciaMin")
             .addEventListener("input", aplicarFiltros);
 
@@ -335,7 +309,6 @@ function inicializarEventosFiltros(vista){
 }
 
 function aplicarFiltros(){
-
     const texto = document
     .getElementById("buscar")
     .value
@@ -366,15 +339,11 @@ function aplicarFiltros(){
             const stock = document.getElementById("filtroStock")?.value ?? "";
 
             if(coincide && estado){
-
                 coincide = data.estado === estado;
-
             }
 
             if(coincide){
-
                 switch(stock){
-
                     case "0":
                         coincide = Number(data.stock_actual) === 0;
                         break;
@@ -388,7 +357,6 @@ function aplicarFiltros(){
                         break;
 
                 }
-
             }
 
         }
@@ -424,18 +392,14 @@ function aplicarFiltros(){
             }
 
         }
-
         return coincide;
-
     });
 
 }
 
 //cambio de pestañas
 document.querySelectorAll("#tabsProductos .nav-link").forEach(tab=>{
-
     tab.addEventListener("click",()=>{
-
         document
             .querySelector("#tabsProductos .active")
             .classList.remove("active");
@@ -450,9 +414,7 @@ document.querySelectorAll("#tabsProductos .nav-link").forEach(tab=>{
 
 //acciones
 function abrirModalPerdida(producto){
-
     productoSeleccionado = producto;
-
     document.getElementById("nombreProductoPerdida").textContent = producto.nombre;
     document.getElementById("stockActualPerdida").textContent = producto.stock_actual;
     document.getElementById("tipoProductoPerdida").textContent = producto.tipo;
