@@ -182,6 +182,7 @@
       aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
+          <!-- Encabezado -->
           <div class="modal-header">
             <h5 class="modal-title" id="modalEntradaLabel">
               <i class="bi bi-cart-plus me-2 text-success"></i>
@@ -194,6 +195,7 @@
               data-bs-dismiss="modal"></button>
           </div>
 
+          <!-- Cuerpo -->
           <div class="modal-body">
             <!-- Información del producto -->
             <div class="card border-0 bg-light mb-4">
@@ -225,10 +227,17 @@
             </div>
 
             <!-- Tipo de entrada -->
+            <div class="mb-3">
+              <label for="tipoEntrada" class="form-label">
+                Tipo de entrada
+              </label>
 
-            <select id="tipoEntrada" class="form-select">
-              <option value="" selected disabled>Seleccione una opción</option>
-            </select>
+              <select id="tipoEntrada" class="form-select">
+                <option value="" selected disabled>
+                  Seleccione una opción
+                </option>
+              </select>
+            </div>
 
             <!-- Cantidad -->
             <div class="mb-3">
@@ -246,21 +255,23 @@
                 min="1"
                 placeholder="Ingrese la cantidad" />
             </div>
+
+            <!-- Observación -->
+            <div class="mb-3">
+              <label for="observacionEntrada" class="form-label">
+                Observación
+              </label>
+
+              <textarea
+                class="form-control"
+                id="observacionEntrada"
+                rows="2"
+                placeholder="Detalle del movimiento (opcional)">
+              </textarea>
+            </div>
           </div>
 
-          <div class="mb-3">
-            <label for="observacionEntrada" class="form-label">
-              Observación
-            </label>
-
-            <textarea
-              class="form-control"
-              id="observacionEntrada"
-              rows="2"
-              placeholder="Detalle del movimiento (opcional)">
-            </textarea>
-          </div>
-
+          <!-- Pie -->
           <div class="modal-footer">
             <button
               type="button"
