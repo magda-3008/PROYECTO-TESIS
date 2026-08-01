@@ -226,26 +226,16 @@
 
             <!-- Tipo de entrada -->
 
-            <div class="mb-3">
-              <label for="tipoEntrada" class="form-label">
-                Tipo de entrada
-              </label>
-
-              <select id="tipoEntrada" class="form-select">
-                <option value="" selected disabled>
-                  Seleccione una opción
-                </option>
-
-                <option value="Compra">Compra</option>
-                <option value="Producción">Producción</option>
-
-                <option value="Otro">Otro</option>
-              </select>
-            </div>
+            <select id="tipoEntrada" class="form-select">
+              <option value="" selected disabled>Seleccione una opción</option>
+            </select>
 
             <!-- Cantidad -->
             <div class="mb-3">
-              <label for="cantidadEntrada" class="form-label">
+              <label
+                for="cantidadEntrada"
+                class="form-label"
+                id="labelCantidadEntrada">
                 Cantidad ingresada
               </label>
 
@@ -256,6 +246,19 @@
                 min="1"
                 placeholder="Ingrese la cantidad" />
             </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="observacionEntrada" class="form-label">
+              Observación
+            </label>
+
+            <textarea
+              class="form-control"
+              id="observacionEntrada"
+              rows="2"
+              placeholder="Detalle del movimiento (opcional)">
+            </textarea>
           </div>
 
           <div class="modal-footer">

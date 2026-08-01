@@ -412,60 +412,6 @@ document.querySelectorAll("#tabsProductos .nav-link").forEach(tab=>{
 
 });
 
-document.getElementById("tipoEntrada")
-.addEventListener("change", function(){
-
-    const labelCantidad = document.querySelector(
-        'label[for="cantidadEntrada"]'
-    );
-
-    if(this.value === "PRODUCCION"){
-        labelCantidad.textContent = "Cantidad de lotes";
-    }else{
-        labelCantidad.textContent = "Cantidad ingresada";
-    }
-
-});
-
-function configurarTipoEntrada(producto){
-
-    const selectTipo = document.getElementById("tipoEntrada");
-
-    selectTipo.innerHTML = `
-        <option value="" selected disabled>
-            Seleccione una opción
-        </option>
-    `;
-
-    if(producto.tipo === "Reventa"){
-        selectTipo.innerHTML += `
-            <option value="COMPRA">
-                Compra
-            </option>
-            <option value="ENTRADA">
-                Ajuste de inventario
-            </option>
-            <option value="OTRO">
-                Otro
-            </option>
-        `;
-
-    }else if(producto.tipo === "Elaborado"){
-
-        selectTipo.innerHTML += `
-            <option value="PRODUCCION">
-                Producción
-            </option>
-            <option value="ENTRADA">
-                Ajuste de inventario
-            </option>
-            <option value="OTRO">
-                Otro
-            </option>
-        `;
-    }
-}
-
 //acciones
 function abrirModalPerdida(producto){
     productoSeleccionado = producto;
@@ -478,26 +424,6 @@ function abrirModalPerdida(producto){
     );
 
     modal.show();
-}
-
-function abrirModalEntrada(producto){
-
-    productoSeleccionado = producto;
-
-    document.getElementById("nombreProductoEntrada").textContent = producto.nombre;
-    document.getElementById("stockActualEntrada").textContent = producto.stock_actual;
-    document.getElementById("tipoProductoEntrada").textContent = producto.tipo;
-
-
-    configurarTipoEntrada(producto);
-
-
-    const modal = new bootstrap.Modal(
-        document.getElementById("modalEntrada")
-    );
-
-    modal.show();
-
 }
 
 function abrirHistorial(producto){
