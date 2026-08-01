@@ -98,3 +98,5 @@ async function registrarEntrada() {
         mostrarAlerta(error.message, 'danger');
     }
 }
+
+document.getElementById('guardarEntrada').addEventListener('click', registrarEntrada);

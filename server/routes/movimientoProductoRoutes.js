@@ -110,7 +110,7 @@ async function registrarCompra(client, idProducto, cantidad, observacion, anio, 
 async function registrarProduccion(client, idProducto, cantidadLotes, observacion, anio, mes) {
     // 1. Obtener el producto (con bloqueo)
     const resProducto = await client.query(
-        `SELECT id_producto, tipo, unidades_por_lote, stock_actual
+        `SELECT id_producto, tipo, stock_actual
          FROM producto
          WHERE id_producto = $1
          FOR UPDATE`,
@@ -128,11 +128,27 @@ async function registrarProduccion(client, idProducto, cantidadLotes, observacio
         throw new Error("El producto no es de tipo Elaborado. No se puede registrar producción.");
     }
 
-    // 3. Calcular cantidad final = lotes * unidades_por_lote
-    const unidadesPorLote = Number(producto.unidades_por_lote) || 1;
-    const cantidadFinal = cantidadLotes * unidadesPorLote;
+    // 3. Obtener la receta asociada al producto (suponiendo que hay una única receta activa)
+    const resReceta = await client.query(
+        `SELECT id_receta, cantidad_producida_base
+         FROM receta
+         WHERE id_producto = $1
+         ORDER BY id_receta DESC  -- o por fecha de creación, o por algún campo "activa"
+         LIMIT 1`,
+        [idProducto]
+    );
 
-    // 4. Asegurar registro mensual
+    if (resReceta.rows.length === 0) {
+        throw new Error("El producto no tiene una receta asociada. No se puede producir.");
+    }
+
+    const receta = resReceta.rows[0];
+    const cantidadPorLote = Number(receta.cantidad_producida_base) || 1; // unidades por lote
+
+    // 4. Calcular cantidad final = lotes * unidades_por_lote
+    const cantidadFinal = cantidadLotes * cantidadPorLote;
+
+    // 5. Asegurar registro mensual
     await client.query(
         `INSERT INTO inventario_mensual_producto (anio, mes, id_producto, stock_inicial, stock_actual)
          VALUES ($1, $2, $3, $4, $4)
@@ -140,14 +156,14 @@ async function registrarProduccion(client, idProducto, cantidadLotes, observacio
         [anio, mes, idProducto, producto.stock_actual]
     );
 
-    // 5. Registrar movimiento (guardamos la cantidad en lotes y también podríamos guardar la cantidad en unidades, pero usamos la final)
+    // 6. Registrar movimiento (guardamos cantidadFinal en unidades)
     await client.query(
         `INSERT INTO movimiento_producto (id_producto, anio, mes, tipo_movimiento, cantidad, observacion)
          VALUES ($1, $2, $3, $4, $5, $6)`,
         [idProducto, anio, mes, "PRODUCCION", cantidadFinal, observacion || null]
     );
 
-    // 6. Actualizar stock mensual
+    // 7. Actualizar stock mensual
     await client.query(
         `UPDATE inventario_mensual_producto
          SET stock_actual = stock_actual + $1
@@ -155,7 +171,7 @@ async function registrarProduccion(client, idProducto, cantidadLotes, observacio
         [cantidadFinal, anio, mes, idProducto]
     );
 
-    // 7. Actualizar stock global
+    // 8. Actualizar stock global
     await client.query(
         `UPDATE producto
          SET stock_actual = stock_actual + $1
