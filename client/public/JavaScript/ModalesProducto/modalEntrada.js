@@ -1,72 +1,33 @@
-document
-.getElementById("tipoEntrada")
-.addEventListener("change", function(){
+// Mapeo de opciones (los valores son los que espera el backend)
+const opcionesPorTipo = {
+    Reventa: [
+        { value: 'COMPRA', label: 'Compra' },
+        { value: 'ENTRADA', label: 'Ajuste de inventario' },
+        { value: 'ENTRADA', label: 'Otro' }   // ambos usan "ENTRADA"
+    ],
+    Elaborado: [
+        { value: 'PRODUCCION', label: 'Producción' },
+        { value: 'ENTRADA', label: 'Ajuste de inventario' },
+        { value: 'ENTRADA', label: 'Otro' }
+    ]
+};
 
-    const label = document.getElementById(
-        "labelCantidadEntrada"
-    );
-
-
-    if(this.value === "PRODUCCION"){
-
-        label.textContent = "Cantidad de lotes";
-
-    }else{
-
-        label.textContent = "Cantidad ingresada";
-
-    }
-
-});
-
-function cargarTiposEntrada(producto){
-
-    const select = document.getElementById("tipoEntrada");
+function cargarTiposEntrada(producto) {
+    const select = document.getElementById('tipoEntrada');
+    const opciones = opcionesPorTipo[producto.tipo] || [];
 
     select.innerHTML = `
-        <option value="" selected disabled>
-            Seleccione una opción
-        </option>
+        <option value="" selected disabled>Seleccione una opción</option>
+        ${opciones.map(op => `<option value="${op.value}">${op.label}</option>`).join('')}
     `;
-
-
-    if(producto.tipo === "Reventa"){
-
-        select.innerHTML += `
-            <option value="COMPRA">
-                Compra
-            </option>
-
-            <option value="ENTRADA">
-                Ajuste de inventario
-            </option>
-
-            <option value="ENTRADA">
-                Otro
-            </option>
-        `;
-
-    }
-
-
-    if(producto.tipo === "Elaborado"){
-
-        select.innerHTML += `
-            <option value="PRODUCCION">
-                Producción
-            </option>
-
-            <option value="ENTRADA">
-                Ajuste de inventario
-            </option>
-
-            <option value="OTRO">
-                Otro
-            </option>
-        `;
-
-    }
 }
+
+// Cambiar etiqueta
+document.getElementById('tipoEntrada').addEventListener('change', function () {
+    const label = document.getElementById('labelCantidadEntrada');
+    label.textContent = this.value === 'PRODUCCION' ? 'Cantidad de lotes' : 'Cantidad ingresada';
+});
+
 
 function abrirModalEntrada(producto){
     cantidadEntrada.value = "";
@@ -89,40 +50,51 @@ function abrirModalEntrada(producto){
 
 }
 
-const btnGuardarEntrada = document.getElementById("guardarEntrada");
-const tipoEntrada = document.getElementById("tipoEntrada");
-const cantidadEntrada = document.getElementById("cantidadEntrada");
-const observacionEntrada = document.getElementById("observacionEntrada");
-
-btnGuardarEntrada.addEventListener("click", registrarEntrada);
-
 async function registrarEntrada() {
-
     if (!productoSeleccionado) {
-        mostrarAlerta("Debe seleccionar un producto.", "warning");
+        mostrarAlerta('Debe seleccionar un producto.', 'warning');
         return;
     }
 
-    if (!tipoEntrada.value) {
-        mostrarAlerta("Seleccione un tipo de entrada.", "warning");
+    const tipo = document.getElementById('tipoEntrada').value;
+    if (!tipo) {
+        mostrarAlerta('Seleccione un tipo de entrada.', 'warning');
         return;
     }
 
-    const cantidad = Number(cantidadEntrada.value);
-
+    const cantidad = Number(document.getElementById('cantidadEntrada').value);
     if (isNaN(cantidad) || cantidad <= 0) {
-        mostrarAlerta("Ingrese una cantidad válida.", "warning");
+        mostrarAlerta('Ingrese una cantidad válida.', 'warning');
         return;
     }
+
+    const observacion = document.getElementById('observacionEntrada').value.trim();
 
     const movimiento = {
         id_producto: productoSeleccionado.id_producto,
-        tipo_movimiento: tipoEntrada.value,
+        tipo_movimiento: tipo,   // "COMPRA", "PRODUCCION" o "ENTRADA"
         cantidad,
-        observacion: observacionEntrada.value.trim()
+        observacion
+        // No enviamos anio ni mes porque el backend los calcula
     };
 
-    console.log(movimiento);
+    try {
+        const response = await fetch('/api/entrada', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(movimiento)
+        });
 
-    // Aquí luego llamaremos al backend.
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.mensaje || 'Error al registrar');
+
+        mostrarAlerta('Entrada registrada exitosamente.', 'success');
+        // Cerrar modal y actualizar stock (opcional)
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalEntrada'));
+        modal.hide();
+        // Aquí podrías refrescar la tabla de productos
+
+    } catch (error) {
+        mostrarAlerta(error.message, 'danger');
+    }
 }

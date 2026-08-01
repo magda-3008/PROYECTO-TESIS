@@ -8,6 +8,7 @@ const recetaRoutes = require("./routes/recetasRoutes");
 const detalleRecetaRoutes = require("./routes/detalleRecetaRoutes");
 const materiaPrimaRoutes = require("./routes/materiaPrimaRoutes");
 const usuarioRoutes = require("./routes/usuariosRoutes");
+const movimientoProductoRoutes = require("./routes/movimientoProductoRoutes");
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use("/api/recetas", recetaRoutes);
 app.use("/api/detalle_receta", detalleRecetaRoutes);
 app.use("/api/materiaprima", materiaPrimaRoutes);
 app.use("/api/usuarios", usuarioRoutes);
+app.use("/api/entrada", movimientoProductoRoutes)
 
 
 const PORT = process.env.PORT || 3000;
