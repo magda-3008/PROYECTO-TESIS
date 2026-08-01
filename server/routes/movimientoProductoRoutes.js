@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../config/db");
 
+// Ruta principal
 router.post("/", async (req, res) => {
     const client = await pool.connect();
 
@@ -20,6 +21,7 @@ router.post("/", async (req, res) => {
         const anio = ahora.getFullYear();
         const mes = ahora.getMonth() + 1; // 1-12
 
+        // Ejecutar la función según el tipo
         switch (tipo_movimiento) {
             case "COMPRA":
                 await registrarCompra(client, id_producto, cantidad, observacion, anio, mes);
@@ -39,23 +41,18 @@ router.post("/", async (req, res) => {
 
     } catch (error) {
         await client.query("ROLLBACK");
-        console.error(error);
+        console.error("Error en /api/entrada:", error);
         res.status(500).json({ mensaje: error.message });
     } finally {
         client.release();
     }
 });
 
-// ----------------------------
-// FUNCIÓN PARA COMPRA
-// ----------------------------
+// ---------- FUNCIÓN PARA COMPRA ----------
 async function registrarCompra(client, idProducto, cantidad, observacion, anio, mes) {
-    // 1. Obtener el producto (con bloqueo)
+    // 1. Obtener el producto (solo para validar tipo)
     const resProducto = await client.query(
-        `SELECT id_producto, tipo, stock_actual
-         FROM producto
-         WHERE id_producto = $1
-         FOR UPDATE`,
+        `SELECT tipo FROM producto WHERE id_producto = $1 FOR UPDATE`,
         [idProducto]
     );
 
@@ -65,55 +62,42 @@ async function registrarCompra(client, idProducto, cantidad, observacion, anio, 
 
     const producto = resProducto.rows[0];
 
-    // 2. Validar que el producto sea de tipo "Reventa" (las compras solo aplican a reventa)
+    // 2. Validar que sea "Reventa"
     if (producto.tipo !== "Reventa") {
         throw new Error("El producto no es de tipo Reventa. No se puede registrar una compra.");
     }
 
     const cantidadFinal = Number(cantidad);
 
-    // 3. Asegurar que exista el registro mensual (si no existe, se crea con el stock actual)
+    // 3. Asegurar que exista el registro mensual (crea con stock 0 si no existe)
     await client.query(
         `INSERT INTO inventario_mensual_producto (anio, mes, id_producto, stock_inicial, stock_actual)
-         VALUES ($1, $2, $3, $4, $4)
+         VALUES ($1, $2, $3, 0, 0)
          ON CONFLICT (anio, mes, id_producto) DO NOTHING`,
-        [anio, mes, idProducto, producto.stock_actual]
+        [anio, mes, idProducto]
     );
 
-    // 4. Registrar el movimiento detallado
+    // 4. Registrar movimiento
     await client.query(
         `INSERT INTO movimiento_producto (id_producto, anio, mes, tipo_movimiento, cantidad, observacion)
          VALUES ($1, $2, $3, $4, $5, $6)`,
         [idProducto, anio, mes, "COMPRA", cantidadFinal, observacion || null]
     );
 
-    // 5. Actualizar stock mensual
+    // 5. Actualizar stock mensual (sumando la cantidad)
     await client.query(
         `UPDATE inventario_mensual_producto
          SET stock_actual = stock_actual + $1
          WHERE anio = $2 AND mes = $3 AND id_producto = $4`,
         [cantidadFinal, anio, mes, idProducto]
     );
-
-    // 6. Actualizar stock global del producto
-    await client.query(
-        `UPDATE producto
-         SET stock_actual = stock_actual + $1
-         WHERE id_producto = $2`,
-        [cantidadFinal, idProducto]
-    );
 }
 
-// ----------------------------
-// FUNCIÓN PARA PRODUCCIÓN
-// ----------------------------
+// ---------- FUNCIÓN PARA PRODUCCIÓN ----------
 async function registrarProduccion(client, idProducto, cantidadLotes, observacion, anio, mes) {
-    // 1. Obtener el producto (con bloqueo)
+    // 1. Obtener producto y su receta
     const resProducto = await client.query(
-        `SELECT id_producto, tipo, stock_actual
-         FROM producto
-         WHERE id_producto = $1
-         FOR UPDATE`,
+        `SELECT tipo FROM producto WHERE id_producto = $1 FOR UPDATE`,
         [idProducto]
     );
 
@@ -123,73 +107,56 @@ async function registrarProduccion(client, idProducto, cantidadLotes, observacio
 
     const producto = resProducto.rows[0];
 
-    // 2. Validar que el producto sea "Elaborado"
+    // 2. Validar que sea "Elaborado"
     if (producto.tipo !== "Elaborado") {
         throw new Error("El producto no es de tipo Elaborado. No se puede registrar producción.");
     }
 
-    // 3. Obtener la receta asociada al producto (suponiendo que hay una única receta activa)
+    // 3. Obtener la receta (cantidad_producida_base)
     const resReceta = await client.query(
-        `SELECT id_receta, cantidad_producida_base
+        `SELECT cantidad_producida_base
          FROM receta
          WHERE id_producto = $1
-         ORDER BY id_receta DESC  -- o por fecha de creación, o por algún campo "activa"
          LIMIT 1`,
         [idProducto]
     );
 
     if (resReceta.rows.length === 0) {
-        throw new Error("El producto no tiene una receta asociada. No se puede producir.");
+        throw new Error("El producto no tiene una receta asociada.");
     }
 
-    const receta = resReceta.rows[0];
-    const cantidadPorLote = Number(receta.cantidad_producida_base) || 1; // unidades por lote
+    const cantidadProducidaBase = Number(resReceta.rows[0].cantidad_producida_base) || 1;
+    const cantidadFinal = cantidadLotes * cantidadProducidaBase;
 
-    // 4. Calcular cantidad final = lotes * unidades_por_lote
-    const cantidadFinal = cantidadLotes * cantidadPorLote;
-
-    // 5. Asegurar registro mensual
+    // 4. Asegurar registro mensual
     await client.query(
         `INSERT INTO inventario_mensual_producto (anio, mes, id_producto, stock_inicial, stock_actual)
-         VALUES ($1, $2, $3, $4, $4)
+         VALUES ($1, $2, $3, 0, 0)
          ON CONFLICT (anio, mes, id_producto) DO NOTHING`,
-        [anio, mes, idProducto, producto.stock_actual]
+        [anio, mes, idProducto]
     );
 
-    // 6. Registrar movimiento (guardamos cantidadFinal en unidades)
+    // 5. Registrar movimiento
     await client.query(
         `INSERT INTO movimiento_producto (id_producto, anio, mes, tipo_movimiento, cantidad, observacion)
          VALUES ($1, $2, $3, $4, $5, $6)`,
         [idProducto, anio, mes, "PRODUCCION", cantidadFinal, observacion || null]
     );
 
-    // 7. Actualizar stock mensual
+    // 6. Actualizar stock mensual
     await client.query(
         `UPDATE inventario_mensual_producto
          SET stock_actual = stock_actual + $1
          WHERE anio = $2 AND mes = $3 AND id_producto = $4`,
         [cantidadFinal, anio, mes, idProducto]
     );
-
-    // 8. Actualizar stock global
-    await client.query(
-        `UPDATE producto
-         SET stock_actual = stock_actual + $1
-         WHERE id_producto = $2`,
-        [cantidadFinal, idProducto]
-    );
 }
 
-// ----------------------------
-// FUNCIÓN PARA ENTRADA (ajuste de inventario / otro)
-// ----------------------------
+// ---------- FUNCIÓN PARA ENTRADA (Ajuste/Otro) ----------
 async function registrarEntrada(client, idProducto, cantidad, observacion, anio, mes) {
-    // 1. Obtener el producto (con bloqueo)
+    // 1. Verificar que el producto exista
     const resProducto = await client.query(
-        `SELECT id_producto, stock_actual
-         FROM producto
-         WHERE id_producto = $1
-         FOR UPDATE`,
+        `SELECT id_producto FROM producto WHERE id_producto = $1 FOR UPDATE`,
         [idProducto]
     );
 
@@ -197,15 +164,14 @@ async function registrarEntrada(client, idProducto, cantidad, observacion, anio,
         throw new Error("Producto no encontrado.");
     }
 
-    const producto = resProducto.rows[0];
     const cantidadFinal = Number(cantidad);
 
     // 2. Asegurar registro mensual
     await client.query(
         `INSERT INTO inventario_mensual_producto (anio, mes, id_producto, stock_inicial, stock_actual)
-         VALUES ($1, $2, $3, $4, $4)
+         VALUES ($1, $2, $3, 0, 0)
          ON CONFLICT (anio, mes, id_producto) DO NOTHING`,
-        [anio, mes, idProducto, producto.stock_actual]
+        [anio, mes, idProducto]
     );
 
     // 3. Registrar movimiento
@@ -221,14 +187,6 @@ async function registrarEntrada(client, idProducto, cantidad, observacion, anio,
          SET stock_actual = stock_actual + $1
          WHERE anio = $2 AND mes = $3 AND id_producto = $4`,
         [cantidadFinal, anio, mes, idProducto]
-    );
-
-    // 5. Actualizar stock global
-    await client.query(
-        `UPDATE producto
-         SET stock_actual = stock_actual + $1
-         WHERE id_producto = $2`,
-        [cantidadFinal, idProducto]
     );
 }
 

@@ -1,3 +1,26 @@
+// ===== FUNCIÓN PARA MOSTRAR ALERTAS =====
+function mostrarAlerta(mensaje, tipo = 'info') {
+    // Si tienes un contenedor específico para alertas en tu HTML
+    const alertContainer = document.getElementById('alertaContainer');
+    if (alertContainer) {
+        const alertHtml = `
+            <div class="alert alert-${tipo} alert-dismissible fade show" role="alert">
+                ${mensaje}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+        alertContainer.innerHTML = alertHtml;
+        // Auto-cerrar después de 5 segundos
+        setTimeout(() => {
+            const alert = alertContainer.querySelector('.alert');
+            if (alert) alert.remove();
+        }, 5000);
+    } else {
+        // Fallback: si no hay contenedor, usa alert nativo
+        alert(mensaje);
+    }
+}
+
 // Mapeo de opciones (los valores son los que espera el backend)
 const opcionesPorTipo = {
     Reventa: [
