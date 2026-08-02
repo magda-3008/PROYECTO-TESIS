@@ -1,4 +1,4 @@
-function abrirHistorial(producto){
+async function abrirHistorial(producto){
      try {
 
         const respuesta = await fetch(
