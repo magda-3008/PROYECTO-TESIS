@@ -1,5 +1,17 @@
 function abrirHistorial(producto){
+     try {
 
-    console.log(producto);
+        const respuesta = await fetch(
+            `/api/movimientos/${idProducto}`
+        );
 
+        const movimientos = await respuesta.json();
+
+        console.log(movimientos);
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
 }

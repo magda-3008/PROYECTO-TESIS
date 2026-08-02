@@ -9,6 +9,7 @@ const detalleRecetaRoutes = require("./routes/detalleRecetaRoutes");
 const materiaPrimaRoutes = require("./routes/materiaPrimaRoutes");
 const usuarioRoutes = require("./routes/usuariosRoutes");
 const movimientoProductoRoutes = require("./routes/movimientoProductoRoutes");
+const movimientoHistorial = require("./routes/movimientosHistorial");
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use("/api/detalle_receta", detalleRecetaRoutes);
 app.use("/api/materiaprima", materiaPrimaRoutes);
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/entrada", movimientoProductoRoutes)
+app.use("/api/historial", movimientoHistorial)
 
 
 const PORT = process.env.PORT || 3000;
