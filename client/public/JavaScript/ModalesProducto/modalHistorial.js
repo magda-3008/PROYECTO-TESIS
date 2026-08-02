@@ -2,7 +2,7 @@ async function abrirHistorial(producto){
      try {
 
         const respuesta = await fetch(
-            `/api/movimientos/${idProducto}`
+            `/api/movimientos/${producto.id_producto}`
         );
 
         const movimientos = await respuesta.json();
