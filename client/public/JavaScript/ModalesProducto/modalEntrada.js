@@ -1,26 +1,3 @@
-// ===== FUNCIÓN PARA MOSTRAR ALERTAS =====
-function mostrarAlerta(mensaje, tipo = 'info') {
-    // Si tienes un contenedor específico para alertas en tu HTML
-    const alertContainer = document.getElementById('alertaContainer');
-    if (alertContainer) {
-        const alertHtml = `
-            <div class="alert alert-${tipo} alert-dismissible fade show" role="alert">
-                ${mensaje}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        `;
-        alertContainer.innerHTML = alertHtml;
-        // Auto-cerrar después de 5 segundos
-        setTimeout(() => {
-            const alert = alertContainer.querySelector('.alert');
-            if (alert) alert.remove();
-        }, 5000);
-    } else {
-        // Fallback: si no hay contenedor, usa alert nativo
-        alert(mensaje);
-    }
-}
-
 // Mapeo de opciones (los valores son los que espera el backend)
 const opcionesPorTipo = {
     Reventa: [
@@ -64,7 +41,6 @@ function abrirModalEntrada(producto){
 
     cargarTiposEntrada(producto);
 
-
     const modal = new bootstrap.Modal(
         document.getElementById("modalEntrada")
     );
@@ -73,32 +49,54 @@ function abrirModalEntrada(producto){
 
 }
 
+// Helper para limpiar todos los mensajes de error
+function limpiarErroresModal() {
+    document.querySelectorAll('#modalEntrada .error-msg').forEach(el => el.textContent = '');
+    document.querySelectorAll('#modalEntrada .is-invalid').forEach(el => el.classList.remove('is-invalid'));
+}
+
+// Helper para mostrar error en un campo específico
+function mostrarErrorCampo(idInput, idError, mensaje) {
+    const input = document.getElementById(idInput);
+    const errorEl = document.getElementById(idError);
+    
+    if (input) input.classList.add('is-invalid');
+    if (errorEl) errorEl.textContent = mensaje;
+}
+
 async function registrarEntrada() {
+    limpiarErroresModal();
+    let esValido = true;
+
+    // Validaciones inline
     if (!productoSeleccionado) {
-        mostrarAlerta('Debe seleccionar un producto.', 'warning');
+        document.getElementById('errorGeneral').textContent = 'Debe seleccionar un producto.';
         return;
     }
 
-    const tipo = document.getElementById('tipoEntrada').value;
+    const tipoInput = document.getElementById('tipoEntrada');
+    const tipo = tipoInput.value;
     if (!tipo) {
-        mostrarAlerta('Seleccione un tipo de entrada.', 'warning');
-        return;
+        mostrarErrorCampo('tipoEntrada', 'errorTipo', 'Seleccione un tipo de entrada.');
+        esValido = false;
     }
 
-    const cantidad = Number(document.getElementById('cantidadEntrada').value);
+    const cantidadInput = document.getElementById('cantidadEntrada');
+    const cantidad = Number(cantidadInput.value);
     if (isNaN(cantidad) || cantidad <= 0) {
-        mostrarAlerta('Ingrese una cantidad válida.', 'warning');
-        return;
+        mostrarErrorCampo('cantidadEntrada', 'errorCantidad', 'Ingrese una cantidad válida mayor a 0.');
+        esValido = false;
     }
+
+    if (!esValido) return;
 
     const observacion = document.getElementById('observacionEntrada').value.trim();
 
     const movimiento = {
         id_producto: productoSeleccionado.id_producto,
-        tipo_movimiento: tipo,   // "COMPRA", "PRODUCCION" o "ENTRADA"
+        tipo_movimiento: tipo,
         cantidad,
         observacion
-        // No enviamos anio ni mes porque el backend los calcula
     };
 
     try {
@@ -109,17 +107,36 @@ async function registrarEntrada() {
         });
 
         const data = await response.json();
-        if (!response.ok) throw new Error(data.mensaje || 'Error al registrar');
+        if (!response.ok) throw new Error(data.mensaje || 'Error al registrar el movimiento.');
 
-        mostrarAlerta('Entrada registrada exitosamente.', 'success');
-        // Cerrar modal y actualizar stock (opcional)
-        const modal = bootstrap.Modal.getInstance(document.getElementById('modalEntrada'));
-        modal.hide();
-        // Aquí podrías refrescar la tabla de productos
+        // Limpiar campos del formulario
+        document.getElementById('formEntrada').reset();
+
+        // Cerrar Modal
+        const modalEl = document.getElementById('modalEntrada');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+
+        // Actualización de tabla:
+        // Opción A: al mantener una función que carga el inventario desde el backend
+        if (typeof cargarProductos === 'function') {
+            await cargarProductos();
+        } 
+        // Opción B: actualización local en memoria
+        else if (productoSeleccionado && typeof renderizarFilaProducto === 'function') {
+            productoSeleccionado.stock += cantidad;
+            renderizarFilaProducto(productoSeleccionado);
+        }
 
     } catch (error) {
-        mostrarAlerta(error.message, 'danger');
+        document.getElementById('errorGeneral').textContent = error.message;
     }
+}
+
+// Limpiar errores automáticamente cuando el usuario abre o cierra el modal
+const modalEntrada = document.getElementById('modalEntrada');
+if (modalEntrada) {
+    modalEntrada.addEventListener('hidden.bs.modal', limpiarErroresModal);
 }
 
 document.getElementById('guardarEntrada').addEventListener('click', registrarEntrada);

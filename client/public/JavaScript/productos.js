@@ -35,22 +35,17 @@ const vistas = {
                 formatter:function(){
                 return `
                     <div class="acciones-tabla">
-
-                        <button class="btnAccion btnPerdida"
-                                title="Registrar pérdida">
+                        <button class="btnAccion btnPerdida" title="Registrar pérdida">
                             <i class="bi bi-cart-dash"></i>
                         </button>
 
-                        <button class="btnAccion btnEntrada"
-                                title="Registrar entrada">
+                        <button class="btnAccion btnEntrada" title="Registrar entrada">
                             <i class="bi bi-cart-plus"></i>
                         </button>
 
-                        <button class="btnAccion btnHistorial"
-                                title="Ver historial">
+                        <button class="btnAccion btnHistorial" title="Ver historial">
                             <i class="bi bi-clock-history"></i>
                         </button>
-
                     </div>
                 `;
 
@@ -141,9 +136,7 @@ async function cargarVista(vista){
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 <h4>Error al cargar la información</h4>
                 <p>Verifica tu conexión o inténtalo nuevamente.</p>
-                <button
-                    class="btn btn-primary mt-3"
-                    onclick="cargarVista('${vista}')">
+                <button class="btn btn-primary mt-3" onclick="cargarVista('${vista}')">
                     Reintentar
                 </button>
             </div>
@@ -216,9 +209,7 @@ async function cargarPeriodos() {
 
     } catch (error) {
         console.error(error);
-
     }
-
 }
 
 //crear filtros
@@ -256,19 +247,11 @@ function crearFiltros(vista){
             <h3>Filtrar por:</h3>
                 <div class="row g-2">
                     <div class="col-md-3">
-                        <input
-                            id="gananciaMin"
-                            type="number"
-                            class="form-control"
-                            placeholder="Ganancia mínima">
+                        <input id="gananciaMin" type="number" class="form-control" placeholder="Ganancia mínima">
                     </div>
 
                     <div class="col-md-3">
-                        <input
-                            id="gananciaMax"
-                            type="number"
-                            class="form-control"
-                            placeholder="Ganancia máxima">
+                        <input id="gananciaMax" type="number" class="form-control" placeholder="Ganancia máxima">
                     </div>
 
                     <div class="col-md-3">
@@ -324,13 +307,11 @@ function aplicarFiltros(){
 
         // Buscador
         if(texto){
-
             coincide = Object.values(data).some(valor =>
                 String(valor)
                     .toLowerCase()
                     .includes(texto)
             );
-
         }
 
         if(vistaActual === "inventario"){
@@ -368,7 +349,6 @@ function aplicarFiltros(){
             const precio = document.getElementById("filtroPrecio")?.value ?? "";
 
             if(coincide){
-
                 coincide =
                     Number(data.ganancia_real_cordobas) >= min &&
                     Number(data.ganancia_real_cordobas) <= max;
@@ -376,7 +356,6 @@ function aplicarFiltros(){
             }
 
             if(coincide && precio === "mayor"){
-
                 coincide =
                     Number(data.precio_venta_sugerido) >
                     Number(data.precio_venta_actual);
@@ -384,11 +363,9 @@ function aplicarFiltros(){
             }
 
             if(coincide && precio === "menor"){
-
                 coincide =
                     Number(data.precio_venta_sugerido) <
                     Number(data.precio_venta_actual);
-
             }
 
         }

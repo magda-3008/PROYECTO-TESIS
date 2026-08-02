@@ -1,7 +1,6 @@
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault(); 
 
-    // Capturamos los datos de los inputs
     const nombre_usuario = document.getElementById('username').value;
     const contrasena = document.getElementById('password').value;
     const mensajeLogin = document.getElementById("mensajeLogin");
