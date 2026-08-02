@@ -109,9 +109,6 @@ async function registrarEntrada() {
         const data = await response.json();
         if (!response.ok) throw new Error(data.mensaje || 'Error al registrar el movimiento.');
 
-        // Limpiar campos del formulario
-        document.getElementById('formEntrada').value = '';
-
         // Cerrar Modal
         const modalEl = document.getElementById('modalEntrada');
         const modal = bootstrap.Modal.getInstance(modalEl);
