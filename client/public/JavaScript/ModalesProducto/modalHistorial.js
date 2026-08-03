@@ -9,7 +9,7 @@ async function abrirHistorial(producto) {
 	const tbody = document.getElementById('tablaMovimientos');
 	tbody.innerHTML = '';
 	try {
-		const respuesta = await fetch(`/api/movimientos/${producto.id_producto}`);
+		const respuesta = await fetch(`/api/historial/${producto.id_producto}`);
 		if (!respuesta.ok) {
 			const errorData = await respuesta.json();
 			throw new Error(errorData.mensaje || 'Error al cargar el historial');
