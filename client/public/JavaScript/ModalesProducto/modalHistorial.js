@@ -7,9 +7,11 @@ async function abrirHistorial(producto) {
 	cargando.classList.remove('d-none');
 	// Limpiar tabla anterior
 	const tbody = document.getElementById('tablaMovimientos');
+	const anio = document.getElementById("anioInventario").value;
+	const mes = document.getElementById("mesInventario").value;
 	tbody.innerHTML = '';
 	try {
-		const respuesta = await fetch(`/api/historial/${producto.id_producto}`);
+		const respuesta = await fetch(`/api/historial/${producto.id_producto}?anio=${anio}&mes=${mes}`);
 		if (!respuesta.ok) {
 			const errorData = await respuesta.json();
 			throw new Error(errorData.mensaje || 'Error al cargar el historial');
@@ -17,14 +19,15 @@ async function abrirHistorial(producto) {
 		const movimientos = await respuesta.json();
 		// Ocultar indicador de carga
 		cargando.classList.add('d-none');
-		if (movimientos.length === 0) {
+		if (!movimientos || movimientos.length === 0) {
 			tbody.innerHTML = `
-                <tr>
-                    <td colspan="4" class="text-center text-muted">
-                        No hay movimientos registrados para este producto.
-                    </td>
-                </tr>
-            `;
+        <tr>
+            <td colspan="4" class="text-center text-muted py-4">
+                <i class="bi bi-clock-history fs-4 d-block mb-2"></i>
+                Aún no hay movimientos registrados este mes.
+            </td>
+        </tr>
+    `;
 			return;
 		}
 		// Renderizar los movimientos
