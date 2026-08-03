@@ -1,9 +1,3 @@
-document.addEventListener("DOMContentLoaded", async () => {
-
-    await cargarModales();
-
-});
-
 let tabla = null;
 let productoSeleccionado = null;
 
