@@ -7,8 +7,8 @@ async function abrirHistorial(producto) {
 	cargando.classList.remove('d-none');
 	// Limpiar tabla anterior
 	const tbody = document.getElementById('tablaMovimientos');
-	const anio = document.getElementById("anioInventario").value;
-	const mes = document.getElementById("mesInventario").value;
+	const periodo = document.getElementById("periodoInventario").value;
+	const [anio, mes] = periodo.split("-");
 	tbody.innerHTML = '';
 	try {
 		const respuesta = await fetch(`/api/historial/${producto.id_producto}?anio=${anio}&mes=${mes}`);
