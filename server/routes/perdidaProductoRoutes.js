@@ -37,34 +37,37 @@ router.post("/", async (req, res) => {
 });
 // ---------- PÉRDIDA ----------
 async function registrarPerdida(client, idProducto, cantidad, observacion, anio, mes) {
-	// 1. Consultar el producto con su costo_unitario y stock_actual con bloqueo FOR UPDATE
-	const resProducto = await client.query(`SELECT id_producto, costo_unitario 
-         FROM producto 
-         WHERE id_producto = $1 FOR UPDATE`,
+	const cantidadRestar = Number(cantidad);
+	// 1. Bloquear la fila en la tabla base producto para evitar condiciones de carrera
+	const resLock = await client.query(`SELECT id_producto FROM producto WHERE id_producto = $1 FOR UPDATE`,
 		[idProducto]);
-	if (resProducto.rows.length === 0) {
+	if (resLock.rows.length === 0) {
 		throw new Error("Producto no encontrado.");
 	}
-	const producto = resProducto.rows[0];
-	const cantidadRestar = Number(cantidad);
-	// 2. Garantizar que existe el registro en inventario_mensual_producto
-	await client.query(`INSERT INTO inventario_mensual_producto (anio, mes, id_producto, stock_inicial, stock_actual)
-         VALUES ($1, $2, $3, $4, $4)
-         ON CONFLICT (anio, mes, id_producto) DO NOTHING`,
-		[anio, mes, idProducto, producto.stock_actual]);
-	// 3. Consultar stock disponible en el mes para validar antes de restar
+	// 2. Obtener el costo unitario actual desde la vista / JOINs
+	const resCosto = await client.query(`SELECT COALESCE(v.costo_unitario_prod, pr.costo_compra, 0) AS costo_unitario
+         FROM producto p
+         LEFT JOIN producto_reventa pr ON p.id_producto = pr.id_producto
+         LEFT JOIN v_productos_elaborados_costo_actual v ON p.id_producto = v.id_producto
+         WHERE p.id_producto = $1`,
+		[idProducto]);
+	const costoUnitarioCongelado = Number(resCosto.rows[0]?.costo_unitario) || 0.00;
+	// 3. Consultar y bloquear el registro del inventario mensual
 	const resMensual = await client.query(`SELECT stock_actual 
          FROM inventario_mensual_producto 
-         WHERE anio = $1 AND mes = $2 AND id_producto = $3 FOR UPDATE`,
+         WHERE anio = $1 AND mes = $2 AND id_producto = $3 
+         FOR UPDATE`,
 		[anio, mes, idProducto]);
+	if (resMensual.rows.length === 0) {
+		throw new Error(`No existe un registro de inventario para el período ${mes}/${anio}.`);
+	}
 	const stockMesActual = Number(resMensual.rows[0].stock_actual);
+	// 4. Validar disponibilidad de stock
 	if (stockMesActual < cantidadRestar) {
 		throw new Error(`Stock insuficiente en este período. Disponible: ${stockMesActual}`);
 	}
-	// 4. Obtener/Congelar costos unitarios y calcular total
-	const costoUnitarioCongelado = Number(producto.costo_unitario) || 0.00;
+	// 5. Registrar el movimiento de PERDIDA con el costo congelado
 	const costoTotalPerdida = cantidadRestar * costoUnitarioCongelado;
-	// 5. Registrar en movimiento_producto con el costo "congelado"
 	await client.query(`INSERT INTO movimiento_producto 
             (id_producto, anio, mes, tipo_movimiento, cantidad, costo_unitario, costo_total, observacion)
          VALUES ($1, $2, $3, 'PERDIDA', $4, $5, $6, $7)`,
@@ -77,15 +80,10 @@ async function registrarPerdida(client, idProducto, cantidad, observacion, anio,
 			costoTotalPerdida,
 			observacion || null
 		]);
-	// 6. Restar del stock mensual
+	// 6. Restar la cantidad del stock del mes indicado
 	await client.query(`UPDATE inventario_mensual_producto
          SET stock_actual = stock_actual - $1
          WHERE anio = $2 AND mes = $3 AND id_producto = $4`,
 		[cantidadRestar, anio, mes, idProducto]);
-	// 7. Restar del stock global de la tabla producto
-	await client.query(`UPDATE producto
-         SET stock_actual = stock_actual - $1
-         WHERE id_producto = $2`,
-		[cantidadRestar, idProducto]);
 }
 module.exports = router;
