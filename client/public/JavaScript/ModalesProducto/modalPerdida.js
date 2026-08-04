@@ -1,5 +1,3 @@
-let productoSeleccionado = null;
-
 function abrirModalPerdida(producto) {
 	limpiarErroresModalPerdida();
 	productoSeleccionado = producto;

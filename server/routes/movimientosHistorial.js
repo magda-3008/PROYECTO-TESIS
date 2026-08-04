@@ -20,6 +20,8 @@ router.get("/:id_producto", async (req, res) => {
                 mp.mes,
                 mp.tipo_movimiento,
                 mp.cantidad,
+                mp.costo_unitario,
+                mp.costo_total,
                 mp.observacion
             FROM movimiento_producto mp
             INNER JOIN producto p

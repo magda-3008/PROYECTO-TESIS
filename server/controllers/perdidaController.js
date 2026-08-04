@@ -15,7 +15,8 @@ const registrarPerdidaProducto = async (req, res) => {
 			});
 		}
 		await client.query('BEGIN');
-		const resProducto = await client.query(`SELECT id_producto, stock_actual 
+		// Obtener producto con su costo_unitario actual y bloqueo
+		const resProducto = await client.query(`SELECT id_producto, stock_actual, costo_unitario 
              FROM producto 
              WHERE id_producto = $1 FOR UPDATE`,
 			[id_producto]);
@@ -26,38 +27,38 @@ const registrarPerdidaProducto = async (req, res) => {
 			});
 		}
 		const producto = resProducto.rows[0];
-		// Validar que haya suficiente stock global
+		// Validar stock disponible
 		if (Number(producto.stock_actual) < cantidad) {
 			await client.query('ROLLBACK');
 			return res.status(400).json({
 				error: `Stock insuficiente. Disponible: ${producto.stock_actual}`
 			});
 		}
-		const queryUpsertInventarioMensual = `
+		// Obtener/Congelar costo unitario y calcular costo total de la pérdida
+		const costoUnitarioCongelado = Number(producto.costo_unitario) || 0.00;
+		const costoTotalPerdida = cantidad * costoUnitarioCongelado;
+		// Asegurar fila del mes en inventario_mensual_producto
+		const queryUpsertMensual = `
             INSERT INTO inventario_mensual_producto (anio, mes, id_producto, stock_inicial, stock_actual)
             VALUES ($1, $2, $3, $4, $4)
             ON CONFLICT (anio, mes, id_producto) 
             DO UPDATE SET id_producto = EXCLUDED.id_producto
             RETURNING stock_actual;
         `;
-		const resMensualPrevio = await client.query(queryUpsertInventarioMensual, [
-			anio,
-			mes,
-			id_producto,
-			producto.stock_actual
+		const resMensual = await client.query(queryUpsertMensual, [
+			anio, mes, id_producto, producto.stock_actual
 		]);
-		// Validar stock en el mes seleccionado
-		if (Number(resMensualPrevio.rows[0].stock_actual) < cantidad) {
+		if (Number(resMensual.rows[0].stock_actual) < cantidad) {
 			await client.query('ROLLBACK');
 			return res.status(400).json({
-				error: "El stock mensual registrado no es suficiente para cubrir la pérdida."
+				error: "El stock registrado en el mes no cubre la cantidad a descontar."
 			});
 		}
-		// Registrar el movimiento de PERDIDA
+		// Insertar movimiento GUARDANDO el costo unitario y total independientemente
 		const queryMovimiento = `
             INSERT INTO movimiento_producto 
-                (id_producto, anio, mes, tipo_movimiento, cantidad, observacion)
-            VALUES ($1, $2, $3, 'PERDIDA', $4, $5)
+                (id_producto, anio, mes, tipo_movimiento, cantidad, costo_unitario, costo_total, observacion)
+            VALUES ($1, $2, $3, 'PERDIDA', $4, $5, $6, $7)
             RETURNING *;
         `;
 		const resMovimiento = await client.query(queryMovimiento, [
@@ -65,33 +66,24 @@ const registrarPerdidaProducto = async (req, res) => {
 			anio,
 			mes,
 			cantidad,
+			costoUnitarioCongelado,
+			costoTotalPerdida,
 			observacion
 		]);
-		// Restar stock del mes actual
-		const queryUpdateStockMensual = `
-            UPDATE inventario_mensual_producto 
-            SET stock_actual = stock_actual - $1 
-            WHERE anio = $2 AND mes = $3 AND id_producto = $4
-            RETURNING stock_actual;
-        `;
-		const resStockMensual = await client.query(queryUpdateStockMensual, [
-			cantidad,
-			anio,
-			mes,
-			id_producto
-		]);
-		// Restar stock global del producto
-		const queryUpdateStockGlobal = `
-            UPDATE producto 
-            SET stock_actual = stock_actual - $1 
-            WHERE id_producto = $2;
-        `;
-		await client.query(queryUpdateStockGlobal, [cantidad, id_producto]);
+		// Descontar del inventario mensual
+		await client.query(`UPDATE inventario_mensual_producto 
+             SET stock_actual = stock_actual - $1 
+             WHERE anio = $2 AND mes = $3 AND id_producto = $4`,
+			[cantidad, anio, mes, id_producto]);
+		// Descontar del stock global
+		await client.query(`UPDATE producto 
+             SET stock_actual = stock_actual - $1 
+             WHERE id_producto = $2`,
+			[cantidad, id_producto]);
 		await client.query('COMMIT');
 		return res.status(201).json({
-			mensaje: "Pérdida registrada exitosamente.",
-			movimiento: resMovimiento.rows[0],
-			stock_mes_actual: resStockMensual.rows[0].stock_actual
+			mensaje: "Pérdida registrada exitosamente con su costo valorizado.",
+			movimiento: resMovimiento.rows[0]
 		});
 	} catch (error) {
 		await client.query('ROLLBACK');
