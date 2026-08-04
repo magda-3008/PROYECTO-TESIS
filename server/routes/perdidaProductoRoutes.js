@@ -38,7 +38,7 @@ router.post("/", async (req, res) => {
 // ---------- PÉRDIDA ----------
 async function registrarPerdida(client, idProducto, cantidad, observacion, anio, mes) {
 	// 1. Consultar el producto con su costo_unitario y stock_actual con bloqueo FOR UPDATE
-	const resProducto = await client.query(`SELECT id_producto, stock_actual, costo_unitario 
+	const resProducto = await client.query(`SELECT id_producto, costo_unitario 
          FROM producto 
          WHERE id_producto = $1 FOR UPDATE`,
 		[idProducto]);
