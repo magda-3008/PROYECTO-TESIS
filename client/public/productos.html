@@ -123,6 +123,8 @@
                 id="cantidadPerdida"
                 min="1"
                 placeholder="Ingrese la cantidad" />
+
+              <div id="errorCantidadPerdida" class="invalid-feedback"></div>
             </div>
             <!-- Motivo -->
             <div class="mb-3">
@@ -132,8 +134,13 @@
                 class="form-control"
                 rows="4"
                 placeholder="Describe la razón de la pérdida"></textarea>
+
+              <div id="errorMotivoPerdida" class="invalid-feedback"></div>
             </div>
           </div>
+
+          <div id="errorGeneralPerdida" class="text-danger small mt-2"></div>
+
           <div class="modal-footer">
             <button
               type="button"

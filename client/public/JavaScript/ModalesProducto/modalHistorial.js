@@ -28,7 +28,7 @@ async function abrirHistorial(producto) {
 				<tr>
 					<td colspan="4" class="text-center text-muted py-4">
 						<i class="bi bi-clock-history fs-4 d-block mb-2"></i>
-						Aún no hay movimientos registrados este mes.
+						No hay movimientos registrados este mes para este producto.
 					</td>
 				</tr>
 			`;
