@@ -33,8 +33,6 @@ async function abrirHistorial(producto) {
                 </tr>
             `;
 		} else {
-			// Ahora usamos la función global de utilidades (ya no definimos una interna)
-			// Asegúrate de que 'formatearValorMoneda' esté disponible en este ámbito
 			movimientos.forEach(mov => {
 				// Formatear fecha
 				let fecha = 'Sin fecha';
@@ -62,19 +60,14 @@ async function abrirHistorial(producto) {
 						break;
 					case 'ENTRADA':
 						tipoBadge = '<span class="badge bg-info text-dark">Ajuste +</span>';
-						// No mostramos monto para entradas (o podrías mostrar el costo si aplica)
 						montoTexto = '—';
 						break;
 					case 'PERDIDA':
 						tipoBadge = '<span class="badge bg-danger">Pérdida</span>';
-						// Mostramos el valor absoluto con signo negativo usando el formateador
-						// Si 'costo_total' ya viene negativo, usa directamente formatearValorMoneda(mov.costo_total)
-						// Si viene positivo, le anteponemos el signo menos
 						const valorPerdida = Number(mov.costo_total);
 						if (!isNaN(valorPerdida) && valorPerdida > 0) {
 							montoTexto = `<span class="text-danger font-monospace">${formatoMoneda(-valorPerdida)}</span>`;
 						} else {
-							// Si ya es negativo, lo formateamos tal cual (se mostrará con signo menos)
 							montoTexto = `<span class="text-danger font-monospace">${formatoMoneda(valorPerdida)}</span>`;
 						}
 						break;
@@ -85,7 +78,7 @@ async function abrirHistorial(producto) {
 				// Mostrar cantidad
 				let cantidadMostrar = mov.cantidad;
 				if (mov.tipo_movimiento === 'PRODUCCION') {
-					cantidadMostrar = `${mov.cantidad} lotes`;
+					cantidadMostrar = `${mov.cantidad} lotes`, Math.trunc();
 				}
 				const row = document.createElement('tr');
 				row.innerHTML = `
