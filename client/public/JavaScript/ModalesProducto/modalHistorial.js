@@ -1,3 +1,17 @@
+function formatearMonto(valor) {
+	const numero = Number(valor);
+	if (isNaN(numero)) return "";
+	return new Intl.NumberFormat("es-NI", {
+		style: "currency",
+		currency: "NIO",
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+	}).format(numero);
+}
+
+function formatoMoneda(cell) {
+	return formatearMonto(cell.getValue());
+}
 async function abrirHistorial(producto) {
 	document.getElementById("nombreProductoHistorial").textContent = producto.nombre;
 	document.getElementById("tipoProductoHistorial").textContent = producto.tipo;
@@ -32,12 +46,12 @@ async function abrirHistorial(producto) {
 			movimientos.forEach(mov => {
 				const row = document.createElement("tr");
 				row.innerHTML = `
-					<td><small>${formatearFecha(mov)}</small></td>
-					<td>${(mov.tipo_movimiento)}</td>
-					<td><strong>${(mov)}</strong></td>
-					<td>${formatoMoneda(mov)}</td>
-					<td><small class="text-muted">${mov.observacion || "—"}</small></td>
-				`;
+				<td><small>${formatearFecha(mov.fecha)}</small></td>
+				<td>${mov.tipo_movimiento}</td>
+				<td><strong>${mov.cantidad || 0}</strong></td>
+				<td>${formatearMonto(mov.monto)}</td>
+				<td><small class="text-muted">${mov.observacion || "—"}</small></td>
+    `;
 				tbody.appendChild(row);
 			});
 		}
