@@ -60,7 +60,11 @@ async function abrirHistorial(producto) {
 						break;
 					case 'ENTRADA':
 						tipoBadge = '<span class="badge bg-info text-dark">Ajuste +</span>';
-						montoTexto = '—';
+						if (mov.costo_total != null && !isNaN(mov.costo_total)) {
+							montoTexto = formatoMoneda(mov.costo_total);
+						} else {
+							montoTexto = '—';
+						}
 						break;
 					case 'PERDIDA':
 						tipoBadge = '<span class="badge bg-danger">Pérdida</span>';
@@ -78,7 +82,7 @@ async function abrirHistorial(producto) {
 				// Mostrar cantidad
 				let cantidadMostrar = mov.cantidad;
 				if (mov.tipo_movimiento === 'PRODUCCION') {
-					cantidadMostrar = `${mov.cantidad} lotes`, Math.trunc();
+					cantidadMostrar = `${mov.cantidad} lotes`; // corregido el error de sintaxis
 				}
 				const row = document.createElement('tr');
 				row.innerHTML = `
