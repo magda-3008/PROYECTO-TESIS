@@ -38,7 +38,6 @@ document.getElementById('tipoEntrada').addEventListener('change', async function
 		label.textContent = 'Unidades reales producidas';
 		if (ayuda) ayuda.textContent = 'Cargando información de receta...';
 		try {
-			// Se consulta el endpoint específico de la receta del producto seleccionado
 			const res = await fetch(`/api/recetas/producto/${productoSeleccionado.id_producto}`);
 			if (res.ok) {
 				const receta = await res.json();
@@ -48,7 +47,7 @@ document.getElementById('tipoEntrada').addEventListener('change', async function
 					ayuda.textContent = 'Ingrese la cantidad total de unidades resultantes de la tanda.';
 				}
 			} else {
-				ayuda.textContent = 'Ingrese la cantidad total de unidades resultantes de la tanda.';
+				if (ayuda) ayuda.textContent = 'Ingrese la cantidad total de unidades resultantes de la tanda.';
 			}
 		} catch (error) {
 			console.error('Error al consultar la receta:', error);
