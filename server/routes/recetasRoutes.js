@@ -48,7 +48,7 @@ router.get("/", async (req, res) => {
 	}
 });
 //Buscar cantidad producida base de una receta para el modal de entradas
-router.get('/api/recetas/producto/:id_producto', async (req, res) => {
+router.get('/producto/:id_producto', async (req, res) => {
 	const {
 		id_producto
 	} = req.params;
