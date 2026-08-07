@@ -37,8 +37,8 @@ document.getElementById('tipoEntrada').addEventListener('change', function() {
 	if (this.value === 'PRODUCCION') {
 		label.textContent = 'Unidades reales producidas';
 		// Si el producto elaborado trae su rendimiento estándar desde el backend
-		if (productoSeleccionado && productoSeleccionado.rendimiento_base) {
-			ayuda.textContent = `Receta estándar rinde: ${productoSeleccionado.rendimiento_base} unidades. Ingrese el total obtenido en esta tanda.`;
+		if (productoSeleccionado && productoSeleccionado.cantidad_producida_base) {
+			ayuda.textContent = `Receta estándar rinde: ${productoSeleccionado.cantidad_producida_base} unidades. Ingrese el total obtenido en esta tanda.`;
 		} else if (ayuda) {
 			ayuda.textContent = 'Ingrese la cantidad total de unidades resultantes de la tanda.';
 		}
