@@ -48,22 +48,26 @@ router.get("/", async (req, res) => {
 	}
 });
 //Buscar cantidad producida base de una receta para el modal de entradas
-router.get('/producto/:id_producto', async (req, res) => {
+router.get("/producto/:id_producto", async (req, res) => {
 	const {
 		id_producto
 	} = req.params;
 	try {
-		const result = await db.query('SELECT cantidad_producida_base FROM receta WHERE id_producto = $1',
+		const resultado = await pool.query("SELECT cantidad_producida_base FROM receta WHERE id_producto = $1",
 			[id_producto]);
-		if (result.rows.length === 0) {
-			return res.status(404).json({
-				mensaje: 'El producto no posee receta registrada.'
+		if (resultado.rows.length === 0) {
+			return res.json({
+				cantidad_producida_base: null,
+				mensaje: "Producto sin receta"
 			});
 		}
-		res.json(result.rows[0]);
+		return res.json(resultado.rows[0]);
 	} catch (error) {
-		res.status(500).json({
-			mensaje: 'Error al consultar la receta.'
+		// Imprime el detalle exacto en la consola de Node / Render
+		console.error("Error SQL en recetasRoutes:", error);
+		return res.status(500).json({
+			mensaje: "Error interno del servidor",
+			error_sql: error.message
 		});
 	}
 });
