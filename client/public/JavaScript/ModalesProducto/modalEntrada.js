@@ -30,17 +30,29 @@ function cargarTiposEntrada(producto) {
         ${opciones.map(op => `<option value="${op.value}">${op.label}</option>`).join('')}
     `;
 }
-// Actualizar etiqueta e información de ayuda
-document.getElementById('tipoEntrada').addEventListener('change', function() {
+// Listener para cuando el usuario cambia el tipo de entrada
+document.getElementById('tipoEntrada').addEventListener('change', async function() {
 	const label = document.getElementById('labelCantidadEntrada');
 	const ayuda = document.getElementById('ayudaCantidadEntrada');
 	if (this.value === 'PRODUCCION') {
 		label.textContent = 'Unidades reales producidas';
-		// Si el producto elaborado trae su rendimiento estándar desde el backend
-		if (productoSeleccionado && productoSeleccionado.cantidad_producida_base) {
-			ayuda.textContent = `Receta estándar rinde: ${productoSeleccionado.cantidad_producida_base} unidades. Ingrese el total obtenido en esta tanda.`;
-		} else if (ayuda) {
-			ayuda.textContent = 'Ingrese la cantidad total de unidades resultantes de la tanda.';
+		if (ayuda) ayuda.textContent = 'Cargando información de receta...';
+		try {
+			// Se consulta el endpoint específico de la receta del producto seleccionado
+			const res = await fetch(`/api/recetas/producto/${productoSeleccionado.id_producto}`);
+			if (res.ok) {
+				const receta = await res.json();
+				if (receta && receta.cantidad_producida_base) {
+					ayuda.textContent = `La receta base rinde: ${receta.cantidad_producida_base} unidades. Ingrese el total obtenido.`;
+				} else {
+					ayuda.textContent = 'Ingrese la cantidad total de unidades resultantes de la tanda.';
+				}
+			} else {
+				ayuda.textContent = 'Ingrese la cantidad total de unidades resultantes de la tanda.';
+			}
+		} catch (error) {
+			console.error('Error al consultar la receta:', error);
+			if (ayuda) ayuda.textContent = 'Ingrese la cantidad total de unidades resultantes de la tanda.';
 		}
 	} else {
 		label.textContent = 'Cantidad ingresada';
