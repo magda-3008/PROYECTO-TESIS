@@ -53,7 +53,7 @@ router.get('/producto/:id_producto', async (req, res) => {
 		id_producto
 	} = req.params;
 	try {
-		const result = await db.query('SELECT cantidad_producida_base FROM recetas WHERE id_producto = $1',
+		const result = await db.query('SELECT cantidad_producida_base FROM receta WHERE id_producto = $1',
 			[id_producto]);
 		if (result.rows.length === 0) {
 			return res.status(404).json({
