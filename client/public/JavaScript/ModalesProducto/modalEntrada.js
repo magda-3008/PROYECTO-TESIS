@@ -39,7 +39,7 @@ document.getElementById('tipoEntrada').addEventListener('change', async function
 		if (ayuda) ayuda.textContent = 'Cargando información de receta...';
 		try {
 			// Se consulta el endpoint específico de la receta del producto seleccionado
-			const res = await fetch(`/api/recetas/producto/${productoSeleccionado.id_producto}`);
+			const res = await fetch(`/producto/${productoSeleccionado.id_producto}`);
 			if (res.ok) {
 				const receta = await res.json();
 				if (receta && receta.cantidad_producida_base) {
