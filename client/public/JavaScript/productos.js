@@ -169,7 +169,7 @@ async function cargarVista(vista) {
 
   tabla = new Tabulator("#tablaProductos", {
     data: datos,
-    layout: "fitData",
+    layout: "fitColumns",
     columnHeaderVertAlign: "middle",
     pagination: true,
     paginationSize: 30,
