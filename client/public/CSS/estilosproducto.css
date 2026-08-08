@@ -60,5 +60,6 @@
     .columna-texto-ajustable {
         white-space: normal !important;
         word-wrap: break-word;
+        font-size: 10px;
     }
 }
