@@ -67,6 +67,22 @@
           placeholder="Escribe el nombre del producto o busca según el tipo de producto..." />
       </div>
       <div id="panelFiltros" class="mb-3"></div>
+      <div class="dropdown mb-2 text-end">
+        <button
+          class="btn btn-outline-secondary dropdown-toggle btn-sm"
+          type="button"
+          id="dropdownColumnas"
+          data-bs-toggle="dropdown"
+          aria-expanded="false">
+          <i class="bi bi-columns-gap"></i> Visibilidad de columnas
+        </button>
+        <ul
+          class="dropdown-menu dropdown-menu-end p-2"
+          id="menuColumnas"
+          aria-labelledby="dropdownColumnas">
+          <!-- Opciones generadas dinámicamente -->
+        </ul>
+      </div>
       <div id="tablaProductos"></div>
     </div>
     <!-- Modales -->
