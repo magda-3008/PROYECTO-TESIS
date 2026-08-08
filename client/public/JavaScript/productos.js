@@ -206,14 +206,26 @@ async function cargarVista(vista) {
     responsiveLayout: "collapse",
     responsiveLayoutCollapseFormatter: function (data) {
       // data es un arreglo de objetos { title, value }
-      let html = "<div class='collapse-content'>";
+      const container = document.createElement("div");
+      container.className = "collapse-content";
+
       data.forEach((col) => {
-        html += `<div class='collapse-row'>
-                           <strong>${col.title}:</strong> <span>${col.value || "—"}</span>
-                         </div>`;
+        const rowDiv = document.createElement("div");
+        rowDiv.className = "collapse-row";
+
+        const strong = document.createElement("strong");
+        strong.textContent = col.title + ": ";
+
+        const span = document.createElement("span");
+        // Usamos innerHTML para permitir que valores con formato HTML (si los hay) se muestren correctamente
+        span.innerHTML = col.value || "—";
+
+        rowDiv.appendChild(strong);
+        rowDiv.appendChild(span);
+        container.appendChild(rowDiv);
       });
-      html += "</div>";
-      return html;
+
+      return container; // ahora devuelve un HTMLElement
     },
     columnHeaderVertAlign: "middle",
     pagination: true,
