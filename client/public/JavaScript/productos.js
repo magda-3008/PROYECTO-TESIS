@@ -6,37 +6,18 @@ const vistas = {
   inventario: {
     endpoint: "/api/productos",
     columns: [
-      { title: "Nombre del producto", field: "nombre", frozen: true },
-      { title: "Tipo", field: "tipo", hozAlign: "center" },
+      { title: "Nombre del producto", field: "nombre", frozen: true, width: 160, cssClass: "columna-texto-ajustable", headerWordWrap, headerToolTip: true },
+      { title: "Tipo", field: "tipo", hozAlign: "center", minWidth: 80 },
+      { title: "Precio de venta", field: "precio_venta", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
+      { title: "Costo de compra/producción", field: "costo", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
       {
-        title: "Precio de venta",
-        field: "precio_venta",
-        formatter: formatoMoneda,
-        hozAlign: "center",
+        title: "Margen de ganancia bruta esperado (%)", field: "margen_gananciab_esperado", variableHeight: true, formatter: formatoPorcentaje, hozAlign: "center",
+        minWidth: 100, headerWordWrap: true, headerTooltip: true
       },
+      { title: "Estado", field: "estado", hozAlign: "center", minWidth: 80 },
+      { title: "Existencia inicial", field: "stock_inicial", hozAlign: "center", minWidth: 80, headerWordWrap: true, headerTooltip: true },
       {
-        title: "Costo de compra/producción",
-        field: "costo",
-        formatter: formatoMoneda,
-        hozAlign: "center",
-      },
-      {
-        title: "Margen de ganancia bruta esperado (%)",
-        field: "margen_gananciab_esperado",
-        variableHeight: true,
-        formatter: formatoPorcentaje,
-        hozAlign: "center",
-      },
-      { title: "Estado", field: "estado", hozAlign: "center" },
-      {
-        title: "Existencia inicial",
-        field: "stock_inicial",
-        hozAlign: "center",
-      },
-      {
-        title: "Existencia actual",
-        field: "stock_actual",
-        hozAlign: "center",
+        title: "Existencia actual", field: "stock_actual", hozAlign: "center", minWidth: 80, headerWordWrap: true, headerTooltip: true,
         formatter: function (cell) {
           const data = cell.getRow().getData();
 
@@ -54,6 +35,7 @@ const vistas = {
         title: "Acciones",
         hozAlign: "center",
         headerSort: false,
+        minWidth: 120,
         formatter: function () {
           return `
                     <div class="acciones-tabla">
