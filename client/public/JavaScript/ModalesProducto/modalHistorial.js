@@ -79,11 +79,6 @@ async function abrirHistorial(producto) {
 						tipoBadge = `<span class="badge bg-secondary">${mov.tipo_movimiento}</span>`;
 						montoTexto = formatoMoneda(mov.costo_total);
 				}
-				// Mostrar cantidad
-				let cantidadMostrar = mov.cantidad;
-				if (mov.tipo_movimiento === 'PRODUCCION') {
-					cantidadMostrar = `${mov.cantidad} lotes`; // corregido el error de sintaxis
-				}
 				const row = document.createElement('tr');
 				row.innerHTML = `
                     <td><small>${fecha}</small></td>
