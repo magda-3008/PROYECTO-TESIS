@@ -195,22 +195,37 @@ async function cargarVista(vista) {
     responsiveLayout: "collapse", // Colapsa columnas sobrantes en un sub-registro
     responsiveLayoutCollapseStartOpen: false, // Inicia colapsado
     responsiveLayoutCollapseFormatter: function (data) {
-      // Personaliza cómo se ven los datos ocultos al desplegar la fila
       let list = document.createElement("ul");
       list.classList.add("list-group", "list-group-flush", "p-2");
 
+      let count = 0;
+
       for (let key in data) {
-        let item = document.createElement("li");
-        item.classList.add(
-          "list-group-item",
-          "d-flex",
-          "justify-content-between",
-          "bg-transparent",
-        );
-        item.innerHTML = `<strong>${key}:</strong> <span>${data[key]}</span>`;
-        list.appendChild(item);
+        // Opcional: ignorar valores vacíos o nulos
+        if (data[key] !== undefined && data[key] !== null) {
+          let item = document.createElement("li");
+          item.classList.add(
+            "list-group-item",
+            "d-flex",
+            "justify-content-between",
+            "align-items-center",
+            "bg-transparent",
+          );
+          item.innerHTML = `<strong>${key}:</strong> <span>${data[key]}</span>`;
+          list.appendChild(item);
+          count++;
+        }
       }
-      return list.length ? list : "Sin detalles adicionales";
+
+      // Si no hay datos colapsados, retornamos un div contenedor con texto (Nodo DOM)
+      if (count === 0) {
+        let emptyMsg = document.createElement("div");
+        emptyMsg.className = "p-2 text-muted text-center";
+        emptyMsg.textContent = "Sin detalles adicionales";
+        return emptyMsg;
+      }
+
+      return list; // Siempre retorna un Node DOM válido
     },
     columnHeaderVertAlign: "middle",
     pagination: true,
