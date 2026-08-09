@@ -15,7 +15,21 @@ const vistas = {
         minWidth: 100, headerWordWrap: true, headerTooltip: true
       },
       { title: "Estado", field: "estado", hozAlign: "center", minWidth: 80 },
-      { title: "Existencia inicial", field: "stock_inicial", hozAlign: "center", minWidth: 80, headerWordWrap: true, headerTooltip: true },
+      {
+        title: "Existencia inicial", field: "stock_inicial", hozAlign: "center", minWidth: 80, headerWordWrap: true, headerTooltip: true,
+        formatter: function (cell) {
+          const data = cell.getRow().getData();
+
+          if (
+            data.nombre === "Chocobanano preparado" ||
+            data.nombre === "Frappé"
+          ) {
+            return "—";
+          }
+          const stock = Number(cell.getValue());
+          return isNaN(stock) ? 0 : Math.floor(stock);
+        },
+      },
       {
         title: "Existencia actual", field: "stock_actual", hozAlign: "center", minWidth: 80, headerWordWrap: true, headerTooltip: true,
         formatter: function (cell) {
@@ -27,10 +41,8 @@ const vistas = {
           ) {
             return "—";
           }
-
-          // Convertir a número y redondear/truncar a entero
           const stock = Number(cell.getValue());
-          return isNaN(stock) ? 0 : Math.floor(stock); // o Math.round(stock)
+          return isNaN(stock) ? 0 : Math.floor(stock);
         },
       },
       {
