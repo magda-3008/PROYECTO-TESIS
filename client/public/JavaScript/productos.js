@@ -78,37 +78,12 @@ const vistas = {
   analisis: {
     endpoint: "/api/productos/analisis",
     columns: [
-      { title: "Nombre del producto", field: "nombre_producto" },
-      {
-        title: "Costo unitario de producción",
-        field: "costo_unitario_prod",
-        formatter: formatoMoneda,
-        hozAlign: "center",
-      },
-      {
-        title: "Margen esperado (C$)",
-        field: "margen_esperado_cordobas",
-        formatter: formatoMoneda,
-        hozAlign: "center",
-      },
-      {
-        title: "Precio actual",
-        field: "precio_venta_actual",
-        formatter: formatoMoneda,
-        hozAlign: "center",
-      },
-      {
-        title: "Precio sugerido",
-        field: "precio_venta_sugerido",
-        formatter: formatoMoneda,
-        hozAlign: "center",
-      },
-      {
-        title: "Ganancia real",
-        field: "ganancia_real_cordobas",
-        formatter: formatoMoneda,
-        hozAlign: "center",
-      },
+      { title: "Nombre del producto", field: "nombre_producto", frozen: true, width: 160, cssClass: "columna-texto-ajustable", headerWordWrap: true, headerToolTip: true },
+      { title: "Costo unitario de producción", field: "costo_unitario_prod", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
+      { title: "Margen esperado (C$)", field: "margen_esperado_cordobas", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
+      { title: "Precio actual", field: "precio_venta_actual", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
+      { title: "Precio sugerido", field: "precio_venta_sugerido", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
+      { title: "Ganancia real", field: "ganancia_real_cordobas", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
     ],
   },
 };
