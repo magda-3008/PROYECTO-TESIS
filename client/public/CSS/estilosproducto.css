@@ -56,6 +56,36 @@
   transform: scale(1.08);
 }
 
+/*Celdas iluminadas para indicar un cambio*/
+.celda-actualizada {
+    animation: resaltarCelda 1s ease;
+}
+
+@keyframes resaltarCelda {
+    0% {
+        background-color: #a3dac1;
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
+.celda-error {
+    animation: resaltarError 1s ease;
+}
+
+@keyframes resaltarError {
+    0% {
+        background-color: #f8d7da;
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
+/*responsive de la tabla*/
 @media (max-width: 768px) {
     .tabulator {
         font-size: 10px;

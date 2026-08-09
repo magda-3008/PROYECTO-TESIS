@@ -18,13 +18,30 @@ const vistas = {
         minWidth: 100, headerWordWrap: true, headerTooltip: true, editor: "number", editorParams: { min: 0, step: 0.01 }
       },
       {
-        title: "Estado", field: "estado", hozAlign: "center", minWidth: 80, editor: "tickCross",
-        editorParams: {
-          values: ["Activo", "Inactivo"], clearable: false,
-          itemFormatter: function (label, value, item, element) {
-            return label;
+        title: "Estado", field: "estado", hozAlign: "center", minWidth: 80,
+        formatter: function (cell) {
+          const valor = cell.getValue();
+
+          if (valor === "Activo") {
+            return `<span class="text-success fw-semibold">Activo</span>`;
           }
+
+          if (valor === "Inactivo") {
+            return `<span class="text-danger fw-semibold">Inactivo</span>`;
+          }
+
+          return valor;
         },
+
+        cellClick: function (e, cell) {
+          const estadoActual = cell.getValue();
+
+          const nuevoEstado = estadoActual === "Activo"
+            ? "Inactivo"
+            : "Activo";
+
+          cell.setValue(nuevoEstado);
+        }
       },
       {
         title: "Existencia inicial", field: "stock_inicial", hozAlign: "center", minWidth: 80, headerWordWrap: true, headerTooltip: true,
@@ -211,14 +228,27 @@ async function cargarVista(vista) {
       });
 
       if (!respuesta.ok) {
+
+        cell.getElement().classList.add("celda-error");
+
+        setTimeout(() => {
+          cell.getElement().classList.remove("celda-error");
+        }, 1000);
+
         Swal.fire({
           text: "Error al guardar el cambio",
           icon: "error"
         });
       }
 
+      cell.getElement().classList.add("celda-actualizada");
+
+      setTimeout(() => {
+        cell.getElement().classList.remove("celda-actualizada");
+      }, 1000);
+
       Swal.fire({
-        text: "Producto editado correctamente.",
+        text: "Cambio guardado correctamente.",
         icon: "success"
       });
 
