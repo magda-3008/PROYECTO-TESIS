@@ -1,5 +1,3 @@
-const Swal = require('sweetalert2')
-
 let tabla = null;
 let productoSeleccionado = null;
 
