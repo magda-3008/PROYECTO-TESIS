@@ -57,9 +57,12 @@
 }
 
 @media (max-width: 768px) {
+    .tabulator {
+        font-size: 10px;
+    }
+
     .columna-texto-ajustable {
         white-space: normal !important;
         word-wrap: break-word;
-        font-size: 10px;
     }
 }
