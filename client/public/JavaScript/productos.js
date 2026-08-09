@@ -1,3 +1,5 @@
+const Swal = require('sweetalert2')
+
 let tabla = null;
 let productoSeleccionado = null;
 
@@ -15,9 +17,17 @@ const vistas = {
       { title: "Costo de compra/producción", field: "costo", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
       {
         title: "Margen de ganancia bruta esperado (%)", field: "margen_gananciab_esperado", variableHeight: true, formatter: formatoPorcentaje, hozAlign: "center",
-        minWidth: 100, headerWordWrap: true, headerTooltip: true, editorParams: { min: 0, step: 0.01 }
+        minWidth: 100, headerWordWrap: true, headerTooltip: true, editor: "number", editorParams: { min: 0, step: 0.01 }
       },
-      { title: "Estado", field: "estado", hozAlign: "center", minWidth: 80, editor: "tickCross", editorParams: { trueValue: "Activo", falseValue: "Inactivo", tristate: false } },
+      {
+        title: "Estado", field: "estado", hozAlign: "center", minWidth: 80, editor: "tickCross",
+        editorParams: {
+          values: ["Activo", "Inactivo"], clearable: false,
+          itemFormatter: function (label, value, item, element) {
+            return label;
+          }
+        },
+      },
       {
         title: "Existencia inicial", field: "stock_inicial", hozAlign: "center", minWidth: 80, headerWordWrap: true, headerTooltip: true,
         formatter: function (cell) {
@@ -203,15 +213,24 @@ async function cargarVista(vista) {
       });
 
       if (!respuesta.ok) {
-        throw new Error("Error al guardar el cambio.");
+        Swal.fire({
+          text: "Error al guardar el cambio",
+          icon: "error"
+        });
       }
 
-      // Opcional: mostrar una notificación rápida de éxito
+      Swal.fire({
+        text: "Producto editado correctamente.",
+        icon: "success"
+      });
+
     } catch (error) {
       console.error("Error al actualizar la base de datos:", error);
-      // Si falla la BDD, revertimos la celda a su valor anterior
       cell.setValue(valorAnterior, false);
-      alert("No se pudo guardar la modificación.");
+      Swal.fire({
+        text: "No se pudo guardar la modificación",
+        icon: "error"
+      });
     }
   });
 
