@@ -1,32 +1,14 @@
 // Mapeo de opciones (los valores son los que espera el backend)
 const opcionesPorTipo = {
   Reventa: [
-    {
-      value: "COMPRA",
-      label: "Compra",
-    },
-    {
-      value: "ENTRADA",
-      label: "Ajuste de inventario",
-    },
-    {
-      value: "ENTRADA",
-      label: "Otro",
-    },
+    { value: "COMPRA", label: "Compra" },
+    { value: "ENTRADA", label: "Ajuste de inventario" },
+    { value: "ENTRADA", label: "Otro" },
   ],
   Elaborado: [
-    {
-      value: "PRODUCCION",
-      label: "Producción",
-    },
-    {
-      value: "ENTRADA",
-      label: "Ajuste de inventario",
-    },
-    {
-      value: "ENTRADA",
-      label: "Otro",
-    },
+    { value: "PRODUCCION", label: "Producción" },
+    { value: "ENTRADA", label: "Ajuste de inventario" },
+    { value: "ENTRADA", label: "Otro" },
   ],
 };
 
@@ -161,7 +143,6 @@ async function registrarEntrada() {
 
   if (!esValido) return;
 
-  // Obtención y cálculo interno de costos (sin mostrarlos en pantalla)
   const costoUnitario = Number(productoSeleccionado.costo) || 0;
   const costoTotal = costoUnitario * cantidad;
 
@@ -194,24 +175,29 @@ async function registrarEntrada() {
         data.error || data.mensaje || "Error al registrar el movimiento.",
       );
 
+    // Si el backend devuelve el nuevo stock lo usas, si no, calculas la suma localmente
+    const nuevoStock =
+      data.nuevo_stock_actual !== undefined
+        ? data.nuevo_stock_actual
+        : Number(productoSeleccionado.stock_actual) + cantidad;
+
+    // Actualizamos la propiedad del objeto seleccionado
+    productoSeleccionado.stock_actual = nuevoStock;
+
+    // Actualización instantánea en la tabla Tabulator
+    if (typeof tabla !== "undefined" && tabla) {
+      tabla.updateData([
+        {
+          id_producto: productoSeleccionado.id_producto,
+          stock_actual: nuevoStock,
+        },
+      ]);
+    }
+
     // Cerrar Modal
     const modalEl = document.getElementById("modalEntrada");
     const modal = bootstrap.Modal.getInstance(modalEl);
     if (modal) modal.hide();
-
-    // Actualización de tabla
-    if (typeof cargarProductos === "function") {
-      await cargarProductos();
-    } else if (
-      productoSeleccionado &&
-      typeof renderizarFilaProducto === "function"
-    ) {
-      const stockProp = productoSeleccionado.hasOwnProperty("stock_actual")
-        ? "stock_actual"
-        : "stock";
-      productoSeleccionado[stockProp] += cantidad;
-      renderizarFilaProducto(productoSeleccionado);
-    }
   } catch (error) {
     document.getElementById("errorGeneral").textContent = error.message;
   }

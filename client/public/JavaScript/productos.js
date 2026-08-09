@@ -144,6 +144,7 @@ async function cargarVista(vista) {
 
   tabla = new Tabulator("#tablaProductos", {
     data: datos,
+    index: "id_producto",
     layout: "fitColumns",
     columnHeaderVertAlign: "middle",
     pagination: true,
