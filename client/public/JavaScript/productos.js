@@ -28,7 +28,9 @@ const vistas = {
             return "—";
           }
 
-          return data.stock_actual;
+          // Convertir a número y redondear/truncar a entero
+          const stock = Number(cell.getValue());
+          return isNaN(stock) ? 0 : Math.floor(stock); // o Math.round(stock)
         },
       },
       {
