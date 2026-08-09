@@ -6,15 +6,18 @@ const vistas = {
   inventario: {
     endpoint: "/api/productos",
     columns: [
-      { title: "Nombre del producto", field: "nombre", frozen: true, width: 160, cssClass: "columna-texto-ajustable", headerWordWrap: true, headerToolTip: true },
+      { title: "Nombre del producto", field: "nombre", frozen: true, width: 160, cssClass: "columna-texto-ajustable", headerWordWrap: true, headerToolTip: true, editor: "input" },
       { title: "Tipo", field: "tipo", hozAlign: "center", minWidth: 80 },
-      { title: "Precio de venta", field: "precio_venta", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
+      {
+        title: "Precio de venta", field: "precio_venta", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true, editor: "number",
+        editorParams: { min: 0, step: 0.01 }
+      },
       { title: "Costo de compra/producción", field: "costo", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
       {
         title: "Margen de ganancia bruta esperado (%)", field: "margen_gananciab_esperado", variableHeight: true, formatter: formatoPorcentaje, hozAlign: "center",
-        minWidth: 100, headerWordWrap: true, headerTooltip: true
+        minWidth: 100, headerWordWrap: true, headerTooltip: true, editorParams: { min: 0, step: 0.01 }
       },
-      { title: "Estado", field: "estado", hozAlign: "center", minWidth: 80 },
+      { title: "Estado", field: "estado", hozAlign: "center", minWidth: 80, editor: "tickCross", editorParams: { trueValue: "Activo", falseValue: "Inactivo", tristate: false } },
       {
         title: "Existencia inicial", field: "stock_inicial", hozAlign: "center", minWidth: 80, headerWordWrap: true, headerTooltip: true,
         formatter: function (cell) {
@@ -158,6 +161,8 @@ async function cargarVista(vista) {
 
   tabla = new Tabulator("#tablaProductos", {
     data: datos,
+    tooltipGenerationMode: "hover",
+    tooltips: true,
     index: "id_producto",
     layout: "fitColumns",
     columnHeaderVertAlign: "middle",
@@ -172,6 +177,42 @@ async function cargarVista(vista) {
     },
     columns: configuracion.columns,
     placeholder: "No se encontraron resultados",
+  });
+
+  // ESCUCHA DE CAMBIOS EN CELDAS
+  tabla.on("cellEdited", async function (cell) {
+    const valorNuevo = cell.getValue();
+    const valorAnterior = cell.getOldValue();
+
+    // Si no hubo un cambio real, no hacemos la petición HTTP
+    if (valorNuevo === valorAnterior) return;
+
+    const filaData = cell.getRow().getData();
+    const idProducto = filaData.id_producto;
+    const campoEditado = cell.getField();
+
+    try {
+      const respuesta = await fetch(`/api/productos/${idProducto}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          [campoEditado]: valorNuevo
+        }),
+      });
+
+      if (!respuesta.ok) {
+        throw new Error("Error al guardar el cambio.");
+      }
+
+      // Opcional: mostrar una notificación rápida de éxito
+    } catch (error) {
+      console.error("Error al actualizar la base de datos:", error);
+      // Si falla la BDD, revertimos la celda a su valor anterior
+      cell.setValue(valorAnterior, false);
+      alert("No se pudo guardar la modificación.");
+    }
   });
 
   inicializarEventosFiltros(vista);
