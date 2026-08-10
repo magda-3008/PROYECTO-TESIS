@@ -244,7 +244,7 @@ async function cargarVista(vista) {
 
       setTimeout(() => {
         cell.getElement().classList.remove("celda-actualizada");
-      }, 1000);
+      }, 3000);
 
       // Notificación de éxito
       Swal.fire({
@@ -266,7 +266,7 @@ async function cargarVista(vista) {
 
       setTimeout(() => {
         cell.getElement().classList.remove("celda-error");
-      }, 1000);
+      }, 3000);
 
       // Notificación de error
       Swal.fire({
