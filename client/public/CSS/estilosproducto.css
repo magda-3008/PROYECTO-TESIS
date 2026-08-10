@@ -58,7 +58,7 @@
 
 /*Celdas iluminadas para indicar un cambio*/
 .celda-actualizada {
-    animation: resaltarCelda 1s ease;
+    animation: resaltarCelda 4s ease;
 }
 
 @keyframes resaltarCelda {
@@ -72,7 +72,7 @@
 }
 
 .celda-error {
-    animation: resaltarError 1s ease;
+    animation: resaltarError 4s ease;
 }
 
 @keyframes resaltarError {

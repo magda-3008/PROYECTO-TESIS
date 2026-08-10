@@ -101,14 +101,18 @@ async function registrarPerdida() {
 		if (!response.ok)
 			throw new Error(data.error || "Error al registrar la pérdida.");
 
-		// Si el backend devuelve el nuevo stock lo usas, si no, calculas la resta localmente
 		const nuevoStock =
 			data.nuevo_stock_actual !== undefined
 				? data.nuevo_stock_actual
 				: Number(productoSeleccionado.stock_actual) - cantidad;
 
-		// Actualizamos la propiedad del objeto seleccionado
 		productoSeleccionado.stock_actual = nuevoStock;
+
+		Swal.fire({
+			icon: "success",
+			title: "Pérdida registrada correctamente",
+			returnFocus: false
+		});
 
 		// Actualización instantánea en la tabla Tabulator
 		if (typeof tabla !== "undefined" && tabla) {
@@ -125,8 +129,16 @@ async function registrarPerdida() {
 		const modal = bootstrap.Modal.getInstance(modalEl);
 		if (modal) modal.hide();
 	} catch (error) {
-		const errGeneral = document.getElementById("errorGeneralPerdida");
-		if (errGeneral) errGeneral.textContent = error.message;
+		console.error("Error al registrar la entrada:", error);
+
+		document.getElementById("errorGeneralPerdida").textContent = error.message;
+
+		Swal.fire({
+			icon: "error",
+			text: "No se pudo registrar la pérdida",
+			returnFocus: false
+		});
+
 	}
 }
 

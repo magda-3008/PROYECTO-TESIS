@@ -22,7 +22,6 @@ const vistas = {
         field: "estado",
         hozAlign: "center",
         minWidth: 80,
-
         formatter: function (cell) {
           const valor = cell.getValue();
 
@@ -33,7 +32,6 @@ const vistas = {
           if (valor === "Inactivo") {
             return `<span class="text-danger fw-semibold">Inactivo</span>`;
           }
-
           return valor;
         },
 
@@ -70,7 +68,6 @@ const vistas = {
         title: "Existencia actual", field: "stock_actual", hozAlign: "center", minWidth: 80, headerWordWrap: true, headerTooltip: true,
         formatter: function (cell) {
           const data = cell.getRow().getData();
-
           if (
             data.nombre === "Chocobanano preparado" ||
             data.nombre === "Frappé"

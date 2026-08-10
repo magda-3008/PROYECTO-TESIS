@@ -175,14 +175,18 @@ async function registrarEntrada() {
         data.error || data.mensaje || "Error al registrar el movimiento.",
       );
 
-    // Si el backend devuelve el nuevo stock lo usas, si no, calculas la suma localmente
     const nuevoStock =
       data.nuevo_stock_actual !== undefined
         ? data.nuevo_stock_actual
         : Number(productoSeleccionado.stock_actual) + cantidad;
 
-    // Actualizamos la propiedad del objeto seleccionado
     productoSeleccionado.stock_actual = nuevoStock;
+
+    Swal.fire({
+      icon: "success",
+      title: "Entrada registrada correctamente",
+      returnFocus: false
+    });
 
     // Actualización instantánea en la tabla Tabulator
     if (typeof tabla !== "undefined" && tabla) {
@@ -199,7 +203,15 @@ async function registrarEntrada() {
     const modal = bootstrap.Modal.getInstance(modalEl);
     if (modal) modal.hide();
   } catch (error) {
+    console.error("Error al registrar la entrada:", error);
+
     document.getElementById("errorGeneral").textContent = error.message;
+
+    Swal.fire({
+      icon: "error",
+      text: "No se pudo registrar la entrada",
+      returnFocus: false
+    });
   }
 }
 
