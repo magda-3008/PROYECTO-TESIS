@@ -217,6 +217,7 @@ async function cargarVista(vista) {
     const valorNuevo = cell.getValue();
     const valorAnterior = cell.getOldValue();
 
+    // Si no hubo un cambio real, no hacemos la petición HTTP
     if (valorNuevo === valorAnterior) return;
 
     const filaData = cell.getRow().getData();
@@ -243,14 +244,16 @@ async function cargarVista(vista) {
 
       setTimeout(() => {
         cell.getElement().classList.remove("celda-actualizada");
-      }, 3000);
+      }, 7000);
 
-      // Notificación de éxito
-      Swal.fire({
-        icon: "success",
-        title: "Cambio guardado correctamente",
-        returnFocus: false
-      });
+      // Mostrar notificación solo si NO es el campo estado
+      if (campoEditado !== "estado") {
+        Swal.fire({
+          icon: "success",
+          title: "Cambio guardado correctamente",
+          returnFocus: false
+        });
+      }
 
     } catch (error) {
       console.error(
@@ -266,9 +269,9 @@ async function cargarVista(vista) {
 
       setTimeout(() => {
         cell.getElement().classList.remove("celda-error");
-      }, 3000);
+      }, 7000);
 
-      // Notificación de error
+      // El error sí se notifica siempre
       Swal.fire({
         icon: "error",
         title: "No se pudo guardar la modificación",
