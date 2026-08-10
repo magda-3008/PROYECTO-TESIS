@@ -18,7 +18,11 @@ const vistas = {
         minWidth: 100, headerWordWrap: true, headerTooltip: true, editor: "number", editorParams: { min: 0, step: 0.01 }
       },
       {
-        title: "Estado", field: "estado", hozAlign: "center", minWidth: 80,
+        title: "Estado",
+        field: "estado",
+        hozAlign: "center",
+        minWidth: 80,
+
         formatter: function (cell) {
           const valor = cell.getValue();
 
@@ -34,11 +38,15 @@ const vistas = {
         },
 
         cellClick: function (e, cell) {
+          e.preventDefault();
+          e.stopPropagation();
+
           const estadoActual = cell.getValue();
 
-          const nuevoEstado = estadoActual === "Activo"
-            ? "Inactivo"
-            : "Activo";
+          const nuevoEstado =
+            estadoActual === "Activo"
+              ? "Inactivo"
+              : "Activo";
 
           cell.setValue(nuevoEstado);
         }
@@ -228,36 +236,52 @@ async function cargarVista(vista) {
       });
 
       if (!respuesta.ok) {
-
-        cell.getElement().classList.add("celda-error");
-
-        setTimeout(() => {
-          cell.getElement().classList.remove("celda-error");
-        }, 1000);
-
-        Swal.fire({
-          text: "Error al guardar el cambio",
-          icon: "error"
-        });
+        throw new Error("Error al guardar el cambio.");
       }
 
+      // Resaltar celda modificada
       cell.getElement().classList.add("celda-actualizada");
 
       setTimeout(() => {
         cell.getElement().classList.remove("celda-actualizada");
       }, 1000);
 
+      // Notificación de éxito
       Swal.fire({
-        text: "Cambio guardado correctamente.",
-        icon: "success"
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Cambio guardado correctamente",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true
       });
 
     } catch (error) {
-      console.error("Error al actualizar la base de datos:", error);
+      console.error(
+        "Error al actualizar la base de datos:",
+        error
+      );
+
+      // Restaurar valor anterior
       cell.setValue(valorAnterior, false);
+
+      // Resaltar error
+      cell.getElement().classList.add("celda-error");
+
+      setTimeout(() => {
+        cell.getElement().classList.remove("celda-error");
+      }, 1000);
+
+      // Notificación de error
       Swal.fire({
-        text: "No se pudo guardar la modificación",
-        icon: "error"
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "No se pudo guardar la modificación",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
       });
     }
   });
