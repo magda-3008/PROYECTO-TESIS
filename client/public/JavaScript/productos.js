@@ -248,13 +248,8 @@ async function cargarVista(vista) {
 
       // Notificación de éxito
       Swal.fire({
-        toast: true,
-        position: "top-end",
         icon: "success",
-        title: "Cambio guardado correctamente",
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true
+        title: "Cambio guardado correctamente"
       });
 
     } catch (error) {
@@ -275,13 +270,8 @@ async function cargarVista(vista) {
 
       // Notificación de error
       Swal.fire({
-        toast: true,
-        position: "top-end",
         icon: "error",
-        title: "No se pudo guardar la modificación",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true
+        title: "No se pudo guardar la modificación"
       });
     }
   });
