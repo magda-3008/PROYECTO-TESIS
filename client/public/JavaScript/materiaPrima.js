@@ -1,3 +1,47 @@
+function cargarUnidadesMateriaPrima(datos) {
+
+    const select =
+        document.getElementById("filtroUnidadMedida");
+
+    if (!select) return;
+
+
+    // Limpiar las opciones existentes
+    select.innerHTML = `
+        <option value="">Todas las unidades</option>
+    `;
+
+
+    // Obtener unidades únicas
+    const unidades = [
+        ...new Set(
+            datos
+                .map(item => item.unidad_medida)
+                .filter(unidad => unidad)
+        )
+    ];
+
+
+    // Ordenar alfabéticamente
+    unidades.sort((a, b) =>
+        a.localeCompare(b)
+    );
+
+
+    // Crear opciones
+    unidades.forEach(unidad => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = unidad;
+        option.textContent = unidad;
+
+        select.appendChild(option);
+
+    });
+}
+
 let tablaMD = null;
 let ingredienteSeleccionado = null;
 
@@ -120,6 +164,8 @@ async function cargarVista(vista) {
 
         datos = await respuesta.json();
 
+        cargarUnidadesMateriaPrima(datos);
+
     } catch (error) {
         console.error(error);
 
@@ -235,6 +281,173 @@ async function cargarVista(vista) {
     });
 
     inicializarEventosFiltros(vista);
+}
+
+function crearFiltros(vista) {
+    const panel = document.getElementById("panelFiltros");
+
+    switch (vista) {
+        case "inventarioMD":
+            panel.innerHTML = `
+        <h3>Filtrar por:</h3>
+
+        <div class="row g-2">
+
+          <div class="col-md-3">
+            <select id="filtroUnidadMedida" class="form-select">
+              <option value="">Todas las unidades</option>
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <select id="filtroTipoInsumo" class="form-select">
+              <option value="">Todos los tipos</option>
+              <option value="Ingrediente">Ingrediente</option>
+              <option value="Empaque">Empaque</option>
+              <option value="Costo indirecto">Costo indirecto</option>
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <select id="filtroStock" class="form-select">
+              <option value="">Todas las existencias</option>
+              <option value="0">Sin stock</option>
+              <option value="bajo">Stock bajo</option>
+              <option value="normal">Con stock</option>
+            </select>
+          </div>
+
+        </div>
+      `;
+            break;
+    }
+}
+
+function inicializarEventosFiltros(vista) {
+
+    document
+        .getElementById("buscar")
+        .addEventListener("input", aplicarFiltros);
+
+    document
+        .getElementById("filtroUnidadMedida")
+        .addEventListener("change", aplicarFiltros);
+
+    document
+        .getElementById("filtroTipoInsumo")
+        .addEventListener("change", aplicarFiltros);
+
+    document
+        .getElementById("filtroStock")
+        .addEventListener("change", aplicarFiltros);
+}
+
+function aplicarFiltros() {
+
+    const texto = document
+        .getElementById("buscar")
+        .value
+        .toLowerCase()
+        .trim();
+
+    const unidad =
+        document.getElementById("filtroUnidadMedida")?.value ?? "";
+
+    const tipo =
+        document.getElementById("filtroTipoInsumo")?.value ?? "";
+
+    const stock =
+        document.getElementById("filtroStock")?.value ?? "";
+
+
+    tablaMD.setFilter(function (data) {
+
+        let coincide = true;
+
+
+        // ==========================================
+        // BUSCADOR POR NOMBRE
+        // ==========================================
+
+        if (texto) {
+
+            coincide = String(data.nombre || "")
+                .toLowerCase()
+                .includes(texto);
+
+        }
+
+
+        // ==========================================
+        // UNIDAD DE MEDIDA
+        // ==========================================
+
+        if (coincide && unidad) {
+
+            coincide =
+                data.unidad_medida === unidad;
+
+        }
+
+
+        // ==========================================
+        // TIPO DE INSUMO
+        // ==========================================
+
+        if (coincide && tipo) {
+
+            coincide =
+                data.tipo_insumo === tipo;
+
+        }
+
+
+        // ==========================================
+        // STOCK
+        // ==========================================
+
+        if (coincide && stock) {
+
+            const stockActual =
+                Number(data.stock_actual_i) || 0;
+
+            const stockMinimo =
+                Number(data.stock_minimo) || 0;
+
+
+            switch (stock) {
+
+                case "0":
+
+                    coincide =
+                        stockActual === 0;
+
+                    break;
+
+
+                case "bajo":
+
+                    coincide =
+                        stockActual > 0 &&
+                        stockActual <= stockMinimo;
+
+                    break;
+
+
+                case "normal":
+
+                    coincide =
+                        stockActual > stockMinimo;
+
+                    break;
+
+            }
+        }
+
+
+        return coincide;
+
+    });
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
