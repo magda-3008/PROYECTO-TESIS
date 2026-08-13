@@ -1,7 +1,7 @@
 let tablaMD = null;
 let ingredienteSeleccionado = null;
 
-//configuración de vistas
+// configuración de vistas
 const vistas = {
     inventarioMD: {
         endpoint: "/api/materiaprima",
@@ -9,15 +9,39 @@ const vistas = {
             { title: "Insumo", field: "nombre", frozen: true, width: 160, cssClass: "columna-texto-ajustable", headerWordWrap: true, headerToolTip: true, editor: "input" },
             { title: "Tipo de insumo", field: "tipo_insumo", hozAlign: "center", minWidth: 80 },
             {
-                title: "Costo de insumo", field: "costo_total_ingrediente", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true, editor: "number",
-                editorParams: { min: 0, step: 0.01 }
+                title: "Costo de insumo", field: "costo_total_ingrediente", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true,
+                editor: "number", editorParams: { min: 0, step: 0.01 }
             },
-            { title: "Unidad de medida", field: "unidad_medida", hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
             {
-                title: "Cantidad por presentación", field: "unidad_por_paquete", variableHeight: true, hozAlign: "center",
-                minWidth: 100, headerWordWrap: true, headerTooltip: true, editor: "number", editorParams: { min: 0, step: 0.01 }
+                title: "Unidad de medida",
+                field: "unidad_medida",
+                hozAlign: "center",
+                minWidth: 100,
+                headerWordWrap: true,
+                headerTooltip: true
             },
-            { title: "Existencia actual", field: "stock_actual_i", hozAlign: "center", minWidth: 80, headerWordWrap: true, headerTooltip: true },
+            {
+                title: "Cantidad por presentación",
+                field: "unidad_por_paquete",
+                variableHeight: true,
+                hozAlign: "center",
+                minWidth: 100,
+                headerWordWrap: true,
+                headerTooltip: true,
+                editor: "number",
+                editorParams: {
+                    min: 0,
+                    step: 0.01
+                }
+            },
+            {
+                title: "Existencia actual",
+                field: "stock_actual_i",
+                hozAlign: "center",
+                minWidth: 80,
+                headerWordWrap: true,
+                headerTooltip: true
+            },
             {
                 title: "Acciones",
                 hozAlign: "center",
@@ -25,37 +49,37 @@ const vistas = {
                 minWidth: 120,
                 formatter: function () {
                     return `
-                    <div class="acciones-tabla">
-                        <button class="btnAccion btnPerdida" title="Registrar pérdida">
-                            <i class="bi bi-cart-dash"></i>
-                        </button>
+                        <div class="acciones-tabla">
+                            <button class="btnAccion btnPerdida" title="Registrar pérdida">
+                                <i class="bi bi-cart-dash"></i>
+                            </button>
 
-                        <button class="btnAccion btnEntrada" title="Registrar entrada">
-                            <i class="bi bi-cart-plus"></i>
-                        </button>
+                            <button class="btnAccion btnEntrada" title="Registrar entrada">
+                                <i class="bi bi-cart-plus"></i>
+                            </button>
 
-                        <button class="btnAccion btnHistorial" title="Ver historial">
-                            <i class="bi bi-clock-history"></i>
-                        </button>
-                    </div>
-                `;
+                            <button class="btnAccion btnHistorial" title="Ver historial">
+                                <i class="bi bi-clock-history"></i>
+                            </button>
+                        </div>
+                    `;
                 },
 
                 cellClick: function (e, cell) {
-                    const producto = cell.getRow().getData();
+                    const ingrediente = cell.getRow().getData();
 
                     if (e.target.closest(".btnPerdida")) {
-                        abrirModalPerdida(producto);
+                        abrirModalPerdida(ingrediente);
                         return;
                     }
 
                     if (e.target.closest(".btnEntrada")) {
-                        abrirModalEntrada(producto);
+                        abrirModalEntrada(ingrediente);
                         return;
                     }
 
                     if (e.target.closest(".btnHistorial")) {
-                        abrirHistorial(producto);
+                        abrirHistorial(ingrediente);
                     }
                 },
             },
@@ -63,12 +87,16 @@ const vistas = {
     }
 };
 
-//cargar vista
+// cargar vista
 async function cargarVista(vista) {
+
+    const configuracion = vistas[vista];
+    const endpoint = configuracion.endpoint;
+
     // Elimina la tabla anterior
-    if (tabla) {
-        tabla.destroy();
-        tabla = null;
+    if (tablaMD) {
+        tablaMD.destroy();
+        tablaMD = null;
     }
 
     crearFiltros(vista);
@@ -91,6 +119,7 @@ async function cargarVista(vista) {
         }
 
         datos = await respuesta.json();
+
     } catch (error) {
         console.error(error);
 
@@ -104,10 +133,11 @@ async function cargarVista(vista) {
                 </button>
             </div>
         `;
+
         return;
     }
 
-    tabla = new Tabulator("#tablaMateriaP", {
+    tablaMD = new Tabulator("#tablaMateriaP", {
         data: datos,
         tooltipGenerationMode: "hover",
         tooltips: true,
@@ -116,6 +146,7 @@ async function cargarVista(vista) {
         columnHeaderVertAlign: "middle",
         pagination: true,
         paginationSize: 30,
+
         rowHeader: {
             formatter: "rownum",
             width: 40,
@@ -123,12 +154,14 @@ async function cargarVista(vista) {
             headerSort: false,
             frozen: true,
         },
+
         columns: configuracion.columns,
         placeholder: "No se encontraron resultados",
     });
 
     // ESCUCHA DE CAMBIOS EN CELDAS
-    tabla.on("cellEdited", async function (cell) {
+    tablaMD.on("cellEdited", async function (cell) {
+
         const valorNuevo = cell.getValue();
         const valorAnterior = cell.getOldValue();
 
@@ -136,41 +169,48 @@ async function cargarVista(vista) {
         if (valorNuevo === valorAnterior) return;
 
         const filaData = cell.getRow().getData();
-        const idProducto = filaData.id_producto;
+        const idMA = filaData.id_ma;
         const campoEditado = cell.getField();
 
         try {
-            const respuesta = await fetch(`/api/productos/${idProducto}`, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    [campoEditado]: valorNuevo
-                }),
-            });
 
+            // TODO:
+            // Definir posteriormente el endpoint definitivo para actualizar
+            // materia prima.
+            //
+            // Ejemplo:
+            // const respuesta = await fetch(`/api/materiaprima/${idMA}`, {
+            //     method: "PATCH",
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //     },
+            //     body: JSON.stringify({
+            //         [campoEditado]: valorNuevo
+            //     }),
+            // });
+
+            /*
             if (!respuesta.ok) {
                 throw new Error("Error al guardar el cambio.");
             }
+            */
 
-            // Resaltar celda modificada
+            // Por ahora solo dejamos preparada la lógica visual
+
             cell.getElement().classList.add("celda-actualizada");
 
             setTimeout(() => {
                 cell.getElement().classList.remove("celda-actualizada");
             }, 7000);
 
-            // Mostrar notificación solo si NO es el campo estado
-            if (campoEditado !== "estado") {
-                Swal.fire({
-                    icon: "success",
-                    title: "Cambio guardado correctamente",
-                    returnFocus: false
-                });
-            }
+            Swal.fire({
+                icon: "success",
+                title: "Cambio guardado correctamente",
+                returnFocus: false
+            });
 
         } catch (error) {
+
             console.error(
                 "Error al actualizar la base de datos:",
                 error
@@ -186,7 +226,6 @@ async function cargarVista(vista) {
                 cell.getElement().classList.remove("celda-error");
             }, 7000);
 
-            // El error sí se notifica siempre
             Swal.fire({
                 icon: "error",
                 title: "No se pudo guardar la modificación",
