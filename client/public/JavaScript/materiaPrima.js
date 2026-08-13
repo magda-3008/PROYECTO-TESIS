@@ -236,3 +236,7 @@ async function cargarVista(vista) {
 
     inicializarEventosFiltros(vista);
 }
+
+document.addEventListener("DOMContentLoaded", async () => {
+    cargarVista("inventarioMD");
+});
