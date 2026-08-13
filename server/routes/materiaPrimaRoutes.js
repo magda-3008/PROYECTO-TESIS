@@ -7,7 +7,7 @@ router.get("/", async (req, res) => {
         const resultado = await pool.query(`
             SELECT *
             FROM materia_prima_y_cd
-            ORDER BY id_ma
+            ORDER BY nombre
         `);
 
         res.json(resultado.rows);
