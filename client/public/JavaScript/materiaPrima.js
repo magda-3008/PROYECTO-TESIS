@@ -37,12 +37,15 @@ function pluralizarUnidad(unidad, cantidad) {
         "paquete": "paquetes",
         "caja": "cajas",
         "botella": "botellas",
+        "botellita": "botellitas",
         "bolsa": "bolsas",
         "sobre": "sobres",
         "libra": "libras",
         "litro": "litros",
         "gramo": "gramos",
-        "mililitro": "mililitros"
+        "mililitro": "mililitros",
+        "lata": "latas",
+        "barra": "barras"
     };
 
     const unidadNormalizada = String(unidad || "").toLowerCase();
@@ -328,26 +331,21 @@ function crearFiltros(vista) {
 }
 
 function inicializarEventosFiltros(vista) {
-
     document
         .getElementById("buscar")
         .addEventListener("input", aplicarFiltros);
-
     document
         .getElementById("filtroUnidadMedida")
         .addEventListener("change", aplicarFiltros);
-
     document
         .getElementById("filtroTipoInsumo")
         .addEventListener("change", aplicarFiltros);
-
     document
         .getElementById("filtroStock")
         .addEventListener("change", aplicarFiltros);
 }
 
 function aplicarFiltros() {
-
     const texto = document
         .getElementById("buscar")
         .value
@@ -356,10 +354,8 @@ function aplicarFiltros() {
 
     const unidad =
         document.getElementById("filtroUnidadMedida")?.value ?? "";
-
     const tipo =
         document.getElementById("filtroTipoInsumo")?.value ?? "";
-
     const stock =
         document.getElementById("filtroStock")?.value ?? "";
 
@@ -370,7 +366,6 @@ function aplicarFiltros() {
 
         //Buscador por nombre
         if (texto) {
-
             coincide = String(data.nombre || "")
                 .toLowerCase()
                 .includes(texto);
@@ -379,7 +374,6 @@ function aplicarFiltros() {
 
         //Unidad de edida
         if (coincide && unidad) {
-
             coincide =
                 data.unidad_medida === unidad;
 
@@ -393,13 +387,11 @@ function aplicarFiltros() {
 
         //Stock
         if (coincide && stock) {
-
             const stockActual =
                 Number(data.stock_actual_i) || 0;
 
             const stockMinimo =
                 Number(data.stock_minimo) || 0;
-
 
             switch (stock) {
                 case "0":
