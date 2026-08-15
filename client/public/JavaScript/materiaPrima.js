@@ -1,16 +1,12 @@
 function cargarUnidadesMateriaPrima(datos) {
-
     const select =
         document.getElementById("filtroUnidadMedida");
-
     if (!select) return;
-
 
     // Limpiar las opciones existentes
     select.innerHTML = `
-        <option value="">Todas las unidades</option>
+        <option value="">Unidad de medida</option>
     `;
-
 
     // Obtener unidades únicas
     const unidades = [
@@ -20,26 +16,42 @@ function cargarUnidadesMateriaPrima(datos) {
                 .filter(unidad => unidad)
         )
     ];
-
-
     // Ordenar alfabéticamente
     unidades.sort((a, b) =>
         a.localeCompare(b)
     );
-
-
     // Crear opciones
     unidades.forEach(unidad => {
-
         const option =
             document.createElement("option");
-
         option.value = unidad;
         option.textContent = unidad;
-
         select.appendChild(option);
 
     });
+}
+
+function pluralizarUnidad(unidad, cantidad) {
+    const singularPlural = {
+        "unidad": "unidades",
+        "paquete": "paquetes",
+        "caja": "cajas",
+        "botella": "botellas",
+        "bolsa": "bolsas",
+        "sobre": "sobres",
+        "libra": "libras",
+        "litro": "litros",
+        "gramo": "gramos",
+        "mililitro": "mililitros"
+    };
+
+    const unidadNormalizada = String(unidad || "").toLowerCase();
+
+    if (Number(cantidad) === 1) {
+        return unidadNormalizada;
+    }
+
+    return singularPlural[unidadNormalizada] || unidadNormalizada;
 }
 
 let tablaMD = null;
@@ -56,41 +68,33 @@ const vistas = {
                 title: "Costo de insumo", field: "costo_total_ingrediente", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true,
                 editor: "number", editorParams: { min: 0, step: 0.01 }
             },
+            { title: "Unidad de medida", field: "unidad_medida", hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
             {
-                title: "Unidad de medida",
-                field: "unidad_medida",
-                hozAlign: "center",
-                minWidth: 100,
-                headerWordWrap: true,
-                headerTooltip: true
-            },
-            {
-                title: "Cantidad por presentación",
-                field: "unidad_por_paquete",
-                variableHeight: true,
-                hozAlign: "center",
-                minWidth: 100,
-                headerWordWrap: true,
-                headerTooltip: true,
-                editor: "number",
-                editorParams: {
-                    min: 0,
-                    step: 0.01
-                }
+                title: "Cantidad por presentación", field: "unidad_por_paquete", variableHeight: true, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true,
+                editor: "number", editorParams: { min: 0, step: 0.01 }
             },
             {
                 title: "Existencia actual",
                 field: "stock_actual_i",
                 hozAlign: "center",
-                minWidth: 80,
+                minWidth: 100,
                 headerWordWrap: true,
-                headerTooltip: true
+                headerTooltip: true,
+
+                formatter: function (cell) {
+                    const data = cell.getRow().getData();
+
+                    const stock = Number(data.stock_actual_i) || 0;
+                    const unidad = pluralizarUnidad(
+                        data.unidad_existencia,
+                        stock
+                    );
+
+                    return `${stock} ${unidad}`;
+                }
             },
             {
-                title: "Acciones",
-                hozAlign: "center",
-                headerSort: false,
-                minWidth: 120,
+                title: "Acciones", hozAlign: "center", headerSort: false, minWidth: 120,
                 formatter: function () {
                     return `
                         <div class="acciones-tabla">
@@ -295,13 +299,13 @@ function crearFiltros(vista) {
 
           <div class="col-md-3">
             <select id="filtroUnidadMedida" class="form-select">
-              <option value="">Todas las unidades</option>
+              <option value="">Unidad de medida</option>
             </select>
           </div>
 
           <div class="col-md-3">
             <select id="filtroTipoInsumo" class="form-select">
-              <option value="">Todos los tipos</option>
+              <option value="">Tipo de insumo</option>
               <option value="Ingrediente">Ingrediente</option>
               <option value="Empaque">Empaque</option>
               <option value="Costo indirecto">Costo indirecto</option>
@@ -310,7 +314,7 @@ function crearFiltros(vista) {
 
           <div class="col-md-3">
             <select id="filtroStock" class="form-select">
-              <option value="">Todas las existencias</option>
+              <option value="">Cantidad de existencias</option>
               <option value="0">Sin stock</option>
               <option value="bajo">Stock bajo</option>
               <option value="normal">Con stock</option>
@@ -364,11 +368,7 @@ function aplicarFiltros() {
 
         let coincide = true;
 
-
-        // ==========================================
-        // BUSCADOR POR NOMBRE
-        // ==========================================
-
+        //Buscador por nombre
         if (texto) {
 
             coincide = String(data.nombre || "")
@@ -377,11 +377,7 @@ function aplicarFiltros() {
 
         }
 
-
-        // ==========================================
-        // UNIDAD DE MEDIDA
-        // ==========================================
-
+        //Unidad de edida
         if (coincide && unidad) {
 
             coincide =
@@ -389,23 +385,13 @@ function aplicarFiltros() {
 
         }
 
-
-        // ==========================================
-        // TIPO DE INSUMO
-        // ==========================================
-
+        //Tipo de insumo
         if (coincide && tipo) {
-
             coincide =
                 data.tipo_insumo === tipo;
-
         }
 
-
-        // ==========================================
-        // STOCK
-        // ==========================================
-
+        //Stock
         if (coincide && stock) {
 
             const stockActual =
@@ -416,35 +402,24 @@ function aplicarFiltros() {
 
 
             switch (stock) {
-
                 case "0":
-
                     coincide =
                         stockActual === 0;
-
                     break;
 
-
                 case "bajo":
-
                     coincide =
                         stockActual > 0 &&
                         stockActual <= stockMinimo;
-
                     break;
 
-
                 case "normal":
-
                     coincide =
                         stockActual > stockMinimo;
 
                     break;
-
             }
         }
-
-
         return coincide;
 
     });
