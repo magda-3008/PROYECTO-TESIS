@@ -31,32 +31,6 @@ function cargarUnidadesMateriaPrima(datos) {
     });
 }
 
-function pluralizarUnidad(unidad, cantidad) {
-    const singularPlural = {
-        "unidad": "unidades",
-        "paquete": "paquetes",
-        "caja": "cajas",
-        "botella": "botellas",
-        "botellita": "botellitas",
-        "bolsa": "bolsas",
-        "sobre": "sobres",
-        "libra": "libras",
-        "litro": "litros",
-        "gramo": "gramos",
-        "mililitro": "mililitros",
-        "lata": "latas",
-        "barra": "barras"
-    };
-
-    const unidadNormalizada = String(unidad || "").toLowerCase();
-
-    if (Number(cantidad) === 1) {
-        return unidadNormalizada;
-    }
-
-    return singularPlural[unidadNormalizada] || unidadNormalizada;
-}
-
 let tablaMD = null;
 let ingredienteSeleccionado = null;
 
@@ -77,23 +51,20 @@ const vistas = {
                 editor: "number", editorParams: { min: 0, step: 0.01 }
             },
             {
-                title: "Existencia actual",
-                field: "stock_actual_i",
-                hozAlign: "center",
-                minWidth: 100,
-                headerWordWrap: true,
-                headerTooltip: true,
-
+                title: "Existencia actual", field: "stock_actual_i", hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true,
                 formatter: function (cell) {
                     const data = cell.getRow().getData();
 
                     const stock = Number(data.stock_actual_i) || 0;
+
+                    const cantidad = decimalAFraccion(stock);
+
                     const unidad = pluralizarUnidad(
                         data.unidad_existencia,
                         stock
                     );
 
-                    return `${stock} ${unidad}`;
+                    return `${cantidad} ${unidad}`;
                 }
             },
             {
@@ -391,7 +362,7 @@ function aplicarFiltros() {
                 Number(data.stock_actual_i) || 0;
 
             const stockMinimo =
-                Number(data.stock_minimo) || 0;
+                Number(data.stock_minimo) || 1;
 
             switch (stock) {
                 case "0":
