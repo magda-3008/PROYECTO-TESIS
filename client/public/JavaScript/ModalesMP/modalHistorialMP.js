@@ -14,9 +14,9 @@ async function abrirHistorialMP(ingrediente) {
     tbody.innerHTML = "";
 
     // Obtener período seleccionado
-    const periodo = document.getElementById("periodoInventario").value;
+    const periodo = document.getElementById("periodoHistorialMP").value;
     const [anio, mes] = periodo.split("-");
-    const periodoSelect = document.getElementById("periodoInventario");
+    const periodoSelect = document.getElementById("periodoHistorialMP");
     const textoPeriodo = periodoSelect.options[periodoSelect.selectedIndex].text;
     document.getElementById("periodoHistorial").textContent = textoPeriodo;
 
