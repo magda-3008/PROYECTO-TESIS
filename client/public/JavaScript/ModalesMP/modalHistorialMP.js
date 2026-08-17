@@ -133,14 +133,21 @@ async function cargarMovimientosHistorialMP(ingrediente) {
             const cant = Number(mov.cantidad) || 0;
             const cantidad = decimalAFraccion(cant);
             let cantidadMostrar = "";
-            if (mov.tipo_movimiento === "PERDIDA" || mov.tipo_movimiento === "CONSUMO") {
-                cantidadMostrar = `<span class="text-danger">
-                        -${cantidad}
-                    </span>`;
+            if (
+                mov.tipo_movimiento === "PERDIDA" ||
+                mov.tipo_movimiento === "CONSUMO"
+            ) {
+                cantidadMostrar = `
+        <span class="text-danger">
+            -${cant} ${unidadExistencia}
+        </span>
+    `;
             } else {
-                cantidadMostrar = `<span class="text-success">
-                        +${cantidad}
-                    </span>`;
+                cantidadMostrar = `
+        <span class="text-success">
+            +${cant} ${unidadExistencia}
+        </span>
+    `;
             }
             const row = document.createElement("tr");
             row.innerHTML = `
@@ -168,16 +175,20 @@ async function cargarMovimientosHistorialMP(ingrediente) {
                 </td>
             </tr>
         `;
+    } finally {
+        cargando.classList.add("d-none");
     }
 }
 
 async function abrirHistorialMP(ingrediente) {
     document.getElementById("nombreMateriaPrimaHistorial").textContent = ingrediente.nombre;
     document.getElementById("tipoMateriaPrimaHistorial").textContent = ingrediente.tipo_insumo;
-    document.getElementById("stockActualHistorial").textContent = ingrediente.stock_actual_i || 0;
 
-    const cargando = document.getElementById("cargandoHistorial");
-    cargando.classList.remove("d-none");
+    const stock = Math.round(Number(ingrediente.stock_actual_i) || 0);
+    const unidadExistencia = ingrediente.unidad_existencia || "";
+
+    document.getElementById("stockActualHistorial").textContent =
+        `${stock} ${unidadExistencia}`;
 
     document.getElementById("tablaMovimientos").innerHTML = "";
 
