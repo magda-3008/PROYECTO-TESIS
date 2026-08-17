@@ -38,7 +38,7 @@ async function abrirHistorialMP(ingrediente) {
                 <tr>
                     <td colspan="5" class="text-center text-muted py-4">
                         <i class="bi bi-clock-history fs-4 d-block mb-2"></i>
-                        No hay movimientos registrados este mes para este producto.
+                        No hay movimientos registrados este mes para esta materia prima.
                     </td>
                 </tr>
             `;
@@ -93,7 +93,7 @@ async function abrirHistorialMP(ingrediente) {
                         montoTexto = formatoMoneda(mov.costo_total);
                 }
 
-                // Definir cantidadMostrar según si es pérdida o entrada/producción/compra
+                // Mostrar entradas y salidas
                 const cant = Number(mov.cantidad) || 0;
                 const cantidad = decimalAFraccion(cant);
                 let cantidadMostrar = "";
@@ -128,6 +128,6 @@ async function abrirHistorialMP(ingrediente) {
     }
 
     // Abrir el modal
-    const modal = new bootstrap.Modal(document.getElementById("modalHistorial"));
+    const modal = new bootstrap.Modal(document.getElementById("modalHistorialMP"));
     modal.show();
 }
