@@ -271,14 +271,17 @@
 
           <!-- Cuerpo -->
           <div class="modal-body">
-            <div class="mb-3">
-              <label for="periodoHistorialMP" class="form-label">
-                Período
-              </label>
+            <!-- Filtro de período -->
+            <div class="row mb-3">
+              <div class="col-md-5">
+                <label for="periodoHistorialMP" class="form-label fw-semibold">
+                  Período
+                </label>
 
-              <select id="periodoHistorialMP" class="form-select">
-                <!-- Los períodos se cargarán aquí -->
-              </select>
+                <select class="form-select" id="periodoHistorialMP">
+                  <option value="">Seleccionar período</option>
+                </select>
+              </div>
             </div>
             <!-- Información del insumo -->
             <div class="card border-0 bg-light mb-4">

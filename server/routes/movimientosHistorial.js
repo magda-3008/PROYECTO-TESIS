@@ -49,6 +49,39 @@ router.get("/:id_producto", async (req, res) => {
 	}
 });
 
+router.get("/periodos/:id_ma", async (req, res) => {
+	const { id_ma } = req.params;
+
+	try {
+		const consulta = `
+            SELECT DISTINCT
+                anio,
+                mes
+            FROM movimiento_materia_prima
+            WHERE id_ma = $1
+            ORDER BY anio DESC, mes DESC
+        `;
+
+		const resultado = await pool.query(
+			consulta,
+			[id_ma]
+		);
+
+		res.json(resultado.rows);
+
+	} catch (error) {
+		console.error(
+			"Error al obtener períodos de materia prima:",
+			error
+		);
+
+		res.status(500).json({
+			mensaje:
+				"Error al obtener los períodos de movimientos."
+		});
+	}
+});
+
 // Obtener historial de movimientos de materia prima
 router.get("/:id_ma", async (req, res) => {
 	const { id_ma } = req.params;
@@ -108,4 +141,5 @@ router.get("/:id_ma", async (req, res) => {
 		});
 	}
 });
+
 module.exports = router;
