@@ -16,8 +16,10 @@ function pluralizarUnidad(unidad, cantidad) {
     };
 
     const unidadNormalizada = String(unidad || "").toLowerCase();
+    const cantidadNumerica = Number(cantidad);
 
-    if (Number(cantidad) === 1) {
+    // 1 unidad exacta o una fracción menor que 1
+    if (cantidadNumerica <= 1) {
         return unidadNormalizada;
     }
 

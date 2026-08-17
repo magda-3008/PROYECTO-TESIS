@@ -257,15 +257,18 @@
           <!-- Encabezado -->
           <div class="modal-header">
             <h5 class="modal-title" id="modalHistorialMPLabel">
-              <i class="bi bi-clock-history me-2 text-primary"></i> Historial de
-              movimientos -
-              <span id="nombre" class="text-primary"></span>
+              <i class="bi bi-clock-history me-2 text-primary"></i>
+              Historial de movimientos -
+              <span id="nombreMateriaPrimaHistorial" class="text-primary">
+              </span>
             </h5>
+
             <button
               type="button"
               class="btn-close"
               data-bs-dismiss="modal"></button>
           </div>
+
           <!-- Cuerpo -->
           <div class="modal-body">
             <!-- Información del insumo -->
@@ -273,25 +276,46 @@
               <div class="card-body">
                 <div class="row align-items-center">
                   <div class="col-8">
-                    <strong id="nombreMateriaPrimaHistorial"
-                      >Nombre del insumo</strong
-                    >
+                    <strong id="nombreMateriaPrimaHistorial">
+                      Nombre del insumo
+                    </strong>
                   </div>
+
                   <div class="col-4 text-end">
                     <span
                       class="badge bg-primary"
-                      id="tipoMateriaPrimaHistorial"
-                      >Tipo</span
-                    >
+                      id="tipoMateriaPrimaHistorial">
+                      Tipo
+                    </span>
                   </div>
                 </div>
+
                 <hr />
+
                 <div class="d-flex justify-content-between">
                   <span>Stock actual</span>
-                  <strong id="stockActualHistorial">0</strong>
+
+                  <strong id="stockActualHistorial"> 0 </strong>
                 </div>
               </div>
             </div>
+
+            <!-- Filtro de período -->
+            <div class="row align-items-center mb-3">
+              <div class="col">
+                <h6 class="mb-0">
+                  <i class="bi bi-list-ul me-2"></i>
+                  Movimientos
+                </h6>
+              </div>
+
+              <div class="col-auto">
+                <select
+                  id="periodoHistorialMP"
+                  class="form-select form-select-sm"></select>
+              </div>
+            </div>
+
             <!-- Tabla de movimientos -->
             <div class="table-responsive">
               <table class="table table-hover table-striped align-middle">
@@ -304,22 +328,25 @@
                     <th>Observación</th>
                   </tr>
                 </thead>
+
                 <tbody id="tablaMovimientos">
                   <tr>
                     <td colspan="5" class="text-center text-muted">
-                      No hay movimientos registrados para este producto.
+                      No hay movimientos registrados para este insumo.
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
+
             <!-- Indicador de carga -->
             <div id="cargandoHistorial" class="text-center d-none my-3">
               <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Cargando...</span>
+                <span class="visually-hidden"> Cargando... </span>
               </div>
             </div>
           </div>
+
           <!-- Pie -->
           <div class="modal-footer">
             <button

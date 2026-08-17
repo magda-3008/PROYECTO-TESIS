@@ -101,7 +101,7 @@ const vistas = {
                     }
 
                     if (e.target.closest(".btnHistorial")) {
-                        abrirHistorial(ingrediente);
+                        abrirHistorialMP(ingrediente);
                     }
                 },
             },
