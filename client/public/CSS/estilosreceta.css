@@ -57,7 +57,6 @@ FONDO
     position:fixed;
     inset:0;
     z-index:-1;
-
     background-image:url("../Resources/Fondo2.png");
     background-size:cover;
     background-position:center;
@@ -72,16 +71,11 @@ MENÚ LATERAL
     position:fixed;
     top:0;
     left:calc(var(--menu) * -1);
-
     width:var(--menu);
     height:100vh;
-
     background:#ff9fbe;
-
     box-shadow:3px 0 10px rgba(0,0,0,.12);
-
     transition:var(--transicion);
-
     z-index:1000;
 }
 
@@ -97,56 +91,37 @@ MENÚ LATERAL
 
 .Seccion-menu{
     padding:15px 25px 8px;
-
     text-align:center;
-
     color:#000;
-
     font-size:20px;
-
     font-weight:700;
 }
 
 .Item-menu{
-
     display:flex;
-
     align-items:center;
-
     gap:15px;
-
     padding:13px 25px;
-
     color:#fff;
-
     text-decoration:none;
-
     font-size:20px;
-
     transition:.25s;
 }
 
 .Item-menu i{
-
     width:22px;
-
     text-align:center;
 }
 
 .Item-menu:hover,
 .Item-menu.activo{
-
     background:#d18da3;
-
     font-weight:700;
 }
 
 .Menu-lateral hr{
-
     margin:18px 20px;
-
     border:none;
-
     border-top:1px solid rgba(255,255,255,.30);
 }
 
@@ -155,43 +130,29 @@ ENCABEZADO
 ===============================*/
 
 .Encabezado{
-
     position:sticky;
-
     top:0;
-
     z-index:999;
-
     background:var(--header);
-
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
-
     padding:16px 35px;
-
     box-shadow:0 3px 8px rgba(0,0,0,.12);
-
     transition:var(--transicion);
 }
 
 .Encabezado-izquierda,
 .Encabezado-derecha{
-
     display:flex;
-
     align-items:center;
 }
 
 .Encabezado-izquierda{
-
     gap:18px;
 }
 
 .Encabezado-derecha{
-
     gap:18px;
 }
 
@@ -200,22 +161,15 @@ BOTÓN MENÚ
 ===============================*/
 
 .btnMenu{
-
     background:none;
-
     border:none;
-
     color:#000;
-
     font-size:28px;
-
     cursor:pointer;
-
     transition:.25s;
 }
 
 .btnMenu:hover{
-
     transform:scale(1.08);
 }
 
@@ -224,33 +178,22 @@ MARCA
 ===============================*/
 
 .Marca{
-
     display:flex;
-
     flex-direction:column;
 }
 
 .Marca h1{
-
     font-size:32px;
-
     line-height:1;
-
     font-weight:700;
-
     color:#000;
 }
 
 .Marca p{
-
     margin-top:4px;
-
     margin-left:24px;
-
     font-size:14px;
-
     color:#000;
-
     font-style:italic;
 }
 
@@ -259,36 +202,22 @@ BOTÓN AÑADIR VENTA
 ===============================*/
 
 .btnVenta{
-
     display:flex;
-
     align-items:center;
-
     gap:10px;
-
     padding:12px 22px;
-
     border:none;
-
     border-radius:25px;
-
     background:#61bcd7;
-
     color:#fff;
-
     font-size:15px;
-
     font-weight:700;
-
     cursor:pointer;
-
     transition:.25s;
 }
 
 .btnVenta:hover{
-
     background:#1a81a0;
-
     transform:scale(1.03);
 }
 
@@ -297,29 +226,20 @@ LOGO
 ===============================*/
 
 .logoEmpresa{
-
     width:75px;
-
     height:75px;
-
     border-radius:50%;
-
     object-fit:cover;
-
     margin-left:20px;
-
     transition:.30s;
 }
 
 .logoEmpresa:hover{
-
     transform:scale(1.05);
 }
 
 #btnCerrarSesion{
-
     display:flex;
-
     align-items:center;
 }
 
@@ -328,9 +248,7 @@ CONTENIDO
 ===============================*/
 
 .Contenido{
-
     padding:35px;
-
     transition:var(--transicion);
 }
 
@@ -369,22 +287,14 @@ BUSCADOR Y FILTRO
 
 .campo-busqueda{
     flex:1;
-
     display:flex;
     align-items:center;
-
     height:52px;
-
     background:#ffffff;
-
     border:2px solid var(--borde);
-
     border-radius:16px;
-
     box-shadow:0 3px 8px rgba(0,0,0,.08);
-
     overflow:hidden;
-
     transition:.25s;
 }
 
@@ -406,19 +316,12 @@ BUSCADOR Y FILTRO
 
 .campo-busqueda input{
     flex:1;
-
     height:100%;
-
     border:none;
-
     outline:none;
-
     background:transparent;
-
     font-size:16px;
-
     color:#000;
-
     padding-right:15px;
 }
 
@@ -427,26 +330,16 @@ BUSCADOR Y FILTRO
 }
 
 /* Botón Buscar */
-
 .btnBuscar{
     width:135px;
-
     height:50px;
-
     border:none;
-
     border-radius:14px;
-
     background:var(--principal);
-
     color:#fff;
-
     font-size:16px;
-
     font-weight:700;
-
     cursor:pointer;
-
     transition:.25s;
 }
 
@@ -456,7 +349,6 @@ BUSCADOR Y FILTRO
 }
 
 /* Contenedor del filtro */
-
 .contenedor-filtro{
     display:flex;
     align-items:center;
@@ -470,26 +362,16 @@ BUSCADOR Y FILTRO
 }
 
 /* Select */
-
 .contenedor-filtro select{
     width:220px;
-
     height:50px;
-
     padding:0 42px 0 16px;
-
     border:2px solid var(--borde);
-
     border-radius:16px;
-
     background:#fff;
-
     color:#000;
-
     font-size:16px;
-
     cursor:pointer;
-
     transition:.25s;
 
     appearance:none;
@@ -497,9 +379,7 @@ BUSCADOR Y FILTRO
     -moz-appearance:none;
 
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%234a7f83' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5 8 12l6.5-6.5' stroke='%234a7f83' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-
     background-repeat:no-repeat;
-
     background-position:right 16px center;
 }
 
@@ -511,14 +391,6 @@ BUSCADOR Y FILTRO
     border-color:#1a81a0;
     outline:none;
     box-shadow:0 0 0 3px rgba(97,188,215,.20);
-}
-
-/* Contenedor de tarjetas */
-
-#contenedor-recetas{
-    width:95%;
-    max-width:1300px;
-    margin:40px auto;
 }
 
 /* Responsive */
@@ -922,5 +794,174 @@ a,
 div{
 
     font-family:'Baloo 2', cursive !important;
+
+}
+
+.tarjeta-receta{
+    width: 100%;
+    max-width: 360px;
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all .3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+
+}
+
+
+
+.tarjeta-receta:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 10px 24px rgba(0,0,0,.25);
+
+}
+
+
+.imagen-receta{
+    height: 260px;
+    object-fit: cover;
+
+}
+
+
+.titulo-receta{
+    text-align: center;
+    font-weight: 600;
+
+}
+
+
+/* ==========================
+   Modal de recetas
+========================== */
+
+
+#modalReceta .modal-content{
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(28, 66, 147, .25);
+
+}
+
+
+
+/* Encabezado */
+#modalReceta .modal-header{
+    background: #befbfc;
+    padding: 22px 28px;
+    border-bottom: none;
+
+}
+
+
+#modalReceta .modal-title{
+    width: 100%;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #284b63;
+
+}
+
+
+/* Botón cerrar */
+#modalReceta .btn-close{
+    background-color: #befbfc;
+    border-radius: 50%;
+    padding: .8rem;
+    transition: .25s;
+    opacity: .8;
+
+}
+
+#modalReceta .btn-close:hover{
+    background: #abdbdc;
+    opacity: 1;
+
+}
+
+/* Cuerpo */
+#modalReceta .modal-body{
+    padding: 30px;
+    background: #fff;
+
+}
+
+/* Imagen */
+.imagen-modal{
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin-bottom: 25px;
+
+}
+
+/* Títulos */
+#modalReceta h5{
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #284b63;
+
+}
+
+/* Texto */
+#modalReceta p{
+    color: #444;
+    line-height: 1.7;
+
+}
+
+/* Lista */
+#listaIngredientes{
+    padding-left: 22px;
+}
+
+#listaIngredientes li{
+    margin-bottom: 10px;
+    color: #444;
+
+}
+
+/* Resalta el nombre del ingrediente */
+#listaIngredientes strong{
+    color: #284b63;
+}
+
+.info-receta{
+    background:#f5fbfc;
+    border-left:6px solid #befbfc;
+    padding:18px 20px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+.descripcion-receta{
+    text-align:justify;
+    line-height:1.8;
+}
+
+#modalReceta hr{
+    margin:25px 0;
+    border-color:#d7ecec;
+}
+
+.tarjeta-receta{
+    animation: aparecer .35s ease;
+}
+
+
+@keyframes aparecer{
+    from{
+        opacity:0;
+        transform:translateY(15px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
 
 }

@@ -45,17 +45,36 @@ async function cargarIngredientes() {
         const ingredientes = await respuesta.json();
         const select = document.getElementById("ingrediente");
 
-        // Limpiamos para asegurarnos de que solo quede la opción por defecto limpia
         select.innerHTML = '<option value="">Ingrediente</option>';
 
+        const ingredientesOcultos = [
+            "Vasos 4 oz",
+            "Pajillas",
+            "Leña",
+            "Cucharas",
+            "Palillos",
+            "Plato redondo",
+            "Bolsas para helados",
+            "Plato largo",
+            "Vasos 5 oz",
+            "Vasos 7 oz",
+            "Vasos 10 oz",
+            "Vasos 12 oz",
+            "Vasos 14 oz",
+            "Bolsas 2 libras"
+        ].map(nombre => nombre.toLowerCase());
+
         ingredientes.forEach((ingrediente) => {
+
+            if (ingredientesOcultos.includes(ingrediente.nombre.toLowerCase())) {
+                return;
+            }
+
             const option = document.createElement("option");
-            
-            // Usamos id_ma, o si es nulo, usamos el id del producto elaborado
+
             option.value = ingrediente.id_ma || ingrediente.id_producto_insumo || ingrediente.id;
             option.textContent = ingrediente.nombre;
 
-            // Solo agregamos la opción si logramos rescatar un ID válido
             if (option.value && option.value !== "null") {
                 select.appendChild(option);
             }
@@ -67,23 +86,36 @@ async function cargarIngredientes() {
 }
 
 async function cargarRecetas(idIngrediente = "", nombre = "") {
+
+     const contenedor = document.getElementById("contenedor-recetas");
+
     try {
 
        let url = "/api/recetas";
 
-const parametros = new URLSearchParams();
+        const parametros = new URLSearchParams();
 
-if (idIngrediente) {
-    parametros.append("ingrediente", idIngrediente);
-}
+        if (idIngrediente) {
+            parametros.append("ingrediente", idIngrediente);
+        }
 
-if (nombre) {
-    parametros.append("buscar", nombre);
-}
+        if (nombre) {
+            parametros.append("buscar", nombre);
+        }
 
-if (parametros.toString()) {
-    url += "?" + parametros.toString();
-}
+        if (parametros.toString()) {
+            url += "?" + parametros.toString();
+        }
+
+        contenedor.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-info" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+
+                <p class="mt-3 text-muted">Cargando recetas...</p>
+            </div>
+        `;
 
         const respuesta = await fetch(url);
 
@@ -93,8 +125,6 @@ if (parametros.toString()) {
 
         const recetas = await respuesta.json();
 
-        const contenedor = document.getElementById("contenedor-recetas");
-     
         contenedor.innerHTML = "";
 
         // Si la API no devuelve ninguna receta con ese ingrediente
@@ -104,35 +134,63 @@ if (parametros.toString()) {
         }
 
         recetas.forEach((receta) => {
-            const tarjeta = document.createElement("div");
-            tarjeta.className = "card tarjeta-receta";
 
-            // Si imagen_url es null o no existe, usamos una imagen genérica o transparente
-         const urlImagen = receta.imagen_url && receta.imagen_url !== "null" 
-        ? receta.imagen_url 
-        : "https://placehold.co/300x200?text=Sin+Imagen";
+        const urlImagen = receta.imagen_url && receta.imagen_url !== "null"
+            ? receta.imagen_url
+            : "https://placehold.co/300x200?text=Sin+Imagen";
 
-           tarjeta.innerHTML = `
-        <img src="${urlImagen}" class="card-img-top imagen-receta" alt="${receta.nombre_receta}">
-        <div class="card-body">
-            <h5 class="card-title titulo-receta">${receta.nombre_receta}</h5>
-        </div>
-    `;
+        const columna = document.createElement("div");
+        columna.className = "col-lg-4 col-md-6 d-flex justify-content-center";
 
-            tarjeta.addEventListener("click", () => {
-                cargarDetalleReceta(receta.id_receta);
-            });
+        columna.innerHTML = `
+            <div class="card tarjeta-receta">
+                <img src="${urlImagen}" class="card-img-top imagen-receta" alt="${receta.nombre_receta}">
+                <div class="card-body">
+                    <h5 class="card-title titulo-receta">${receta.nombre_receta}</h5>
+                </div>
+            </div>
+        `;
 
-            contenedor.appendChild(tarjeta);
+        columna.querySelector(".tarjeta-receta").addEventListener("click", () => {
+            cargarDetalleReceta(receta.id_receta);
         });
 
+    contenedor.appendChild(columna);
+});
+
     } catch (error) {
-        console.error(error);
-    }
+    console.error(error);
+
+    contenedor.innerHTML = `
+        <div class="col-12 text-center py-5">
+            <h5>No fue posible cargar las recetas.</h5>
+            <p class="text-muted">
+                Intenta nuevamente en unos segundos.
+            </p>
+        </div>
+    `;
+}
 }
 
 async function cargarDetalleReceta(idReceta) {
     try {
+
+        const modal = new bootstrap.Modal(document.getElementById("modalReceta"));
+
+document.getElementById("tituloModal").textContent = "Cargando...";
+
+document.getElementById("contenidoModal").innerHTML = `
+    <div class="text-center py-5">
+        <div class="spinner-border text-info" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+
+        <p class="mt-3 text-muted">Obteniendo receta...</p>
+    </div>
+`;
+
+modal.show();
+
         const respuesta = await fetch(`/api/detalle_receta/${idReceta}`);
 
         if (!respuesta.ok) {
@@ -152,11 +210,25 @@ async function cargarDetalleReceta(idReceta) {
         
         contenido.innerHTML = `
             <img src="${urlImagenModal}" class="imagen-modal">
-            <p><strong>Las medidas de esta receta producen una cantidad base de:</strong> ${receta.cantidad_producida_base} ${receta.nombre_receta}</p>
-            <h5>Ingredientes</h5>
+
+            <div class="info-receta">
+                <p>
+                    <strong>Rendimiento:</strong>
+                    ${receta.cantidad_producida_base} ${receta.nombre_receta}
+                </p>
+            </div>
+
+            <h5>Ingredientes y materiales</h5>
+
             <ul id="listaIngredientes"></ul>
-            <h5>Método de preparación:</h5>
-            <p style="text-align: justify;">${receta.descripcion}</p>
+
+            <hr>
+
+            <h5>Método de preparación</h5>
+
+            <p class="descripcion-receta">
+                ${receta.descripcion}
+            </p>
         `;
 
         const lista = document.getElementById("listaIngredientes");
@@ -173,10 +245,16 @@ async function cargarDetalleReceta(idReceta) {
             `;
         });
 
-        const modal = new bootstrap.Modal(document.getElementById("modalReceta"));
-        modal.show();
 
-    } catch (error) {
+        } catch (error) {
         console.error(error);
+
+        document.getElementById("tituloModal").textContent = "Error";
+
+        document.getElementById("contenidoModal").innerHTML = `
+            <div class="text-center py-4">
+                <p>No se pudo cargar la información de la receta.</p>
+            </div>
+        `;
     }
 }
