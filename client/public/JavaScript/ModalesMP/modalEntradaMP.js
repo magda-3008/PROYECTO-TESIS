@@ -16,8 +16,7 @@ function abrirModalEntradaMP(materiaprima) {
     document.getElementById("cantidadEntrada").value = "";
     document.getElementById("observacionEntrada").value = "";
 
-    //modificaste esto: le añadiste el const
-    const MPSeleccionada = materiaprima;
+    MPSeleccionada = materiaprima;
 
     document.getElementById("nombreMateriaPrimaEntrada").textContent =
         materiaprima.nombre;
