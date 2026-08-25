@@ -109,8 +109,8 @@ async function registrarEntrada() {
 
     const movimiento = {
         id_producto: MPSeleccionada.id_producto,
-        anio: Number(anioStr),
-        mes: Number(mesStr),
+        anio: Number(anio),
+        mes: Number(mes),
         tipo_movimiento: tipo,
         cantidad: cantidad,
         costo_unitario: costoUnitario,
