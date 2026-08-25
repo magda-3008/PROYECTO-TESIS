@@ -19,9 +19,10 @@ router.post("/", async (req, res) => {
         switch (tipo_movimiento) {
             case "COMPRA":
             case "ENTRADA":
-                await registrarEntrada(
+                await registrarMovimientoEntrada(
                     client,
                     id_ma,
+                    tipo_movimiento,
                     cantidad,
                     observacion,
                     anio,
@@ -74,6 +75,16 @@ async function registrarMovimientoEntrada(
          WHERE id_ma = $1`,
         [id_ma],
     );
+
+    const resStock = await client.query(
+        `UPDATE materia_prima_y_cd
+     SET stock_actual_i = stock_actual_i + $1
+     WHERE id_ma = $2
+     RETURNING stock_actual_i`,
+        [cantidadFinal, id_ma],
+    );
+
+    const nuevoStock = Number(resStock.rows[0].stock_actual_i);
 
     if (resCosto.rows.length === 0) {
         throw new Error("No se encontró el costo de la materia prima.");

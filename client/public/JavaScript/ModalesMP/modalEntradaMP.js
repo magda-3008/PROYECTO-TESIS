@@ -100,26 +100,19 @@ async function registrarEntrada() {
 
     if (!esValido) return;
 
-    const costoUnitario = Number(MPSeleccionada.costo) || 0;
-    const costoTotal = costoUnitario * cantidad;
-
     const observacion = document
         .getElementById("observacionEntrada")
         .value.trim();
 
     const movimiento = {
-        id_producto: MPSeleccionada.id_producto,
-        anio: Number(anio),
-        mes: Number(mes),
+        id_ma: MPSeleccionada.id_ma,
         tipo_movimiento: tipo,
         cantidad: cantidad,
-        costo_unitario: costoUnitario,
-        costo_total: costoTotal,
         observacion: observacion,
     };
 
     try {
-        const response = await fetch("/api/entrada", {
+        const response = await fetch("/api/entradaMP", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -135,9 +128,9 @@ async function registrarEntrada() {
         const nuevoStock =
             data.nuevo_stock_actual !== undefined
                 ? data.nuevo_stock_actual
-                : Number(MPSeleccionada.stock_actual) + cantidad;
+                : Number(MPSeleccionada.stock_actual_i) + cantidad;
 
-        MPSeleccionada.stock_actual = nuevoStock;
+        MPSeleccionada.stock_actual_i = nuevoStock;
 
         Swal.fire({
             icon: "success",
@@ -149,7 +142,7 @@ async function registrarEntrada() {
         if (typeof tabla !== "undefined" && tabla) {
             tabla.updateData([
                 {
-                    id_ma: MPSeleccionada.id_producto,
+                    id_ma: MPSeleccionada.id_ma,
                     stock_actual_i: nuevoStock,
                 },
             ]);
@@ -173,7 +166,7 @@ async function registrarEntrada() {
 }
 
 // Limpiar errores automáticamente cuando el usuario cierra el modal
-const modalEntrada = document.getElementById("modalEntrada");
+const modalEntrada = document.getElementById("modalEntradaMP");
 if (modalEntrada) {
     modalEntrada.addEventListener("hidden.bs.modal", limpiarErroresModal);
 }
