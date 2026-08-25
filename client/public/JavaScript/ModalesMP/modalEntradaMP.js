@@ -1,3 +1,5 @@
+let MPSeleccionada = null;
+
 function cargarTiposEntrada() {
     const select = document.getElementById("tipoEntrada");
 
