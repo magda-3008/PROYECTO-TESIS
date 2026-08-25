@@ -7,17 +7,21 @@ const opcionesMovimiento = {
     ]
 };
 
-function cargarTiposEntrada(materiaprima) {
+function cargarTiposEntrada() {
     const select = document.getElementById("tipoEntrada");
-    const opciones = opcionesMovimiento[materiaprima.tipo] || [];
+
     select.innerHTML = `
         <option value="" selected disabled>Seleccione una opción</option>
-        ${opciones.map((op) => `<option value="${op.value}">${op.label}</option>`).join("")}
+        <option value="COMPRA">Compra</option>
+        <option value="ENTRADA">Ajuste de inventario</option>
+        <option value="ENTRADA">Otro</option>
     `;
 }
 
 function abrirModalEntradaMP(materiaprima) {
+
     limpiarErroresModal();
+
     document.getElementById("cantidadEntrada").value = "";
     document.getElementById("observacionEntrada").value = "";
 
@@ -25,12 +29,19 @@ function abrirModalEntradaMP(materiaprima) {
 
     document.getElementById("nombreMateriaPrimaEntrada").textContent =
         materiaprima.nombre;
-    document.getElementById("stockActualMPEntrada").textContent =
-        materiaprima.stock_actual;
-    document.getElementById("tipoMateriaPrimaEntrada").textContent = materiaprima.tipo;
-    cargarTiposEntrada(materiaprima);
 
-    const modal = new bootstrap.Modal(document.getElementById("modalEntradaMP"));
+    document.getElementById("stockActualMPEntrada").textContent =
+        materiaprima.stock_actual_i;
+
+    document.getElementById("tipoMateriaPrimaEntrada").textContent =
+        materiaprima.tipo_insumo;
+
+    cargarTiposEntrada();
+
+    const modal = new bootstrap.Modal(
+        document.getElementById("modalEntradaMP")
+    );
+
     modal.show();
 }
 
