@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Productos</title>
+    <title>Materia Prima</title>
     <!-- Bootstrap CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
@@ -33,54 +33,36 @@
     <div class="container-fluid mt-3">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-          <h1>Inventario de productos</h1>
+          <h1>Inventario de materia prima</h1>
           <p class="text-muted mb-0">
-            Consulta y administra las existencias del período seleccionado.
+            Consulta y administra las existencias actuales de materia prima.
           </p>
         </div>
-        <div class="card shadow-sm">
-          <div class="card-body py-2 px-3">
-            <div class="small text-muted">Período actual</div>
-            <div class="d-flex align-items-center gap-2">
-              <select
-                id="periodoInventario"
-                class="form-select form-select-sm"></select>
-              <span id="estadoPeriodo" class="badge bg-success"> Abierto </span>
-            </div>
-          </div>
-        </div>
       </div>
-      <ul class="nav nav-tabs mb-3" id="tabsProductos">
-        <li class="nav-item">
-          <button class="nav-link active" data-vista="inventario">Todos</button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link" data-vista="analisis">
-            Análisis de producción
-          </button>
-        </li>
-      </ul>
+
       <div class="mb-3">
         <input
           class="form-control"
           id="buscar"
-          placeholder="Escribe el nombre del producto..." />
+          placeholder="Escribe el nombre del ingrediente/insumo..." />
       </div>
+
       <div id="panelFiltros" class="mb-3"></div>
-      <div id="tablaProductos"></div>
+
+      <div id="tablaMateriaP"></div>
     </div>
     <!-- Modales -->
     <!-- Modal Registrar Pérdida -->
     <div
       class="modal fade"
-      id="modalPerdida"
+      id="modalPerdidaMP"
       tabindex="-1"
-      aria-labelledby="modalPerdidaLabel"
+      aria-labelledby="modalPerdidaMPLabel"
       aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="modalPerdidaLabel">
+            <h5 class="modal-title" id="modalPerdidaMPLabel">
               <i class="bi bi-cart-dash me-2 text-danger"></i> Registrar pérdida
             </h5>
             <button
@@ -89,18 +71,18 @@
               data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
-            <!-- Información del producto -->
+            <!-- Información de la materia prima -->
             <div class="card border-0 bg-light mb-4">
               <div class="card-body">
-                <h6 class="text-muted mb-3">Producto seleccionado</h6>
+                <h6 class="text-muted mb-3">Insumo seleccionado</h6>
                 <div class="row">
                   <div class="col-8">
-                    <strong id="nombreProductoPerdida">
-                      Nombre del producto
+                    <strong id="nombreMateriaPrimaPerdida">
+                      Nombre del insumo
                     </strong>
                   </div>
                   <div class="col-4 text-end">
-                    <span class="badge bg-primary" id="tipoProductoPerdida">
+                    <span class="badge bg-primary" id="tipoMateriaPrimaPerdida">
                       Tipo
                     </span>
                   </div>
@@ -108,7 +90,7 @@
                 <hr />
                 <div class="d-flex justify-content-between">
                   <span>Existencias actuales</span>
-                  <strong id="stockActualPerdida"> 0 </strong>
+                  <strong id="stockActualMPPerdida"> 0 </strong>
                 </div>
               </div>
             </div>
@@ -154,15 +136,15 @@
     <!-- Modal Registrar Entrada -->
     <div
       class="modal fade"
-      id="modalEntrada"
+      id="modalEntradaMP"
       tabindex="-1"
-      aria-labelledby="modalEntradaLabel"
+      aria-labelledby="modalEntradaMPLabel"
       aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <!-- Encabezado -->
           <div class="modal-header">
-            <h5 class="modal-title" id="modalEntradaLabel">
+            <h5 class="modal-title" id="modalEntradaMPLabel">
               <i class="bi bi-cart-plus me-2 text-success"></i> Registrar
               entrada
             </h5>
@@ -176,15 +158,15 @@
             <!-- Información del producto -->
             <div class="card border-0 bg-light mb-4">
               <div class="card-body">
-                <h6 class="text-muted mb-3">Producto seleccionado</h6>
+                <h6 class="text-muted mb-3">Insumo seleccionado</h6>
                 <div class="row align-items-center">
                   <div class="col-8">
-                    <strong id="nombreProductoEntrada">
-                      Nombre del producto
+                    <strong id="nombreMateriaPrimaEntrada">
+                      Nombre del insumo
                     </strong>
                   </div>
                   <div class="col-4 text-end">
-                    <span class="badge bg-primary" id="tipoProductoEntrada">
+                    <span class="badge bg-primary" id="tipoMateriaPrimaEntrada">
                       Tipo
                     </span>
                   </div>
@@ -192,7 +174,7 @@
                 <hr />
                 <div class="d-flex justify-content-between">
                   <span>Existencias actuales</span>
-                  <strong id="stockActualEntrada"> 0 </strong>
+                  <strong id="stockActualMPEntrada"> 0 </strong>
                 </div>
               </div>
             </div>
@@ -224,9 +206,6 @@
                 id="cantidadEntrada"
                 min="1"
                 placeholder="Ingrese la cantidad" />
-              <small
-                id="ayudaCantidadEntrada"
-                class="form-text text-muted"></small>
               <small
                 class="text-danger d-block mt-1 error-msg"
                 id="errorCantidad"></small>
@@ -266,48 +245,73 @@
     <!-- Modal Historial de Movimientos -->
     <div
       class="modal fade"
-      id="modalHistorial"
+      id="modalHistorialMP"
       tabindex="-1"
-      aria-labelledby="modalHistorialLabel"
+      aria-labelledby="modalHistorialMPLabel"
       aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
           <!-- Encabezado -->
           <div class="modal-header">
-            <h5 class="modal-title" id="modalHistorialLabel">
-              <i class="bi bi-clock-history me-2 text-primary"></i> Historial de
-              movimientos -
-              <span id="periodoHistorial" class="text-primary"></span>
+            <h5 class="modal-title" id="modalHistorialMPLabel">
+              <i class="bi bi-clock-history me-2 text-primary"></i>
+              Historial de movimientos -
+              <span id="nombreMateriaPrimaHistorial" class="text-primary">
+              </span>
             </h5>
+
             <button
               type="button"
               class="btn-close"
               data-bs-dismiss="modal"></button>
           </div>
+
           <!-- Cuerpo -->
           <div class="modal-body">
-            <!-- Información del producto -->
+            <!-- Información del insumo -->
             <div class="card border-0 bg-light mb-4">
               <div class="card-body">
                 <div class="row align-items-center">
                   <div class="col-8">
-                    <strong id="nombreProductoHistorial"
-                      >Nombre del producto</strong
-                    >
+                    <span id="nombreMateriaPrimaHistorial" class="text-primary">
+                    </span>
                   </div>
+
                   <div class="col-4 text-end">
-                    <span class="badge bg-primary" id="tipoProductoHistorial"
-                      >Tipo</span
-                    >
+                    <span
+                      class="badge bg-primary"
+                      id="tipoMateriaPrimaHistorial">
+                      Tipo
+                    </span>
                   </div>
                 </div>
+
                 <hr />
+
                 <div class="d-flex justify-content-between">
                   <span>Stock actual</span>
-                  <strong id="stockActualHistorial">0</strong>
+
+                  <strong id="stockActualHistorial"> 0 </strong>
                 </div>
               </div>
             </div>
+
+            <!-- Filtro de período -->
+            <div class="row align-items-center mb-3">
+              <div class="col">
+                <h6 class="mb-0">
+                  <i class="bi bi-list-ul me-2"></i>
+                  Movimientos
+                </h6>
+              </div>
+
+              <div class="col-auto">
+                <select
+                  id="periodoHistorialMP"
+                  class="form-select form-select-sm"></select>
+              </div>
+            </div>
+
             <!-- Tabla de movimientos -->
             <div class="table-responsive">
               <table class="table table-hover table-striped align-middle">
@@ -317,27 +321,28 @@
                     <th>Tipo</th>
                     <th>Cantidad</th>
                     <th>Monto Total</th>
-                    <!-- NUEVA COLUMNA -->
                     <th>Observación</th>
                   </tr>
                 </thead>
+
                 <tbody id="tablaMovimientos">
                   <tr>
                     <td colspan="5" class="text-center text-muted">
-                      <!-- CAMBIADO A 5 -->
-                      No hay movimientos registrados para este producto.
+                      No hay movimientos registrados para este insumo.
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
+
             <!-- Indicador de carga -->
             <div id="cargandoHistorial" class="text-center d-none my-3">
               <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Cargando...</span>
+                <span class="visually-hidden"> Cargando... </span>
               </div>
             </div>
           </div>
+
           <!-- Pie -->
           <div class="modal-footer">
             <button
@@ -353,11 +358,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
-    <script src="./JavaScript/ModalesProducto/modalHistorial.js"></script>
-    <script src="./JavaScript/ModalesProducto/modalPerdida.js"></script>
-    <script src="./JavaScript/ModalesProducto/modalEntrada.js"></script>
+    <script src="./JavaScript/ModalesMP/modalHistorialMP.js"></script>
+    <script src="./JavaScript/ModalesMP/modalPerdidaMP.js"></script>
+    <script src="./JavaScript/ModalesMP/modalEntradaMP.js"></script>
+    <script src="./JavaScript/utilities/formateoDecimal.js"></script>
     <script src="./JavaScript/utilities/formateoMoneda.js"></script>
     <script src="./JavaScript/utilities/formateoPorcentaje.js"></script>
-    <script src="./JavaScript/productos.js"></script>
+    <script src="./JavaScript/utilities/formateoUnidadesPlural.js"></script>
+    <script src="./JavaScript/materiaPrima.js"></script>
   </body>
 </html>
