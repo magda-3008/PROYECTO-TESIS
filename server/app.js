@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const pool = require("./config/db");
+
+//Rutas del sistema
 const productoRoutes = require("./routes/productoRoutes");
 const recetaRoutes = require("./routes/recetasRoutes");
 const detalleRecetaRoutes = require("./routes/detalleRecetaRoutes");
@@ -10,6 +12,8 @@ const usuarioRoutes = require("./routes/usuariosRoutes");
 const movimientoProductoRoutes = require("./routes/movimientoProductoRoutes");
 const perdidaProductoRoutes = require("./routes/perdidaProductoRoutes");
 const movimientoHistorial = require("./routes/movimientosHistorial");
+const movimientoMPRoutes = require("./routes/movimientoMPRoutes");
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -19,6 +23,8 @@ app.use(express.static(path.join(__dirname, "../client/public")));
 app.get("/", (req, res) => {
 	res.sendFile(path.join(__dirname, "../client/public/index.html"));
 });
+
+//Llamado a las rutas
 app.use("/api/productos", productoRoutes);
 app.use("/api/recetas", recetaRoutes);
 app.use("/api/detalle_receta", detalleRecetaRoutes);
@@ -27,6 +33,8 @@ app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/entrada", movimientoProductoRoutes);
 app.use("/api/perdida", perdidaProductoRoutes);
 app.use("/api/historial", movimientoHistorial);
+app.use("/api/entradaMP", movimientoMPRoutes);
+
 const PORT = process.env.PORT || 3000;
 app.get("/api/test-db", async (req, res) => {
 	try {

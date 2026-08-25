@@ -96,7 +96,7 @@ const vistas = {
                     }
 
                     if (e.target.closest(".btnEntrada")) {
-                        abrirModalEntrada(ingrediente);
+                        abrirModalEntradaMP(ingrediente);
                         return;
                     }
 
