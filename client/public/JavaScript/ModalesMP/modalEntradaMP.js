@@ -1,12 +1,3 @@
-// Mapeo de opciones (los valores son los que espera el backend)
-const opcionesMovimiento = {
-    materiaPrima: [
-        { value: "COMPRA", label: "Compra" },
-        { value: "ENTRADA", label: "Ajuste de inventario" },
-        { value: "ENTRADA", label: "Otro" },
-    ]
-};
-
 function cargarTiposEntrada() {
     const select = document.getElementById("tipoEntrada");
 
@@ -25,7 +16,8 @@ function abrirModalEntradaMP(materiaprima) {
     document.getElementById("cantidadEntrada").value = "";
     document.getElementById("observacionEntrada").value = "";
 
-    MPSeleccionada = materiaprima;
+    //modificaste esto: le añadiste el const
+    const MPSeleccionada = materiaprima;
 
     document.getElementById("nombreMateriaPrimaEntrada").textContent =
         materiaprima.nombre;
