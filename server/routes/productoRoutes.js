@@ -26,7 +26,37 @@ router.get("/", async (req, res) => {
         mes
     } = req.query;
     try {
+
         const resultado = await pool.query(`
+            SELECT
+                anio,
+                mes
+            FROM inventario_mensual_producto
+            GROUP BY anio, mes
+            ORDER BY anio DESC, mes DESC;
+        `);
+
+        res.json(resultado.rows);
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            error: "Error al obtener los períodos."
+        });
+
+    }
+
+});
+
+router.get("/", async (req, res) => {
+    const { anio, mes } = req.query;
+
+    try {
+
+        const resultado = await pool.query(
+            `
             SELECT *
             FROM v_productos_inventario_periodo
             WHERE anio = $1
@@ -36,10 +66,13 @@ router.get("/", async (req, res) => {
             [anio, mes]);
         res.json(resultado.rows);
     } catch (error) {
+
         console.error(error);
+
         res.status(500).json({
             error: "Error al obtener los productos."
         });
+
     }
 });
 router.get("/analisis", async (req, res) => {

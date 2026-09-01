@@ -1,3 +1,209 @@
+:root {
+	--header: #ff9fbe;
+	--principal: #61bcd7;
+	--principalHover: #1a81a0;
+	--titulo: #4a7f83;
+	--blanco: #ffffff;
+	--texto: #000000;
+	--borde: #d7eef5;
+	--fondo: rgba(207, 11, 11, .12);
+	--sombra: 0 8px 18px rgba(0, 0, 0, .12);
+	--radio: 18px;
+	--transicion: .30s ease;
+	--menu: 240px;
+}
+/*==============================
+RESET
+===============================*/
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+html,
+body,
+button,
+input,
+select,
+textarea,
+label,
+option,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+span {
+	font-family: 'Baloo 2', cursive !important;
+}
+body {
+	background: var(--fondo);
+	color: var(--texto);
+	overflow-x: hidden;
+}
+/*==============================
+FONDO
+===============================*/
+.Fondo {
+	background-color: #61bcd7;
+}
+/*==============================
+MENÚ LATERAL
+===============================*/
+.Menu-lateral {
+	position: fixed;
+	top: 0;
+	left: calc(var(--menu) * -1);
+	width: var(--menu);
+	height: 100vh;
+	background: #ff9fbe;
+	box-shadow: 3px 0 10px rgba(0, 0, 0, .12);
+	transition: var(--transicion);
+	z-index: 1000;
+}
+.Menu-lateral.activo {
+	left: 0;
+}
+.Menu-lateral nav {
+	display: flex;
+	flex-direction: column;
+	padding-top: 15px;
+}
+.Seccion-menu {
+	padding: 15px 25px 8px;
+	text-align: center;
+	color: #000;
+	font-size: 20px;
+	font-weight: 700;
+}
+.Item-menu {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	padding: 13px 25px;
+	color: #fff;
+	text-decoration: none;
+	font-size: 20px;
+	transition: .25s;
+}
+.Item-menu i {
+	width: 22px;
+	text-align: center;
+}
+.Item-menu:hover,
+.Item-menu.activo {
+	background: #d18da3;
+	font-weight: 700;
+}
+.Menu-lateral hr {
+	margin: 18px 20px;
+	border: none;
+	border-top: 1px solid rgba(255, 255, 255, .30);
+}
+/*==============================
+ENCABEZADO
+===============================*/
+.Encabezado {
+	position: sticky;
+	top: 0;
+	z-index: 999;
+	background: var(--header);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px 35px;
+	box-shadow: 0 3px 8px rgba(0, 0, 0, .12);
+	transition: var(--transicion);
+}
+.Encabezado-izquierda,
+.Encabezado-derecha {
+	display: flex;
+	align-items: center;
+}
+.Encabezado-izquierda {
+	gap: 18px;
+}
+.Encabezado-derecha {
+	gap: 18px;
+}
+/*==============================
+BOTÓN MENÚ
+===============================*/
+.btnMenu {
+	background: none;
+	border: none;
+	color: #000;
+	font-size: 28px;
+	cursor: pointer;
+	transition: .25s;
+}
+.btnMenu:hover {
+	transform: scale(1.08);
+}
+/*==============================
+MARCA
+===============================*/
+.Marca {
+	display: flex;
+	flex-direction: column;
+}
+.Marca h1 {
+	font-size: 32px;
+	line-height: 1;
+	font-weight: 700;
+	color: #000;
+}
+.Marca p {
+	margin-top: 4px;
+	margin-left: 24px;
+	font-size: 14px;
+	color: #000;
+	font-style: italic;
+}
+/*==============================
+BOTÓN AÑADIR VENTA
+===============================*/
+.btnVenta {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 12px 22px;
+	border: none;
+	border-radius: 25px;
+	background: #61bcd7;
+	color: #fff;
+	font-size: 15px;
+	font-weight: 700;
+	cursor: pointer;
+	transition: .25s;
+}
+.btnVenta:hover {
+	background: #1a81a0;
+	transform: scale(1.03);
+}
+/*==============================
+LOGO
+===============================*/
+.logoEmpresa {
+	width: 75px;
+	height: 75px;
+	border-radius: 50%;
+	object-fit: cover;
+	margin-left: 20px;
+	transition: .30s;
+}
+.logoEmpresa:hover {
+	transform: scale(1.05);
+}
+#btnCerrarSesion {
+	display: flex;
+	align-items: center;
+}
+
+
 /* ================================
         BOTONES DE ACCIONES DE TABLA
 ================================ */
@@ -96,3 +302,429 @@
         word-wrap: break-word;
     }
 }
+
+/*=========================================
+MODAL AGREGAR VENTA
+=========================================*/
+.modalVenta {
+	position: fixed;
+	inset: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: rgba(0, 0, 0, .45);
+	opacity: 0;
+	visibility: hidden;
+	transition: .30s ease;
+	z-index: 2000;
+}
+.modalVenta.activo {
+	opacity: 1;
+	visibility: visible;
+}
+/* Caja del formulario */
+.modal-contenido {
+	width: 720px;
+	max-width: 95%;
+	background: #fff;
+	border-radius: 22px;
+	overflow: hidden;
+	box-shadow: 0 15px 35px rgba(0, 0, 0, .20);
+	animation: mostrarModal .30s ease;
+}
+/* Encabezado */
+.venta-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 18px 28px;
+	background: #befbfc;
+	border-bottom: 1px solid #d7eef5;
+}
+.venta-header h2 {
+	margin: 0;
+	font-size: 28px;
+	font-weight: 700;
+	color: #4a7f83;
+}
+.cerrarModal {
+	width: 42px;
+	height: 42px;
+	border: none;
+	background: transparent;
+	color: #4a7f83;
+	font-size: 32px;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	transition: .25s;
+}
+.cerrarModal:hover {
+	background: #abdbdc;
+	border-radius: 50%;
+}
+/* Buscador */
+.grupoBusqueda {
+	position: relative;
+	margin: 25px 30px 10px;
+}
+.iconoBuscar {
+	position: absolute;
+	left: 18px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #666;
+	font-size: 18px;
+}
+.buscarProducto {
+	width: 100%;
+	height: 50px;
+	padding: 0 15px 0 48px;
+	border: 2px solid #61bcd7;
+	border-radius: 14px;
+	outline: none;
+	font-size: 16px;
+}
+.buscarProducto:focus {
+	border-color: #1a81a0;
+}
+/* Formulario */
+.formVenta {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 22px;
+	padding: 25px 30px;
+}
+.campo {
+	display: flex;
+	flex-direction: column;
+}
+.campo label {
+	margin-bottom: 8px;
+	color: #4a7f83;
+	font-size: 18px;
+	font-weight: 700;
+}
+.campo input {
+	width: 100%;
+	height: 48px;
+	padding: 0 15px;
+	border: 1px solid #d9d9d9;
+	border-radius: 12px;
+	outline: none;
+	font-size: 15px;
+	transition: .25s;
+}
+.campo input:focus {
+	border-color: #61bcd7;
+	box-shadow: none;
+}
+.campo input[readonly] {
+	background: #f6f6f6;
+	cursor: default;
+}
+.campo input[type="number"] {
+	background: #fff;
+}
+/* Botones */
+.modal-botones {
+	display: flex;
+	justify-content: center;
+	gap: 22px;
+	padding: 0 30px 30px;
+}
+.btnCancelar,
+.btnGuardar {
+	width: 160px;
+	height: 48px;
+	border: none;
+	border-radius: 12px;
+	font-size: 16px;
+	font-weight: 700;
+	cursor: pointer;
+	transition: .25s;
+}
+.btnCancelar {
+	background: #ef5b5b;
+	color: #fff;
+}
+.btnCancelar:hover {
+	background: #c94949;
+}
+.btnGuardar {
+	background: #4bd16d;
+	color: #fff;
+}
+.btnGuardar:hover {
+	background: #37b458;
+}
+/*=========================================
+RESPONSIVE
+=========================================*/
+@media (min-width:901px) {
+	body.menu-abierto .Encabezado,
+	body.menu-abierto .Contenido {
+		margin-left: var(--menu);
+	}
+}
+
+@media (max-width:900px) {
+	.Encabezado {
+		padding: 15px 20px;
+	}
+	.Contenido {
+		padding: 25px;
+	}
+	body.menu-abierto .Encabezado,
+	body.menu-abierto .Contenido {
+		margin-left: 0;
+	}
+	.Menu-lateral {
+		width: var(--menu);
+	}
+}
+
+@media (max-width:768px) {
+	.Encabezado {
+		flex-direction: column;
+		align-items: center;
+		gap: 18px;
+	}
+	.Encabezado-izquierda {
+		width: 100%;
+		justify-content: space-between;
+	}
+	.Encabezado-derecha {
+		width: 100%;
+		justify-content: center;
+		flex-wrap: wrap;
+	}
+	.Marca {
+		flex: 1;
+		text-align: center;
+	}
+	.Marca h1 {
+		font-size: 24px;
+	}
+	.Marca p {
+		margin-left: 0;
+		text-align: center;
+		font-size: 13px;
+	}
+	.btnVenta {
+		width: 100%;
+		justify-content: center;
+	}
+	.logoEmpresa {
+		width: 65px;
+		height: 65px;
+	}
+	.modal-contenido {
+		width: 95%;
+	}
+	.formVenta {
+		grid-template-columns: 1fr;
+		padding: 25px;
+	}
+	.modal-botones {
+		flex-direction: column;
+		align-items: center;
+	}
+	.btnCancelar,
+	.btnGuardar {
+		width: 100%;
+		max-width: 280px;
+	}
+}
+@media (max-width:480px) {
+	.Contenido {
+		padding: 18px;
+	}
+	.Marca h1 {
+		font-size: 21px;
+	}
+	.Marca p {
+		font-size: 12px;
+	}
+	.campo-busqueda {
+		height: 48px;
+	}
+	.btnBuscar {
+		height: 48px;
+	}
+}
+/*=========================================
+ANIMACIONES
+=========================================*/
+html {
+	scroll-behavior: smooth;
+}
+button,
+a,
+.Item-menu {
+	transition: var(--transicion);
+}
+button:active {
+	transform: scale(.97);
+}
+.logoEmpresa:active {
+	transform: scale(.95);
+}
+@keyframes mostrarModal {
+	from {
+		opacity: 0;
+		transform: translateY(-20px) scale(.98);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+/* =========================================
+   AJUSTES VISUALES - PRODUCTOS
+   Mantiene la estructura y funcionalidad actual
+   ========================================= */
+
+
+/* =========================================
+   FONDO
+   ========================================= */
+
+body {
+    background: #fce1e1;
+}
+
+.Fondo {
+    display: none;
+}
+
+
+/* =========================================
+   CONTENIDO PRINCIPAL
+   ========================================= */
+
+.container-fluid {
+    padding: 30px 35px;
+    transition: var(--transicion);
+}
+
+
+/* =========================================
+   TÍTULO DE INVENTARIO
+   ========================================= */
+
+.container-fluid > .d-flex h1 {
+    color: var(--titulo);
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.container-fluid > .d-flex p {
+    font-size: 16px;
+    color: #555;
+}
+
+
+/* =========================================
+   TARJETA PERÍODO ACTUAL
+   ========================================= */
+
+.container-fluid > .d-flex > .card {
+    border: 2px solid var(--borde);
+    border-radius: 16px;
+    box-shadow: var(--sombra) !important;
+}
+
+
+/* =========================================
+   PESTAÑAS / BOTONES
+   ========================================= */
+
+#tabsProductos {
+    border-bottom: 2px solid var(--borde);
+    margin-top: 10px;
+}
+
+#tabsProductos .nav-link {
+    border: none;
+    border-radius: 14px 14px 0 0;
+    color: var(--titulo);
+    font-size: 16px;
+    padding: 10px 18px;
+    transition: .25s;
+}
+
+#tabsProductos .nav-link:hover {
+    background: rgba(97, 188, 215, .12);
+    color: var(--principalHover);
+}
+
+#tabsProductos .nav-link.active {
+    background: var(--principal);
+    color: #fff;
+    font-weight: 700;
+}
+
+
+/* =========================================
+   BUSCADOR
+   Mismo estilo visual de RECETAS
+   ========================================= */
+
+#buscar {
+    width: 100%;
+    height: 52px;
+    padding: 0 18px;
+
+    background: #fff;
+    border: 2px solid var(--borde);
+    border-radius: 16px;
+
+    box-shadow: 0 3px 8px rgba(0, 0, 0, .08);
+
+    font-family: 'Baloo 2', cursive !important;
+    font-size: 16px;
+    color: #000;
+
+    outline: none;
+    transition: .25s;
+}
+
+#buscar:hover {
+    border-color: var(--principal);
+}
+
+#buscar:focus {
+    border-color: var(--principalHover);
+    box-shadow: 0 0 0 3px rgba(97, 188, 215, .20);
+}
+
+#buscar::placeholder {
+    color: #8b8b8b;
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+
+/* Cuando se abre el menú en computadora */
+@media (min-width: 901px) {
+
+    body.menu-abierto .Encabezado,
+    body.menu-abierto .container-fluid {
+        margin-left: var(--menu);
+    }
+
+    body.menu-abierto .container-fluid {
+        width: calc(100% - var(--menu));
+    }
+
+}
+
+
+
+
