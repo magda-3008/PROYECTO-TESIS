@@ -97,7 +97,7 @@
         <div>
           <h1>Inventario de productos</h1>
           <p class="text-muted mb-0">
-            Consulta y administra las existencias del período seleccionado.
+            Consulta y administra las existencias diarias de los productos.
           </p>
         </div>
       </div>
@@ -121,87 +121,6 @@
       <div id="tablaProductos"></div>
     </div>
     <!-- Modales -->
-    <!-- Modal Registrar Pérdida -->
-    <div
-      class="modal fade"
-      id="modalPerdida"
-      tabindex="-1"
-      aria-labelledby="modalPerdidaLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalPerdidaLabel">
-              <i class="bi bi-cart-dash me-2 text-danger"></i> Registrar pérdida
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            <!-- Información del producto -->
-            <div class="card border-0 bg-light mb-4">
-              <div class="card-body">
-                <h6 class="text-muted mb-3">Producto seleccionado</h6>
-                <div class="row">
-                  <div class="col-8">
-                    <strong id="nombreProductoPerdida">
-                      Nombre del producto
-                    </strong>
-                  </div>
-                  <div class="col-4 text-end">
-                    <span class="badge bg-primary" id="tipoProductoPerdida">
-                      Tipo
-                    </span>
-                  </div>
-                </div>
-                <hr />
-                <div class="d-flex justify-content-between">
-                  <span>Existencias actuales</span>
-                  <strong id="stockActualPerdida"> 0 </strong>
-                </div>
-              </div>
-            </div>
-            <!-- Cantidad -->
-            <div class="mb-3">
-              <label for="cantidadPerdida" class="form-label">
-                Cantidad perdida
-              </label>
-              <input
-                type="number"
-                class="form-control"
-                id="cantidadPerdida"
-                min="1"
-                placeholder="Ingrese la cantidad" />
-              <div id="errorCantidadPerdida" class="invalid-feedback"></div>
-            </div>
-            <!-- Motivo -->
-            <div class="mb-3">
-              <label for="motivoPerdida" class="form-label"> Motivo </label>
-              <textarea
-                id="motivoPerdida"
-                class="form-control"
-                rows="4"
-                placeholder="Describe la razón de la pérdida"></textarea>
-              <div id="errorMotivoPerdida" class="invalid-feedback"></div>
-            </div>
-          </div>
-          <div id="errorGeneralPerdida" class="text-danger small mt-2"></div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal">
-              Cancelar
-            </button>
-            <button type="button" class="btn btn-danger" id="guardarPerdida">
-              <i class="bi bi-check-lg me-1"></i> Registrar pérdida
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
     <!-- Modal Registrar Entrada -->
     <div
       class="modal fade"
@@ -314,6 +233,128 @@
         </div>
       </div>
     </div>
+    <!-- Modal registrar salida -->
+    <div
+      class="modal fade"
+      id="modalSalida"
+      tabindex="-1"
+      aria-labelledby="modalSalidaLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalSalidaLabel">
+              <i class="bi bi-cart-dash me-2 text-danger"></i>
+              Registrar salida
+            </h5>
+
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"></button>
+          </div>
+
+          <div class="modal-body">
+            <!-- Información del producto -->
+            <div class="card border-0 bg-light mb-4">
+              <div class="card-body">
+                <h6 class="text-muted mb-3">Producto seleccionado</h6>
+
+                <div class="row">
+                  <div class="col-8">
+                    <strong id="nombreProductoSalida">
+                      Nombre del producto
+                    </strong>
+                  </div>
+
+                  <div class="col-4 text-end">
+                    <span class="badge bg-primary" id="tipoProductoSalida">
+                      Tipo
+                    </span>
+                  </div>
+                </div>
+
+                <hr />
+
+                <div class="d-flex justify-content-between">
+                  <span>Existencias actuales</span>
+
+                  <strong id="stockActualSalida"> 0 </strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Motivo -->
+            <div class="mb-3">
+              <label for="motivoSalida" class="form-label">
+                Motivo de salida
+              </label>
+
+              <select id="motivoSalida" class="form-select">
+                <option value="" selected disabled>Seleccione un motivo</option>
+
+                <option value="PERDIDA">Pérdida</option>
+
+                <option value="AJUSTE">Ajuste de inventario</option>
+
+                <option value="OTRO">Otro</option>
+              </select>
+
+              <div id="errorMotivoSalida" class="invalid-feedback"></div>
+            </div>
+
+            <!-- Cantidad -->
+            <div class="mb-3">
+              <label for="cantidadSalida" class="form-label">
+                Cantidad a retirar
+              </label>
+
+              <input
+                type="number"
+                class="form-control"
+                id="cantidadSalida"
+                min="1"
+                placeholder="Ingrese la cantidad" />
+
+              <div id="errorCantidadSalida" class="invalid-feedback"></div>
+            </div>
+
+            <!-- Observación -->
+            <div class="mb-3">
+              <label for="observacionSalida" class="form-label">
+                Observación
+                <span class="text-muted">(opcional)</span>
+              </label>
+
+              <textarea
+                id="observacionSalida"
+                class="form-control"
+                rows="3"
+                placeholder="Agregue una observación si lo considera necesario">
+              </textarea>
+            </div>
+          </div>
+
+          <!-- Error general -->
+          <div id="errorGeneralSalida" class="text-danger small mt-2"></div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal">
+              Cancelar
+            </button>
+
+            <button type="button" class="btn btn-danger" id="guardarSalida">
+              <i class="bi bi-check-lg me-1"></i>
+              Registrar salida
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Modal Historial de Movimientos -->
     <div
       class="modal fade"
@@ -514,7 +555,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
     <script src="./JavaScript/ModalesProducto/modalHistorial.js"></script>
-    <script src="./JavaScript/ModalesProducto/modalPerdida.js"></script>
+    <script src="./JavaScript/ModalesProducto/modalSalida.js"></script>
     <script src="./JavaScript/ModalesProducto/modalEntrada.js"></script>
     <script src="./JavaScript/utilities/formateoMoneda.js"></script>
     <script src="./JavaScript/utilities/formateoPorcentaje.js"></script>

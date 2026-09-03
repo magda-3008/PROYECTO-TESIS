@@ -10,7 +10,7 @@ const detalleRecetaRoutes = require("./routes/detalleRecetaRoutes");
 const materiaPrimaRoutes = require("./routes/materiaPrimaRoutes");
 const usuarioRoutes = require("./routes/usuariosRoutes");
 const movimientoProductoRoutes = require("./routes/movimientoProductoRoutes");
-const perdidaProductoRoutes = require("./routes/perdidaProductoRoutes");
+const salidaProductoRoutes = require("./routes/salidaProductoRoutes");
 const movimientoHistorial = require("./routes/movimientosHistorial");
 const movimientoMPRoutes = require("./routes/movimientoMPRoutes");
 
@@ -31,7 +31,7 @@ app.use("/api/detalle_receta", detalleRecetaRoutes);
 app.use("/api/materiaprima", materiaPrimaRoutes);
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/entrada", movimientoProductoRoutes);
-app.use("/api/perdida", perdidaProductoRoutes);
+app.use("/api/perdida", salidaProductoRoutes);
 app.use("/api/historial", movimientoHistorial);
 app.use("/api/entradaMP", movimientoMPRoutes);
 
