@@ -11,13 +11,19 @@ router.post("/", async (req, res) => {
     const {
       id_producto,
       tipo_movimiento,
+      motivo,
       cantidad,
       observacion
     } = req.body;
 
-    // ---------------- VALIDACIONES GENERALES ----------------
+    // Validaciones generales
 
-    if (!id_producto || !tipo_movimiento || cantidad === undefined) {
+    if (
+      !id_producto ||
+      !tipo_movimiento ||
+      !motivo ||
+      cantidad === undefined
+    ) {
       throw new Error("Datos incompletos.");
     }
 
@@ -27,41 +33,44 @@ router.post("/", async (req, res) => {
       throw new Error("La cantidad debe ser mayor a 0.");
     }
 
-    const movimientosPermitidos = [
-      "COMPRA",
-      "PRODUCCION",
-      "ENTRADA"
-    ];
-
-    if (!movimientosPermitidos.includes(tipo_movimiento)) {
-      throw new Error("Tipo de movimiento no válido.");
+    if (tipo_movimiento !== "ENTRADA") {
+      throw new Error(
+        "Este endpoint solo permite registrar movimientos de entrada."
+      );
     }
 
-    // ---------------- FECHA DEL MOVIMIENTO ----------------
+    const motivosPermitidos = [
+      "COMPRA",
+      "PRODUCCION",
+      "AJUSTE",
+      "OTRO"
+    ];
+
+    if (!motivosPermitidos.includes(motivo)) {
+      throw new Error("El motivo de entrada no es válido.");
+    }
 
     const ahora = new Date();
     const anio = ahora.getFullYear();
     const mes = ahora.getMonth() + 1;
 
-    // ---------------- OBTENER PRODUCTO ----------------
-
     const resProducto = await client.query(
       `
-    SELECT
-        p.id_producto,
-        p.nombre,
-        p.tipo,
-        pr.stock_actual_pr,
-        pr.costo_compra,
-        pe.stock_actual_pe
-    FROM producto p
-    LEFT JOIN producto_reventa pr
-        ON p.id_producto = pr.id_producto
-    LEFT JOIN producto_elaborado pe
-        ON p.id_producto = pe.id_producto
-    WHERE p.id_producto = $1
-    FOR UPDATE OF p
-    `,
+            SELECT
+                p.id_producto,
+                p.nombre,
+                p.tipo,
+                pr.stock_actual_pr,
+                pr.costo_compra,
+                pe.stock_actual_pe
+            FROM producto p
+            LEFT JOIN producto_reventa pr
+                ON p.id_producto = pr.id_producto
+            LEFT JOIN producto_elaborado pe
+                ON p.id_producto = pe.id_producto
+            WHERE p.id_producto = $1
+            FOR UPDATE OF p
+            `,
       [id_producto]
     );
 
@@ -71,36 +80,42 @@ router.post("/", async (req, res) => {
 
     const producto = resProducto.rows[0];
 
-    // ---------------- VALIDAR TIPO DE MOVIMIENTO ----------------
-
     if (
-      tipo_movimiento === "COMPRA" &&
+      motivo === "COMPRA" &&
       producto.tipo !== "Reventa"
     ) {
       throw new Error(
-        "El movimiento COMPRA solo puede registrarse para productos de tipo Reventa."
+        "El motivo COMPRA solo puede registrarse para productos de tipo Reventa."
       );
     }
 
     if (
-      tipo_movimiento === "PRODUCCION" &&
+      motivo === "PRODUCCION" &&
       producto.tipo !== "Elaborado"
     ) {
       throw new Error(
-        "El movimiento PRODUCCION solo puede registrarse para productos de tipo Elaborado."
+        "El motivo PRODUCCION solo puede registrarse para productos de tipo Elaborado."
       );
     }
-
-    // ---------------- OBTENER STOCK ACTUAL ----------------
 
     let stockActual;
     let costoUnitario;
 
     if (producto.tipo === "Reventa") {
-      stockActual = Number(producto.stock_actual_pr || 0);
-      costoUnitario = Number(producto.costo_compra || 0);
+
+      stockActual = Number(
+        producto.stock_actual_pr || 0
+      );
+
+      costoUnitario = Number(
+        producto.costo_compra || 0
+      );
+
     } else if (producto.tipo === "Elaborado") {
-      stockActual = Number(producto.stock_actual_pe || 0);
+
+      stockActual = Number(
+        producto.stock_actual_pe || 0
+      );
 
       const resCosto = await client.query(
         `
@@ -113,17 +128,20 @@ router.post("/", async (req, res) => {
 
       costoUnitario =
         resCosto.rows.length > 0
-          ? Number(resCosto.rows[0].costo_unitario_prod || 0)
+          ? Number(
+            resCosto.rows[0].costo_unitario_prod || 0
+          )
           : 0;
+
     } else {
-      throw new Error("El producto tiene un tipo no válido.");
+
+      throw new Error(
+        "El producto tiene un tipo no válido."
+      );
     }
 
-    // ---------------- CALCULAR NUEVO STOCK ----------------
-
-    const nuevoStock = stockActual + cantidadNum;
-
-    // ---------------- ACTUALIZAR STOCK ----------------
+    const nuevoStock =
+      stockActual + cantidadNum;
 
     if (producto.tipo === "Reventa") {
 
@@ -148,9 +166,8 @@ router.post("/", async (req, res) => {
       );
     }
 
-    // ---------------- REGISTRAR MOVIMIENTO ----------------
-
-    const costoTotal = cantidadNum * costoUnitario;
+    const costoTotal =
+      cantidadNum * costoUnitario;
 
     await client.query(
       `
@@ -159,18 +176,20 @@ router.post("/", async (req, res) => {
                 anio,
                 mes,
                 tipo_movimiento,
+                motivo,
                 cantidad,
                 observacion,
                 costo_unitario,
                 costo_total
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
             `,
       [
         id_producto,
         anio,
         mes,
         tipo_movimiento,
+        motivo,
         cantidadNum,
         observacion || null,
         costoUnitario,
@@ -178,12 +197,10 @@ router.post("/", async (req, res) => {
       ]
     );
 
-    // ---------------- CONFIRMAR ----------------
-
     await client.query("COMMIT");
 
     res.json({
-      mensaje: "Movimiento registrado correctamente.",
+      mensaje: "Entrada registrada correctamente.",
       nuevo_stock_actual: nuevoStock
     });
 
@@ -201,6 +218,7 @@ router.post("/", async (req, res) => {
     });
 
   } finally {
+
     client.release();
   }
 });
