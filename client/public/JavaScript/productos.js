@@ -50,21 +50,6 @@ const vistas = {
         }
       },
       {
-        title: "Existencia inicial", field: "stock_inicial", hozAlign: "center", minWidth: 80, headerWordWrap: true, headerTooltip: true,
-        formatter: function (cell) {
-          const data = cell.getRow().getData();
-
-          if (
-            data.nombre === "Chocobanano preparado" ||
-            data.nombre === "Frappé"
-          ) {
-            return "—";
-          }
-          const stock = Number(cell.getValue());
-          return isNaN(stock) ? 0 : Math.floor(stock);
-        },
-      },
-      {
         title: "Existencia actual", field: "stock_actual", hozAlign: "center", minWidth: 80, headerWordWrap: true, headerTooltip: true,
         formatter: function (cell) {
           const data = cell.getRow().getData();
@@ -138,14 +123,7 @@ const vistas = {
 //cargar vista
 async function cargarVista(vista) {
   const configuracion = vistas[vista];
-  const periodo = document.getElementById("periodoInventario").value;
-  const [anio, mes] = periodo.split("-");
-
-  let endpoint = configuracion.endpoint;
-
-  if (vista === "inventario") {
-    endpoint += `?anio=${anio}&mes=${mes}`;
-  }
+  const endpoint = configuracion.endpoint;
 
   // Elimina la tabla anterior
   if (tabla) {
@@ -173,8 +151,10 @@ async function cargarVista(vista) {
     }
 
     datos = await respuesta.json();
+
     console.log("ENDPOINT:", endpoint);
     console.log("DATOS RECIBIDOS:", datos);
+
   } catch (error) {
     console.error(error);
 
@@ -183,11 +163,13 @@ async function cargarVista(vista) {
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 <h4>Error al cargar la información</h4>
                 <p>Verifica tu conexión o inténtalo nuevamente.</p>
-                <button class="btn btn-primary mt-3" onclick="cargarVista('${vista}')">
+                <button class="btn btn-primary mt-3"
+                    onclick="cargarVista('${vista}')">
                     Reintentar
                 </button>
             </div>
         `;
+
     return;
   }
 
@@ -216,7 +198,6 @@ async function cargarVista(vista) {
     const valorNuevo = cell.getValue();
     const valorAnterior = cell.getOldValue();
 
-    // Si no hubo un cambio real, no hacemos la petición HTTP
     if (valorNuevo === valorAnterior) return;
 
     const filaData = cell.getRow().getData();
@@ -238,14 +219,12 @@ async function cargarVista(vista) {
         throw new Error("Error al guardar el cambio.");
       }
 
-      // Resaltar celda modificada
       cell.getElement().classList.add("celda-actualizada");
 
       setTimeout(() => {
         cell.getElement().classList.remove("celda-actualizada");
       }, 7000);
 
-      // Mostrar notificación solo si NO es el campo estado
       if (campoEditado !== "estado") {
         Swal.fire({
           icon: "success",
@@ -260,17 +239,14 @@ async function cargarVista(vista) {
         error
       );
 
-      // Restaurar valor anterior
       cell.setValue(valorAnterior, false);
 
-      // Resaltar error
       cell.getElement().classList.add("celda-error");
 
       setTimeout(() => {
         cell.getElement().classList.remove("celda-error");
       }, 7000);
 
-      // El error sí se notifica siempre
       Swal.fire({
         icon: "error",
         title: "No se pudo guardar la modificación",
@@ -280,46 +256,6 @@ async function cargarVista(vista) {
   });
 
   inicializarEventosFiltros(vista);
-}
-
-//Cargar periodos
-async function cargarPeriodos() {
-  const select = document.getElementById("periodoInventario");
-  try {
-    const respuesta = await fetch("/api/productos/periodos");
-    if (!respuesta.ok) {
-      throw new Error("No se pudieron obtener los períodos.");
-    }
-    const periodos = await respuesta.json();
-    select.innerHTML = "";
-    const meses = [
-      "",
-      "Enero",
-      "Febrero",
-      "Marzo",
-      "Abril",
-      "Mayo",
-      "Junio",
-      "Julio",
-      "Agosto",
-      "Septiembre",
-      "Octubre",
-      "Noviembre",
-      "Diciembre",
-    ];
-    periodos.forEach((p, index) => {
-      const option = document.createElement("option");
-      option.value = `${p.anio}-${p.mes}`;
-      option.textContent = `${meses[p.mes]} ${p.anio}`;
-
-      if (index === 0) {
-        option.selected = true;
-      }
-      select.appendChild(option);
-    });
-  } catch (error) {
-    console.error(error);
-  }
 }
 
 //crear filtros
@@ -484,15 +420,7 @@ const buscador = document.getElementById("buscar");
 buscador.addEventListener("input", aplicarFiltros);
 
 //inicio
-document.addEventListener("DOMContentLoaded", async () => {
-  await cargarPeriodos();
-
+document.addEventListener("DOMContentLoaded", () => {
   cargarVista("inventario");
 });
 
-document.getElementById("periodoInventario").addEventListener("change", () => {
-  const vistaActual = document.querySelector("#tabsProductos .active").dataset
-    .vista;
-
-  cargarVista(vistaActual);
-});
