@@ -90,7 +90,7 @@ const vistas = {
           const producto = cell.getRow().getData();
 
           if (e.target.closest(".btnPerdida")) {
-            abrirModalPerdida(producto);
+            abrirModalSalida(producto);
             return;
           }
 
