@@ -47,21 +47,21 @@ router.post("/", async (req, res) => {
 
     const resProducto = await client.query(
       `
-            SELECT
-                p.id_producto,
-                p.nombre,
-                p.tipo,
-                pr.stock_actual_pr,
-                pr.costo_compra,
-                pe.stock_actual_pe
-            FROM producto p
-            LEFT JOIN producto_reventa pr
-                ON p.id_producto = pr.id_producto
-            LEFT JOIN producto_elaborado pe
-                ON p.id_producto = pe.id_producto
-            WHERE p.id_producto = $1
-            FOR UPDATE
-            `,
+    SELECT
+        p.id_producto,
+        p.nombre,
+        p.tipo,
+        pr.stock_actual_pr,
+        pr.costo_compra,
+        pe.stock_actual_pe
+    FROM producto p
+    LEFT JOIN producto_reventa pr
+        ON p.id_producto = pr.id_producto
+    LEFT JOIN producto_elaborado pe
+        ON p.id_producto = pe.id_producto
+    WHERE p.id_producto = $1
+    FOR UPDATE OF p
+    `,
       [id_producto]
     );
 
