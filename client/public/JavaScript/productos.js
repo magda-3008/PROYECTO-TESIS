@@ -1,77 +1,76 @@
 let tabla = null;
 let productoSeleccionado = null;
 
-//configuración de vistas
-const vistas = {
-  inventario: {
-    endpoint: "/api/productos",
-    columns: [
-      { title: "Nombre del producto", field: "nombre", frozen: true, width: 160, cssClass: "columna-texto-ajustable", headerWordWrap: true, headerToolTip: true, editor: "input" },
-      { title: "Tipo", field: "tipo", hozAlign: "center", minWidth: 80 },
-      {
-        title: "Precio de venta", field: "precio_venta", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true, editor: "number",
-        editorParams: { min: 0, step: 0.01 }
-      },
-      { title: "Costo de compra/producción", field: "costo", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
-      {
-        title: "Margen de ganancia bruta esperado (%)", field: "margen_gananciab_esperado", variableHeight: true, formatter: formatoPorcentaje, hozAlign: "center",
-        minWidth: 100, headerWordWrap: true, headerTooltip: true, editor: "number", editorParams: { min: 0, step: 0.01 }
-      },
-      {
-        title: "Estado",
-        field: "estado",
-        hozAlign: "center",
-        minWidth: 80,
-        formatter: function (cell) {
-          const valor = cell.getValue();
+// Configuración de vista (solo inventario)
+const productosInventario = {
+  endpoint: "/api/productos",
+  columns: [
+    { title: "Nombre del producto", field: "nombre", frozen: true, width: 160, cssClass: "columna-texto-ajustable", headerWordWrap: true, headerToolTip: true, editor: "input" },
+    { title: "Tipo", field: "tipo", hozAlign: "center", minWidth: 80 },
+    {
+      title: "Precio de venta", field: "precio_venta", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true, editor: "number",
+      editorParams: { min: 0, step: 0.01 }
+    },
+    { title: "Costo de compra/producción", field: "costo", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
+    {
+      title: "Margen de ganancia bruta esperado (%)", field: "margen_gananciab_esperado", variableHeight: true, formatter: formatoPorcentaje, hozAlign: "center",
+      minWidth: 100, headerWordWrap: true, headerTooltip: true, editor: "number", editorParams: { min: 0, step: 0.01 }
+    },
+    {
+      title: "Estado",
+      field: "estado",
+      hozAlign: "center",
+      minWidth: 80,
+      formatter: function (cell) {
+        const valor = cell.getValue();
 
-          if (valor === "Activo") {
-            return `<span class="text-success fw-semibold">Activo</span>`;
-          }
-
-          if (valor === "Inactivo") {
-            return `<span class="text-danger fw-semibold">Inactivo</span>`;
-          }
-          return valor;
-        },
-
-        cellClick: function (e, cell) {
-          e.preventDefault();
-          e.stopPropagation();
-
-          const estadoActual = cell.getValue();
-
-          const nuevoEstado =
-            estadoActual === "Activo"
-              ? "Inactivo"
-              : "Activo";
-
-          cell.setValue(nuevoEstado);
+        if (valor === "Activo") {
+          return `<span class="text-success fw-semibold">Activo</span>`;
         }
+
+        if (valor === "Inactivo") {
+          return `<span class="text-danger fw-semibold">Inactivo</span>`;
+        }
+        return valor;
       },
-      {
-        title: "Existencia actual", field: "stock_actual", hozAlign: "center", minWidth: 80, headerWordWrap: true, headerTooltip: true,
-        formatter: function (cell) {
-          const data = cell.getRow().getData();
-          if (
-            data.nombre === "Chocobanano preparado" ||
-            data.nombre === "Frappé"
-          ) {
-            return "—";
-          }
-          const stock = Number(cell.getValue());
-          return isNaN(stock) ? 0 : Math.floor(stock);
-        },
+
+      cellClick: function (e, cell) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const estadoActual = cell.getValue();
+
+        const nuevoEstado =
+          estadoActual === "Activo"
+            ? "Inactivo"
+            : "Activo";
+
+        cell.setValue(nuevoEstado);
+      }
+    },
+    {
+      title: "Existencia actual", field: "stock_actual", hozAlign: "center", minWidth: 80, headerWordWrap: true, headerTooltip: true,
+      formatter: function (cell) {
+        const data = cell.getRow().getData();
+        if (
+          data.nombre === "Chocobanano preparado" ||
+          data.nombre === "Frappé"
+        ) {
+          return "—";
+        }
+        const stock = Number(cell.getValue());
+        return isNaN(stock) ? 0 : Math.floor(stock);
       },
-      {
-        title: "Acciones",
-        hozAlign: "center",
-        headerSort: false,
-        minWidth: 120,
-        formatter: function () {
-          return `
+    },
+    {
+      title: "Acciones",
+      hozAlign: "center",
+      headerSort: false,
+      minWidth: 120,
+      formatter: function () {
+        return `
                     <div class="acciones-tabla">
-                    <button class="btnAccion btnEntrada" title="Registrar entrada">
+                        <button class="btnAccion btnEntrada" title="Registrar entrada">
                             <i class="bi bi-cart-plus"></i>
                         </button>
                         <button class="btnAccion btnSalida" title="Registrar salida">
@@ -83,54 +82,40 @@ const vistas = {
                         </button>
                     </div>
                 `;
-        },
-
-        cellClick: function (e, cell) {
-          const producto = cell.getRow().getData();
-
-          if (e.target.closest(".btnSalida")) {
-            abrirModalSalida(producto);
-            return;
-          }
-
-          if (e.target.closest(".btnEntrada")) {
-            abrirModalEntrada(producto);
-            return;
-          }
-
-          if (e.target.closest(".btnHistorial")) {
-            abrirHistorial(producto);
-          }
-        },
       },
-    ],
-  },
 
-  analisis: {
-    endpoint: "/api/productos/analisis",
-    columns: [
-      { title: "Nombre del producto", field: "nombre_producto", frozen: true, width: 160, cssClass: "columna-texto-ajustable", headerWordWrap: true, headerToolTip: true },
-      { title: "Costo unitario de producción", field: "costo_unitario_prod", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
-      { title: "Margen esperado (C$)", field: "margen_esperado_cordobas", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
-      { title: "Precio actual", field: "precio_venta_actual", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
-      { title: "Precio sugerido", field: "precio_venta_sugerido", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
-      { title: "Ganancia real", field: "ganancia_real_cordobas", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
-    ],
-  },
+      cellClick: function (e, cell) {
+        const producto = cell.getRow().getData();
+
+        if (e.target.closest(".btnSalida")) {
+          abrirModalSalida(producto);
+          return;
+        }
+
+        if (e.target.closest(".btnEntrada")) {
+          abrirModalEntrada(producto);
+          return;
+        }
+
+        if (e.target.closest(".btnHistorial")) {
+          abrirHistorial(producto);
+        }
+      },
+    },
+  ],
 };
 
-//cargar vista
-async function cargarVista(vista) {
-  const configuracion = vistas[vista];
-  const endpoint = configuracion.endpoint;
+// Cargar vista de Inventario
+async function cargarVista() {
+  const endpoint = productosInventario.endpoint;
 
-  // Elimina la tabla anterior
+  // Elimina la tabla anterior si existe
   if (tabla) {
     tabla.destroy();
     tabla = null;
   }
 
-  crearFiltros(vista);
+  crearFiltros();
 
   // Mostrar indicador de carga
   document.getElementById("tablaProductos").innerHTML = `
@@ -163,7 +148,7 @@ async function cargarVista(vista) {
                 <h4>Error al cargar la información</h4>
                 <p>Verifica tu conexión o inténtalo nuevamente.</p>
                 <button class="btn btn-primary mt-3"
-                    onclick="cargarVista('${vista}')">
+                    onclick="cargarVista()">
                     Reintentar
                 </button>
             </div>
@@ -188,7 +173,7 @@ async function cargarVista(vista) {
       headerSort: false,
       frozen: true,
     },
-    columns: configuracion.columns,
+    columns: productosInventario.columns,
     placeholder: "No se encontraron resultados",
   });
 
@@ -254,172 +239,90 @@ async function cargarVista(vista) {
     }
   });
 
-  inicializarEventosFiltros(vista);
+  inicializarEventosFiltros();
 }
 
-//crear filtros
-function crearFiltros(vista) {
+// Crear filtros de inventario
+function crearFiltros() {
   const panel = document.getElementById("panelFiltros");
 
-  switch (vista) {
-    case "inventario":
-      panel.innerHTML = `
-            <h3>Filtrar por:</h3>
-                <div class="row g-2">
-                    <div class="col-md-3">
-                        <select id="filtroEstado" class="form-select">
-                            <option value="">Todos los estados</option>
-                            <option value="Activo">Activo</option>
-                            <option value="Inactivo">Inactivo</option>
-                        </select>
-                    </div>
+  panel.innerHTML = `
+        <h3>Filtrar por:</h3>
+        <div class="row g-2">
+            <div class="col-md-3">
+                <select id="filtroEstado" class="form-select">
+                    <option value="">Todos los estados</option>
+                    <option value="Activo">Activo</option>
+                    <option value="Inactivo">Inactivo</option>
+                </select>
+            </div>
 
-                    <div class="col-md-3">
-                        <select id="filtroStock" class="form-select">
-                            <option value="">Todas las existencias</option>
-                            <option value="0">Sin stock</option>
-                            <option value="bajo">Stock bajo</option>
-                            <option value="normal">Con stock</option>
-                        </select>
-                    </div>
-                </div>
-            `;
-      break;
-
-    case "analisis":
-      panel.innerHTML = `
-            <h3>Filtrar por:</h3>
-                <div class="row g-2">
-                    <div class="col-md-3">
-                        <input id="gananciaMin" type="number" class="form-control" placeholder="Ganancia mínima">
-                    </div>
-
-                    <div class="col-md-3">
-                        <input id="gananciaMax" type="number" class="form-control" placeholder="Ganancia máxima">
-                    </div>
-
-                    <div class="col-md-3">
-                        <select id="filtroPrecio" class="form-select">
-                            <option value="">Todos los precios</option>
-                            <option value="mayor">Precio sugerido mayor</option>
-                            <option value="menor">Precio sugerido menor</option>
-                        </select>
-                    </div>
-                </div>
-            `;
-      break;
-  }
+            <div class="col-md-3">
+                <select id="filtroStock" class="form-select">
+                    <option value="">Todas las existencias</option>
+                    <option value="0">Sin stock</option>
+                    <option value="bajo">Stock bajo</option>
+                    <option value="normal">Con stock</option>
+                </select>
+            </div>
+        </div>
+    `;
 }
 
-function inicializarEventosFiltros(vista) {
-  if (vista === "inventario") {
-    document
-      .getElementById("filtroEstado")
-      .addEventListener("change", aplicarFiltros);
+function inicializarEventosFiltros() {
+  document
+    .getElementById("filtroEstado")
+    .addEventListener("change", aplicarFiltros);
 
-    document
-      .getElementById("filtroStock")
-      .addEventListener("change", aplicarFiltros);
-  }
-
-  if (vista === "analisis") {
-    document
-      .getElementById("gananciaMin")
-      .addEventListener("input", aplicarFiltros);
-
-    document
-      .getElementById("gananciaMax")
-      .addEventListener("input", aplicarFiltros);
-
-    document
-      .getElementById("filtroPrecio")
-      .addEventListener("change", aplicarFiltros);
-  }
+  document
+    .getElementById("filtroStock")
+    .addEventListener("change", aplicarFiltros);
 }
 
 function aplicarFiltros() {
   const texto = document.getElementById("buscar").value.toLowerCase();
 
-  const vistaActual = document.querySelector("#tabsProductos .active").dataset
-    .vista;
-
   tabla.setFilter(function (data) {
     let coincide = true;
 
-    // Buscador
+    // Buscador general
     if (texto) {
       coincide = Object.values(data).some((valor) =>
-        String(valor).toLowerCase().includes(texto),
+        String(valor).toLowerCase().includes(texto)
       );
     }
 
-    if (vistaActual === "inventario") {
-      const estado = document.getElementById("filtroEstado")?.value ?? "";
-      const stock = document.getElementById("filtroStock")?.value ?? "";
+    const estado = document.getElementById("filtroEstado")?.value ?? "";
+    const stock = document.getElementById("filtroStock")?.value ?? "";
 
-      if (coincide && estado) {
-        coincide = data.estado === estado;
-      }
+    if (coincide && estado) {
+      coincide = data.estado === estado;
+    }
 
-      if (coincide) {
-        switch (stock) {
-          case "0":
-            coincide = Number(data.stock_actual) === 0;
-            break;
+    if (coincide) {
+      switch (stock) {
+        case "0":
+          coincide = Number(data.stock_actual) === 0;
+          break;
 
-          case "bajo":
-            coincide = Number(data.stock_actual) <= 5;
-            break;
+        case "bajo":
+          coincide = Number(data.stock_actual) <= 5;
+          break;
 
-          case "normal":
-            coincide = Number(data.stock_actual) > 5;
-            break;
-        }
-      }
-    } else if (vistaActual === "analisis") {
-      const min = Number(document.getElementById("gananciaMin")?.value || 0);
-      const max = Number(
-        document.getElementById("gananciaMax")?.value || Infinity,
-      );
-      const precio = document.getElementById("filtroPrecio")?.value ?? "";
-
-      if (coincide) {
-        coincide =
-          Number(data.ganancia_real_cordobas) >= min &&
-          Number(data.ganancia_real_cordobas) <= max;
-      }
-
-      if (coincide && precio === "mayor") {
-        coincide =
-          Number(data.precio_venta_sugerido) > Number(data.precio_venta_actual);
-      }
-
-      if (coincide && precio === "menor") {
-        coincide =
-          Number(data.precio_venta_sugerido) < Number(data.precio_venta_actual);
+        case "normal":
+          coincide = Number(data.stock_actual) > 5;
+          break;
       }
     }
+
     return coincide;
   });
 }
 
-//cambio de pestañas
-document.querySelectorAll("#tabsProductos .nav-link").forEach((tab) => {
-  tab.addEventListener("click", () => {
-    document.querySelector("#tabsProductos .active").classList.remove("active");
-
-    tab.classList.add("active");
-
-    cargarVista(tab.dataset.vista);
-  });
-});
-
 const buscador = document.getElementById("buscar");
-
 buscador.addEventListener("input", aplicarFiltros);
 
-//inicio
+// Inicio
 document.addEventListener("DOMContentLoaded", () => {
-  cargarVista("inventario");
+  cargarVista();
 });
-
