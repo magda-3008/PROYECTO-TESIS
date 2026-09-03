@@ -108,8 +108,6 @@ async function registrarEntrada() {
     return;
   }
 
-  const [anioStr, mesStr] = selectPeriodo.value.split("-");
-
   // Tipo de Entrada
   const tipoInput = document.getElementById("tipoEntrada");
   const tipo = tipoInput.value;
@@ -145,12 +143,8 @@ async function registrarEntrada() {
 
   const movimiento = {
     id_producto: productoSeleccionado.id_producto,
-    anio: Number(anioStr),
-    mes: Number(mesStr),
     tipo_movimiento: tipo,
     cantidad: cantidad,
-    costo_unitario: costoUnitario,
-    costo_total: costoTotal,
     observacion: observacion,
   };
 
