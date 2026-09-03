@@ -1,92 +1,48 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../config/db");
-// Obtener períodos de inventario
-router.get("/periodos", async (req, res) => {
+
+router.get("/", async (req, res) => {
     try {
         const resultado = await pool.query(`
             SELECT
-                anio,
-                mes
-            FROM inventario_mensual_producto
-            GROUP BY anio, mes
-            ORDER BY anio DESC, mes DESC;
+                p.id_producto,
+                p.nombre,
+                p.tipo,
+                p.precio_venta,
+                CASE
+                    WHEN p.tipo = 'Reventa'
+                        THEN pr.costo_compra
+                    WHEN p.tipo = 'Elaborado'
+                        THEN COALESCE(v.costo_unitario_prod, 0.00)
+                    ELSE 0.00
+                END AS costo,
+                p.margen_gananciab_esperado,
+                p.estado,
+                CASE
+                    WHEN p.tipo = 'Reventa'
+                        THEN COALESCE(pr.stock_actual_pr, 0)
+                    WHEN p.tipo = 'Elaborado'
+                        THEN COALESCE(pe.stock_actual_pe, 0)
+                    ELSE 0
+                END AS stock_actual
+            FROM producto p
+            LEFT JOIN producto_reventa pr
+                ON p.id_producto = pr.id_producto
+            LEFT JOIN producto_elaborado pe
+                ON p.id_producto = pe.id_producto
+            LEFT JOIN v_productos_elaborados_costo_actual v
+                ON p.id_producto = v.id_producto
+            ORDER BY p.nombre;
         `);
-        res.json(resultado.rows);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            error: "Error al obtener los períodos."
-        });
-    }
-});
-router.get("/", async (req, res) => {
-    const {
-        anio,
-        mes
-    } = req.query;
-    try {
-
-        const resultado = await pool.query(`
-            SELECT
-                anio,
-                mes
-            FROM inventario_mensual_producto
-            GROUP BY anio, mes
-            ORDER BY anio DESC, mes DESC;
-        `);
 
         res.json(resultado.rows);
 
     } catch (error) {
-
-        console.error(error);
-
-        res.status(500).json({
-            error: "Error al obtener los períodos."
-        });
-
-    }
-
-});
-
-router.get("/", async (req, res) => {
-    const { anio, mes } = req.query;
-
-    try {
-
-        const resultado = await pool.query(
-            `
-            SELECT *
-            FROM v_productos_inventario_periodo
-            WHERE anio = $1
-              AND mes = $2
-            ORDER BY nombre;
-            `,
-            [anio, mes]);
-        res.json(resultado.rows);
-    } catch (error) {
-
-        console.error(error);
+        console.error("Error al obtener el inventario de productos:", error);
 
         res.status(500).json({
-            error: "Error al obtener los productos."
-        });
-
-    }
-});
-router.get("/analisis", async (req, res) => {
-    try {
-        const resultado = await pool.query(`
-            SELECT *
-            FROM v_productos_elaborados_costo_actual
-            ORDER BY nombre_producto;
-        `);
-        res.json(resultado.rows);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            mensaje: "Error al obtener los productos"
+            error: "No se pudo obtener el inventario de productos."
         });
     }
 });
