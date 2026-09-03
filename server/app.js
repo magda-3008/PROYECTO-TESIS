@@ -31,7 +31,7 @@ app.use("/api/detalle_receta", detalleRecetaRoutes);
 app.use("/api/materiaprima", materiaPrimaRoutes);
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/entrada", movimientoProductoRoutes);
-app.use("/api/perdida", salidaProductoRoutes);
+app.use("/api/salida", salidaProductoRoutes);
 app.use("/api/historial", movimientoHistorial);
 app.use("/api/entradaMP", movimientoMPRoutes);
 
