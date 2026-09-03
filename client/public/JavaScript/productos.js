@@ -71,12 +71,11 @@ const vistas = {
         formatter: function () {
           return `
                     <div class="acciones-tabla">
+                    <button class="btnAccion btnEntrada" title="Registrar entrada">
+                            <i class="bi bi-cart-plus"></i>
+                        </button>
                         <button class="btnAccion btnSalida" title="Registrar salida">
                             <i class="bi bi-cart-dash"></i>
-                        </button>
-
-                        <button class="btnAccion btnEntrada" title="Registrar entrada">
-                            <i class="bi bi-cart-plus"></i>
                         </button>
 
                         <button class="btnAccion btnHistorial" title="Ver historial">

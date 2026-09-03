@@ -8,9 +8,6 @@ async function abrirHistorial(producto) {
   // Limpiar tabla anterior
   const tbody = document.getElementById("tablaMovimientos");
   tbody.innerHTML = "";
-  // Ya no se utiliza el período mensual.
-  // El historial mostrará los movimientos registrados
-  // para este producto.
   try {
     const respuesta = await fetch(`/api/historial/${producto.id_producto}`);
     if (!respuesta.ok) {
@@ -52,7 +49,7 @@ async function abrirHistorial(producto) {
           });
         }
         // --------------------------------------------------
-        // TIPO Y MOTIVO
+        // VARIABLES
         // --------------------------------------------------
         let tipoBadge = "";
         let cantidadMostrar = "";
@@ -90,8 +87,43 @@ async function abrirHistorial(producto) {
                             +${cantidad}
                         </span>
                     `;
-          if (mov.costo_total != null && !isNaN(costoTotal)) {
-            montoTexto = formatoMoneda(costoTotal);
+          // --------------------------------------------------
+          // VALOR MONETARIO DE LA ENTRADA
+          // --------------------------------------------------
+          if (mov.motivo === "COMPRA") {
+            montoTexto = `
+                            <div>
+                                <span class="text-success font-monospace">
+                                    ${formatoMoneda(costoTotal)}
+                                </span>
+
+                                <small class="d-block text-muted">
+                                    Costo de compra
+                                </small>
+                            </div>
+                        `;
+          } else if (mov.motivo === "PRODUCCION") {
+            montoTexto = `
+                            <div>
+                                <span class="text-success font-monospace">
+                                    ${formatoMoneda(costoTotal)}
+                                </span>
+
+                                <small class="d-block text-muted">
+                                    Costo de producción
+                                </small>
+                            </div>
+                        `;
+          } else if (mov.motivo === "AJUSTE") {
+            // El ajuste modifica existencias,
+            // pero no representa necesariamente
+            // dinero gastado o recibido.
+            montoTexto = "—";
+          } else if (mov.motivo === "OTRO") {
+            // "Otro" puede representar situaciones
+            // diferentes, por lo que no mostramos
+            // un valor monetario para evitar confusión.
+            montoTexto = "—";
           }
         }
         // --------------------------------------------------
@@ -125,12 +157,36 @@ async function abrirHistorial(producto) {
                             -${cantidad}
                         </span>
                     `;
-          if (mov.costo_total != null && !isNaN(costoTotal)) {
+          // --------------------------------------------------
+          // VALOR MONETARIO DE LA SALIDA
+          // --------------------------------------------------
+          if (mov.motivo === "PERDIDA") {
             montoTexto = `
-                            <span class="text-danger font-monospace">
-                                ${formatoMoneda(costoTotal)}
-                            </span>
+                            <div>
+                                <span class="text-danger font-monospace">
+                                    ${formatoMoneda(costoTotal)}
+                                </span>
+
+                                <small class="d-block text-muted">
+                                    Valor de la pérdida
+                                </small>
+                            </div>
                         `;
+          } else if (mov.motivo === "AJUSTE") {
+            // No mostramos monto porque el ajuste
+            // representa una corrección de existencias.
+            montoTexto = "—";
+          } else if (mov.motivo === "OTRO") {
+            // El significado económico depende de
+            // lo indicado en la observación.
+            montoTexto = "—";
+          } else if (mov.motivo === "VENTA") {
+            // Por ahora no mostramos el monto aquí.
+            // Cuando se implemente el módulo de ventas
+            // se diferenciará:
+            // - ingreso por venta
+            // - costo de los productos vendidos
+            montoTexto = "—";
           }
         }
         // --------------------------------------------------
@@ -143,7 +199,7 @@ async function abrirHistorial(producto) {
                         </span>
                     `;
           cantidadMostrar = cantidad;
-          montoTexto = formatoMoneda(costoTotal);
+          montoTexto = "—";
         }
         // --------------------------------------------------
         // CREAR FILA
@@ -151,7 +207,9 @@ async function abrirHistorial(producto) {
         const row = document.createElement("tr");
         row.innerHTML = `
                     <td>
-                        <small>${fecha}</small>
+                        <small>
+                            ${fecha}
+                        </small>
                     </td>
 
                     <td>
@@ -193,7 +251,9 @@ async function abrirHistorial(producto) {
             </tr>
         `;
   }
-  // Abrir el modal
+  // --------------------------------------------------
+  // ABRIR MODAL
+  // --------------------------------------------------
   const modal = new bootstrap.Modal(document.getElementById("modalHistorial"));
   modal.show();
 }
