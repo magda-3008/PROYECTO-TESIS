@@ -71,7 +71,7 @@ const vistas = {
         formatter: function () {
           return `
                     <div class="acciones-tabla">
-                        <button class="btnAccion btnPerdida" title="Registrar pérdida">
+                        <button class="btnAccion btnSalida" title="Registrar salida">
                             <i class="bi bi-cart-dash"></i>
                         </button>
 
@@ -89,7 +89,7 @@ const vistas = {
         cellClick: function (e, cell) {
           const producto = cell.getRow().getData();
 
-          if (e.target.closest(".btnPerdida")) {
+          if (e.target.closest(".btnSalida")) {
             abrirModalSalida(producto);
             return;
           }

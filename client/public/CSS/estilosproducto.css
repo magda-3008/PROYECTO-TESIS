@@ -233,11 +233,11 @@ LOGO
 }
 
 /* Registrar pérdida */
-.btnPerdida {
+.btnSalida {
   background: #ef5b5b;
 }
 
-.btnPerdida:hover {
+.btnSalida:hover {
   background: #d84242;
   transform: scale(1.08);
 }
