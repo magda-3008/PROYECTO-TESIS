@@ -108,13 +108,6 @@ async function registrarEntrada() {
     return;
   }
 
-  // Período seleccionado del header
-  const selectPeriodo = document.getElementById("periodoInventario");
-  if (!selectPeriodo || !selectPeriodo.value) {
-    document.getElementById("errorGeneral").textContent =
-      "Debe seleccionar un período válido.";
-    return;
-  }
   const [anioStr, mesStr] = selectPeriodo.value.split("-");
 
   // Tipo de Entrada
