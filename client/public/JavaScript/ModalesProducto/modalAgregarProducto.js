@@ -63,31 +63,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             () => {
                 modalAgregarProducto.show();
             });
-
-        const listaIngredientes = document.getElementById(
-            "listaIngredientes"
-        );
-
-        const btnAgregarIngrediente = document.getElementById(
-            "agregarIngrediente"
-        );
-
+        const listaIngredientes = document.getElementById("listaIngredientes");
+        const btnAgregarIngrediente = document.getElementById("agregarIngrediente");
         if (listaIngredientes && btnAgregarIngrediente) {
-
-            btnAgregarIngrediente.addEventListener(
-                "click",
+            btnAgregarIngrediente.addEventListener("click",
                 () => {
-
                     // Crear una nueva fila
                     const nuevaFila = document.createElement("div");
-
-                    nuevaFila.classList.add(
-                        "row",
-                        "g-2",
-                        "mb-2",
-                        "ingrediente-row"
-                    );
-
+                    nuevaFila.classList.add("row", "g-2", "mb-2", "ingrediente-row");
                     nuevaFila.innerHTML = `
                 <div class="col-md-7">
                     <select class="form-select ingrediente-select">
@@ -121,40 +104,108 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </button>
                 </div>
             `;
-
                     // Agregar la nueva fila al contenedor
                     listaIngredientes.appendChild(nuevaFila);
-
-                }
-            );
-
-            listaIngredientes.addEventListener(
-                "click",
+                });
+            listaIngredientes.addEventListener("click",
                 (evento) => {
-
-                    const botonEliminar =
-                        evento.target.closest(
-                            ".btnEliminarIngrediente"
-                        );
-
+                    const botonEliminar = evento.target.closest(".btnEliminarIngrediente");
                     if (!botonEliminar) {
                         return;
                     }
-
-                    const fila =
-                        botonEliminar.closest(
-                            ".ingrediente-row"
-                        );
-
+                    const fila = botonEliminar.closest(".ingrediente-row");
                     if (fila) {
                         fila.remove();
                     }
-
-                }
-            );
+                });
         }
-
-
+        // =========================================
+        // GUARDAR PRODUCTO
+        // =========================================
+        const formularioProducto = document.getElementById("formAgregarProducto");
+        const btnGuardarProducto = document.getElementById("guardarProducto");
+        if (formularioProducto && btnGuardarProducto) {
+            btnGuardarProducto.addEventListener("click",
+                () => {
+                    // Limpiar errores anteriores
+                    formularioProducto.querySelectorAll(".is-invalid").forEach((campo) => {
+                        campo.classList.remove("is-invalid");
+                    });
+                    let formularioValido = true;
+                    // =========================================
+                    // NOMBRE
+                    // =========================================
+                    const nombreProducto = document.getElementById("nombreProducto");
+                    if (!nombreProducto.value.trim()) {
+                        nombreProducto.classList.add("is-invalid");
+                        formularioValido = false;
+                    }
+                    // =========================================
+                    // TIPO
+                    // =========================================
+                    const tipoProducto = document.getElementById("tipoProducto");
+                    if (!tipoProducto.value) {
+                        tipoProducto.classList.add("is-invalid");
+                        formularioValido = false;
+                    }
+                    // =========================================
+                    // PRECIO DE VENTA
+                    // =========================================
+                    const precioVenta = document.getElementById("precioVenta");
+                    if (!precioVenta.value || Number(precioVenta.value) <= 0) {
+                        precioVenta.classList.add("is-invalid");
+                        formularioValido = false;
+                    }
+                    // =========================================
+                    // MARGEN DE GANANCIA
+                    // =========================================
+                    const margenGanancia = document.getElementById("margenGanancia");
+                    if (!margenGanancia.value || Number(margenGanancia.value) < 0 || Number(margenGanancia.value) > 100) {
+                        margenGanancia.classList.add("is-invalid");
+                        formularioValido = false;
+                    }
+                    // =========================================
+                    // STOCK INICIAL
+                    // =========================================
+                    const stockInicial = document.getElementById("stockInicial");
+                    if (!stockInicial.value || Number(stockInicial.value) < 0) {
+                        stockInicial.classList.add("is-invalid");
+                        formularioValido = false;
+                    }
+                    // =========================================
+                    // REVENTA
+                    // =========================================
+                    if (tipoProducto.value === "Reventa") {
+                        const costoCompra = document.getElementById("costoCompra");
+                        if (!costoCompra.value || Number(costoCompra.value) <= 0) {
+                            costoCompra.classList.add("is-invalid");
+                            formularioValido = false;
+                        }
+                    }
+                    // =========================================
+                    // RESULTADO
+                    // =========================================
+                    if (!formularioValido) {
+                        Swal.fire({
+                            icon: "warning",
+                            title: "Datos incompletos",
+                            text: "Por favor, complete correctamente los campos obligatorios."
+                        });
+                        return;
+                    }
+                    // Por ahora solamente mostramos los datos
+                    // para comprobar que todo está funcionando.
+                    console.log("Producto válido:");
+                    console.log({
+                        nombre: nombreProducto.value.trim(),
+                        tipo: tipoProducto.value,
+                        precioVenta: Number(precioVenta.value),
+                        margenGanancia: Number(margenGanancia.value),
+                        stockInicial: Number(stockInicial.value),
+                        costoCompra: tipoProducto.value === "Reventa" ? Number(document.getElementById("costoCompra").value) : null
+                    });
+                });
+        }
         modalElemento.addEventListener("hidden.bs.modal",
             () => {
                 const formulario = document.getElementById("formAgregarProducto");
@@ -169,4 +220,3 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Error al cargar el modal de agregar producto:", error);
     }
 });
-
