@@ -77,3 +77,98 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Error al cargar el modal de agregar producto:", error);
     }
 });
+
+
+const listaIngredientes = document.getElementById(
+    "listaIngredientes"
+);
+
+const btnAgregarIngrediente = document.getElementById(
+    "agregarIngrediente"
+);
+
+if (listaIngredientes && btnAgregarIngrediente) {
+
+    btnAgregarIngrediente.addEventListener(
+        "click",
+        () => {
+
+            // Crear una nueva fila
+            const nuevaFila = document.createElement("div");
+
+            nuevaFila.classList.add(
+                "row",
+                "g-2",
+                "mb-2",
+                "ingrediente-row"
+            );
+
+            nuevaFila.innerHTML = `
+                <div class="col-md-7">
+                    <select class="form-select ingrediente-select">
+                        <option value="" selected disabled>
+                            Seleccione una materia prima
+                        </option>
+
+                        <option value="__nueva_materia_prima__">
+                            + Agregar nueva materia prima
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <input
+                        type="number"
+                        class="form-control cantidad-ingrediente"
+                        placeholder="Cantidad"
+                        min="0"
+                        step="0.01"
+                    >
+                </div>
+
+                <div class="col-md-2">
+                    <button
+                        type="button"
+                        class="btn btn-danger w-100 btnEliminarIngrediente"
+                        title="Eliminar ingrediente"
+                    >
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            `;
+
+            // Agregar la nueva fila al contenedor
+            listaIngredientes.appendChild(nuevaFila);
+
+        }
+    );
+
+    // =========================================
+    // ELIMINAR INGREDIENTE
+    // =========================================
+
+    listaIngredientes.addEventListener(
+        "click",
+        (evento) => {
+
+            const botonEliminar =
+                evento.target.closest(
+                    ".btnEliminarIngrediente"
+                );
+
+            if (!botonEliminar) {
+                return;
+            }
+
+            const fila =
+                botonEliminar.closest(
+                    ".ingrediente-row"
+                );
+
+            if (fila) {
+                fila.remove();
+            }
+
+        }
+    );
+}
