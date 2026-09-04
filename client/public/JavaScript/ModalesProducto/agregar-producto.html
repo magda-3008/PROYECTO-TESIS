@@ -1,0 +1,314 @@
+<!-- Modal agregar producto -->
+<div
+  class="modal fade"
+  id="modalAgregarProducto"
+  tabindex="-1"
+  aria-labelledby="modalAgregarProductoLabel"
+  aria-hidden="true">
+  <div
+    class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalAgregarProductoLabel">
+          <i class="fa-solid fa-box-open me-2 text-primary"></i> Agregar
+          producto
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body">
+        <form id="formAgregarProducto">
+          <div class="mb-4">
+            <h6 class="text-muted mb-3">
+              <i class="fa-solid fa-circle-info me-2"></i> Información general
+            </h6>
+            <div class="row g-3">
+              <!-- Nombre -->
+              <div class="col-md-8">
+                <label for="nombreProducto" class="form-label">
+                  Nombre del producto
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="nombreProducto"
+                  name="nombreProducto"
+                  placeholder="Ej. Coca Cola"
+                  maxlength="100" />
+                <div id="errorNombreProducto" class="invalid-feedback"></div>
+              </div>
+              <!-- Tipo -->
+              <div class="col-md-4">
+                <label for="tipoProducto" class="form-label">
+                  Tipo de producto
+                </label>
+                <select
+                  class="form-select"
+                  id="tipoProducto"
+                  name="tipoProducto">
+                  <option value="" selected disabled>Seleccione</option>
+                  <option value="Reventa">Reventa</option>
+                  <option value="Elaborado">Elaborado</option>
+                </select>
+                <div id="errorTipoProducto" class="invalid-feedback"></div>
+              </div>
+              <!-- Precio de venta -->
+              <div class="col-md-4">
+                <label for="precioVenta" class="form-label">
+                  Precio de venta
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text"> C$ </span>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="precioVenta"
+                    name="precioVenta"
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00" />
+                </div>
+                <div id="errorPrecioVenta" class="invalid-feedback"></div>
+              </div>
+              <!-- Margen -->
+              <div class="col-md-4">
+                <label for="margenGanancia" class="form-label">
+                  Margen de ganancia esperado
+                </label>
+                <div class="input-group">
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="margenGanancia"
+                    name="margenGanancia"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                    placeholder="0.00" />
+                  <span class="input-group-text"> % </span>
+                </div>
+                <div id="errorMargenGanancia" class="invalid-feedback"></div>
+              </div>
+              <!-- Stock inicial -->
+              <div class="col-md-4">
+                <label for="stockInicial" class="form-label">
+                  Stock inicial
+                </label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="stockInicial"
+                  name="stockInicial"
+                  min="0"
+                  step="1"
+                  placeholder="0" />
+                <small class="form-text text-muted">
+                  Cantidad con la que iniciará el inventario.
+                </small>
+                <div id="errorStockInicial" class="invalid-feedback"></div>
+              </div>
+            </div>
+          </div>
+          <div class="mb-4">
+            <h6 class="text-muted mb-3">
+              <i class="fa-solid fa-image me-2"></i> Imagen del producto
+            </h6>
+            <div class="row align-items-center g-3">
+              <!-- Vista previa -->
+              <div class="col-md-4 text-center">
+                <div
+                  id="vistaPreviaImagen"
+                  class="border rounded p-2 d-flex align-items-center justify-content-center"
+                  style="height: 150px">
+                  <div class="text-muted">
+                    <i class="fa-solid fa-image fa-2x mb-2"></i>
+                    <div>Sin imagen</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Selector -->
+              <div class="col-md-8">
+                <label for="imagenProducto" class="form-label">
+                  Seleccionar imagen
+                </label>
+                <input
+                  type="file"
+                  class="form-control"
+                  id="imagenProducto"
+                  name="imagenProducto"
+                  accept="image/*" />
+                <small class="form-text text-muted">
+                  Seleccione una imagen para identificar el producto.
+                </small>
+                <div id="errorImagenProducto" class="invalid-feedback"></div>
+              </div>
+            </div>
+          </div>
+          <div id="seccionReventa" class="mb-4 d-none">
+            <h6 class="text-muted mb-3">
+              <i class="fa-solid fa-cart-shopping me-2"></i> Información de
+              reventa
+            </h6>
+            <div class="card border-0 bg-light">
+              <div class="card-body">
+                <div class="row g-3">
+                  <!-- Costo de compra -->
+                  <div class="col-md-6">
+                    <label for="costoCompra" class="form-label">
+                      Costo de compra
+                    </label>
+                    <div class="input-group">
+                      <span class="input-group-text"> C$ </span>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="costoCompra"
+                        name="costoCompra"
+                        min="0"
+                        step="0.01"
+                        placeholder="0.00" />
+                    </div>
+                    <small class="form-text text-muted">
+                      Costo al que se adquiere el producto.
+                    </small>
+                    <div id="errorCostoCompra" class="invalid-feedback"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="seccionElaborado" class="d-none">
+            <h6 class="text-muted mb-3">
+              <i class="fa-solid fa-utensils me-2"></i> Información de
+              elaboración
+            </h6>
+            <!-- Información de receta -->
+            <div class="card border-0 bg-light mb-3">
+              <div class="card-body">
+                <h6 class="mb-3">Receta</h6>
+                <div class="row g-3">
+                  <!-- Nombre receta -->
+                  <div class="col-md-7">
+                    <label for="nombreReceta" class="form-label">
+                      Nombre de la receta
+                    </label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="nombreReceta"
+                      name="nombreReceta"
+                      maxlength="100"
+                      placeholder="Ej. Pastel de chocolate" />
+                    <div id="errorNombreReceta" class="invalid-feedback"></div>
+                  </div>
+                  <!-- Cantidad producida -->
+                  <div class="col-md-5">
+                    <label for="cantidadProducidaBase" class="form-label">
+                      Cantidad producida por receta
+                    </label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="cantidadProducidaBase"
+                      name="cantidadProducidaBase"
+                      min="1"
+                      step="1"
+                      placeholder="Ej. 10" />
+                    <small class="form-text text-muted">
+                      Número de unidades que produce esta receta.
+                    </small>
+                    <div
+                      id="errorCantidadProducida"
+                      class="invalid-feedback"></div>
+                  </div>
+                  <!-- Descripción -->
+                  <div class="col-12">
+                    <label for="descripcionReceta" class="form-label">
+                      Descripción
+                    </label>
+                    <textarea
+                      class="form-control"
+                      id="descripcionReceta"
+                      name="descripcionReceta"
+                      rows="2"
+                      placeholder="Descripción de la receta (opcional)">
+                    </textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card border-0 bg-light">
+              <div class="card-body">
+                <div
+                  class="d-flex justify-content-between align-items-center mb-3">
+                  <h6 class="mb-0">Ingredientes</h6>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-primary"
+                    id="agregarIngrediente">
+                    <i class="fa-solid fa-plus me-1"></i> Agregar ingrediente
+                  </button>
+                </div>
+                <!-- Contenedor de ingredientes -->
+                <div id="listaIngredientes">
+                  <!-- Fila inicial -->
+                  <div class="row g-2 align-items-end ingrediente-item mb-2">
+                    <div class="col-md-7">
+                      <label class="form-label"> Materia prima </label>
+                      <select class="form-select ingrediente-select">
+                        <option value="" selected disabled>
+                          Seleccione una materia prima
+                        </option>
+
+                        <!-- Las materias primas se cargarán mediante JS -->
+
+                        <option value="__nueva_materia_prima__">
+                          + Agregar nueva materia prima
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label"> Cantidad utilizada </label>
+                      <input
+                        type="number"
+                        class="form-control cantidad-ingrediente"
+                        min="0"
+                        step="0.01"
+                        placeholder="Cantidad" />
+                    </div>
+                    <div class="col-md-1 text-center">
+                      <button
+                        type="button"
+                        class="btn btn-outline-danger btnEliminarIngrediente"
+                        title="Eliminar ingrediente">
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <small class="text-muted">
+                  Agregue las materias primas necesarias para elaborar el
+                  producto.
+                </small>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="fa-solid fa-xmark me-1"></i> Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" id="guardarProducto">
+          <i class="fa-solid fa-check me-1"></i> Guardar producto
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
