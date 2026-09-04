@@ -63,47 +63,32 @@ document.addEventListener("DOMContentLoaded", async () => {
             () => {
                 modalAgregarProducto.show();
             });
-        modalElemento.addEventListener("hidden.bs.modal",
-            () => {
-                const formulario = document.getElementById("formAgregarProducto");
-                if (formulario) {
-                    formulario.reset();
-                }
-                // Ocultar ambas secciones
-                seccionReventa.classList.add("d-none");
-                seccionElaborado.classList.add("d-none");
-            });
-    } catch (error) {
-        console.error("Error al cargar el modal de agregar producto:", error);
-    }
-});
 
+        const listaIngredientes = document.getElementById(
+            "listaIngredientes"
+        );
 
-const listaIngredientes = document.getElementById(
-    "listaIngredientes"
-);
+        const btnAgregarIngrediente = document.getElementById(
+            "agregarIngrediente"
+        );
 
-const btnAgregarIngrediente = document.getElementById(
-    "agregarIngrediente"
-);
+        if (listaIngredientes && btnAgregarIngrediente) {
 
-if (listaIngredientes && btnAgregarIngrediente) {
+            btnAgregarIngrediente.addEventListener(
+                "click",
+                () => {
 
-    btnAgregarIngrediente.addEventListener(
-        "click",
-        () => {
+                    // Crear una nueva fila
+                    const nuevaFila = document.createElement("div");
 
-            // Crear una nueva fila
-            const nuevaFila = document.createElement("div");
+                    nuevaFila.classList.add(
+                        "row",
+                        "g-2",
+                        "mb-2",
+                        "ingrediente-row"
+                    );
 
-            nuevaFila.classList.add(
-                "row",
-                "g-2",
-                "mb-2",
-                "ingrediente-row"
-            );
-
-            nuevaFila.innerHTML = `
+                    nuevaFila.innerHTML = `
                 <div class="col-md-7">
                     <select class="form-select ingrediente-select">
                         <option value="" selected disabled>
@@ -137,38 +122,51 @@ if (listaIngredientes && btnAgregarIngrediente) {
                 </div>
             `;
 
-            // Agregar la nueva fila al contenedor
-            listaIngredientes.appendChild(nuevaFila);
+                    // Agregar la nueva fila al contenedor
+                    listaIngredientes.appendChild(nuevaFila);
 
+                }
+            );
+
+            listaIngredientes.addEventListener(
+                "click",
+                (evento) => {
+
+                    const botonEliminar =
+                        evento.target.closest(
+                            ".btnEliminarIngrediente"
+                        );
+
+                    if (!botonEliminar) {
+                        return;
+                    }
+
+                    const fila =
+                        botonEliminar.closest(
+                            ".ingrediente-row"
+                        );
+
+                    if (fila) {
+                        fila.remove();
+                    }
+
+                }
+            );
         }
-    );
 
-    // =========================================
-    // ELIMINAR INGREDIENTE
-    // =========================================
 
-    listaIngredientes.addEventListener(
-        "click",
-        (evento) => {
+        modalElemento.addEventListener("hidden.bs.modal",
+            () => {
+                const formulario = document.getElementById("formAgregarProducto");
+                if (formulario) {
+                    formulario.reset();
+                }
+                // Ocultar ambas secciones
+                seccionReventa.classList.add("d-none");
+                seccionElaborado.classList.add("d-none");
+            });
+    } catch (error) {
+        console.error("Error al cargar el modal de agregar producto:", error);
+    }
+});
 
-            const botonEliminar =
-                evento.target.closest(
-                    ".btnEliminarIngrediente"
-                );
-
-            if (!botonEliminar) {
-                return;
-            }
-
-            const fila =
-                botonEliminar.closest(
-                    ".ingrediente-row"
-                );
-
-            if (fila) {
-                fila.remove();
-            }
-
-        }
-    );
-}
