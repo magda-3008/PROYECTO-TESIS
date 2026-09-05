@@ -1,6 +1,74 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../config/db");
+const multer = require("multer");
+const supabase = require("../config/supabase");
+
+const upload = multer({
+    storage: multer.memoryStorage()
+});
+
+router.post("/test-imagen", upload.single("foto"), async (req, res) => {
+
+    try {
+
+        if (!req.file) {
+            return res.status(400).json({
+                error: "No se recibió ninguna imagen."
+            });
+        }
+
+        console.log("Imagen recibida:");
+        console.log({
+            nombre: req.file.originalname,
+            tipo: req.file.mimetype,
+            tamaño: req.file.size
+        });
+
+        // Crear un nombre único para la imagen
+        const extension = req.file.originalname.split(".").pop();
+        const nombreArchivo = `productos/prueba-${Date.now()}.${extension}`;
+
+        // Subir a Supabase
+        const { data, error } = await supabase.storage
+            .from("recetaspatuboca")
+            .upload(nombreArchivo, req.file.buffer, {
+                contentType: req.file.mimetype,
+                upsert: false
+            });
+
+        if (error) {
+            console.error("Error al subir imagen:", error);
+
+            return res.status(500).json({
+                error: "No se pudo subir la imagen.",
+                detalle: error.message
+            });
+        }
+
+        // Obtener URL pública
+        const { data: urlData } = supabase.storage
+            .from("recetaspatuboca")
+            .getPublicUrl(nombreArchivo);
+
+        console.log("Imagen subida correctamente:");
+        console.log(urlData.publicUrl);
+
+        res.status(201).json({
+            mensaje: "Imagen subida correctamente.",
+            archivo: data,
+            url: urlData.publicUrl
+        });
+
+    } catch (error) {
+
+        console.error("Error en prueba de imagen:", error);
+
+        res.status(500).json({
+            error: "Error interno al procesar la imagen."
+        });
+    }
+});
 
 router.get("/", async (req, res) => {
     try {
