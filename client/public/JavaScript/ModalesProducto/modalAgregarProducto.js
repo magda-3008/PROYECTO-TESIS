@@ -95,6 +95,182 @@ document.addEventListener("DOMContentLoaded", async () => {
             select.appendChild(opcionNueva);
         }
 
+        function llenarSelectUnidad(selectMateriaPrima, selectUnidad) {
+
+            const opcionSeleccionada =
+                selectMateriaPrima.options[selectMateriaPrima.selectedIndex];
+
+            if (!opcionSeleccionada || !opcionSeleccionada.value) {
+                selectUnidad.innerHTML = `
+            <option value="" selected>
+                Seleccione
+            </option>
+        `;
+
+                selectUnidad.disabled = true;
+                return;
+            }
+
+            const unidadMedida =
+                opcionSeleccionada.dataset.unidadMedida?.trim().toLowerCase();
+
+            const nombreInsumo =
+                opcionSeleccionada.textContent.trim().toLowerCase();
+
+            let unidades = [];
+
+            // =========================================
+            // UNIDADES SEGÚN EL TIPO DE INSUMO
+            // =========================================
+
+            if (unidadMedida === "mililitros" || unidadMedida === "mililitro") {
+
+                unidades.push({
+                    valor: "mililitro",
+                    texto: "Mililitro"
+                });
+
+                unidades.push({
+                    valor: "cucharada",
+                    texto: "Cucharada"
+                });
+
+            } else if (unidadMedida === "gramos" || unidadMedida === "gramo") {
+
+                unidades.push({
+                    valor: "gramo",
+                    texto: "Gramo"
+                });
+
+            } else if (unidadMedida === "libra" || unidadMedida === "libras") {
+
+                unidades.push({
+                    valor: "libra",
+                    texto: "Libra"
+                });
+
+                unidades.push({
+                    valor: "cucharada",
+                    texto: "Cucharada"
+                });
+
+            } else if (unidadMedida === "litro" || unidadMedida === "litros") {
+
+                unidades.push({
+                    valor: "litro",
+                    texto: "Litro"
+                });
+
+                unidades.push({
+                    valor: "taza",
+                    texto: "Taza"
+                });
+
+            } else if (
+                unidadMedida === "unidad" ||
+                unidadMedida === "unidad(es)"
+            ) {
+
+                unidades.push({
+                    valor: "unidad",
+                    texto: "Unidad"
+                });
+
+            } else if (
+                unidadMedida === "paquete" ||
+                unidadMedida === "bolsa"
+            ) {
+
+                unidades.push({
+                    valor: unidadMedida,
+                    texto: unidadMedida.charAt(0).toUpperCase() + unidadMedida.slice(1)
+                });
+
+            } else {
+
+                // Para unidades que todavía no tienen
+                // equivalencias especiales
+                unidades.push({
+                    valor: unidadMedida,
+                    texto: unidadMedida
+                });
+            }
+
+            // =========================================
+            // CASOS ESPECIALES
+            // =========================================
+
+            if (nombreInsumo.includes("chantilly")) {
+
+                unidades = [
+                    {
+                        valor: "gramo",
+                        texto: "Gramo"
+                    },
+                    {
+                        valor: "sprayado",
+                        texto: "Sprayado"
+                    }
+                ];
+
+            }
+
+            if (nombreInsumo.includes("hielo")) {
+
+                unidades = [
+                    {
+                        valor: "bolsa",
+                        texto: "Bolsa"
+                    }
+                ];
+
+            }
+
+            if (nombreInsumo.includes("torta")) {
+
+                unidades = [
+                    {
+                        valor: "torta",
+                        texto: "Torta"
+                    }
+                ];
+
+            }
+
+            if (nombreInsumo.includes("pajilla")) {
+
+                unidades = [
+                    {
+                        valor: "unidad",
+                        texto: "Unidad"
+                    }
+                ];
+
+            }
+
+            // =========================================
+            // LLENAR SELECT
+            // =========================================
+
+            selectUnidad.innerHTML = `
+        <option value="" selected disabled>
+            Seleccione
+        </option>
+    `;
+
+            unidades.forEach(unidad => {
+
+                const opcion = document.createElement("option");
+
+                opcion.value = unidad.valor;
+                opcion.textContent = unidad.texto;
+
+                selectUnidad.appendChild(opcion);
+            });
+
+            selectUnidad.disabled = false;
+        }
+
         function actualizarTipoProducto() {
             const tipo = tipoProducto.value;
             if (tipo === "Reventa") {
@@ -163,6 +339,36 @@ document.addEventListener("DOMContentLoaded", async () => {
         const btnAgregarIngrediente = document.getElementById("agregarIngrediente");
         await cargarMateriasPrimas();
         if (listaIngredientes && btnAgregarIngrediente) {
+
+            listaIngredientes.addEventListener("change", (evento) => {
+
+                const selectMateriaPrima =
+                    evento.target.closest(".ingrediente-select");
+
+                if (!selectMateriaPrima) {
+                    return;
+                }
+
+                const fila =
+                    selectMateriaPrima.closest(".ingrediente-row");
+
+                if (!fila) {
+                    return;
+                }
+
+                const selectUnidad =
+                    fila.querySelector(".unidad-ingrediente");
+
+                if (!selectUnidad) {
+                    return;
+                }
+
+                llenarSelectUnidad(
+                    selectMateriaPrima,
+                    selectUnidad
+                );
+            });
+
             btnAgregarIngrediente.addEventListener("click", () => {
                 // Crear una nueva fila
                 const nuevaFila = document.createElement("div");
