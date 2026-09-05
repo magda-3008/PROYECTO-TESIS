@@ -1,4 +1,4 @@
-<!-- Modal agregar producto -->
+<!-- Modal Agregar Producto -->
 <div
   class="modal fade"
   id="modalAgregarProducto"
@@ -8,211 +8,215 @@
   <div
     class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalAgregarProductoLabel">
-          <i class="fa-solid fa-box-open me-2 text-primary"></i> Agregar
-          producto
-        </h5>
+      <!-- Encabezado estilo Pa'TuBoca -->
+      <div class="venta-header">
+        <h2><i class="fa-solid fa-box-open me-2"></i> AGREGAR PRODUCTO</h2>
         <button
           type="button"
-          class="btn-close"
+          class="cerrarModal"
           data-bs-dismiss="modal"
-          aria-label="Cerrar"></button>
+          aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
 
-      <div class="modal-body">
+      <!-- Cuerpo del modal -->
+      <div class="modal-body p-4">
         <form id="formAgregarProducto">
+          <!-- Sección: Información General -->
           <div class="mb-4">
-            <h6 class="text-muted mb-3">
-              <i class="fa-solid fa-circle-info me-2"></i> Información general
+            <h6 class="text-muted mb-3 fw-bold">
+              <i class="fa-solid fa-circle-info me-2 text-info"></i> Información
+              general
             </h6>
             <div class="row g-3">
               <!-- Nombre -->
               <div class="col-md-8">
-                <label for="nombreProducto" class="form-label">
-                  Nombre del producto
-                </label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="nombreProducto"
-                  name="nombreProducto"
-                  placeholder="Ej. Coca Cola"
-                  maxlength="100" />
-                <div id="errorNombreProducto" class="invalid-feedback"></div>
+                <div class="campo">
+                  <label for="nombreProducto">Nombre del producto</label>
+                  <input
+                    type="text"
+                    id="nombreProducto"
+                    name="nombreProducto"
+                    placeholder="Ej. Coca Cola"
+                    maxlength="100" />
+                  <div
+                    id="errorNombreProducto"
+                    class="text-danger small mt-1"></div>
+                </div>
               </div>
               <!-- Tipo -->
               <div class="col-md-4">
-                <label for="tipoProducto" class="form-label">
-                  Tipo de producto
-                </label>
-                <select
-                  class="form-select"
-                  id="tipoProducto"
-                  name="tipoProducto">
-                  <option value="" selected disabled>Seleccione</option>
-                  <option value="Reventa">Reventa</option>
-                  <option value="Elaborado">Elaborado</option>
-                </select>
-                <div id="errorTipoProducto" class="invalid-feedback"></div>
+                <div class="campo">
+                  <label for="tipoProducto">Tipo de producto</label>
+                  <select id="tipoProducto" name="tipoProducto">
+                    <option value="" selected disabled>Seleccione</option>
+                    <option value="Reventa">Reventa</option>
+                    <option value="Elaborado">Elaborado</option>
+                  </select>
+                  <div
+                    id="errorTipoProducto"
+                    class="text-danger small mt-1"></div>
+                </div>
               </div>
               <!-- Precio de venta -->
               <div class="col-md-4">
-                <label for="precioVenta" class="form-label">
-                  Precio de venta
-                </label>
-                <div class="input-group">
-                  <span class="input-group-text"> C$ </span>
+                <div class="campo">
+                  <label for="precioVenta">Precio de venta (C$)</label>
                   <input
                     type="number"
-                    class="form-control"
                     id="precioVenta"
                     name="precioVenta"
                     min="0"
                     step="0.01"
                     placeholder="0.00" />
+                  <div
+                    id="errorPrecioVenta"
+                    class="text-danger small mt-1"></div>
                 </div>
-                <div id="errorPrecioVenta" class="invalid-feedback"></div>
               </div>
               <!-- Margen -->
               <div class="col-md-4">
-                <label for="margenGanancia" class="form-label">
-                  Margen de ganancia esperado
-                </label>
-                <div class="input-group">
+                <div class="campo">
+                  <label for="margenGanancia">Margen esperado (%)</label>
                   <input
                     type="number"
-                    class="form-control"
                     id="margenGanancia"
                     name="margenGanancia"
                     min="0"
                     max="100"
                     step="0.01"
                     placeholder="0.00" />
-                  <span class="input-group-text"> % </span>
+                  <div
+                    id="errorMargenGanancia"
+                    class="text-danger small mt-1"></div>
                 </div>
-                <div id="errorMargenGanancia" class="invalid-feedback"></div>
               </div>
               <!-- Stock inicial -->
               <div class="col-md-4">
-                <label for="stockInicial" class="form-label">
-                  Stock inicial
-                </label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="stockInicial"
-                  name="stockInicial"
-                  min="0"
-                  step="1"
-                  placeholder="0" />
-                <small class="form-text text-muted">
-                  Cantidad con la que iniciará el inventario.
-                </small>
-                <div id="errorStockInicial" class="invalid-feedback"></div>
+                <div class="campo">
+                  <label for="stockInicial">Stock inicial</label>
+                  <input
+                    type="number"
+                    id="stockInicial"
+                    name="stockInicial"
+                    min="0"
+                    step="1"
+                    placeholder="0" />
+                  <small class="form-text text-muted">
+                    Cantidad con la que iniciará el inventario.
+                  </small>
+                  <div
+                    id="errorStockInicial"
+                    class="text-danger small mt-1"></div>
+                </div>
               </div>
             </div>
           </div>
+
+          <!-- Sección: Imagen del producto -->
           <div class="mb-4">
-            <h6 class="text-muted mb-3">
-              <i class="fa-solid fa-image me-2"></i> Imagen del producto
+            <h6 class="text-muted mb-3 fw-bold">
+              <i class="fa-solid fa-image me-2 text-info"></i> Imagen del
+              producto
             </h6>
             <div class="row align-items-center g-3">
               <!-- Vista previa -->
               <div class="col-md-4 text-center">
                 <div
                   id="vistaPreviaImagen"
-                  class="border rounded p-2 d-flex align-items-center justify-content-center"
-                  style="height: 150px">
+                  class="border rounded p-2 d-flex align-items-center justify-content-center bg-light"
+                  style="height: 150px; border-radius: 14px !important">
                   <div class="text-muted">
-                    <i class="fa-solid fa-image fa-2x mb-2"></i>
-                    <div>Sin imagen</div>
+                    <i class="fa-solid fa-image fa-2x mb-2 text-secondary"></i>
+                    <div class="small fw-semibold">Sin imagen</div>
                   </div>
                 </div>
               </div>
               <!-- Selector -->
               <div class="col-md-8">
-                <label for="imagenProducto" class="form-label">
-                  Seleccionar imagen
-                </label>
-                <input
-                  type="file"
-                  class="form-control"
-                  id="imagenProducto"
-                  name="foto"
-                  accept="image/*" />
-                <small class="form-text text-muted">
-                  Seleccione una imagen para identificar el producto.
-                </small>
-                <div id="errorImagenProducto" class="invalid-feedback"></div>
+                <div class="campo">
+                  <label for="imagenProducto">Seleccionar imagen</label>
+                  <input
+                    type="file"
+                    id="imagenProducto"
+                    name="foto"
+                    accept="image/*" />
+                  <small class="form-text text-muted">
+                    Seleccione una imagen para identificar el producto.
+                  </small>
+                  <div
+                    id="errorImagenProducto"
+                    class="text-danger small mt-1"></div>
+                </div>
               </div>
             </div>
           </div>
+
+          <!-- Sección: Información de Reventa -->
           <div id="seccionReventa" class="mb-4 d-none">
-            <h6 class="text-muted mb-3">
-              <i class="fa-solid fa-cart-shopping me-2"></i> Información de
-              reventa
+            <h6 class="text-muted mb-3 fw-bold">
+              <i class="fa-solid fa-cart-shopping me-2 text-info"></i>
+              Información de reventa
             </h6>
-            <div class="card border-0 bg-light">
-              <div class="card-body">
-                <div class="row g-3">
-                  <!-- Costo de compra -->
-                  <div class="col-md-6">
-                    <label for="costoCompra" class="form-label">
-                      Costo de compra
-                    </label>
-                    <div class="input-group">
-                      <span class="input-group-text"> C$ </span>
-                      <input
-                        type="number"
-                        class="form-control"
-                        id="costoCompra"
-                        name="costoCompra"
-                        min="0"
-                        step="0.01"
-                        placeholder="0.00" />
-                    </div>
+            <div class="card border-0 bg-light p-3" style="border-radius: 14px">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="campo">
+                    <label for="costoCompra">Costo de compra (C$)</label>
+                    <input
+                      type="number"
+                      id="costoCompra"
+                      name="costoCompra"
+                      min="0"
+                      step="0.01"
+                      placeholder="0.00" />
                     <small class="form-text text-muted">
                       Costo al que se adquiere el producto.
                     </small>
-                    <div id="errorCostoCompra" class="invalid-feedback"></div>
+                    <div
+                      id="errorCostoCompra"
+                      class="text-danger small mt-1"></div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
+          <!-- Sección: Información de Elaborado -->
           <div id="seccionElaborado" class="d-none">
-            <h6 class="text-muted mb-3">
-              <i class="fa-solid fa-utensils me-2"></i> Información de
+            <h6 class="text-muted mb-3 fw-bold">
+              <i class="fa-solid fa-utensils me-2 text-info"></i> Información de
               elaboración
             </h6>
-            <!-- Información de receta -->
-            <div class="card border-0 bg-light mb-3">
-              <div class="card-body">
-                <h6 class="mb-3">Receta</h6>
-                <div class="row g-3">
-                  <!-- Nombre receta -->
-                  <div class="col-md-7">
-                    <label for="nombreReceta" class="form-label">
-                      Nombre de la receta
-                    </label>
+
+            <!-- Receta -->
+            <div
+              class="card border-0 bg-light p-3 mb-3"
+              style="border-radius: 14px">
+              <h6 class="mb-3 fw-bold text-dark">Receta</h6>
+              <div class="row g-3">
+                <div class="col-md-7">
+                  <div class="campo">
+                    <label for="nombreReceta">Nombre de la receta</label>
                     <input
                       type="text"
-                      class="form-control"
                       id="nombreReceta"
                       name="nombreReceta"
                       maxlength="100"
                       placeholder="Ej. Pastel de chocolate" />
-                    <div id="errorNombreReceta" class="invalid-feedback"></div>
+                    <div
+                      id="errorNombreReceta"
+                      class="text-danger small mt-1"></div>
                   </div>
-                  <!-- Cantidad producida -->
-                  <div class="col-md-5">
-                    <label for="cantidadProducidaBase" class="form-label">
-                      Cantidad producida por receta
-                    </label>
+                </div>
+                <div class="col-md-5">
+                  <div class="campo">
+                    <label for="cantidadProducidaBase"
+                      >Cantidad producida por receta</label
+                    >
                     <input
                       type="number"
-                      class="form-control"
                       id="cantidadProducidaBase"
                       name="cantidadProducidaBase"
                       min="1"
@@ -223,89 +227,88 @@
                     </small>
                     <div
                       id="errorCantidadProducida"
-                      class="invalid-feedback"></div>
+                      class="text-danger small mt-1"></div>
                   </div>
-                  <!-- Descripción -->
-                  <div class="col-12">
-                    <label for="descripcionReceta" class="form-label">
-                      Descripción
-                    </label>
+                </div>
+                <div class="col-12">
+                  <div class="campo">
+                    <label for="descripcionReceta">Descripción</label>
                     <textarea
-                      class="form-control"
                       id="descripcionReceta"
                       name="descripcionReceta"
                       rows="2"
-                      placeholder="Descripción de la receta (opcional)">
-                    </textarea>
+                      placeholder="Descripción de la receta (opcional)"></textarea>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="card border-0 bg-light">
-              <div class="card-body">
-                <div
-                  class="d-flex justify-content-between align-items-center mb-3">
-                  <h6 class="mb-0">Ingredientes</h6>
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-outline-primary"
-                    id="agregarIngrediente">
-                    <i class="fa-solid fa-plus me-1"></i> Agregar ingrediente
-                  </button>
-                </div>
-                <!-- Contenedor de ingredientes -->
-                <div id="listaIngredientes">
-                  <!-- Fila inicial -->
-                  <div class="row g-2 align-items-end ingrediente-item mb-2">
-                    <div class="col-md-7">
-                      <label class="form-label"> Materia prima </label>
-                      <select class="form-select ingrediente-select">
+            <!-- Ingredientes -->
+            <div class="card border-0 bg-light p-3" style="border-radius: 14px">
+              <div
+                class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0 fw-bold text-dark">Ingredientes</h6>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-info rounded-pill px-3 fw-semibold"
+                  id="agregarIngrediente">
+                  <i class="fa-solid fa-plus me-1"></i> Agregar ingrediente
+                </button>
+              </div>
+
+              <div id="listaIngredientes">
+                <!-- Fila inicial -->
+                <div class="row g-2 align-items-end ingrediente-item mb-2">
+                  <div class="col-md-7">
+                    <div class="campo">
+                      <label>Materia prima</label>
+                      <select class="ingrediente-select">
                         <option value="" selected disabled>
                           Seleccione una materia prima
                         </option>
-
-                        <!-- Las materias primas se cargarán mediante JS -->
-
                         <option value="__nueva_materia_prima__">
                           + Agregar nueva materia prima
                         </option>
                       </select>
                     </div>
-                    <div class="col-md-4">
-                      <label class="form-label"> Cantidad utilizada </label>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="campo">
+                      <label>Cantidad utilizada</label>
                       <input
                         type="number"
-                        class="form-control cantidad-ingrediente"
+                        class="cantidad-ingrediente"
                         min="0"
                         step="0.01"
                         placeholder="Cantidad" />
                     </div>
-                    <div class="col-md-1 text-center">
-                      <button
-                        type="button"
-                        class="btn btn-outline-danger btnEliminarIngrediente"
-                        title="Eliminar ingrediente">
-                        <i class="fa-solid fa-trash"></i>
-                      </button>
-                    </div>
+                  </div>
+                  <div class="col-md-1 text-center">
+                    <button
+                      type="button"
+                      class="btn btn-outline-danger btnEliminarIngrediente w-100"
+                      title="Eliminar ingrediente"
+                      style="height: 48px; border-radius: 12px">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
                   </div>
                 </div>
-                <small class="text-muted">
-                  Agregue las materias primas necesarias para elaborar el
-                  producto.
-                </small>
               </div>
+              <small class="text-muted mt-2 d-block">
+                Agregue las materias primas necesarias para elaborar el
+                producto.
+              </small>
             </div>
           </div>
         </form>
       </div>
 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+      <!-- Pie con botones centrados -->
+      <div class="modal-botones">
+        <button type="button" class="btnCancelar" data-bs-dismiss="modal">
           <i class="fa-solid fa-xmark me-1"></i> Cancelar
         </button>
-        <button type="button" class="btn btn-primary" id="guardarProducto">
+        <button type="button" class="btnGuardar" id="guardarProducto">
           <i class="fa-solid fa-check me-1"></i> Guardar producto
         </button>
       </div>
