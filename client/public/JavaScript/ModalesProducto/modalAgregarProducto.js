@@ -313,6 +313,72 @@ document.addEventListener("DOMContentLoaded", async () => {
             llenarSelectMateriaPrima(nuevoSelect, materiasPrimas);
             return nuevaFila;
         }
+
+        // =========================================
+        // OBTENER INGREDIENTES DE LA RECETA
+        // =========================================
+
+        function obtenerIngredientesReceta() {
+
+            if (!listaIngredientes) {
+                return [];
+            }
+
+            const filas = listaIngredientes.querySelectorAll(
+                ".ingrediente-row"
+            );
+
+            const ingredientes = [];
+
+            filas.forEach((fila) => {
+
+                const selectMateriaPrima =
+                    fila.querySelector(".ingrediente-select");
+
+                const inputCantidad =
+                    fila.querySelector(".cantidad-ingrediente");
+
+                const selectUnidad =
+                    fila.querySelector(".unidad-ingrediente");
+
+
+                // Si la fila está completamente vacía,
+                // simplemente la ignoramos.
+
+                if (
+                    !selectMateriaPrima?.value &&
+                    !inputCantidad?.value &&
+                    !selectUnidad?.value
+                ) {
+                    return;
+                }
+
+
+                const opcionSeleccionada =
+                    selectMateriaPrima.options[
+                    selectMateriaPrima.selectedIndex
+                    ];
+
+
+                ingredientes.push({
+
+                    id_ma: selectMateriaPrima.value,
+
+                    nombre: opcionSeleccionada
+                        ? opcionSeleccionada.textContent.trim()
+                        : "",
+
+                    cantidad: Number(
+                        inputCantidad.value
+                    ),
+
+                    unidad: selectUnidad.value
+                });
+            });
+
+
+            return ingredientes;
+        }
         //Eventos del modal
         tipoProducto.addEventListener("change", actualizarTipoProducto);
         btnAgregarProducto.addEventListener("click",
@@ -381,6 +447,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                         >
                     `;
                 });
+        }
+
+        if (tipoProducto.value === "Elaborado") {
+
+            const ingredientes =
+                obtenerIngredientesReceta();
+
+            console.log(
+                "Ingredientes de la receta:",
+                ingredientes
+            );
         }
         await cargarMateriasPrimas();
         if (formularioProducto && btnGuardarProducto) {
