@@ -105,56 +105,59 @@
     </div>
     <!-- Modales -->
     <!-- Modal Registrar Entrada -->
+    <!-- Modal Registrar Entrada -->
     <div
-      class="modal fade modalVenta"
+      class="modal fade"
       id="modalEntrada"
       tabindex="-1"
       aria-labelledby="modalEntradaLabel"
       aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-          <!-- Encabezado -->
+          <!-- Encabezado con diseño venta-header -->
           <div class="venta-header">
-            <h5 class="modal-title" id="modalEntradaLabel">
+            <h2>
               <i class="bi bi-cart-plus me-2 text-success"></i> REGISTRAR
               ENTRADA
-            </h5>
+            </h2>
             <button
               type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"></button>
+              class="cerrarModal"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
           </div>
-          <!-- Cuerpo -->
-          <div class="modal-body">
-            <!-- Información del producto -->
-            <div class="card border-0 bg-light mb-4">
-              <div class="card-body">
-                <h6 class="text-muted mb-3">Producto seleccionado</h6>
-                <div class="row align-items-center">
-                  <div class="col-8">
-                    <strong id="nombreProductoEntrada">
-                      Nombre del producto
-                    </strong>
-                  </div>
-                  <div class="col-4 text-end">
-                    <span class="badge bg-primary" id="tipoProductoEntrada">
-                      Tipo
-                    </span>
-                  </div>
+
+          <!-- Tarjeta informativa estilo resumen -->
+          <div class="p-4 pb-0">
+            <div class="card border-0 bg-light p-3" style="border-radius: 14px">
+              <h6 class="text-muted mb-2">Producto seleccionado</h6>
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <strong id="nombreProductoEntrada" class="fs-5 text-dark"
+                    >Nombre del producto</strong
+                  >
                 </div>
-                <hr />
-                <div class="d-flex justify-content-between">
-                  <span>Existencias actuales</span>
-                  <strong id="stockActualEntrada"> 0 </strong>
+                <div class="col-4 text-end">
+                  <span class="badge bg-primary" id="tipoProductoEntrada"
+                    >Tipo</span
+                  >
                 </div>
               </div>
+              <hr class="my-2" />
+              <div class="d-flex justify-content-between text-secondary">
+                <span>Existencias actuales</span>
+                <strong id="stockActualEntrada" class="text-dark">0</strong>
+              </div>
             </div>
-            <!-- Tipo de entrada -->
-            <div class="mb-3">
-              <label for="tipoEntrada" class="form-label">
-                Tipo de entrada
-              </label>
-              <select id="tipoEntrada" class="form-select">
+          </div>
+
+          <!-- Formulario con grid y inputs estilizados -->
+          <form class="formVenta pb-2">
+            <div class="campo">
+              <label for="tipoEntrada">Tipo de entrada</label>
+              <select id="tipoEntrada">
                 <option value="" selected disabled>
                   Seleccione una opción
                 </option>
@@ -163,17 +166,13 @@
                 class="text-danger d-block mt-1 error-msg"
                 id="errorTipo"></small>
             </div>
-            <!-- Cantidad -->
-            <div class="mb-3">
-              <label
-                for="cantidadEntrada"
-                class="form-label"
-                id="labelCantidadEntrada">
-                Cantidad ingresada
-              </label>
+
+            <div class="campo">
+              <label for="cantidadEntrada" id="labelCantidadEntrada"
+                >Cantidad ingresada</label
+              >
               <input
                 type="number"
-                class="form-control"
                 id="cantidadEntrada"
                 min="1"
                 placeholder="Ingrese la cantidad" />
@@ -184,32 +183,27 @@
                 class="text-danger d-block mt-1 error-msg"
                 id="errorCantidad"></small>
             </div>
-            <!-- Observación -->
-            <div class="mb-3">
-              <label for="observacionEntrada" class="form-label">
-                Observación
-              </label>
+
+            <div class="campo" style="grid-column: span 2">
+              <label for="observacionEntrada">Observación</label>
               <textarea
-                class="form-control"
                 id="observacionEntrada"
                 rows="2"
-                placeholder="Detalle del movimiento (opcional)">
-              </textarea>
+                placeholder="Detalle del movimiento (opcional)"></textarea>
             </div>
-          </div>
+          </form>
+
           <small
-            class="text-danger d-block mb-2 text-center error-msg"
+            class="text-danger d-block mb-3 text-center error-msg"
             id="errorGeneral"></small>
-          <!-- Pie -->
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal">
+
+          <!-- Botones centrados -->
+          <div class="modal-botones">
+            <button type="button" class="btnCancelar" data-bs-dismiss="modal">
               Cancelar
             </button>
-            <button type="button" class="btn btn-success" id="guardarEntrada">
-              <i class="bi bi-check-lg me-1"></i> Registrar entrada
+            <button type="button" class="btnGuardar" id="guardarEntrada">
+              <i class="bi bi-check-lg me-1"></i> Registrar
             </button>
           </div>
         </div>

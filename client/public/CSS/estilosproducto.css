@@ -725,6 +725,45 @@ body {
 
 }
 
+/* Adaptación de componentes nativos de Bootstrap al estilo Pa'TuBoca */
+.modal-content {
+  border-radius: 22px;
+  border: none;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, .20);
+}
 
+.modal-dialog {
+  max-width: 720px;
+}
 
+/* Campos de entrada dentro de los modales */
+.campo select,
+.campo textarea {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #d9d9d9;
+  border-radius: 12px;
+  outline: none;
+  font-size: 15px;
+  transition: .25s;
+}
 
+.campo select {
+  height: 48px;
+}
+
+.campo select:focus,
+.campo textarea:focus {
+  border-color: #61bcd7;
+  box-shadow: none;
+}
+
+/* Modificación de color para el botón de guardado/salida de pérdidas */
+.btnGuardar.btnDanger {
+  background: #ef5b5b;
+}
+
+.btnGuardar.btnDanger:hover {
+  background: #c94949;
+}
