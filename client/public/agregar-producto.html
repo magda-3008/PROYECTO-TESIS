@@ -258,23 +258,27 @@
 
               <div id="listaIngredientes">
                 <!-- Fila inicial -->
-                <div class="row g-2 align-items-end ingrediente-item mb-2">
+                <div class="row g-2 align-items-end ingrediente-row mb-2">
                   <div class="col-md-7">
                     <div class="campo">
                       <label>Materia prima</label>
+
                       <select class="ingrediente-select">
                         <option value="" selected disabled>
                           Seleccione una materia prima
                         </option>
+
                         <option value="__nueva_materia_prima__">
                           + Agregar nueva materia prima
                         </option>
                       </select>
                     </div>
                   </div>
-                  <div class="col-md-4">
+
+                  <div class="col-md-2">
                     <div class="campo">
-                      <label>Cantidad utilizada</label>
+                      <label>Cantidad</label>
+
                       <input
                         type="number"
                         class="cantidad-ingrediente"
@@ -283,10 +287,21 @@
                         placeholder="Cantidad" />
                     </div>
                   </div>
+
+                  <div class="col-md-2">
+                    <div class="campo">
+                      <label>Unidad</label>
+
+                      <select class="unidad-ingrediente" disabled>
+                        <option value="" selected>Seleccione</option>
+                      </select>
+                    </div>
+                  </div>
+
                   <div class="col-md-1 text-center">
                     <button
                       type="button"
-                      class="btn btn-outline-danger btnEliminarIngrediente w-100"
+                      class="btn btn-outline-danger btnEliminarIngrediente w-100 btnEliminarIngrediente"
                       title="Eliminar ingrediente"
                       style="height: 48px; border-radius: 12px">
                       <i class="fa-solid fa-trash"></i>
