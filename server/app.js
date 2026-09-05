@@ -1,7 +1,10 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const pool = require("./config/db");
+const supabase = require("./config/supabase");
 
 //Rutas del sistema
 const productoRoutes = require("./routes/productoRoutes");
@@ -34,6 +37,39 @@ app.use("/api/entrada", movimientoProductoRoutes);
 app.use("/api/salida", salidaProductoRoutes);
 app.use("/api/historial", movimientoHistorial);
 app.use("/api/entradaMP", movimientoMPRoutes);
+
+app.get("/api/test-supabase", async (req, res) => {
+	try {
+		const { data, error } = await supabase.storage
+			.from("recetaspatuboca")
+			.list("", {
+				limit: 1
+			});
+
+		if (error) {
+			console.error("Error de Supabase:", error);
+
+			return res.status(500).json({
+				conectado: false,
+				error: error.message
+			});
+		}
+
+		res.json({
+			conectado: true,
+			mensaje: "Conexión con Supabase exitosa.",
+			archivos: data
+		});
+
+	} catch (error) {
+		console.error("Error probando Supabase:", error);
+
+		res.status(500).json({
+			conectado: false,
+			error: error.message
+		});
+	}
+});
 
 const PORT = process.env.PORT || 3000;
 app.get("/api/test-db", async (req, res) => {

@@ -126,55 +126,43 @@ document.addEventListener("DOMContentLoaded", async () => {
         const btnGuardarProducto = document.getElementById("guardarProducto");
         if (formularioProducto && btnGuardarProducto) {
             btnGuardarProducto.addEventListener("click",
-                () => {
+                async () => {
                     // Limpiar errores anteriores
                     formularioProducto.querySelectorAll(".is-invalid").forEach((campo) => {
                         campo.classList.remove("is-invalid");
                     });
                     let formularioValido = true;
-                    // =========================================
-                    // NOMBRE
-                    // =========================================
+
                     const nombreProducto = document.getElementById("nombreProducto");
                     if (!nombreProducto.value.trim()) {
                         nombreProducto.classList.add("is-invalid");
                         formularioValido = false;
                     }
-                    // =========================================
-                    // TIPO
-                    // =========================================
+
                     const tipoProducto = document.getElementById("tipoProducto");
                     if (!tipoProducto.value) {
                         tipoProducto.classList.add("is-invalid");
                         formularioValido = false;
                     }
-                    // =========================================
-                    // PRECIO DE VENTA
-                    // =========================================
+
                     const precioVenta = document.getElementById("precioVenta");
                     if (!precioVenta.value || Number(precioVenta.value) <= 0) {
                         precioVenta.classList.add("is-invalid");
                         formularioValido = false;
                     }
-                    // =========================================
-                    // MARGEN DE GANANCIA
-                    // =========================================
+
                     const margenGanancia = document.getElementById("margenGanancia");
                     if (!margenGanancia.value || Number(margenGanancia.value) < 0 || Number(margenGanancia.value) > 100) {
                         margenGanancia.classList.add("is-invalid");
                         formularioValido = false;
                     }
-                    // =========================================
-                    // STOCK INICIAL
-                    // =========================================
+
                     const stockInicial = document.getElementById("stockInicial");
                     if (!stockInicial.value || Number(stockInicial.value) < 0) {
                         stockInicial.classList.add("is-invalid");
                         formularioValido = false;
                     }
-                    // =========================================
-                    // REVENTA
-                    // =========================================
+
                     if (tipoProducto.value === "Reventa") {
                         const costoCompra = document.getElementById("costoCompra");
                         if (!costoCompra.value || Number(costoCompra.value) <= 0) {
@@ -182,9 +170,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             formularioValido = false;
                         }
                     }
-                    // =========================================
-                    // RESULTADO
-                    // =========================================
+
                     if (!formularioValido) {
                         Swal.fire({
                             icon: "warning",
@@ -193,17 +179,58 @@ document.addEventListener("DOMContentLoaded", async () => {
                         });
                         return;
                     }
-                    // Por ahora solamente mostramos los datos
-                    // para comprobar que todo está funcionando.
-                    console.log("Producto válido:");
-                    console.log({
+
+                    const datosProducto = {
                         nombre: nombreProducto.value.trim(),
                         tipo: tipoProducto.value,
-                        precioVenta: Number(precioVenta.value),
-                        margenGanancia: Number(margenGanancia.value),
-                        stockInicial: Number(stockInicial.value),
-                        costoCompra: tipoProducto.value === "Reventa" ? Number(document.getElementById("costoCompra").value) : null
-                    });
+                        precio_venta: Number(precioVenta.value),
+                        margen_gananciab_esperado: Number(margenGanancia.value),
+                        stock_inicial: Number(stockInicial.value),
+                        costo_compra: Number(document.getElementById("costoCompra").value)
+                    };
+
+                    console.log("Enviando producto:", datosProducto);
+
+                    try {
+
+                        const respuesta = await fetch("/api/productos", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(datosProducto)
+                        });
+
+                        const resultado = await respuesta.json();
+
+                        console.log("Respuesta del servidor:", resultado);
+
+                        if (!respuesta.ok) {
+                            throw new Error(resultado.error || "No se pudo crear el producto.");
+                        }
+
+                        await Swal.fire({
+                            icon: "success",
+                            title: "Producto agregado",
+                            text: "El producto de reventa se creó correctamente.",
+                            confirmButtonText: "Aceptar"
+                        });
+
+                        // Cerrar modal
+                        modalAgregarProducto.hide();
+
+                        // Aquí posteriormente recargaremos la tabla de productos.
+
+                    } catch (error) {
+
+                        console.error("Error al crear producto:", error);
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: error.message
+                        });
+                    }
                 });
         }
         modalElemento.addEventListener("hidden.bs.modal",

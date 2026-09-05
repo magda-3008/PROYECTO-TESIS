@@ -47,6 +47,137 @@ router.get("/", async (req, res) => {
     }
 });
 
+// Crear producto de reventa
+router.post("/", async (req, res) => {
+    const {
+        nombre,
+        tipo,
+        precio_venta,
+        margen_gananciab_esperado,
+        stock_inicial,
+        costo_compra
+    } = req.body;
+
+    if (!nombre || !nombre.trim()) {
+        return res.status(400).json({
+            error: "El nombre del producto es obligatorio."
+        });
+    }
+
+    if (tipo !== "Reventa") {
+        return res.status(400).json({
+            error: "Este endpoint solo permite crear productos de reventa."
+        });
+    }
+
+    if (precio_venta === undefined || Number(precio_venta) <= 0) {
+        return res.status(400).json({
+            error: "El precio de venta debe ser mayor que 0."
+        });
+    }
+
+    if (
+        margen_gananciab_esperado === undefined ||
+        Number(margen_gananciab_esperado) < 0 ||
+        Number(margen_gananciab_esperado) > 100
+    ) {
+        return res.status(400).json({
+            error: "El margen de ganancia debe estar entre 0 y 100."
+        });
+    }
+
+    if (
+        stock_inicial === undefined ||
+        Number(stock_inicial) < 0
+    ) {
+        return res.status(400).json({
+            error: "El stock inicial no puede ser negativo."
+        });
+    }
+
+    if (
+        costo_compra === undefined ||
+        Number(costo_compra) <= 0
+    ) {
+        return res.status(400).json({
+            error: "El costo de compra debe ser mayor que 0."
+        });
+    }
+
+    const cliente = await pool.connect();
+
+    try {
+        // Iniciar transacción
+        await cliente.query("BEGIN");
+
+        const resultadoProducto = await cliente.query(
+            `
+            INSERT INTO producto (
+                nombre,
+                tipo,
+                precio_venta,
+                margen_gananciab_esperado
+            )
+            VALUES ($1, $2, $3, $4)
+            RETURNING *;
+            `,
+            [
+                nombre.trim(),
+                tipo,
+                Number(precio_venta),
+                Number(margen_gananciab_esperado)
+            ]
+        );
+
+        const producto = resultadoProducto.rows[0];
+
+        const resultadoReventa = await cliente.query(
+            `
+            INSERT INTO producto_reventa (
+                id_producto,
+                costo_compra,
+                stock_actual_pr
+            )
+            VALUES ($1, $2, $3)
+            RETURNING *;
+            `,
+            [
+                producto.id_producto,
+                Number(costo_compra),
+                Number(stock_inicial)
+            ]
+        );
+
+        const productoReventa = resultadoReventa.rows[0];
+
+        // Confirmar transacción
+        await cliente.query("COMMIT");
+
+        res.status(201).json({
+            mensaje: "Producto de reventa creado correctamente.",
+            producto: {
+                ...producto,
+                ...productoReventa
+            }
+        });
+
+    } catch (error) {
+
+        // Si algo falla, deshacer todo
+        await cliente.query("ROLLBACK");
+
+        console.error("Error al crear producto de reventa:", error);
+
+        res.status(500).json({
+            error: "No se pudo crear el producto de reventa."
+        });
+
+    } finally {
+        cliente.release();
+    }
+});
+
+
 // Actualizar parcialmente un producto
 router.patch("/:id", async (req, res) => {
     const { id } = req.params;
