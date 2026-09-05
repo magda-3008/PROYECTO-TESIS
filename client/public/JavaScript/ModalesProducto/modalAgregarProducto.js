@@ -21,6 +21,37 @@ document.addEventListener("DOMContentLoaded", async () => {
         const seccionReventa = document.getElementById("seccionReventa");
         const seccionElaborado = document.getElementById("seccionElaborado");
         const costoCompra = document.getElementById("costoCompra");
+
+        const imagenProducto = document.getElementById("imagenProducto");
+        const vistaPreviaImagen = document.getElementById("vistaPreviaImagen");
+
+        if (imagenProducto && vistaPreviaImagen) {
+            imagenProducto.addEventListener("change", () => {
+                const archivo = imagenProducto.files[0];
+
+                if (!archivo) {
+                    vistaPreviaImagen.innerHTML = `
+                <div class="text-muted">
+                    <i class="fa-solid fa-image fa-2x mb-2"></i>
+                    <div>Sin imagen</div>
+                </div>
+            `;
+                    return;
+                }
+
+                const urlImagen = URL.createObjectURL(archivo);
+
+                vistaPreviaImagen.innerHTML = `
+            <img 
+                src="${urlImagen}" 
+                alt="Vista previa"
+                class="img-fluid rounded"
+                style="max-height: 135px; object-fit: contain;"
+            >
+        `;
+            });
+        }
+
         if (!modalElemento) {
             console.error("No se encontró #modalAgregarProducto");
             return;
@@ -180,25 +211,37 @@ document.addEventListener("DOMContentLoaded", async () => {
                         return;
                     }
 
-                    const datosProducto = {
-                        nombre: nombreProducto.value.trim(),
-                        tipo: tipoProducto.value,
-                        precio_venta: Number(precioVenta.value),
-                        margen_gananciab_esperado: Number(margenGanancia.value),
-                        stock_inicial: Number(stockInicial.value),
-                        costo_compra: Number(document.getElementById("costoCompra").value)
-                    };
+                    const formData = new FormData();
 
-                    console.log("Enviando producto:", datosProducto);
+                    formData.append("nombre", nombreProducto.value.trim());
+                    formData.append("tipo", tipoProducto.value);
+                    formData.append("precio_venta", Number(precioVenta.value));
+                    formData.append(
+                        "margen_gananciab_esperado",
+                        Number(margenGanancia.value)
+                    );
+                    formData.append("stock_inicial", Number(stockInicial.value));
+
+                    if (tipoProducto.value === "Reventa") {
+                        formData.append(
+                            "costo_compra",
+                            Number(document.getElementById("costoCompra").value)
+                        );
+                    }
+
+                    // Agregar imagen solamente si el usuario seleccionó una
+                    const imagenProducto = document.getElementById("imagenProducto");
+
+                    if (imagenProducto && imagenProducto.files.length > 0) {
+                        formData.append("foto", imagenProducto.files[0]);
+                    }
+
+                    console.log("Enviando producto...");
 
                     try {
-
                         const respuesta = await fetch("/api/productos", {
                             method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify(datosProducto)
+                            body: formData
                         });
 
                         const resultado = await respuesta.json();
@@ -206,7 +249,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                         console.log("Respuesta del servidor:", resultado);
 
                         if (!respuesta.ok) {
-                            throw new Error(resultado.error || "No se pudo crear el producto.");
+                            throw new Error(
+                                resultado.error || "No se pudo crear el producto."
+                            );
                         }
 
                         await Swal.fire({
@@ -216,13 +261,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                             confirmButtonText: "Aceptar"
                         });
 
-                        // Cerrar modal
                         modalAgregarProducto.hide();
 
-                        // Aquí posteriormente recargaremos la tabla de productos.
-
                     } catch (error) {
-
                         console.error("Error al crear producto:", error);
 
                         Swal.fire({
@@ -233,16 +274,27 @@ document.addEventListener("DOMContentLoaded", async () => {
                     }
                 });
         }
-        modalElemento.addEventListener("hidden.bs.modal",
-            () => {
-                const formulario = document.getElementById("formAgregarProducto");
-                if (formulario) {
-                    formulario.reset();
-                }
-                // Ocultar ambas secciones
-                seccionReventa.classList.add("d-none");
-                seccionElaborado.classList.add("d-none");
-            });
+        modalElemento.addEventListener("hidden.bs.modal", () => {
+            const formulario = document.getElementById("formAgregarProducto");
+
+            if (formulario) {
+                formulario.reset();
+            }
+
+            // Restaurar vista previa
+            if (vistaPreviaImagen) {
+                vistaPreviaImagen.innerHTML = `
+            <div class="text-muted">
+                <i class="fa-solid fa-image fa-2x mb-2"></i>
+                <div>Sin imagen</div>
+            </div>
+        `;
+            }
+
+            // Ocultar ambas secciones
+            seccionReventa.classList.add("d-none");
+            seccionElaborado.classList.add("d-none");
+        });
     } catch (error) {
         console.error("Error al cargar el modal de agregar producto:", error);
     }
