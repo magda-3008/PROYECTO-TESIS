@@ -111,7 +111,7 @@ router.post("/", upload.single("foto"), async (req, res) => {
         const producto = resultadoProducto.rows[0];
         if (req.file) {
             const extension = req.file.originalname.split(".").pop().toLowerCase();
-            rutaImagen = `productos/${producto.id_producto}-${Date.now()}.${extension}`;
+            rutaImagen = `${producto.id_producto}-${Date.now()}.${extension}`;
             const {
                 error: errorSubida
             } = await supabase.storage.from("recetaspatuboca").upload(rutaImagen, req.file.buffer, {

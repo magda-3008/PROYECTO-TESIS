@@ -263,6 +263,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                         modalAgregarProducto.hide();
 
+                        await cargarVista();
+
                     } catch (error) {
                         console.error("Error al crear producto:", error);
 
