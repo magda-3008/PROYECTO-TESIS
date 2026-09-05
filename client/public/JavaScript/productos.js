@@ -136,9 +136,6 @@ async function cargarVista() {
 
     datos = await respuesta.json();
 
-    console.log("ENDPOINT:", endpoint);
-    console.log("DATOS RECIBIDOS:", datos);
-
   } catch (error) {
     console.error(error);
 

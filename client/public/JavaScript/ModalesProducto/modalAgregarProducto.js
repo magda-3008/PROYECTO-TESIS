@@ -208,7 +208,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     throw new Error("No se pudieron cargar las materias primas.");
                 }
                 materiasPrimas = await respuesta.json();
-                console.log("Materias primas cargadas:", materiasPrimas);
                 // Llenar los selects que ya existen
                 const selects = document.querySelectorAll(".ingrediente-select");
                 selects.forEach((select) => {
