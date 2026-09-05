@@ -105,7 +105,6 @@
     </div>
     <!-- Modales -->
     <!-- Modal Registrar Entrada -->
-    <!-- Modal Registrar Entrada -->
     <div
       class="modal fade"
       id="modalEntrada"
@@ -114,7 +113,6 @@
       aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-          <!-- Encabezado con diseño venta-header -->
           <div class="venta-header">
             <h2>
               <i class="bi bi-cart-plus me-2 text-success"></i> REGISTRAR
@@ -129,7 +127,6 @@
             </button>
           </div>
 
-          <!-- Tarjeta informativa estilo resumen -->
           <div class="p-4 pb-0">
             <div class="card border-0 bg-light p-3" style="border-radius: 14px">
               <h6 class="text-muted mb-2">Producto seleccionado</h6>
@@ -153,7 +150,6 @@
             </div>
           </div>
 
-          <!-- Formulario con grid y inputs estilizados -->
           <form class="formVenta pb-2">
             <div class="campo">
               <label for="tipoEntrada">Tipo de entrada</label>
@@ -209,6 +205,7 @@
         </div>
       </div>
     </div>
+
     <!-- Modal registrar salida -->
     <div
       class="modal fade"
@@ -218,89 +215,91 @@
       aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalSalidaLabel">
-              <i class="bi bi-cart-dash me-2 text-danger"></i> Registrar salida
-            </h5>
+          <!-- Encabezado -->
+          <div class="venta-header">
+            <h2>
+              <i class="bi bi-cart-dash me-2 text-danger"></i> REGISTRAR SALIDA
+            </h2>
             <button
               type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"></button>
+              class="cerrarModal"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
           </div>
-          <div class="modal-body">
-            <!-- Información del producto -->
-            <div class="card border-0 bg-light mb-4">
-              <div class="card-body">
-                <h6 class="text-muted mb-3">Producto seleccionado</h6>
-                <div class="row">
-                  <div class="col-8">
-                    <strong id="nombreProductoSalida">
-                      Nombre del producto
-                    </strong>
-                  </div>
-                  <div class="col-4 text-end">
-                    <span class="badge bg-primary" id="tipoProductoSalida">
-                      Tipo
-                    </span>
-                  </div>
+
+          <!-- Tarjeta informativa -->
+          <div class="p-4 pb-0">
+            <div class="card border-0 bg-light p-3" style="border-radius: 14px">
+              <h6 class="text-muted mb-2">Producto seleccionado</h6>
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <strong id="nombreProductoSalida" class="fs-5 text-dark"
+                    >Nombre del producto</strong
+                  >
                 </div>
-                <hr />
-                <div class="d-flex justify-content-between">
-                  <span>Existencias actuales</span>
-                  <strong id="stockActualSalida"> 0 </strong>
+                <div class="col-4 text-end">
+                  <span class="badge bg-primary" id="tipoProductoSalida"
+                    >Tipo</span
+                  >
                 </div>
               </div>
+              <hr class="my-2" />
+              <div class="d-flex justify-content-between text-secondary">
+                <span>Existencias actuales</span>
+                <strong id="stockActualSalida" class="text-dark">0</strong>
+              </div>
             </div>
-            <!-- Motivo -->
-            <div class="mb-3">
-              <label for="motivoSalida" class="form-label">
-                Motivo de salida
-              </label>
-              <select id="motivoSalida" class="form-select">
+          </div>
+
+          <!-- Formulario -->
+          <form class="formVenta pb-2">
+            <div class="campo">
+              <label for="motivoSalida">Motivo de salida</label>
+              <select id="motivoSalida">
                 <option value="" selected disabled>Seleccione un motivo</option>
                 <option value="PERDIDA">Pérdida</option>
                 <option value="AJUSTE">Ajuste de inventario</option>
                 <option value="OTRO">Otro</option>
               </select>
-              <div id="errorMotivoSalida" class="invalid-feedback"></div>
+              <div id="errorMotivoSalida" class="text-danger small mt-1"></div>
             </div>
-            <!-- Cantidad -->
-            <div class="mb-3">
-              <label for="cantidadSalida" class="form-label">
-                Cantidad a retirar
-              </label>
+
+            <div class="campo">
+              <label for="cantidadSalida">Cantidad a retirar</label>
               <input
                 type="number"
-                class="form-control"
                 id="cantidadSalida"
                 min="1"
                 placeholder="Ingrese la cantidad" />
-              <div id="errorCantidadSalida" class="invalid-feedback"></div>
+              <div
+                id="errorCantidadSalida"
+                class="text-danger small mt-1"></div>
             </div>
-            <!-- Observación -->
-            <div class="mb-3">
-              <label for="observacionSalida" class="form-label">
-                Observación <span class="text-muted">(opcional)</span>
-              </label>
+
+            <div class="campo" style="grid-column: span 2">
+              <label for="observacionSalida"
+                >Observación
+                <span class="text-muted font-normal">(opcional)</span></label
+              >
               <textarea
                 id="observacionSalida"
-                class="form-control"
-                rows="3"
-                placeholder="Agregue una observación si lo considera necesario">
-              </textarea>
+                rows="2"
+                placeholder="Agregue una observación opcional"></textarea>
             </div>
-          </div>
-          <!-- Error general -->
-          <div id="errorGeneralSalida" class="text-danger small mt-2"></div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal">
+          </form>
+
+          <div
+            id="errorGeneralSalida"
+            class="text-danger small text-center mb-3"></div>
+
+          <div class="modal-botones">
+            <button type="button" class="btnCancelar" data-bs-dismiss="modal">
               Cancelar
             </button>
-            <button type="button" class="btn btn-danger" id="guardarSalida">
-              <i class="bi bi-check-lg me-1"></i> Registrar salida
+            <button type="button" class="btnGuardar" id="guardarSalida">
+              <i class="bi bi-check-lg me-1"></i> Registrar
             </button>
           </div>
         </div>
@@ -315,46 +314,59 @@
       aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-          <!-- Encabezado -->
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalHistorialLabel">
-              <i class="bi bi-clock-history me-2 text-primary"></i> Historial de
-              movimientos -
-              <span id="periodoHistorial" class="text-primary"></span>
-            </h5>
+          <!-- Encabezado unificado (venta-header) -->
+          <div class="venta-header">
+            <h2>
+              <i class="bi bi-clock-history me-2"></i> HISTORIAL DE MOVIMIENTOS
+              <span
+                id="periodoHistorial"
+                class="fs-6 d-block d-md-inline-block fw-normal opacity-75"></span>
+            </h2>
             <button
               type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"></button>
+              class="cerrarModal"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
           </div>
-          <!-- Cuerpo -->
+
+          <!-- Cuerpo del Modal -->
           <div class="modal-body">
-            <!-- Información del producto -->
-            <div class="card border-0 bg-light mb-4">
-              <div class="card-body">
-                <div class="row align-items-center">
-                  <div class="col-8">
-                    <strong id="nombreProductoHistorial"
-                      >Nombre del producto</strong
-                    >
-                  </div>
-                  <div class="col-4 text-end">
-                    <span class="badge bg-primary" id="tipoProductoHistorial"
-                      >Tipo</span
-                    >
-                  </div>
+            <!-- Tarjeta de información del producto -->
+            <div
+              class="card border-0 bg-light p-3 mb-4"
+              style="border-radius: 14px">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <strong id="nombreProductoHistorial" class="fs-5 text-dark">
+                    Nombre del producto
+                  </strong>
                 </div>
-                <hr />
-                <div class="d-flex justify-content-between">
-                  <span>Stock actual</span>
-                  <strong id="stockActualHistorial">0</strong>
+                <div class="col-4 text-end">
+                  <span class="badge bg-primary" id="tipoProductoHistorial">
+                    Tipo
+                  </span>
                 </div>
               </div>
+              <hr class="my-2" />
+              <div class="d-flex justify-content-between text-secondary">
+                <span>Stock actual</span>
+                <strong id="stockActualHistorial" class="text-dark">0</strong>
+              </div>
             </div>
-            <!-- Tabla de movimientos -->
+
+            <!-- Indicador de carga -->
+            <div id="cargandoHistorial" class="text-center d-none my-4">
+              <div class="spinner-border text-info" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
+            </div>
+
+            <!-- Tabla de movimientos adaptada -->
             <div class="table-responsive">
-              <table class="table table-hover table-striped align-middle">
-                <thead class="table-primary">
+              <table class="table table-hover align-middle">
+                <thead>
                   <tr>
                     <th>Fecha</th>
                     <th>Tipo</th>
@@ -365,32 +377,25 @@
                 </thead>
                 <tbody id="tablaMovimientos">
                   <tr>
-                    <td colspan="5" class="text-center text-muted">
+                    <td colspan="5" class="text-center text-muted py-4">
                       No hay movimientos registrados para este producto.
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <!-- Indicador de carga -->
-            <div id="cargandoHistorial" class="text-center d-none my-3">
-              <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Cargando...</span>
-              </div>
-            </div>
           </div>
-          <!-- Pie -->
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal">
+
+          <!-- Pie con botón único unificado -->
+          <div class="modal-botones">
+            <button type="button" class="btnCancelar" data-bs-dismiss="modal">
               Cerrar
             </button>
           </div>
         </div>
       </div>
     </div>
+
     <!-- ========================================= -->
     <!-- MODAL AGREGAR VENTA -->
     <!-- ========================================= -->

@@ -759,11 +759,33 @@ body {
   box-shadow: none;
 }
 
-/* Modificación de color para el botón de guardado/salida de pérdidas */
-.btnGuardar.btnDanger {
-  background: #ef5b5b;
+/* Ajustes para el contenedor y tabla dentro del modalHistorial */
+#modalHistorial .modal-body {
+  padding: 25px 30px;
 }
 
-.btnGuardar.btnDanger:hover {
-  background: #c94949;
+#modalHistorial .table-responsive {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #d7eef5;
+}
+
+#modalHistorial .table {
+  margin-bottom: 0;
+}
+
+#modalHistorial .table thead {
+  background-color: #befbfc;
+}
+
+#modalHistorial .table thead th {
+  color: #4a7f83;
+  font-weight: 700;
+  border-bottom: 1px solid #d7eef5;
+  padding: 12px 16px;
+}
+
+#modalHistorial .table tbody td {
+  padding: 12px 16px;
+  vertical-align: middle;
 }
