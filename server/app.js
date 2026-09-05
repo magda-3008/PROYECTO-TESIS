@@ -40,11 +40,7 @@ app.use("/api/entradaMP", movimientoMPRoutes);
 
 app.get("/api/test-supabase", async (req, res) => {
 	try {
-		const { data, error } = await supabase.storage
-			.from("recetaspatuboca")
-			.list("", {
-				limit: 1
-			});
+		const { data, error } = await supabase.storage.getBucket("recetaspatuboca");
 
 		if (error) {
 			console.error("Error de Supabase:", error);
@@ -58,7 +54,7 @@ app.get("/api/test-supabase", async (req, res) => {
 		res.json({
 			conectado: true,
 			mensaje: "Conexión con Supabase exitosa.",
-			archivos: data
+			bucket: data
 		});
 
 	} catch (error) {
