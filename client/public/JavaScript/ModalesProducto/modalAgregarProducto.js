@@ -580,6 +580,65 @@ document.addEventListener("DOMContentLoaded", async () => {
                         formularioValido = false;
                     }
                 }
+
+                if (tipoProducto.value === "Elaborado") {
+
+                    const ingredientes = obtenerIngredientesReceta();
+
+                    if (!nombreReceta.value.trim()) {
+                        nombreReceta.classList.add("is-invalid");
+                        formularioValido = false;
+                    }
+
+                    if (
+                        !cantidadProducidaBase.value ||
+                        Number(cantidadProducidaBase.value) <= 0
+                    ) {
+                        cantidadProducidaBase.classList.add("is-invalid");
+                        formularioValido = false;
+                    }
+
+                    if (ingredientes.length === 0) {
+                        formularioValido = false;
+
+                        Swal.fire({
+                            icon: "warning",
+                            title: "Receta incompleta",
+                            text: "Debe agregar al menos un ingrediente a la receta."
+                        });
+
+                        return;
+                    }
+
+                    ingredientes.forEach((ingrediente) => {
+
+                        if (!ingrediente.id_ma) {
+                            formularioValido = false;
+                        }
+
+                        if (
+                            ingrediente.cantidad === undefined ||
+                            Number(ingrediente.cantidad) <= 0
+                        ) {
+                            formularioValido = false;
+                        }
+
+                        if (!ingrediente.unidad) {
+                            formularioValido = false;
+                        }
+                    });
+
+                    if (!formularioValido) {
+                        Swal.fire({
+                            icon: "warning",
+                            title: "Receta incompleta",
+                            text: "Verifique que todos los ingredientes tengan materia prima, cantidad y unidad."
+                        });
+
+                        return;
+                    }
+                }
+
                 if (!formularioValido) {
                     Swal.fire({
                         icon: "warning",
@@ -597,6 +656,37 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (tipoProducto.value === "Reventa") {
                     formData.append("costo_compra", Number(document.getElementById("costoCompra").value));
                 }
+
+                if (tipoProducto.value === "Elaborado") {
+
+                    const ingredientes = obtenerIngredientesReceta();
+
+                    formData.append(
+                        "nombre_receta",
+                        nombreReceta.value.trim()
+                    );
+
+                    formData.append(
+                        "cantidad_producida_base",
+                        Number(cantidadProducidaBase.value)
+                    );
+
+                    const descripcionReceta =
+                        document.getElementById("descripcionReceta");
+
+                    if (descripcionReceta) {
+                        formData.append(
+                            "descripcion_receta",
+                            descripcionReceta.value.trim()
+                        );
+                    }
+
+                    formData.append(
+                        "ingredientes",
+                        JSON.stringify(ingredientes)
+                    );
+                }
+
                 if (imagenProducto && imagenProducto.files.length > 0) {
                     formData.append("foto", imagenProducto.files[0]);
                 }
