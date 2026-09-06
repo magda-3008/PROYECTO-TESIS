@@ -47,7 +47,7 @@ router.get("/", async (req, res) => {
         });
     }
 });
-// Crear producto de reventa
+// Crear producto de reventa o elaborado
 router.post("/", upload.single("foto"), async (req, res) => {
     const {
         nombre,
@@ -55,16 +55,21 @@ router.post("/", upload.single("foto"), async (req, res) => {
         precio_venta,
         margen_gananciab_esperado,
         stock_inicial,
-        costo_compra
+        costo_compra,
+        // Datos de receta
+        nombre_receta,
+        cantidad_producida_base,
+        descripcion_receta,
+        ingredientes
     } = req.body;
     if (!nombre || !nombre.trim()) {
         return res.status(400).json({
             error: "El nombre del producto es obligatorio."
         });
     }
-    if (tipo !== "Reventa") {
+    if (tipo !== "Reventa" && tipo !== "Elaborado") {
         return res.status(400).json({
-            error: "Este endpoint solo permite crear productos de reventa."
+            error: "El tipo de producto no es válido."
         });
     }
     if (precio_venta === undefined || Number(precio_venta) <= 0) {
@@ -82,15 +87,33 @@ router.post("/", upload.single("foto"), async (req, res) => {
             error: "El stock inicial no puede ser negativo."
         });
     }
-    if (costo_compra === undefined || Number(costo_compra) <= 0) {
-        return res.status(400).json({
-            error: "El costo de compra debe ser mayor que 0."
-        });
+    if (tipo === "Reventa") {
+        if (costo_compra === undefined || Number(costo_compra) <= 0) {
+            return res.status(400).json({
+                error: "El costo de compra debe ser mayor que 0."
+            });
+        }
+    }
+    if (tipo === "Elaborado") {
+        if (!nombre_receta || !nombre_receta.trim()) {
+            return res.status(400).json({
+                error: "El nombre de la receta es obligatorio."
+            });
+        }
+        if (cantidad_producida_base === undefined || Number(cantidad_producida_base) <= 0) {
+            return res.status(400).json({
+                error: "La cantidad producida base debe ser mayor que 0."
+            });
+        }
+        if (!ingredientes) {
+            return res.status(400).json({
+                error: "Debe ingresar al menos un ingrediente."
+            });
+        }
     }
     const cliente = await pool.connect();
     let rutaImagen = null;
     try {
-        // Iniciar transacción
         await cliente.query("BEGIN");
         const resultadoProducto = await cliente.query(`
             INSERT INTO producto (
@@ -111,7 +134,7 @@ router.post("/", upload.single("foto"), async (req, res) => {
         const producto = resultadoProducto.rows[0];
         if (req.file) {
             const extension = req.file.originalname.split(".").pop().toLowerCase();
-            rutaImagen = `${producto.id_producto}-${Date.now()}.${extension}`;
+            rutaImagen = `productos/${producto.id_producto}-${Date.now()}.${extension}`;
             const {
                 error: errorSubida
             } = await supabase.storage.from("recetaspatuboca").upload(rutaImagen, req.file.buffer, {
@@ -125,7 +148,7 @@ router.post("/", upload.single("foto"), async (req, res) => {
             const {
                 data: urlData
             } = supabase.storage.from("recetaspatuboca").getPublicUrl(rutaImagen);
-            // Guardar URL en producto
+            // Guardar URL
             await cliente.query(`
                 UPDATE producto
                 SET foto_producto = $1
@@ -135,32 +158,115 @@ router.post("/", upload.single("foto"), async (req, res) => {
                     urlData.publicUrl,
                     producto.id_producto
                 ]);
-            // Actualizar objeto para devolverlo al frontend
             producto.foto_producto = urlData.publicUrl;
         }
-        const resultadoReventa = await cliente.query(`
-            INSERT INTO producto_reventa (
-                id_producto,
-                costo_compra,
-                stock_actual_pr
-            )
-            VALUES ($1, $2, $3)
-            RETURNING *;
-            `,
-            [
-                producto.id_producto,
-                Number(costo_compra),
-                Number(stock_inicial)
-            ]);
-        const productoReventa = resultadoReventa.rows[0];
-        await cliente.query("COMMIT");
-        res.status(201).json({
-            mensaje: "Producto de reventa creado correctamente.",
-            producto: {
-                ...producto,
-                ...productoReventa
+        if (tipo === "Reventa") {
+            const resultadoReventa = await cliente.query(`
+                    INSERT INTO producto_reventa (
+                        id_producto,
+                        costo_compra,
+                        stock_actual_pr
+                    )
+                    VALUES ($1, $2, $3)
+                    RETURNING *;
+                    `,
+                [
+                    producto.id_producto,
+                    Number(costo_compra),
+                    Number(stock_inicial)
+                ]);
+            const productoReventa = resultadoReventa.rows[0];
+            await cliente.query("COMMIT");
+            return res.status(201).json({
+                mensaje: "Producto de reventa creado correctamente.",
+                producto: {
+                    ...producto,
+                    ...productoReventa
+                }
+            });
+        }
+        if (tipo === "Elaborado") {
+            const resultadoElaborado = await cliente.query(`
+                    INSERT INTO producto_elaborado (
+                        id_producto,
+                        stock_actual_pe
+                    )
+                    VALUES ($1, $2)
+                    RETURNING *;
+                    `,
+                [
+                    producto.id_producto,
+                    Number(stock_inicial)
+                ]);
+            const productoElaborado = resultadoElaborado.rows[0];
+            let ingredientesParseados;
+            try {
+                ingredientesParseados = JSON.parse(ingredientes);
+            } catch (error) {
+                throw new Error("Los ingredientes de la receta no tienen un formato válido.");
             }
-        });
+            if (!Array.isArray(ingredientesParseados) || ingredientesParseados.length === 0) {
+                throw new Error("La receta debe contener al menos un ingrediente.");
+            }
+            for (const ingrediente of ingredientesParseados) {
+                if (!ingrediente.id_ma) {
+                    throw new Error("Todos los ingredientes deben tener una materia prima seleccionada.");
+                }
+                if (ingrediente.cantidad === undefined || Number(ingrediente.cantidad) <= 0) {
+                    throw new Error("Todos los ingredientes deben tener una cantidad mayor que 0.");
+                }
+                if (!ingrediente.unidad || !ingrediente.unidad.trim()) {
+                    throw new Error("Todos los ingredientes deben tener una unidad seleccionada.");
+                }
+            }
+            const resultadoReceta = await cliente.query(`
+                    INSERT INTO receta (
+                        id_producto,
+                        nombre_receta,
+                        cantidad_producida_base,
+                        descripcion
+                    )
+                    VALUES ($1, $2, $3, $4)
+                    RETURNING *;
+                    `,
+                [
+                    producto.id_producto,
+                    nombre_receta.trim(),
+                    Number(cantidad_producida_base),
+                    descripcion_receta ? descripcion_receta.trim() : null
+                ]);
+            const receta = resultadoReceta.rows[0];
+            const detallesReceta = [];
+            for (const ingrediente of ingredientesParseados) {
+                const resultadoDetalle = await cliente.query(`
+                        INSERT INTO detalle_receta (
+                            id_receta,
+                            id_ma,
+                            cantidad_utilizada,
+                            unidad_utilizada
+                        )
+                        VALUES ($1, $2, $3, $4)
+                        RETURNING *;
+                        `,
+                    [
+                        receta.id_receta,
+                        Number(ingrediente.id_ma),
+                        Number(ingrediente.cantidad),
+                        ingrediente.unidad.trim()
+                    ]);
+                detallesReceta.push(resultadoDetalle.rows[0]);
+            }
+            await cliente.query("COMMIT");
+            return res.status(201).json({
+                mensaje: "Producto elaborado creado correctamente.",
+                producto: {
+                    ...producto,
+                    ...productoElaborado
+                },
+                receta: receta,
+                ingredientes: detallesReceta
+            });
+        }
     } catch (error) {
         await cliente.query("ROLLBACK");
         if (rutaImagen) {
@@ -171,14 +277,15 @@ router.post("/", upload.single("foto"), async (req, res) => {
                 console.error("No se pudo eliminar la imagen de Supabase:", errorImagen);
             }
         }
-        console.error("Error al crear producto de reventa:", error);
+        console.error("Error al crear producto:", error);
         res.status(500).json({
-            error: error.message || "No se pudo crear el producto de reventa."
+            error: error.message || "No se pudo crear el producto."
         });
     } finally {
         cliente.release();
     }
 });
+
 // Actualizar parcialmente un producto
 router.patch("/:id", async (req, res) => {
     const {

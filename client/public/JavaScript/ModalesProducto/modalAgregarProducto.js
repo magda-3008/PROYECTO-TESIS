@@ -22,6 +22,23 @@ document.addEventListener("DOMContentLoaded", async () => {
         const seccionElaborado = document.getElementById("seccionElaborado");
         const costoCompra = document.getElementById("costoCompra");
         const imagenProducto = document.getElementById("imagenProducto");
+
+        const nombreProducto = document.getElementById(
+            "nombreProducto"
+        );
+
+        const nombreReceta = document.getElementById(
+            "nombreReceta"
+        );
+
+        const stockInicial = document.getElementById(
+            "stockInicial"
+        );
+
+        const cantidadProducidaBase = document.getElementById(
+            "cantidadProducidaBase"
+        );
+
         const vistaPreviaImagen = document.getElementById("vistaPreviaImagen");
         const listaIngredientes = document.getElementById("listaIngredientes");
         const btnAgregarIngrediente = document.getElementById("agregarIngrediente");
@@ -200,6 +217,71 @@ document.addEventListener("DOMContentLoaded", async () => {
                 seccionReventa.classList.add("d-none");
                 seccionElaborado.classList.add("d-none");
             }
+        }
+
+        // =========================================
+        // SINCRONIZAR DATOS DE PRODUCTO ELABORADO
+        // =========================================
+
+        if (
+            nombreProducto &&
+            nombreReceta
+        ) {
+
+            nombreProducto.addEventListener(
+                "input",
+                () => {
+
+                    if (
+                        !nombreReceta.dataset.modificado
+                    ) {
+
+                        nombreReceta.value =
+                            nombreProducto.value;
+                    }
+                }
+            );
+
+
+            nombreReceta.addEventListener(
+                "input",
+                () => {
+
+                    nombreReceta.dataset.modificado =
+                        "true";
+                }
+            );
+        }
+
+
+        if (
+            stockInicial &&
+            cantidadProducidaBase
+        ) {
+
+            stockInicial.addEventListener(
+                "input",
+                () => {
+
+                    if (
+                        !cantidadProducidaBase.dataset.modificado
+                    ) {
+
+                        cantidadProducidaBase.value =
+                            stockInicial.value;
+                    }
+                }
+            );
+
+
+            cantidadProducidaBase.addEventListener(
+                "input",
+                () => {
+
+                    cantidadProducidaBase.dataset.modificado =
+                        "true";
+                }
+            );
         }
         async function cargarMateriasPrimas() {
             try {
@@ -554,6 +636,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 // Restablecer formulario
                 if (formularioProducto) {
                     formularioProducto.reset();
+
+                    if (nombreReceta) {
+                        delete nombreReceta.dataset.modificado;
+                    }
+
+                    if (cantidadProducidaBase) {
+                        delete cantidadProducidaBase.dataset.modificado;
+                    }
                 }
                 // Restablecer vista previa
                 if (vistaPreviaImagen) {
