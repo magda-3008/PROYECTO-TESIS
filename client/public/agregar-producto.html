@@ -259,49 +259,62 @@
               <div id="listaIngredientes">
                 <!-- Fila inicial -->
                 <div class="row g-2 align-items-end ingrediente-row mb-2">
-                  <div class="col-md-7">
+                  <!-- Tipo de insumo -->
+                  <div class="col-md-3">
                     <div class="campo">
-                      <label>Materia prima</label>
+                      <label>Tipo de insumo</label>
 
-                      <select class="ingrediente-select">
+                      <select class="form-select tipo-insumo-select">
+                        <option value="" selected disabled>Seleccione</option>
+                        <option value="materia_prima">Materia prima</option>
+                        <option value="producto">Producto elaborado</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Insumo -->
+                  <div class="col-md-4">
+                    <div class="campo">
+                      <label>Insumo</label>
+
+                      <select class="form-select ingrediente-select" disabled>
                         <option value="" selected disabled>
-                          Seleccione una materia prima
-                        </option>
-
-                        <option value="__nueva_materia_prima__">
-                          + Agregar nueva materia prima
+                          Seleccione un insumo
                         </option>
                       </select>
                     </div>
                   </div>
 
+                  <!-- Cantidad -->
                   <div class="col-md-2">
                     <div class="campo">
                       <label>Cantidad</label>
 
                       <input
                         type="number"
-                        class="cantidad-ingrediente"
+                        class="form-control cantidad-ingrediente"
                         min="0"
                         step="0.01"
                         placeholder="Cantidad" />
                     </div>
                   </div>
 
+                  <!-- Unidad -->
                   <div class="col-md-2">
                     <div class="campo">
                       <label>Unidad</label>
 
-                      <select class="unidad-ingrediente" disabled>
-                        <option value="" selected>Seleccione</option>
+                      <select class="form-select unidad-ingrediente" disabled>
+                        <option value="" selected disabled>Seleccione</option>
                       </select>
                     </div>
                   </div>
 
+                  <!-- Eliminar -->
                   <div class="col-md-1 text-center">
                     <button
                       type="button"
-                      class="btn btn-outline-danger btnEliminarIngrediente w-100 btnEliminarIngrediente"
+                      class="btn btn-outline-danger btnEliminarIngrediente w-100"
                       title="Eliminar ingrediente"
                       style="height: 48px; border-radius: 12px">
                       <i class="fa-solid fa-trash"></i>
@@ -310,8 +323,8 @@
                 </div>
               </div>
               <small class="text-muted mt-2 d-block">
-                Agregue las materias primas necesarias para elaborar el
-                producto.
+                Agregue las materias primas o productos necesarios para elaborar
+                el producto.
               </small>
             </div>
           </div>
