@@ -72,12 +72,12 @@ const vistas = {
                 formatter: function () {
                     return `
                         <div class="acciones-tabla">
-                            <button class="btnAccion btnPerdida" title="Registrar pérdida">
-                                <i class="bi bi-cart-dash"></i>
-                            </button>
-
                             <button class="btnAccion btnEntrada" title="Registrar entrada">
                                 <i class="bi bi-cart-plus"></i>
+                            </button>
+                        
+                            <button class="btnAccion btnPerdida" title="Registrar pérdida">
+                                <i class="bi bi-cart-dash"></i>
                             </button>
 
                             <button class="btnAccion btnHistorial" title="Ver historial">
@@ -91,7 +91,7 @@ const vistas = {
                     const ingrediente = cell.getRow().getData();
 
                     if (e.target.closest(".btnPerdida")) {
-                        abrirModalPerdida(ingrediente);
+                        abrirModalPerdidaMP(ingrediente);
                         return;
                     }
 
