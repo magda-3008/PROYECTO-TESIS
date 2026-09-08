@@ -90,7 +90,7 @@ const vistas = {
                 cellClick: function (e, cell) {
                     const ingrediente = cell.getRow().getData();
 
-                    if (e.target.closest(".btnPerdida")) {
+                    if (e.target.closest(".btnSalida")) {
                         abrirModalPerdidaMP(ingrediente);
                         return;
                     }
