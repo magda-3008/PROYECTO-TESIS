@@ -209,14 +209,92 @@ router.post("/", upload.single("foto"), async (req, res) => {
                 throw new Error("La receta debe contener al menos un ingrediente.");
             }
             for (const ingrediente of ingredientesParseados) {
-                if (!ingrediente.id_ma) {
-                    throw new Error("Todos los ingredientes deben tener una materia prima seleccionada.");
+
+                // Validar el tipo de insumo
+                if (
+                    ingrediente.tipo !== "materia_prima" &&
+                    ingrediente.tipo !== "producto"
+                ) {
+                    throw new Error(
+                        "El tipo de insumo de uno de los ingredientes no es válido."
+                    );
                 }
-                if (ingrediente.cantidad === undefined || Number(ingrediente.cantidad) <= 0) {
-                    throw new Error("Todos los ingredientes deben tener una cantidad mayor que 0.");
+
+                // Validar que tenga el ID correspondiente
+                if (
+                    ingrediente.tipo === "materia_prima" &&
+                    !ingrediente.id_ma
+                ) {
+                    throw new Error(
+                        "Todos los ingredientes de materia prima deben tener una materia prima seleccionada."
+                    );
                 }
-                if (!ingrediente.unidad || !ingrediente.unidad.trim()) {
-                    throw new Error("Todos los ingredientes deben tener una unidad seleccionada.");
+
+                if (
+                    ingrediente.tipo === "producto" &&
+                    !ingrediente.id_producto_insumo
+                ) {
+                    throw new Error(
+                        "Todos los ingredientes de producto deben tener un producto elaborado seleccionado."
+                    );
+                }
+
+                // Validar cantidad
+                if (
+                    ingrediente.cantidad === undefined ||
+                    Number(ingrediente.cantidad) <= 0
+                ) {
+                    throw new Error(
+                        "Todos los ingredientes deben tener una cantidad mayor que 0."
+                    );
+                }
+
+                // Validar unidad
+                if (
+                    !ingrediente.unidad ||
+                    !ingrediente.unidad.trim()
+                ) {
+                    throw new Error(
+                        "Todos los ingredientes deben tener una unidad seleccionada."
+                    );
+                }
+
+                // Si es producto, verificar que exista y sea Elaborado
+                if (ingrediente.tipo === "producto") {
+
+                    const resultadoProductoInsumo =
+                        await cliente.query(`
+                SELECT id_producto, nombre, tipo
+                FROM producto
+                WHERE id_producto = $1;
+            `, [
+                            Number(ingrediente.id_producto_insumo)
+                        ]);
+
+                    if (resultadoProductoInsumo.rowCount === 0) {
+                        throw new Error(
+                            "Uno de los productos seleccionados como insumo no existe."
+                        );
+                    }
+
+                    const productoInsumo =
+                        resultadoProductoInsumo.rows[0];
+
+                    if (productoInsumo.tipo !== "Elaborado") {
+                        throw new Error(
+                            `El producto "${productoInsumo.nombre}" no puede utilizarse como insumo porque no es un producto elaborado.`
+                        );
+                    }
+
+                    // Evitar que un producto se utilice a sí mismo
+                    if (
+                        Number(ingrediente.id_producto_insumo) ===
+                        Number(producto.id_producto)
+                    ) {
+                        throw new Error(
+                            "Un producto elaborado no puede utilizarse a sí mismo como insumo."
+                        );
+                    }
                 }
             }
             const resultadoReceta = await cliente.query(`
@@ -237,24 +315,40 @@ router.post("/", upload.single("foto"), async (req, res) => {
                 ]);
             const receta = resultadoReceta.rows[0];
             const detallesReceta = [];
+
             for (const ingrediente of ingredientesParseados) {
+
+                const idMa =
+                    ingrediente.tipo === "materia_prima"
+                        ? Number(ingrediente.id_ma)
+                        : null;
+
+                const idProductoInsumo =
+                    ingrediente.tipo === "producto"
+                        ? Number(ingrediente.id_producto_insumo)
+                        : null;
+
                 const resultadoDetalle = await cliente.query(`
-                        INSERT INTO detalle_receta (
-                            id_receta,
-                            id_ma,
-                            cantidad_utilizada,
-                            unidad_utilizada
-                        )
-                        VALUES ($1, $2, $3, $4)
-                        RETURNING *;
-                        `,
-                    [
-                        receta.id_receta,
-                        Number(ingrediente.id_ma),
-                        Number(ingrediente.cantidad),
-                        ingrediente.unidad.trim()
-                    ]);
-                detallesReceta.push(resultadoDetalle.rows[0]);
+        INSERT INTO detalle_receta (
+            id_receta,
+            id_ma,
+            id_producto_insumo,
+            cantidad_utilizada,
+            unidad_utilizada
+        )
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING *;
+    `, [
+                    receta.id_receta,
+                    idMa,
+                    idProductoInsumo,
+                    Number(ingrediente.cantidad),
+                    ingrediente.unidad.trim()
+                ]);
+
+                detallesReceta.push(
+                    resultadoDetalle.rows[0]
+                );
             }
             await cliente.query("COMMIT");
             return res.status(201).json({
