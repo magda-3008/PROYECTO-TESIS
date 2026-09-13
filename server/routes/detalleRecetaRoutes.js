@@ -20,6 +20,8 @@ router.get("/:id", async (req, res) => {
 
                 dr.id_detalle_receta,
                 dr.cantidad_utilizada,
+                dr.cantidad_ingresada,
+                dr.unidad_ingresada
 
                 COALESCE(mp.nombre, p.nombre) AS nombre_insumo,
 

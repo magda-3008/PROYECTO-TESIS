@@ -329,15 +329,15 @@ router.post("/", upload.single("foto"), async (req, res) => {
                         : null;
 
                 const resultadoDetalle = await cliente.query(`
-        INSERT INTO detalle_receta (
-            id_receta,
-            id_ma,
-            id_producto_insumo,
-            cantidad_utilizada,
-            unidad_utilizada
-        )
-        VALUES ($1, $2, $3, $4, $5)
-        RETURNING *;
+                    INSERT INTO detalle_receta (
+                        id_receta,
+                        id_ma,
+                        id_producto_insumo,
+                        cantidad_utilizada,
+                        unidad_utilizada
+                    )
+                    VALUES ($1, $2, $3, $4, $5)
+                    RETURNING *;
     `, [
                     receta.id_receta,
                     idMa,

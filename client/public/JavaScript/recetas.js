@@ -87,11 +87,11 @@ async function cargarIngredientes() {
 
 async function cargarRecetas(idIngrediente = "", nombre = "") {
 
-     const contenedor = document.getElementById("contenedor-recetas");
+    const contenedor = document.getElementById("contenedor-recetas");
 
     try {
 
-       let url = "/api/recetas";
+        let url = "/api/recetas";
 
         const parametros = new URLSearchParams();
 
@@ -135,14 +135,14 @@ async function cargarRecetas(idIngrediente = "", nombre = "") {
 
         recetas.forEach((receta) => {
 
-        const urlImagen = receta.imagen_url && receta.imagen_url !== "null"
-            ? receta.imagen_url
-            : "https://placehold.co/300x200?text=Sin+Imagen";
+            const urlImagen = receta.imagen_url && receta.imagen_url !== "null"
+                ? receta.imagen_url
+                : "https://placehold.co/300x200?text=Sin+Imagen";
 
-        const columna = document.createElement("div");
-        columna.className = "col-lg-4 col-md-6 d-flex justify-content-center";
+            const columna = document.createElement("div");
+            columna.className = "col-lg-4 col-md-6 d-flex justify-content-center";
 
-        columna.innerHTML = `
+            columna.innerHTML = `
             <div class="card tarjeta-receta">
                 <img src="${urlImagen}" class="card-img-top imagen-receta" alt="${receta.nombre_receta}">
                 <div class="card-body">
@@ -151,17 +151,17 @@ async function cargarRecetas(idIngrediente = "", nombre = "") {
             </div>
         `;
 
-        columna.querySelector(".tarjeta-receta").addEventListener("click", () => {
-            cargarDetalleReceta(receta.id_receta);
+            columna.querySelector(".tarjeta-receta").addEventListener("click", () => {
+                cargarDetalleReceta(receta.id_receta);
+            });
+
+            contenedor.appendChild(columna);
         });
 
-    contenedor.appendChild(columna);
-});
-
     } catch (error) {
-    console.error(error);
+        console.error(error);
 
-    contenedor.innerHTML = `
+        contenedor.innerHTML = `
         <div class="col-12 text-center py-5">
             <h5>No fue posible cargar las recetas.</h5>
             <p class="text-muted">
@@ -169,7 +169,7 @@ async function cargarRecetas(idIngrediente = "", nombre = "") {
             </p>
         </div>
     `;
-}
+    }
 }
 
 async function cargarDetalleReceta(idReceta) {
@@ -177,9 +177,9 @@ async function cargarDetalleReceta(idReceta) {
 
         const modal = new bootstrap.Modal(document.getElementById("modalReceta"));
 
-document.getElementById("tituloModal").textContent = "Cargando...";
+        document.getElementById("tituloModal").textContent = "Cargando...";
 
-document.getElementById("contenidoModal").innerHTML = `
+        document.getElementById("contenidoModal").innerHTML = `
     <div class="text-center py-5">
         <div class="spinner-border text-info" role="status">
             <span class="visually-hidden">Cargando...</span>
@@ -189,7 +189,7 @@ document.getElementById("contenidoModal").innerHTML = `
     </div>
 `;
 
-modal.show();
+        modal.show();
 
         const respuesta = await fetch(`/api/detalle_receta/${idReceta}`);
 
@@ -200,14 +200,14 @@ modal.show();
         const detalle = await respuesta.json();
         const receta = detalle[0];
 
-        const urlImagenModal = receta.imagen_url && receta.imagen_url !== "null" 
-    ? receta.imagen_url 
-    : "https://placehold.co/600x400?text=Sin+Imagen";
+        const urlImagenModal = receta.imagen_url && receta.imagen_url !== "null"
+            ? receta.imagen_url
+            : "https://placehold.co/600x400?text=Sin+Imagen";
 
         document.getElementById("tituloModal").textContent = receta.nombre_receta;
 
         const contenido = document.getElementById("contenidoModal");
-        
+
         contenido.innerHTML = `
             <img src="${urlImagenModal}" class="imagen-modal">
 
@@ -235,7 +235,8 @@ modal.show();
 
         detalle.forEach(item => {
             // Pasamos el nombre del insumo también para evaluar excepciones como el "Chantilly"
-            const textoMedida = formatearUnidadHumana(item.cantidad_utilizada, item.unidad_medida, item.nombre_insumo);
+            //const textoMedida = formatearUnidadHumana(item.cantidad_ingresada, item.unidad_ingresada, item.nombre_insumo);
+            const textoMedida = (item.cantidad_ingresada, item.unidad_ingresada, item.nombre_insumo);
 
             lista.innerHTML += `
                 <li>
@@ -246,7 +247,7 @@ modal.show();
         });
 
 
-        } catch (error) {
+    } catch (error) {
         console.error(error);
 
         document.getElementById("tituloModal").textContent = "Error";
