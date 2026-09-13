@@ -218,7 +218,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const opcion = document.createElement("option");
 
                 opcion.value = unidad.valor;
-                opcion.textContent = capitalizar(unidad.texto);
+                opcion.textContent = unidad.texto;
 
                 selectUnidad.appendChild(opcion);
             });
