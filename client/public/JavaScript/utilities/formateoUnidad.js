@@ -101,15 +101,15 @@
 // }
 
 function formatearUnidadHumana(cantidad, unidad) {
+
     const num = parseFloat(cantidad);
 
     if (isNaN(num)) {
         return `${cantidad} ${unidad}`;
     }
 
-    const unidadLimpia = unidad.trim().toLowerCase();
+    const unidadFormateada = pluralizarUnidad(unidad, num);
 
-    // Fracciones comunes para cantidades sencillas
     const fracciones = {
         0.25: "¼",
         0.5: "½",
@@ -118,14 +118,15 @@ function formatearUnidadHumana(cantidad, unidad) {
 
     // Cantidades enteras
     if (Number.isInteger(num)) {
-        return `${num} ${unidadLimpia}`;
+        return `${num} ${unidadFormateada}`;
     }
 
     // Fracciones simples
     if (fracciones[num]) {
-        return `${fracciones[num]} ${unidadLimpia}`;
+        return `${fracciones[num]} ${unidadFormateada}`;
     }
 
-    // Valores decimales que no tienen una fracción simple
-    return `${num} ${unidadLimpia}`;
+    // Otros decimales
+    return `${num} ${unidadFormateada}`;
 }
+
