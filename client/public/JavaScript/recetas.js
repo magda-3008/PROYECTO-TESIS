@@ -241,7 +241,7 @@ async function cargarDetalleReceta(idReceta) {
             lista.innerHTML += `
                 <li>
                     <strong>${item.nombre_insumo}</strong> 
-                    - ${textoMedida, textoPlural}
+                    - ${textoMedida} ${textoPlural}
                 </li>
             `;
         });
