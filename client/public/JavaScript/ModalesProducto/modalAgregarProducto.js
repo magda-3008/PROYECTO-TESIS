@@ -62,10 +62,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         function llenarSelectMateriaPrima(select, materias) {
             select.innerHTML = `
-        <option value="">Seleccione una materia prima</option>
+        <option value="" selected disabled>
+            Seleccione una materia prima
+        </option>
     `;
 
-            materias.forEach(materia => {
+            materias.forEach((materia) => {
                 const opcion = document.createElement("option");
 
                 opcion.value = materia.id_ma;
@@ -79,6 +81,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             opcionNueva.textContent = "+ Agregar nueva materia prima";
 
             select.appendChild(opcionNueva);
+
+            select.disabled = false;
         }
 
         function llenarSelectProductoElaborado(select, productos) {
@@ -148,19 +152,28 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         function llenarSelectUnidad(fila) {
-            const selectTipo = fila.querySelector(".tipo-ingrediente");
-            const selectInsumo = fila.querySelector(".insumo-ingrediente");
+            const selectTipo = fila.querySelector(".tipo-insumo-select");
+            const selectInsumo = fila.querySelector(".ingrediente-select");
             const selectUnidad = fila.querySelector(".unidad-ingrediente");
 
             if (!selectTipo || !selectInsumo || !selectUnidad) {
                 return;
             }
 
-            selectUnidad.innerHTML = "";
+            selectUnidad.innerHTML = `
+        <option value="" selected disabled>
+            Seleccione
+        </option>
+    `;
+
+            selectUnidad.disabled = true;
 
             const tipo = selectTipo.value;
 
-            // Si es otro producto elaborado
+            // =====================================
+            // PRODUCTO ELABORADO
+            // =====================================
+
             if (tipo === "producto") {
                 const opcion = document.createElement("option");
 
@@ -168,13 +181,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                 opcion.textContent = "Unidad";
 
                 selectUnidad.appendChild(opcion);
+
                 selectUnidad.value = "unidad";
-                selectUnidad.disabled = true;
+
+                // Ahora sí queda habilitado
+                selectUnidad.disabled = false;
 
                 return;
             }
 
-            selectUnidad.disabled = false;
+            // =====================================
+            // MATERIA PRIMA
+            // =====================================
 
             if (tipo !== "materia_prima") {
                 return;
@@ -187,7 +205,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             const materiaPrima = materiasPrimas.find(
-                materia => Number(materia.id_ma) === idMa
+                (materia) => Number(materia.id_ma) === idMa
             );
 
             if (!materiaPrima) {
@@ -196,7 +214,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const unidades = obtenerUnidadesDisponibles(materiaPrima);
 
-            unidades.forEach(unidad => {
+            unidades.forEach((unidad) => {
                 const opcion = document.createElement("option");
 
                 opcion.value = unidad.valor;
@@ -204,6 +222,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 selectUnidad.appendChild(opcion);
             });
+
+            // Habilitar después de cargar las unidades
+            selectUnidad.disabled = false;
         }
 
         function actualizarTipoProducto() {
