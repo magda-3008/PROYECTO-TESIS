@@ -12,7 +12,12 @@ function pluralizarUnidad(unidad, cantidad) {
         "gramo": "gramos",
         "mililitro": "mililitros",
         "lata": "latas",
-        "barra": "barras"
+        "barra": "barras",
+        "cucharada": "cucharadas",
+        "sprayado": "sprayados",
+        "pajilla": "pajillas",
+        "vaso": "vasos",
+        "plato": "platos"
     };
 
     const unidadNormalizada = String(unidad || "").toLowerCase();

@@ -61,43 +61,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         let productosElaborados = [];
 
         function llenarSelectMateriaPrima(select, materias) {
-
             select.innerHTML = `
-        <option value="" selected disabled>
-            Seleccione una materia prima
-        </option>
+        <option value="">Seleccione una materia prima</option>
     `;
 
-            materias.forEach((materia) => {
-
+            materias.forEach(materia => {
                 const opcion = document.createElement("option");
 
                 opcion.value = materia.id_ma;
                 opcion.textContent = materia.nombre;
 
-                // Información de la materia prima
-                opcion.dataset.unidadMedida =
-                    materia.unidad_medida || "";
-
-                opcion.dataset.unidadPorPaquete =
-                    materia.unidad_por_paquete || "";
-
-                opcion.dataset.unidadExistencia =
-                    materia.unidad_existencia || "";
-
                 select.appendChild(opcion);
             });
 
-            // Opción para crear nueva materia prima
             const opcionNueva = document.createElement("option");
-
-            opcionNueva.value = "__nueva_materia_prima__";
-            opcionNueva.textContent =
-                "+ Agregar nueva materia prima";
+            opcionNueva.value = "nueva";
+            opcionNueva.textContent = "+ Agregar nueva materia prima";
 
             select.appendChild(opcionNueva);
-
-            select.disabled = false;
         }
 
         function llenarSelectProductoElaborado(select, productos) {
@@ -121,181 +102,108 @@ document.addEventListener("DOMContentLoaded", async () => {
             select.disabled = false;
         }
 
-        function obtenerUnidadesDisponibles(unidadMedida, nombreInsumo) {
-            const unidad = unidadMedida?.trim().toLowerCase() || "";
-            const nombre = nombreInsumo?.trim().toLowerCase() || "";
-            let unidades = [];
-            if (unidad === "mililitros" || unidad === "mililitro") {
-                unidades = [{
-                    valor: "mililitro",
-                    texto: "Mililitro"
-                }, {
-                    valor: "cucharada",
-                    texto: "Cucharada"
-                }];
-            } else if (unidad === "gramos" || unidad === "gramo") {
-                unidades = [{
-                    valor: "gramo",
-                    texto: "Gramo"
-                }];
-            } else if (unidad === "libra" || unidad === "libras") {
-                unidades = [{
-                    valor: "libra",
-                    texto: "Libra"
-                }, {
-                    valor: "cucharada",
-                    texto: "Cucharada"
-                }];
-            } else if (unidad === "litro" || unidad === "litros") {
-                unidades = [{
-                    valor: "litro",
-                    texto: "Litro"
-                }, {
-                    valor: "taza",
-                    texto: "Taza"
-                }];
-            } else if (unidad === "unidad" || unidad === "unidad(es)") {
-                unidades = [{
-                    valor: "unidad",
-                    texto: "Unidad"
-                }];
-            } else if (unidad === "paquete" || unidad === "bolsa") {
-                unidades = [{
-                    valor: unidad,
-                    texto: unidad.charAt(0).toUpperCase() + unidad.slice(1)
-                }];
-            } else if (unidad) {
-                unidades = [{
-                    valor: unidad,
-                    texto: unidad.charAt(0).toUpperCase() + unidad.slice(1)
-                }];
+        function obtenerUnidadesDisponibles(materiaPrima) {
+            const unidades = [];
+
+            const agregarUnidad = (valor, texto) => {
+                if (!valor) return;
+
+                const valorNormalizado = valor.trim().toLowerCase();
+
+                const yaExiste = unidades.some(
+                    unidad => unidad.valor === valorNormalizado
+                );
+
+                if (!yaExiste) {
+                    unidades.push({
+                        valor: valorNormalizado,
+                        texto: texto || capitalizar(valor)
+                    });
+                }
+            };
+
+            // Unidad base de inventario
+            agregarUnidad(
+                materiaPrima.unidad_medida,
+                materiaPrima.unidad_medida
+            );
+
+            // Unidad en que se compra/existe
+            agregarUnidad(
+                materiaPrima.unidad_existencia,
+                materiaPrima.unidad_existencia
+            );
+
+            // Unidades de conversión configuradas
+            if (Array.isArray(materiaPrima.conversiones)) {
+                materiaPrima.conversiones.forEach(conversion => {
+                    agregarUnidad(
+                        conversion.unidad_ingresada,
+                        conversion.unidad_ingresada
+                    );
+                });
             }
-            //Casos especiales
-            if (nombre.includes("chantilly")) {
-                unidades = [{
-                    valor: "gramo",
-                    texto: "Gramo"
-                }, {
-                    valor: "sprayado",
-                    texto: "Sprayado"
-                }];
-            } else if (nombre.includes("leche condensada")) {
-                unidades = [{
-                    valor: "gramo",
-                    texto: "Gramo"
-                }, {
-                    valor: "cucharada",
-                    texto: "Cucharada"
-                }];
-            } else if (nombre.includes("hielo")) {
-                unidades = [{
-                    valor: "bolsa",
-                    texto: "Bolsa"
-                }];
-            } else if (nombre.includes("torta")) {
-                unidades = [{
-                    valor: "torta",
-                    texto: "Torta"
-                }];
-            } else if (nombre.includes("pajilla")) {
-                unidades = [{
-                    valor: "unidad",
-                    texto: "Unidad"
-                }];
-            }
+
             return unidades;
         }
 
         function llenarSelectUnidad(fila) {
+            const selectTipo = fila.querySelector(".tipo-ingrediente");
+            const selectInsumo = fila.querySelector(".insumo-ingrediente");
+            const selectUnidad = fila.querySelector(".unidad-ingrediente");
 
-            const tipoInsumo =
-                fila.querySelector(".tipo-insumo-select");
-
-            const selectInsumo =
-                fila.querySelector(".ingrediente-select");
-
-            const selectUnidad =
-                fila.querySelector(".unidad-ingrediente");
-
-            if (!tipoInsumo || !selectInsumo || !selectUnidad) {
+            if (!selectTipo || !selectInsumo || !selectUnidad) {
                 return;
             }
 
-            const tipo = tipoInsumo.value;
+            selectUnidad.innerHTML = "";
 
-            // Limpiar unidades
-            selectUnidad.innerHTML = `
-        <option value="" selected disabled>
-            Seleccione
-        </option>
-    `;
+            const tipo = selectTipo.value;
 
-            // =========================================
-            // PRODUCTO ELABORADO
-            // =========================================
-
+            // Si es otro producto elaborado
             if (tipo === "producto") {
-
                 const opcion = document.createElement("option");
 
                 opcion.value = "unidad";
                 opcion.textContent = "Unidad";
 
                 selectUnidad.appendChild(opcion);
-
                 selectUnidad.value = "unidad";
                 selectUnidad.disabled = true;
 
                 return;
             }
 
-            // =========================================
-            // MATERIA PRIMA
-            // =========================================
+            selectUnidad.disabled = false;
 
-            if (tipo === "materia_prima") {
-
-                const opcionSeleccionada =
-                    selectInsumo.options[
-                    selectInsumo.selectedIndex
-                    ];
-
-                if (
-                    !opcionSeleccionada ||
-                    !opcionSeleccionada.value ||
-                    opcionSeleccionada.value ===
-                    "__nueva_materia_prima__"
-                ) {
-                    selectUnidad.disabled = true;
-                    return;
-                }
-
-                const unidadMedida =
-                    opcionSeleccionada.dataset.unidadMedida || "";
-
-                const nombreInsumo =
-                    opcionSeleccionada.textContent || "";
-
-                const unidades =
-                    obtenerUnidadesDisponibles(
-                        unidadMedida,
-                        nombreInsumo
-                    );
-
-                unidades.forEach((unidad) => {
-
-                    const opcion =
-                        document.createElement("option");
-
-                    opcion.value = unidad.valor;
-                    opcion.textContent = unidad.texto;
-
-                    selectUnidad.appendChild(opcion);
-                });
-
-                selectUnidad.disabled =
-                    unidades.length === 0;
+            if (tipo !== "materia_prima") {
+                return;
             }
+
+            const idMa = Number(selectInsumo.value);
+
+            if (!idMa) {
+                return;
+            }
+
+            const materiaPrima = materiasPrimas.find(
+                materia => Number(materia.id_ma) === idMa
+            );
+
+            if (!materiaPrima) {
+                return;
+            }
+
+            const unidades = obtenerUnidadesDisponibles(materiaPrima);
+
+            unidades.forEach(unidad => {
+                const opcion = document.createElement("option");
+
+                opcion.value = unidad.valor;
+                opcion.textContent = capitalizar(unidad.texto);
+
+                selectUnidad.appendChild(opcion);
+            });
         }
 
         function actualizarTipoProducto() {
@@ -318,10 +226,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 seccionElaborado.classList.add("d-none");
             }
         }
-
-        // =========================================
-        // SINCRONIZAR DATOS DE PRODUCTO ELABORADO
-        // =========================================
 
         if (
             nombreProducto &&
@@ -715,8 +619,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             ? opcionSeleccionada.textContent.trim()
                             : "",
 
-                    cantidad:
-                        Number(inputCantidad?.value),
+                    cantidad: inputCantidad?.value?.trim() || "",
 
                     unidad:
                         selectUnidad?.value || ""
@@ -999,8 +902,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                         // Cantidad
                         if (
-                            ingrediente.cantidad === undefined ||
-                            Number(ingrediente.cantidad) <= 0
+                            !ingrediente.cantidad ||
+                            !ingrediente.cantidad.trim()
                         ) {
                             formularioValido = false;
                         }

@@ -3,9 +3,14 @@ const router = express.Router();
 const pool = require("../config/db");
 const multer = require("multer");
 const supabase = require("../config/supabase");
+const {
+    convertirCantidad,
+    convertirTextoANumero
+} = require("../utils/conversionUnidades");
 const upload = multer({
     storage: multer.memoryStorage()
 });
+
 router.get("/", async (req, res) => {
     try {
         const resultado = await pool.query(`
@@ -47,6 +52,7 @@ router.get("/", async (req, res) => {
         });
     }
 });
+
 // Crear producto de reventa o elaborado
 router.post("/", upload.single("foto"), async (req, res) => {
     const {
@@ -240,12 +246,24 @@ router.post("/", upload.single("foto"), async (req, res) => {
                 }
 
                 // Validar cantidad
-                if (
-                    ingrediente.cantidad === undefined ||
-                    Number(ingrediente.cantidad) <= 0
-                ) {
+                if (ingrediente.cantidad === undefined) {
                     throw new Error(
                         "Todos los ingredientes deben tener una cantidad mayor que 0."
+                    );
+                }
+
+                try {
+                    const cantidadNumerica =
+                        convertirTextoANumero(ingrediente.cantidad);
+
+                    if (cantidadNumerica <= 0) {
+                        throw new Error(
+                            "Todos los ingredientes deben tener una cantidad mayor que 0."
+                        );
+                    }
+                } catch (error) {
+                    throw new Error(
+                        `La cantidad "${ingrediente.cantidad}" no es válida. ${error.message}`
                     );
                 }
 
@@ -328,22 +346,46 @@ router.post("/", upload.single("foto"), async (req, res) => {
                         ? Number(ingrediente.id_producto_insumo)
                         : null;
 
+                let cantidadUtilizada;
+
+                // Si es materia prima se convierte la cantidad ingresada a la unidad con la que se controla el inventario
+                if (ingrediente.tipo === "materia_prima") {
+
+                    const resultadoConversion = await convertirCantidad(
+                        cliente,
+                        idMa,
+                        ingrediente.cantidad,
+                        ingrediente.unidad
+                    );
+
+                    cantidadUtilizada =
+                        resultadoConversion.cantidadUtilizada;
+                }
+
+                else if (ingrediente.tipo === "producto") {
+
+                    cantidadUtilizada =
+                        convertirTextoANumero(ingrediente.cantidad);
+                }
+
                 const resultadoDetalle = await cliente.query(`
-                    INSERT INTO detalle_receta (
-                        id_receta,
-                        id_ma,
-                        id_producto_insumo,
-                        cantidad_utilizada,
-                        unidad_utilizada
-                    )
-                    VALUES ($1, $2, $3, $4, $5)
-                    RETURNING *;
-    `, [
+                        INSERT INTO detalle_receta (
+                            id_receta,
+                            id_ma,
+                            id_producto_insumo,
+                            cantidad_ingresada,
+                            unidad_ingresada,
+                            cantidad_utilizada
+                        )
+                        VALUES ($1, $2, $3, $4, $5, $6)
+                        RETURNING *;
+                    `, [
                     receta.id_receta,
                     idMa,
                     idProductoInsumo,
-                    Number(ingrediente.cantidad),
-                    ingrediente.unidad.trim()
+                    String(ingrediente.cantidad).trim(),
+                    ingrediente.unidad.trim(),
+                    cantidadUtilizada
                 ]);
 
                 detallesReceta.push(
