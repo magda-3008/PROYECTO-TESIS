@@ -235,8 +235,7 @@ async function cargarDetalleReceta(idReceta) {
 
         detalle.forEach(item => {
             // Pasamos el nombre del insumo también para evaluar excepciones como el "Chantilly"
-            //const textoMedida = formatearUnidadHumana(item.cantidad_ingresada, item.unidad_ingresada, item.nombre_insumo);
-            const textoMedida = (item.cantidad_ingresada, item.unidad_ingresada, item.nombre_insumo);
+            const textoMedida = formatearUnidadHumana(item.cantidad_ingresada, item.unidad_ingresada, item.nombre_insumo);
 
             lista.innerHTML += `
                 <li>
