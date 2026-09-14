@@ -17,7 +17,8 @@ function pluralizarUnidad(unidad, cantidad) {
         "sprayado": "sprayados",
         "pajilla": "pajillas",
         "vaso": "vasos",
-        "plato": "platos"
+        "plato": "platos",
+        "taza": "tazas"
     };
 
     const unidadNormalizada = String(unidad || "").toLowerCase();
