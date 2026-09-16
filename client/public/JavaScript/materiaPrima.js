@@ -55,16 +55,7 @@ const vistas = {
                 formatter: function (cell) {
                     const data = cell.getRow().getData();
 
-                    const stock = Number(data.stock_actual_i) || 0;
-
-                    const cantidad = decimalAFraccion(stock);
-
-                    const unidad = pluralizarUnidad(
-                        data.unidad_existencia,
-                        stock
-                    );
-
-                    return `${cantidad} ${unidad}`;
+                    return formatearStockMateriaPrima(data);
                 }
             },
             {
