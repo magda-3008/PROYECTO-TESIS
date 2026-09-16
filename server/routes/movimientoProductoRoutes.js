@@ -15,9 +15,7 @@ router.post("/", async (req, res) => {
       cantidad,
       observacion
     } = req.body;
-    // ==========================================
-    // VALIDACIONES GENERALES
-    // ==========================================
+
     if (!id_producto || !tipo_movimiento || !motivo || cantidad === undefined) {
       throw new Error("Datos incompletos.");
     }
@@ -32,15 +30,11 @@ router.post("/", async (req, res) => {
     if (!motivosPermitidos.includes(motivo)) {
       throw new Error("El motivo de entrada no es válido.");
     }
-    // ==========================================
-    // FECHA
-    // ==========================================
+
     const ahora = new Date();
     const anio = ahora.getFullYear();
     const mes = ahora.getMonth() + 1;
-    // ==========================================
-    // BUSCAR PRODUCTO
-    // ==========================================
+
     const resProducto = await client.query(`
             SELECT
                 p.id_producto,
@@ -66,35 +60,25 @@ router.post("/", async (req, res) => {
       throw new Error("Producto no encontrado.");
     }
     const producto = resProducto.rows[0];
-    // ==========================================
-    // VALIDAR MOTIVO SEGÚN TIPO DE PRODUCTO
-    // ==========================================
+
     if (motivo === "COMPRA" && producto.tipo !== "Reventa") {
       throw new Error("El motivo COMPRA solo puede registrarse para productos de tipo Reventa.");
     }
     if (motivo === "PRODUCCION" && producto.tipo !== "Elaborado") {
       throw new Error("El motivo PRODUCCION solo puede registrarse para productos de tipo Elaborado.");
     }
-    // ==========================================
-    // VARIABLES GENERALES
-    // ==========================================
+
     let stockActual;
     let costoUnitario;
-    // ==========================================
-    // PRODUCTO DE REVENTA
-    // ==========================================
+
     if (producto.tipo === "Reventa") {
       stockActual = Number(producto.stock_actual_pr || 0);
       costoUnitario = Number(producto.costo_compra || 0);
     }
-    // ==========================================
-    // PRODUCTO ELABORADO
-    // ==========================================
+
     else if (producto.tipo === "Elaborado") {
       stockActual = Number(producto.stock_actual_pe || 0);
-      // ------------------------------------------
-      // OBTENER COSTO DEL PRODUCTO ELABORADO
-      // ------------------------------------------
+
       const resCosto = await client.query(`
                 SELECT costo_unitario_prod
                 FROM v_productos_elaborados_costo_actual
@@ -102,13 +86,9 @@ router.post("/", async (req, res) => {
                 `,
         [id_producto]);
       costoUnitario = resCosto.rows.length > 0 ? Number(resCosto.rows[0].costo_unitario_prod || 0) : 0;
-      // ==========================================
-      // PROCESAR RECETA
-      // ==========================================
+
       if (motivo === "PRODUCCION") {
-        // --------------------------------------
-        // OBTENER RECETA
-        // --------------------------------------
+
         const resReceta = await client.query(`
                     SELECT
                         id_receta,
@@ -122,9 +102,7 @@ router.post("/", async (req, res) => {
           throw new Error("El producto elaborado no tiene una receta registrada.");
         }
         const receta = resReceta.rows[0];
-        // --------------------------------------
-        // OBTENER DETALLES DE LA RECETA
-        // --------------------------------------
+
         const resDetalles = await client.query(`
                     SELECT
                         id_detalle_receta,
@@ -142,13 +120,131 @@ router.post("/", async (req, res) => {
         if (resDetalles.rows.length === 0) {
           throw new Error("La receta no tiene ingredientes registrados.");
         }
-        // --------------------------------------
-        // CALCULAR CONSUMO
-        // --------------------------------------
+
         const consumos = calcularConsumoReceta(resDetalles.rows, cantidadNum, receta.cantidad_producida_base);
-        // ======================================
-        // MOSTRAR RESULTADO DE LAS FÓRMULAS
-        // ======================================
+
+        for (const consumo of consumos) {
+
+          if (consumo.id_ma) {
+
+            const resMateriaPrima = await client.query(
+              `
+            SELECT
+                id_ma,
+                nombre,
+                stock_actual_i
+            FROM materia_prima_y_cd
+            WHERE id_ma = $1
+            FOR UPDATE
+            `,
+              [consumo.id_ma]
+            );
+
+            if (resMateriaPrima.rows.length === 0) {
+              throw new Error(
+                `La materia prima con ID ${consumo.id_ma} no existe.`
+              );
+            }
+
+            const materiaPrima = resMateriaPrima.rows[0];
+
+            const stockActual = Number(
+              materiaPrima.stock_actual_i || 0
+            );
+
+            const cantidadNecesaria = Number(
+              consumo.cantidad_necesaria
+            );
+
+            console.log(
+              `Verificando ${materiaPrima.nombre}:`
+            );
+
+            console.log(
+              "Stock actual:",
+              stockActual
+            );
+
+            console.log(
+              "Cantidad necesaria:",
+              cantidadNecesaria
+            );
+
+
+            if (stockActual < cantidadNecesaria) {
+
+              throw new Error(
+                `No hay suficiente "${materiaPrima.nombre}". ` +
+                `Disponible: ${stockActual}, ` +
+                `necesario: ${cantidadNecesaria}.`
+              );
+            }
+          }
+
+
+          else if (consumo.id_producto_insumo) {
+
+            const resProductoInsumo = await client.query(
+              `
+            SELECT
+                p.id_producto,
+                p.nombre,
+                pe.stock_actual_pe
+            FROM producto p
+            INNER JOIN producto_elaborado pe
+                ON p.id_producto = pe.id_producto
+            WHERE p.id_producto = $1
+            FOR UPDATE OF pe
+            `,
+              [consumo.id_producto_insumo]
+            );
+
+            if (resProductoInsumo.rows.length === 0) {
+              throw new Error(
+                `El producto utilizado como insumo ` +
+                `con ID ${consumo.id_producto_insumo} no existe.`
+              );
+            }
+
+            const productoInsumo =
+              resProductoInsumo.rows[0];
+
+            const stockActual = Number(
+              productoInsumo.stock_actual_pe || 0
+            );
+
+            const cantidadNecesaria = Number(
+              consumo.cantidad_necesaria
+            );
+
+            console.log(
+              `Verificando producto insumo ${productoInsumo.nombre}:`
+            );
+
+            console.log(
+              "Stock actual:",
+              stockActual
+            );
+
+            console.log(
+              "Cantidad necesaria:",
+              cantidadNecesaria
+            );
+
+
+            if (stockActual < cantidadNecesaria) {
+
+              throw new Error(
+                `No hay suficiente "${productoInsumo.nombre}". ` +
+                `Disponible: ${stockActual}, ` +
+                `necesario: ${cantidadNecesaria}.`
+              );
+            }
+          }
+        }
+
+        const producto = resProducto.rows[0];
+
         console.log("\n========================================");
         console.log("CÁLCULO DE PRODUCCIÓN");
         console.log("========================================");
@@ -171,15 +267,11 @@ router.post("/", async (req, res) => {
         console.log("========================================\n");
       }
     }
-    // ==========================================
-    // VALIDAR TIPO DE PRODUCTO
-    // ==========================================
+
     else {
       throw new Error("El producto tiene un tipo no válido.");
     }
-    // ==========================================
-    // ACTUALIZAR STOCK DEL PRODUCTO
-    // ==========================================
+
     const nuevoStock = stockActual + cantidadNum;
     if (producto.tipo === "Reventa") {
       await client.query(`
@@ -202,13 +294,9 @@ router.post("/", async (req, res) => {
           id_producto
         ]);
     }
-    // ==========================================
-    // CALCULAR COSTO TOTAL
-    // ==========================================
+
     const costoTotal = cantidadNum * costoUnitario;
-    // ==========================================
-    // REGISTRAR MOVIMIENTO
-    // ==========================================
+
     await client.query(`
             INSERT INTO movimiento_producto (
                 id_producto,
@@ -234,9 +322,7 @@ router.post("/", async (req, res) => {
         costoUnitario,
         costoTotal
       ]);
-    // ==========================================
-    // CONFIRMAR TRANSACCIÓN
-    // ==========================================
+
     await client.query("COMMIT");
     res.json({
       mensaje: "Entrada registrada correctamente.",
