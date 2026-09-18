@@ -5,7 +5,7 @@ const {
   calcularConsumoReceta
 } = require("../utils/produccion");
 
-
+//Ruta para registrar movimientos de productos
 router.post("/", async (req, res) => {
   const client = await pool.connect();
   try {
