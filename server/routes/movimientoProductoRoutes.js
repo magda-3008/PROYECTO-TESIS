@@ -4,6 +4,8 @@ const pool = require("../config/db");
 const {
   calcularConsumoReceta
 } = require("../utils/produccion");
+
+
 router.post("/", async (req, res) => {
   const client = await pool.connect();
   try {
@@ -217,21 +219,6 @@ router.post("/", async (req, res) => {
               consumo.cantidad_necesaria
             );
 
-            console.log(
-              `Verificando producto insumo ${productoInsumo.nombre}:`
-            );
-
-            console.log(
-              "Stock actual:",
-              stockActual
-            );
-
-            console.log(
-              "Cantidad necesaria:",
-              cantidadNecesaria
-            );
-
-
             if (stockActual < cantidadNecesaria) {
 
               throw new Error(
@@ -243,28 +230,58 @@ router.post("/", async (req, res) => {
           }
         }
 
-        const producto = resProducto.rows[0];
+        // Descontar los insumos utilizados en la producción
+        for (const consumo of consumos) {
 
-        console.log("\n========================================");
-        console.log("CÁLCULO DE PRODUCCIÓN");
-        console.log("========================================");
-        console.log("Producto:", producto.nombre);
-        console.log("Cantidad base de la receta:", Number(receta.cantidad_producida_base));
-        console.log("Cantidad a producir:", cantidadNum);
-        console.log("Factor de producción:", cantidadNum / Number(receta.cantidad_producida_base));
-        console.log("----------------------------------------");
-        consumos.forEach((consumo, index) => {
-          console.log(`Ingrediente ${index + 1}:`);
-          console.log("ID detalle:", consumo.id_detalle_receta);
-          console.log("ID materia prima:", consumo.id_ma);
-          console.log("ID producto insumo:", consumo.id_producto_insumo);
-          console.log("Cantidad ingresada:", consumo.cantidad_ingresada);
-          console.log("Unidad ingresada:", consumo.unidad_ingresada);
-          console.log("Cantidad normalizada de la receta:", consumo.cantidad_utilizada_base);
-          console.log("Cantidad necesaria para esta producción:", consumo.cantidad_necesaria);
-          console.log("----------------------------------------");
-        });
-        console.log("========================================\n");
+          const cantidadNecesaria = Number(
+            consumo.cantidad_necesaria
+          );
+
+          if (consumo.id_ma) {
+
+            const resultadoDescuento = await client.query(
+              `
+                UPDATE materia_prima_y_cd
+                SET stock_actual_i = stock_actual_i - $1
+                WHERE id_ma = $2
+                  AND stock_actual_i >= $1
+                `,
+              [
+                cantidadNecesaria,
+                consumo.id_ma
+              ]
+            );
+
+            if (resultadoDescuento.rowCount === 0) {
+              throw new Error(
+                `No fue posible descontar la materia prima con ID ${consumo.id_ma}.`
+              );
+            }
+
+            console.log(
+              `Descontada materia prima ID ${consumo.id_ma}: ${cantidadNecesaria}`
+            );
+          }
+
+          else if (consumo.id_producto_insumo) {
+
+            await client.query(
+              `
+            UPDATE producto_elaborado
+            SET stock_actual_pe = stock_actual_pe - $1
+            WHERE id_producto = $2
+            `,
+              [
+                cantidadNecesaria,
+                consumo.id_producto_insumo
+              ]
+            );
+
+            console.log(
+              `Descontado producto insumo ID ${consumo.id_producto_insumo}: ${cantidadNecesaria}`
+            );
+          }
+        }
       }
     }
 
