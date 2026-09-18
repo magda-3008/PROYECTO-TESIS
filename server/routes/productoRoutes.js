@@ -26,7 +26,6 @@ router.get("/", async (req, res) => {
                         THEN COALESCE(v.costo_unitario_prod, 0.00)
                     ELSE 0.00
                 END AS costo,
-                p.margen_gananciab_esperado,
                 p.estado,
                 CASE
                     WHEN p.tipo = 'Reventa'
@@ -59,7 +58,6 @@ router.post("/", upload.single("foto"), async (req, res) => {
         nombre,
         tipo,
         precio_venta,
-        margen_gananciab_esperado,
         stock_inicial,
         costo_compra,
         // Datos de receta
@@ -81,11 +79,6 @@ router.post("/", upload.single("foto"), async (req, res) => {
     if (precio_venta === undefined || Number(precio_venta) <= 0) {
         return res.status(400).json({
             error: "El precio de venta debe ser mayor que 0."
-        });
-    }
-    if (margen_gananciab_esperado === undefined || Number(margen_gananciab_esperado) < 0 || Number(margen_gananciab_esperado) > 100) {
-        return res.status(400).json({
-            error: "El margen de ganancia debe estar entre 0 y 100."
         });
     }
     if (stock_inicial === undefined || Number(stock_inicial) < 0) {
@@ -125,8 +118,7 @@ router.post("/", upload.single("foto"), async (req, res) => {
             INSERT INTO producto (
                 nombre,
                 tipo,
-                precio_venta,
-                margen_gananciab_esperado
+                precio_venta
             )
             VALUES ($1, $2, $3, $4)
             RETURNING *;
@@ -134,8 +126,7 @@ router.post("/", upload.single("foto"), async (req, res) => {
             [
                 nombre.trim(),
                 tipo,
-                Number(precio_venta),
-                Number(margen_gananciab_esperado)
+                Number(precio_venta)
             ]);
         const producto = resultadoProducto.rows[0];
         if (req.file) {
@@ -429,7 +420,7 @@ router.patch("/:id", async (req, res) => {
     } = req.params;
     const updates = req.body;
     // Campos permitidos para modificar en la tabla 'producto'
-    const camposPermitidos = ["nombre", "precio_venta", "margen_gananciab_esperado", "estado"];
+    const camposPermitidos = ["nombre", "precio_venta", "estado"];
     // Filtrar solo las claves del body que estén en la lista permitida
     const camposAActualizar = Object.keys(updates).filter(campo => camposPermitidos.includes(campo));
     if (camposAActualizar.length === 0) {
