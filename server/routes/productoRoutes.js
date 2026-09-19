@@ -7,6 +7,9 @@ const {
     convertirCantidad,
     convertirTextoANumero
 } = require("../utils/conversionUnidades");
+const {
+    registrarPrimeraProduccion
+} = require("../utils/produccion");
 const upload = multer({
     storage: multer.memoryStorage()
 });
@@ -383,6 +386,17 @@ router.post("/", upload.single("foto"), async (req, res) => {
                     resultadoDetalle.rows[0]
                 );
             }
+
+            // Registrar la producción inicial.
+            // El stock_inicial representa las unidades que ya fueron elaboradas.
+            const primeraProduccion = await registrarPrimeraProduccion(
+                cliente,
+                producto.id_producto,
+                detallesReceta,
+                Number(stock_inicial),
+                Number(cantidad_producida_base)
+            );
+
             await cliente.query("COMMIT");
             return res.status(201).json({
                 mensaje: "Producto elaborado creado correctamente.",
