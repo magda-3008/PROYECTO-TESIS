@@ -44,6 +44,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const btnAgregarIngrediente = document.getElementById("agregarIngrediente");
         const formularioProducto = document.getElementById("formAgregarProducto");
         const btnGuardarProducto = document.getElementById("guardarProducto");
+        const spinnerGuardarProducto = document.getElementById("spinnerGuardarProducto");
+        const textoGuardarProducto = document.getElementById("textoGuardarProducto");
         if (!modalElemento) {
             console.error("No se encontró #modalAgregarProducto");
             return;
@@ -950,6 +952,16 @@ document.addEventListener("DOMContentLoaded", async () => {
                     });
                     return;
                 }
+                btnGuardarProducto.disabled = true;
+
+                if (spinnerGuardarProducto) {
+                    spinnerGuardarProducto.classList.remove("d-none");
+                }
+
+                if (textoGuardarProducto) {
+                    textoGuardarProducto.textContent = "Guardando producto...";
+                }
+
                 const formData = new FormData();
                 formData.append("nombre", nombreProducto.value.trim());
                 formData.append("tipo", tipoProducto.value);
@@ -998,28 +1010,55 @@ document.addEventListener("DOMContentLoaded", async () => {
                         method: "POST",
                         body: formData
                     });
+
                     const resultado = await respuesta.json();
+
                     console.log("Respuesta del servidor:", resultado);
+
                     if (!respuesta.ok) {
-                        throw new Error(resultado.error || "No se pudo crear el producto.");
+                        throw new Error(
+                            resultado.error || "No se pudo crear el producto."
+                        );
                     }
-                    const tipoTexto = tipoProducto.value === "Reventa" ? "reventa" : "elaborado";
+
+                    const tipoTexto =
+                        tipoProducto.value === "Reventa"
+                            ? "reventa"
+                            : "elaborado";
+
                     await Swal.fire({
                         icon: "success",
                         title: "Producto agregado",
                         text: `El producto de ${tipoTexto} se creó correctamente.`,
                         confirmButtonText: "Aceptar"
                     });
+
                     modalAgregarProducto.hide();
+
                     // Actualizar inventario
                     await cargarVista();
+
                 } catch (error) {
+
                     console.error("Error al crear producto:", error);
+
                     Swal.fire({
                         icon: "error",
                         title: "Error",
                         text: error.message
                     });
+
+                } finally {
+
+                    btnGuardarProducto.disabled = false;
+
+                    if (spinnerGuardarProducto) {
+                        spinnerGuardarProducto.classList.add("d-none");
+                    }
+
+                    if (textoGuardarProducto) {
+                        textoGuardarProducto.textContent = "Guardar producto";
+                    }
                 }
             });
         }
@@ -1037,6 +1076,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                         delete cantidadProducidaBase.dataset.modificado;
                     }
                 }
+
+                // Restaurar botón de guardar
+                if (btnGuardarProducto) {
+                    btnGuardarProducto.disabled = false;
+                }
+
+                if (spinnerGuardarProducto) {
+                    spinnerGuardarProducto.classList.add("d-none");
+                }
+
+                if (textoGuardarProducto) {
+                    textoGuardarProducto.textContent = "Guardar producto";
+                }
+
                 // Restablecer vista previa
                 if (vistaPreviaImagen) {
                     vistaPreviaImagen.innerHTML = `

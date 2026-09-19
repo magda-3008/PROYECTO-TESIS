@@ -318,8 +318,13 @@
         <button type="button" class="btnCancelar" data-bs-dismiss="modal">
           <i class="fa-solid fa-xmark me-1"></i> Cancelar
         </button>
-        <button type="button" class="btnGuardar" id="guardarProducto">
-          <i class="fa-solid fa-check me-1"></i> Guardar producto
+        <button type="button" id="guardarProducto" class="btn ...">
+          <span
+            class="spinner-border spinner-border-sm d-none"
+            id="spinnerGuardarProducto"
+            role="status"
+            aria-hidden="true"></span>
+          <span id="textoGuardarProducto">Guardar producto</span>
         </button>
       </div>
     </div>
