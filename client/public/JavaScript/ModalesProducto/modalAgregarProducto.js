@@ -1039,15 +1039,29 @@ document.addEventListener("DOMContentLoaded", async () => {
                     await cargarVista();
 
                 } catch (error) {
-
                     console.error("Error al crear producto:", error);
 
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error",
-                        text: error.message
-                    });
+                    const mensajeError = error.message.toLowerCase();
 
+                    if (
+                        mensajeError.includes("timed out") ||
+                        mensajeError.includes("timeout") ||
+                        mensajeError.includes("timedout")
+                    ) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "No se pudo guardar el producto",
+                            text: "La conexión tardó demasiado en responder. Verifique su conexión e inténtelo nuevamente.",
+                            confirmButtonText: "Aceptar"
+                        });
+
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: error.message
+                        });
+                    }
                 } finally {
 
                     btnGuardarProducto.disabled = false;
