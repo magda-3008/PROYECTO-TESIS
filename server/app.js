@@ -38,30 +38,87 @@ app.use("/api/salida", salidaProductoRoutes);
 app.use("/api/historial", movimientoHistorial);
 app.use("/api/entradaMP", movimientoMPRoutes);
 
+// app.get("/api/test-supabase", async (req, res) => {
+// 	try {
+// 		const { data, error } = await supabase.storage.getBucket("recetaspatuboca");
+
+// 		if (error) {
+// 			console.error("Error de Supabase:", error);
+
+// 			return res.status(500).json({
+// 				conectado: false,
+// 				error: error.message
+// 			});
+// 		}
+
+// 		res.json({
+// 			conectado: true,
+// 			mensaje: "Conexión con Supabase exitosa.",
+// 			bucket: data
+// 		});
+
+// 	} catch (error) {
+// 		console.error("Error probando Supabase:", error);
+
+// 		res.status(500).json({
+// 			conectado: false,
+// 			error: error.message
+// 		});
+// 	}
+// });
+
 app.get("/api/test-supabase", async (req, res) => {
 	try {
-		const { data, error } = await supabase.storage.getBucket("recetaspatuboca");
+		const { data: bucket, error: errorBucket } =
+			await supabase.storage.getBucket("recetaspatuboca");
 
-		if (error) {
-			console.error("Error de Supabase:", error);
+		if (errorBucket) {
+			console.error("Error obteniendo bucket:", errorBucket);
 
 			return res.status(500).json({
 				conectado: false,
-				error: error.message
+				paso: "getBucket",
+				error: errorBucket.message
 			});
 		}
 
-		res.json({
+		const archivoPrueba = Buffer.from("Prueba de conexión con Supabase");
+
+		const { data: archivo, error: errorSubida } =
+			await supabase.storage
+				.from("recetaspatuboca")
+				.upload(
+					`pruebas/test-${Date.now()}.txt`,
+					archivoPrueba,
+					{
+						contentType: "text/plain",
+						upsert: true
+					}
+				);
+
+		if (errorSubida) {
+			console.error("Error subiendo archivo:", errorSubida);
+
+			return res.status(500).json({
+				conectado: false,
+				paso: "upload",
+				error: errorSubida.message
+			});
+		}
+
+		return res.json({
 			conectado: true,
-			mensaje: "Conexión con Supabase exitosa.",
-			bucket: data
+			mensaje: "Conexión y subida a Supabase exitosas.",
+			bucket,
+			archivo
 		});
 
 	} catch (error) {
 		console.error("Error probando Supabase:", error);
 
-		res.status(500).json({
+		return res.status(500).json({
 			conectado: false,
+			paso: "catch",
 			error: error.message
 		});
 	}
