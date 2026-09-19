@@ -132,6 +132,15 @@ router.post("/", upload.single("foto"), async (req, res) => {
         if (req.file) {
             const extension = req.file.originalname.split(".").pop().toLowerCase();
             rutaImagen = `productos/${producto.id_producto}-${Date.now()}.${extension}`;
+
+            console.log("===== ARCHIVO RECIBIDO =====");
+            console.log("Nombre:", req.file.originalname);
+            console.log("MIME:", req.file.mimetype);
+            console.log("Tamaño:", req.file.size);
+            console.log("Buffer existe:", !!req.file.buffer);
+            console.log("Buffer length:", req.file.buffer?.length);
+            console.log("============================");
+
             const {
                 error: errorSubida
             } = await supabase.storage.from("recetaspatuboca").upload(rutaImagen, req.file.buffer, {
