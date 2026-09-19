@@ -120,7 +120,7 @@ router.post("/", upload.single("foto"), async (req, res) => {
                 tipo,
                 precio_venta
             )
-            VALUES ($1, $2, $3, $4)
+            VALUES ($1, $2, $3)
             RETURNING *;
             `,
             [
