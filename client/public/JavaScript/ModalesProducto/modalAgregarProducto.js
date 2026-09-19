@@ -848,11 +848,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     precioVenta.classList.add("is-invalid");
                     formularioValido = false;
                 }
-                const margenGanancia = document.getElementById("margenGanancia");
-                if (!margenGanancia.value || Number(margenGanancia.value) < 0 || Number(margenGanancia.value) > 100) {
-                    margenGanancia.classList.add("is-invalid");
-                    formularioValido = false;
-                }
                 const stockInicial = document.getElementById("stockInicial");
                 if (!stockInicial.value || Number(stockInicial.value) < 0) {
                     stockInicial.classList.add("is-invalid");
@@ -959,7 +954,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 formData.append("nombre", nombreProducto.value.trim());
                 formData.append("tipo", tipoProducto.value);
                 formData.append("precio_venta", Number(precioVenta.value));
-                formData.append("margen_gananciab_esperado", Number(margenGanancia.value));
                 formData.append("stock_inicial", Number(stockInicial.value));
                 if (tipoProducto.value === "Reventa") {
                     formData.append("costo_compra", Number(document.getElementById("costoCompra").value));
