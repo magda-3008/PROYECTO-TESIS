@@ -49,6 +49,36 @@ document.addEventListener("DOMContentLoaded", async () => {
         let materiasPrimas = [];
         let productosElaborados = [];
 
+        document.addEventListener(
+            "estadoProductoActualizado",
+            function (event) {
+
+                const {
+                    id_producto,
+                    estado
+                } = event.detail;
+
+                // Si el producto pasó a inactivo,
+                // quitarlo de los productos disponibles
+                if (estado === "Inactivo") {
+
+                    productosElaborados =
+                        productosElaborados.filter(
+                            (producto) =>
+                                producto.id_producto !== id_producto
+                        );
+
+                }
+
+                // Si volvió a activo, necesitamos volver
+                // a cargar la lista para incorporarlo
+                else if (estado === "Activo") {
+
+                    cargarProductosElaborados();
+                }
+            }
+        );
+
         function llenarSelectMateriaPrima(select, materias) {
             select.innerHTML = `
         <option value="" selected disabled>

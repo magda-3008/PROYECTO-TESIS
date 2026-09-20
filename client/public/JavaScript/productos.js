@@ -31,7 +31,6 @@ const productosInventario = {
 
         return valor;
       },
-
       cellClick: async function (e, cell) {
         e.preventDefault();
         e.stopPropagation();
@@ -68,25 +67,19 @@ const productosInventario = {
             );
           }
 
-          // Actualizar el estado visual
+          // Actualizar el estado visual de la tabla
           cell.setValue(nuevoEstado);
 
-          // Actualizar productos elaborados disponibles
-          if (producto.tipo === "Elaborado") {
-
-            // Eliminarlo del arreglo
-            productosElaborados = productosElaborados.filter(
-              (p) => p.id_producto !== producto.id_producto
-            );
-
-            // Volver a agregarlo si está activo
-            if (nuevoEstado === "Activo") {
-              productosElaborados.push({
-                ...producto,
+          // Avisar al resto de la aplicación que cambió
+          // el estado de un producto
+          document.dispatchEvent(
+            new CustomEvent("estadoProductoActualizado", {
+              detail: {
+                id_producto: producto.id_producto,
                 estado: nuevoEstado
-              });
-            }
-          }
+              }
+            })
+          );
 
         } catch (error) {
           console.error(
