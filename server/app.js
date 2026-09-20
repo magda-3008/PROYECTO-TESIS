@@ -15,6 +15,7 @@ const usuarioRoutes = require("./routes/usuariosRoutes");
 const movimientoProductoRoutes = require("./routes/movimientoProductoRoutes");
 const salidaProductoRoutes = require("./routes/salidaProductoRoutes");
 const movimientoHistorial = require("./routes/movimientosHistorial");
+const movimientoHistorialMPRoutes = require("./routes/movimientosHistorialMP");
 const movimientoMPRoutes = require("./routes/movimientoMPRoutes");
 
 const app = express();
@@ -36,6 +37,7 @@ app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/entrada", movimientoProductoRoutes);
 app.use("/api/salida", salidaProductoRoutes);
 app.use("/api/historial", movimientoHistorial);
+app.use("/api/historialMP", movimientoHistorialMPRoutes);
 app.use("/api/entradaMP", movimientoMPRoutes);
 
 app.get("/api/test-supabase", async (req, res) => {

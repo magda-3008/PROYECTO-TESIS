@@ -9,7 +9,7 @@ async function cargarPeriodosHistorialMP(id_ma) {
         <option value="">Seleccionar período</option>
     `;
     try {
-        const respuesta = await fetch(`/api/historial/periodos/${id_ma}`);
+        const respuesta = await fetch(`/api/historialMP/periodos/${id_ma}`);
         if (!respuesta.ok) {
             throw new Error("No se pudieron obtener los períodos.");
         }
@@ -59,7 +59,7 @@ async function cargarMovimientosHistorialMP(ingrediente) {
     // Limpiar tabla
     tbody.innerHTML = "";
     try {
-        const respuesta = await fetch(`/api/historial/${ingrediente.id_ma}?anio=${anio}&mes=${mes}`);
+        const respuesta = await fetch(`/api/historialMP/${ingrediente.id_ma}?anio=${anio}&mes=${mes}`);
         if (!respuesta.ok) {
             const errorData = await respuesta.json();
             throw new Error(errorData.mensaje || "Error al cargar el historial");
