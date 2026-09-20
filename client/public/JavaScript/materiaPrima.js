@@ -82,7 +82,7 @@ const vistas = {
                     const ingrediente = cell.getRow().getData();
 
                     if (e.target.closest(".btnSalida")) {
-                        abrirModalPerdidaMP(ingrediente);
+                        abrirModalSalidaMP(ingrediente);
                         return;
                     }
 

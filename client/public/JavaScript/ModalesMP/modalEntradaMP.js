@@ -1,169 +1,133 @@
 let MPSeleccionada = null;
 
-function cargarTiposEntrada() {
-    const select = document.getElementById("tipoEntrada");
+function limpiarErroresModalMP(modalId) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+    modal.querySelectorAll(".text-danger").forEach(elemento => {
+        elemento.textContent = "";
+    });
+    modal.querySelectorAll(".is-invalid").forEach(elemento => {
+        elemento.classList.remove("is-invalid");
+    });
+    modal.querySelectorAll(".alert-danger").forEach(elemento => {
+        elemento.textContent = "";
+        elemento.classList.add("d-none");
+    });
+}
 
+function cargarMotivosEntradaMP() {
+    const select = document.getElementById("motivoEntradaMP");
+    if (!select) return;
     select.innerHTML = `
-        <option value="" selected disabled>Seleccione una opción</option>
-        <option value="COMPRA">Compra</option>
-        <option value="ENTRADA">Ajuste de inventario</option>
-        <option value="ENTRADA">Otro</option>
+        <option value="">
+            Seleccione un motivo
+        </option>
+
+        <option value="COMPRA">
+            Compra
+        </option>
+
+        <option value="AJUSTE">
+            Ajuste de inventario
+        </option>
+
+        <option value="OTRO">
+            Otro
+        </option>
     `;
 }
 
 function abrirModalEntradaMP(materiaprima) {
-
-    limpiarErroresModal();
-
-    document.getElementById("cantidadEntrada").value = "";
-    document.getElementById("observacionEntrada").value = "";
-
     MPSeleccionada = materiaprima;
-
-    document.getElementById("nombreMateriaPrimaEntrada").textContent =
-        materiaprima.nombre;
-
-    document.getElementById("stockActualMPEntrada").textContent =
-        materiaprima.stock_actual_i;
-
-    document.getElementById("tipoMateriaPrimaEntrada").textContent =
-        materiaprima.tipo_insumo;
-
-    cargarTiposEntrada();
-
-    const modal = new bootstrap.Modal(
-        document.getElementById("modalEntradaMP")
-    );
-
+    limpiarErroresModalMP("modalEntradaMP");
+    // Limpiar formulario
+    document.getElementById("motivoEntradaMP").value = "";
+    document.getElementById("cantidadEntradaMP").value = "";
+    document.getElementById("observacionEntradaMP").value = "";
+    // Mostrar información
+    document.getElementById("nombreMateriaPrimaEntrada").textContent = materiaprima.nombre || "-";
+    document.getElementById("tipoMateriaPrimaEntrada").textContent = materiaprima.tipo_insumo || "-";
+    document.getElementById("stockActualMPEntrada").textContent = materiaprima.stock_actual_i ?? 0;
+    // Cargar motivos
+    cargarMotivosEntradaMP();
+    // Mostrar modal
+    const modal = new bootstrap.Modal(document.getElementById("modalEntradaMP"));
     modal.show();
 }
-
-// Helper para limpiar todos los mensajes de error
-function limpiarErroresModal() {
-    document
-        .querySelectorAll("#modalEntradaMP .error-msg")
-        .forEach((el) => (el.textContent = ""));
-    document
-        .querySelectorAll("#modalEntradaMP .is-invalid")
-        .forEach((el) => el.classList.remove("is-invalid"));
-    const errorGen = document.getElementById("errorGeneral");
-    if (errorGen) errorGen.textContent = "";
-}
-
-// Helper para mostrar error en un campo específico
-function mostrarErrorCampo(idInput, idError, mensaje) {
-    const input = document.getElementById(idInput);
-    const errorEl = document.getElementById(idError);
-    if (input) input.classList.add("is-invalid");
-    if (errorEl) errorEl.textContent = mensaje;
-}
-
-async function registrarEntrada() {
-    limpiarErroresModal();
-    let esValido = true;
+async function registrarEntradaMP() {
+    limpiarErroresModalMP("modalEntradaMP");
     if (!MPSeleccionada) {
-        document.getElementById("errorGeneral").textContent =
-            "Debe seleccionar un ingrediente/insumo";
+        const error = document.getElementById("errorGeneralEntradaMP");
+        error.textContent = "No se ha seleccionado una materia prima.";
+        error.classList.remove("d-none");
         return;
     }
-
-    // Tipo de Entrada
-    const tipoInput = document.getElementById("tipoEntrada");
-    const tipo = tipoInput.value;
-    if (!tipo) {
-        mostrarErrorCampo(
-            "tipoEntrada",
-            "errorTipo",
-            "Seleccione un tipo de entrada.",
-        );
-        esValido = false;
+    const motivo = document.getElementById("motivoEntradaMP").value;
+    const cantidad = parseFloat(document.getElementById("cantidadEntradaMP").value);
+    const observacion = document.getElementById("observacionEntradaMP").value.trim();
+    let valido = true;
+    /* VALIDAR MOTIVO */
+    if (!motivo) {
+        const campo = document.getElementById("motivoEntradaMP");
+        campo.classList.add("is-invalid");
+        document.getElementById("errorMotivoEntradaMP").textContent = "Seleccione un motivo.";
+        valido = false;
     }
-
-    // Cantidad
-    const cantidadInput = document.getElementById("cantidadEntrada");
-    const cantidad = Number(cantidadInput.value);
+    /* VALIDAR CANTIDAD */
     if (isNaN(cantidad) || cantidad <= 0) {
-        mostrarErrorCampo(
-            "cantidadEntrada",
-            "errorCantidad",
-            "Ingrese una cantidad válida mayor a 0.",
-        );
-        esValido = false;
+        const campo = document.getElementById("cantidadEntradaMP");
+        campo.classList.add("is-invalid");
+        document.getElementById("errorCantidadEntradaMP").textContent = "Ingrese una cantidad mayor que cero.";
+        valido = false;
     }
-
-    if (!esValido) return;
-
-    const observacion = document
-        .getElementById("observacionEntrada")
-        .value.trim();
-
-    const movimiento = {
-        id_ma: MPSeleccionada.id_ma,
-        tipo_movimiento: tipo,
-        cantidad: cantidad,
-        observacion: observacion,
-    };
-
+    if (!valido) return;
     try {
-        const response = await fetch("/api/entradaMP", {
+        const respuesta = await fetch("/api/entradaMP", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "application/json"
             },
-            body: JSON.stringify(movimiento),
+            body: JSON.stringify({
+                id_ma: MPSeleccionada.id_ma,
+                tipo_movimiento: "ENTRADA",
+                motivo: motivo,
+                cantidad: cantidad,
+                observacion: observacion || null
+            })
         });
-        const data = await response.json();
-        if (!response.ok)
-            throw new Error(
-                data.error || data.mensaje || "Error al registrar el movimiento.",
-            );
-
-        const nuevoStock =
-            data.nuevo_stock_actual !== undefined
-                ? data.nuevo_stock_actual
-                : Number(MPSeleccionada.stock_actual_i) + cantidad;
-
-        MPSeleccionada.stock_actual_i = nuevoStock;
-
-        Swal.fire({
-            icon: "success",
-            title: "Entrada registrada correctamente",
-            returnFocus: false
-        });
-
-        // Actualización instantánea en la tabla Tabulator
-        if (typeof tabla !== "undefined" && tabla) {
-            tabla.updateData([
-                {
-                    id_ma: MPSeleccionada.id_ma,
-                    stock_actual_i: nuevoStock,
-                },
-            ]);
+        const datos = await respuesta.json();
+        if (!respuesta.ok) {
+            throw new Error(datos.mensaje || datos.error || "No se pudo registrar la entrada.");
         }
-
-        // Cerrar Modal
-        const modalEl = document.getElementById("modalEntradaMP");
-        const modal = bootstrap.Modal.getInstance(modalEl);
-        if (modal) modal.hide();
-    } catch (error) {
-        console.error("Error al registrar la entrada:", error);
-
-        document.getElementById("errorGeneral").textContent = error.message;
-
-        Swal.fire({
-            icon: "error",
-            text: "No se pudo registrar la entrada",
-            returnFocus: false
+        /* ACTUALIZAR STOCK LOCAL */
+        MPSeleccionada.stock_actual_i = parseFloat(MPSeleccionada.stock_actual_i || 0) + cantidad;
+        /* ACTUALIZAR TABLA */
+        if (typeof tabla !== "undefined" && tabla) {
+            const fila = tabla.getRow(MPSeleccionada.id_ma);
+            if (fila) {
+                fila.update({
+                    stock_actual_i: MPSeleccionada.stock_actual_i
+                });
+            }
+        }
+        /* MENSAJE */
+        await Swal.fire({
+            icon: "success",
+            title: "Entrada registrada",
+            text: "La entrada de materia prima se registró correctamente.",
+            confirmButtonText: "Aceptar"
         });
+        /* CERRAR MODAL */
+        const modalElement = document.getElementById("modalEntradaMP");
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        if (modal) {
+            modal.hide();
+        }
+    } catch (error) {
+        console.error("Error al registrar entrada de MP:", error);
+        const errorGeneral = document.getElementById("errorGeneralEntradaMP");
+        errorGeneral.textContent = error.message || "Ocurrió un error al registrar la entrada.";
+        errorGeneral.classList.remove("d-none");
     }
 }
-
-// Limpiar errores automáticamente cuando el usuario cierra el modal
-const modalEntrada = document.getElementById("modalEntradaMP");
-if (modalEntrada) {
-    modalEntrada.addEventListener("hidden.bs.modal", limpiarErroresModal);
-}
-
-document
-    .getElementById("guardarEntrada")
-    .addEventListener("click", registrarEntrada);
+document.getElementById("guardarEntradaMP")?.addEventListener("click", registrarEntradaMP);

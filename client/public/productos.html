@@ -275,7 +275,7 @@
               <textarea
                 id="observacionSalida"
                 rows="2"
-                placeholder="Agregue una observación opcional"></textarea>
+                placeholder="Agregue una observación (opcional)"></textarea>
             </div>
           </form>
           <div
@@ -305,11 +305,6 @@
           <div class="venta-header">
             <h2>
               <i class="bi bi-clock-history me-2"></i> HISTORIAL DE MOVIMIENTOS
-              <!-- Selector de período -->
-              <select
-                id="periodoHistorial"
-                class="form-select form-select-sm d-inline-block ms-2"
-                style="width: auto; min-width: 150px"></select>
             </h2>
             <button
               type="button"
@@ -349,6 +344,23 @@
                 <span class="visually-hidden"> Cargando... </span>
               </div>
             </div>
+
+            <!-- Filtro de período -->
+            <div class="row align-items-center mb-3">
+              <div class="col">
+                <h6 class="mb-0">
+                  <i class="bi bi-list-ul me-2"></i>
+                  Movimientos
+                </h6>
+              </div>
+
+              <div class="col-auto">
+                <select
+                  id="periodoHistorial"
+                  class="form-select form-select-sm"></select>
+              </div>
+            </div>
+
             <!-- Tabla de movimientos -->
             <div class="table-responsive">
               <table class="table table-hover align-middle">
