@@ -1,9 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../config/db");
-const {
-    convertirCantidadAUnidadMedida
-} = require("../utils/conversionCantidad-a-Unidades");
 
 router.post("/", async (req, res) => {
     const client = await pool.connect();
@@ -279,57 +276,57 @@ async function registrarMovimientoSalida(
 // A UNIDAD DE MEDIDA
 // ==========================================
 
-// function convertirCantidadAUnidadMedida(
-//     cantidad,
-//     materiaPrima
-// ) {
+function convertirCantidadAUnidadMedida(
+    cantidad,
+    materiaPrima
+) {
 
-//     const cantidadHumana = Number(cantidad);
+    const cantidadHumana = Number(cantidad);
 
-//     const unidadMedida =
-//         String(
-//             materiaPrima.unidad_medida || ""
-//         ).trim();
+    const unidadMedida =
+        String(
+            materiaPrima.unidad_medida || ""
+        ).trim();
 
-//     const unidadExistencia =
-//         String(
-//             materiaPrima.unidad_existencia || ""
-//         ).trim();
+    const unidadExistencia =
+        String(
+            materiaPrima.unidad_existencia || ""
+        ).trim();
 
-//     const unidadPorPaquete =
-//         Number(
-//             materiaPrima.unidad_por_paquete
-//         );
+    const unidadPorPaquete =
+        Number(
+            materiaPrima.unidad_por_paquete
+        );
 
-//     if (
-//         !Number.isFinite(cantidadHumana) ||
-//         cantidadHumana <= 0
-//     ) {
-//         throw new Error(
-//             "La cantidad debe ser mayor que cero."
-//         );
-//     }
+    if (
+        !Number.isFinite(cantidadHumana) ||
+        cantidadHumana <= 0
+    ) {
+        throw new Error(
+            "La cantidad debe ser mayor que cero."
+        );
+    }
 
-//     // Las unidades representan directamente
-//     // la misma unidad de inventario.
-//     if (
-//         unidadMedida.toLowerCase() ===
-//         unidadExistencia.toLowerCase()
-//     ) {
-//         return cantidadHumana;
-//     }
+    // Las unidades representan directamente
+    // la misma unidad de inventario.
+    if (
+        unidadMedida.toLowerCase() ===
+        unidadExistencia.toLowerCase()
+    ) {
+        return cantidadHumana;
+    }
 
-//     if (
-//         !Number.isFinite(unidadPorPaquete) ||
-//         unidadPorPaquete <= 0
-//     ) {
-//         throw new Error(
-//             "La materia prima no tiene una equivalencia de presentación válida."
-//         );
-//     }
+    if (
+        !Number.isFinite(unidadPorPaquete) ||
+        unidadPorPaquete <= 0
+    ) {
+        throw new Error(
+            "La materia prima no tiene una equivalencia de presentación válida."
+        );
+    }
 
-//     return cantidadHumana * unidadPorPaquete;
-// }
+    return cantidadHumana * unidadPorPaquete;
+}
 
 
 module.exports = router;
