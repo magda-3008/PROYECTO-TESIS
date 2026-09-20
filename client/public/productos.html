@@ -126,7 +126,6 @@
               <i class="fa-solid fa-xmark"></i>
             </button>
           </div>
-
           <div class="p-4 pb-0">
             <div class="card border-0 bg-light p-3" style="border-radius: 14px">
               <h6 class="text-muted mb-2">Producto seleccionado</h6>
@@ -149,7 +148,6 @@
               </div>
             </div>
           </div>
-
           <form class="formVenta pb-2">
             <div class="campo">
               <label for="tipoEntrada">Tipo de entrada</label>
@@ -162,7 +160,6 @@
                 class="text-danger d-block mt-1 error-msg"
                 id="errorTipo"></small>
             </div>
-
             <div class="campo">
               <label for="cantidadEntrada" id="labelCantidadEntrada"
                 >Cantidad ingresada</label
@@ -179,7 +176,6 @@
                 class="text-danger d-block mt-1 error-msg"
                 id="errorCantidad"></small>
             </div>
-
             <div class="campo" style="grid-column: span 2">
               <label for="observacionEntrada">Observación</label>
               <textarea
@@ -188,11 +184,9 @@
                 placeholder="Detalle del movimiento (opcional)"></textarea>
             </div>
           </form>
-
           <small
             class="text-danger d-block mb-3 text-center error-msg"
             id="errorGeneral"></small>
-
           <!-- Botones centrados -->
           <div class="modal-botones">
             <button type="button" class="btnCancelar" data-bs-dismiss="modal">
@@ -205,7 +199,6 @@
         </div>
       </div>
     </div>
-
     <!-- Modal registrar salida -->
     <div
       class="modal fade"
@@ -228,7 +221,6 @@
               <i class="fa-solid fa-xmark"></i>
             </button>
           </div>
-
           <!-- Tarjeta informativa -->
           <div class="p-4 pb-0">
             <div class="card border-0 bg-light p-3" style="border-radius: 14px">
@@ -252,7 +244,6 @@
               </div>
             </div>
           </div>
-
           <!-- Formulario -->
           <form class="formVenta pb-2">
             <div class="campo">
@@ -265,7 +256,6 @@
               </select>
               <div id="errorMotivoSalida" class="text-danger small mt-1"></div>
             </div>
-
             <div class="campo">
               <label for="cantidadSalida">Cantidad a retirar</label>
               <input
@@ -277,7 +267,6 @@
                 id="errorCantidadSalida"
                 class="text-danger small mt-1"></div>
             </div>
-
             <div class="campo" style="grid-column: span 2">
               <label for="observacionSalida"
                 >Observación
@@ -289,11 +278,9 @@
                 placeholder="Agregue una observación opcional"></textarea>
             </div>
           </form>
-
           <div
             id="errorGeneralSalida"
             class="text-danger small text-center mb-3"></div>
-
           <div class="modal-botones">
             <button type="button" class="btnCancelar" data-bs-dismiss="modal">
               Cancelar
@@ -314,13 +301,15 @@
       aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-          <!-- Encabezado unificado (venta-header) -->
+          <!-- Encabezado unificado -->
           <div class="venta-header">
             <h2>
               <i class="bi bi-clock-history me-2"></i> HISTORIAL DE MOVIMIENTOS
-              <span
+              <!-- Selector de período -->
+              <select
                 id="periodoHistorial"
-                class="fs-6 d-block d-md-inline-block fw-normal opacity-75"></span>
+                class="form-select form-select-sm d-inline-block ms-2"
+                style="width: auto; min-width: 150px"></select>
             </h2>
             <button
               type="button"
@@ -330,7 +319,6 @@
               <i class="fa-solid fa-xmark"></i>
             </button>
           </div>
-
           <!-- Cuerpo del Modal -->
           <div class="modal-body">
             <!-- Tarjeta de información del producto -->
@@ -352,18 +340,16 @@
               <hr class="my-2" />
               <div class="d-flex justify-content-between text-secondary">
                 <span>Stock actual</span>
-                <strong id="stockActualHistorial" class="text-dark">0</strong>
+                <strong id="stockActualHistorial" class="text-dark"> 0 </strong>
               </div>
             </div>
-
             <!-- Indicador de carga -->
             <div id="cargandoHistorial" class="text-center d-none my-4">
               <div class="spinner-border text-info" role="status">
-                <span class="visually-hidden">Cargando...</span>
+                <span class="visually-hidden"> Cargando... </span>
               </div>
             </div>
-
-            <!-- Tabla de movimientos adaptada -->
+            <!-- Tabla de movimientos -->
             <div class="table-responsive">
               <table class="table table-hover align-middle">
                 <thead>
@@ -385,7 +371,6 @@
               </table>
             </div>
           </div>
-
           <!-- Pie con botón único unificado -->
           <div class="modal-botones">
             <button type="button" class="btnCancelar" data-bs-dismiss="modal">
@@ -395,7 +380,6 @@
         </div>
       </div>
     </div>
-
     <!-- ========================================= -->
     <!-- MODAL AGREGAR VENTA -->
     <!-- ========================================= -->
@@ -444,10 +428,8 @@
         </div>
       </div>
     </div>
-
     <!-- Modal agregar producto -->
     <div id="contenedorModalAgregarProducto"></div>
-
     <!-- ========================================= -->
     <!-- JAVASCRIPT -->
     <!-- ========================================= -->
