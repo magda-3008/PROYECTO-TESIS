@@ -397,6 +397,7 @@ router.post("/", upload.single("foto"), async (req, res) => {
                 Number(cantidad_producida_base)
             );
 
+
             await cliente.query("COMMIT");
             return res.status(201).json({
                 mensaje: "Producto elaborado creado correctamente.",
