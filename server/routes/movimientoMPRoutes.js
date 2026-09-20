@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../config/db");
+const {
+    convertirCantidadAUnidadMedida
+} = require("../utils/conversionCantidad-a-Unidades");
 
 router.post("/", async (req, res) => {
     const client = await pool.connect();
@@ -121,7 +124,12 @@ async function registrarMovimientoEntrada(
 
     const resMateriaPrima = await client.query(
         `
-        SELECT id_ma
+        SELECT
+            id_ma,
+            costo_total_ingrediente,
+            unidad_por_paquete,
+            unidad_medida,
+            unidad_existencia
         FROM materia_prima_y_cd
         WHERE id_ma = $1
         FOR UPDATE
@@ -135,44 +143,32 @@ async function registrarMovimientoEntrada(
         );
     }
 
+    const materiaPrima = resMateriaPrima.rows[0];
 
-    const cantidadFinal = Number(cantidad);
+    // ==========================================
+    // CONVERTIR CANTIDAD
+    // ==========================================
 
+    const cantidadFinal =
+        convertirCantidadAUnidadMedida(
+            cantidad,
+            materiaPrima
+        );
 
     // ==========================================
     // OBTENER COSTO
     // ==========================================
 
-    const resCosto = await client.query(
-        `
-        SELECT
-            costo_total_ingrediente,
-            unidad_por_paquete
-        FROM materia_prima_y_cd
-        WHERE id_ma = $1
-        `,
-        [id_ma]
-    );
-
-    if (resCosto.rows.length === 0) {
-        throw new Error(
-            "No se encontró el costo de la materia prima."
-        );
-    }
-
-
     const costoUnitario =
         Number(
-            resCosto.rows[0].costo_total_ingrediente || 0
+            materiaPrima.costo_total_ingrediente || 0
         ) /
         Number(
-            resCosto.rows[0].unidad_por_paquete || 1
+            materiaPrima.unidad_por_paquete || 1
         );
-
 
     const costoTotal =
         cantidadFinal * costoUnitario;
-
 
     // ==========================================
     // ACTUALIZAR STOCK
@@ -185,15 +181,16 @@ async function registrarMovimientoEntrada(
         WHERE id_ma = $2
         RETURNING stock_actual_i
         `,
-        [cantidadFinal, id_ma]
+        [
+            cantidadFinal,
+            id_ma
+        ]
     );
-
 
     const nuevoStock =
         Number(
             resStock.rows[0].stock_actual_i
         );
-
 
     // ==========================================
     // REGISTRAR MOVIMIENTO
@@ -202,19 +199,22 @@ async function registrarMovimientoEntrada(
     await client.query(
         `
         INSERT INTO movimiento_materia_prima
-            (
-                id_ma,
-                anio,
-                mes,
-                tipo_movimiento,
-                motivo,
-                cantidad,
-                costo_unitario,
-                costo_total,
-                observacion
-            )
+        (
+            id_ma,
+            anio,
+            mes,
+            tipo_movimiento,
+            motivo,
+            cantidad,
+            costo_unitario,
+            costo_total,
+            observacion
+        )
         VALUES
-            ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        (
+            $1, $2, $3, $4, $5,
+            $6, $7, $8, $9
+        )
         `,
         [
             id_ma,
@@ -228,6 +228,13 @@ async function registrarMovimientoEntrada(
             observacion || null
         ]
     );
+
+    return {
+        nuevoStock,
+        cantidadNormalizada: cantidadFinal,
+        costoUnitario,
+        costoTotal
+    };
 }
 
 
