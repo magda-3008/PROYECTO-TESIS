@@ -1,5 +1,3 @@
-let MPSeleccionada = null;
-
 function abrirModalSalidaMP(materiaprima) {
     MPSeleccionada = materiaprima;
     limpiarErroresModalMP("modalSalidaMP");
