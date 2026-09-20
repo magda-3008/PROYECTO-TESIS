@@ -17,6 +17,7 @@ const productosInventario = {
       field: "estado",
       hozAlign: "center",
       minWidth: 80,
+
       formatter: function (cell) {
         const valor = cell.getValue();
 
@@ -27,10 +28,11 @@ const productosInventario = {
         if (valor === "Inactivo") {
           return `<span class="text-danger fw-semibold">Inactivo</span>`;
         }
+
         return valor;
       },
 
-      cellClick: function (e, cell) {
+      cellClick: async function (e, cell) {
         e.preventDefault();
         e.stopPropagation();
 
@@ -41,7 +43,63 @@ const productosInventario = {
             ? "Inactivo"
             : "Activo";
 
-        cell.setValue(nuevoEstado);
+        const producto = cell.getRow().getData();
+
+        try {
+          const respuesta = await fetch(
+            `/api/productos/${producto.id_producto}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                estado: nuevoEstado
+              })
+            }
+          );
+
+          const datos = await respuesta.json();
+
+          if (!respuesta.ok) {
+            throw new Error(
+              datos.error ||
+              "No se pudo actualizar el estado del producto."
+            );
+          }
+
+          // Actualizar el estado visual
+          cell.setValue(nuevoEstado);
+
+          // Actualizar productos elaborados disponibles
+          if (producto.tipo === "Elaborado") {
+
+            // Eliminarlo del arreglo
+            productosElaborados = productosElaborados.filter(
+              (p) => p.id_producto !== producto.id_producto
+            );
+
+            // Volver a agregarlo si está activo
+            if (nuevoEstado === "Activo") {
+              productosElaborados.push({
+                ...producto,
+                estado: nuevoEstado
+              });
+            }
+          }
+
+        } catch (error) {
+          console.error(
+            "Error al actualizar el estado del producto:",
+            error
+          );
+
+          Swal.fire({
+            icon: "error",
+            title: "No se pudo actualizar",
+            text: error.message
+          });
+        }
       }
     },
     {
