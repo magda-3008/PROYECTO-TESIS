@@ -1,0 +1,333 @@
+<!-- Modal Agregar Producto -->
+<div
+  class="modal fade"
+  id="modalAgregarProducto"
+  tabindex="-1"
+  aria-labelledby="modalAgregarProductoLabel"
+  aria-hidden="true">
+  <div
+    class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <!-- Encabezado estilo Pa'TuBoca -->
+      <div class="venta-header">
+        <h2><i class="fa-solid fa-box-open me-2"></i> AGREGAR PRODUCTO</h2>
+        <button
+          type="button"
+          class="cerrarModal"
+          data-bs-dismiss="modal"
+          aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Cuerpo del modal -->
+      <div class="modal-body p-4">
+        <form id="formAgregarProducto">
+          <!-- Sección: Información General -->
+          <div class="mb-4">
+            <h6 class="text-muted mb-3 fw-bold">
+              <i class="fa-solid fa-circle-info me-2 text-info"></i> Información
+              general
+            </h6>
+            <div class="row g-3">
+              <!-- Nombre -->
+              <div class="col-md-8">
+                <div class="campo">
+                  <label for="nombreProducto">Nombre del producto</label>
+                  <input
+                    type="text"
+                    id="nombreProducto"
+                    name="nombreProducto"
+                    placeholder="Ej. Coca Cola"
+                    maxlength="100" />
+                  <div
+                    id="errorNombreProducto"
+                    class="text-danger small mt-1"></div>
+                </div>
+              </div>
+              <!-- Tipo -->
+              <div class="col-md-4">
+                <div class="campo">
+                  <label for="tipoProducto">Tipo de producto</label>
+                  <select id="tipoProducto" name="tipoProducto">
+                    <option value="" selected disabled>Seleccione</option>
+                    <option value="Reventa">Reventa</option>
+                    <option value="Elaborado">Elaborado</option>
+                  </select>
+                  <div
+                    id="errorTipoProducto"
+                    class="text-danger small mt-1"></div>
+                </div>
+              </div>
+              <!-- Precio de venta -->
+              <div class="col-md-4">
+                <div class="campo">
+                  <label for="precioVenta">Precio de venta (C$)</label>
+                  <input
+                    type="number"
+                    id="precioVenta"
+                    name="precioVenta"
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00" />
+                  <div
+                    id="errorPrecioVenta"
+                    class="text-danger small mt-1"></div>
+                </div>
+              </div>
+              <!-- Stock inicial -->
+              <div class="col-md-4">
+                <div class="campo">
+                  <label for="stockInicial">Stock inicial</label>
+                  <input
+                    type="number"
+                    id="stockInicial"
+                    name="stockInicial"
+                    min="0"
+                    step="1"
+                    placeholder="0" />
+                  <small class="form-text text-muted">
+                    Cantidad con la que iniciará el inventario.
+                  </small>
+                  <div
+                    id="errorStockInicial"
+                    class="text-danger small mt-1"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección: Imagen del producto -->
+          <div class="mb-4">
+            <h6 class="text-muted mb-3 fw-bold">
+              <i class="fa-solid fa-image me-2 text-info"></i> Imagen del
+              producto
+            </h6>
+            <div class="row align-items-center g-3">
+              <!-- Vista previa -->
+              <div class="col-md-4 text-center">
+                <div
+                  id="vistaPreviaImagen"
+                  class="border rounded p-2 d-flex align-items-center justify-content-center bg-light"
+                  style="height: 150px; border-radius: 14px !important">
+                  <div class="text-muted">
+                    <i class="fa-solid fa-image fa-2x mb-2 text-secondary"></i>
+                    <div class="small fw-semibold">Sin imagen</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Selector -->
+              <div class="col-md-8">
+                <div class="campo">
+                  <label for="imagenProducto">Seleccionar imagen</label>
+                  <input
+                    type="file"
+                    id="imagenProducto"
+                    name="foto"
+                    accept="image/*" />
+                  <small class="form-text text-muted">
+                    Seleccione una imagen para identificar el producto.
+                  </small>
+                  <div
+                    id="errorImagenProducto"
+                    class="text-danger small mt-1"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección: Información de Reventa -->
+          <div id="seccionReventa" class="mb-4 d-none">
+            <h6 class="text-muted mb-3 fw-bold">
+              <i class="fa-solid fa-cart-shopping me-2 text-info"></i>
+              Información de reventa
+            </h6>
+            <div class="card border-0 bg-light p-3" style="border-radius: 14px">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="campo">
+                    <label for="costoCompra">Costo de compra (C$)</label>
+                    <input
+                      type="number"
+                      id="costoCompra"
+                      name="costoCompra"
+                      min="0"
+                      step="0.01"
+                      placeholder="0.00" />
+                    <small class="form-text text-muted">
+                      Costo al que se adquiere el producto.
+                    </small>
+                    <div
+                      id="errorCostoCompra"
+                      class="text-danger small mt-1"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección: Información de Elaborado -->
+          <div id="seccionElaborado" class="d-none">
+            <h6 class="text-muted mb-3 fw-bold">
+              <i class="fa-solid fa-utensils me-2 text-info"></i> Información de
+              elaboración
+            </h6>
+
+            <!-- Receta -->
+            <div
+              class="card border-0 bg-light p-3 mb-3"
+              style="border-radius: 14px">
+              <h6 class="mb-3 fw-bold text-dark">Receta</h6>
+              <div class="row g-3">
+                <div class="col-md-7">
+                  <div class="campo">
+                    <label for="nombreReceta">Nombre de la receta</label>
+                    <input
+                      type="text"
+                      id="nombreReceta"
+                      name="nombreReceta"
+                      maxlength="100"
+                      placeholder="Ej. Pastel de chocolate" />
+                    <div
+                      id="errorNombreReceta"
+                      class="text-danger small mt-1"></div>
+                  </div>
+                </div>
+                <div class="col-md-5">
+                  <div class="campo">
+                    <label for="cantidadProducidaBase"
+                      >Cantidad producida por receta</label
+                    >
+                    <input
+                      type="number"
+                      id="cantidadProducidaBase"
+                      name="cantidadProducidaBase"
+                      min="1"
+                      step="1"
+                      placeholder="Ej. 10" />
+                    <small class="form-text text-muted">
+                      Número de unidades que produce esta receta.
+                    </small>
+                    <div
+                      id="errorCantidadProducida"
+                      class="text-danger small mt-1"></div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="campo">
+                    <label for="descripcionReceta">Descripción</label>
+                    <textarea
+                      id="descripcionReceta"
+                      name="descripcionReceta"
+                      rows="2"
+                      placeholder="Descripción de la receta (opcional)"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ingredientes -->
+            <div class="card border-0 bg-light p-3" style="border-radius: 14px">
+              <div
+                class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0 fw-bold text-dark">Ingredientes</h6>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-info rounded-pill px-3 fw-semibold"
+                  id="agregarIngrediente">
+                  <i class="fa-solid fa-plus me-1"></i> Agregar ingrediente
+                </button>
+              </div>
+
+              <div id="listaIngredientes">
+                <!-- Fila inicial -->
+                <div class="row g-2 align-items-end ingrediente-row mb-2">
+                  <!-- Tipo de insumo -->
+                  <div class="col-md-3">
+                    <div class="campo">
+                      <label>Tipo de insumo</label>
+
+                      <select class="form-select tipo-insumo-select">
+                        <option value="" selected disabled>Seleccione</option>
+                        <option value="materia_prima">Materia prima</option>
+                        <option value="producto">Producto elaborado</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Insumo -->
+                  <div class="col-md-4">
+                    <div class="campo">
+                      <label>Insumo</label>
+
+                      <select class="form-select ingrediente-select" disabled>
+                        <option value="" selected disabled>
+                          Seleccione un insumo
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Cantidad -->
+                  <div class="col-md-2">
+                    <div class="campo">
+                      <label>Cantidad</label>
+
+                      <input
+                        type="text"
+                        class="form-control cantidad-ingrediente"
+                        inputmode="text"
+                        placeholder="Cantidad" />
+                    </div>
+                  </div>
+
+                  <!-- Unidad -->
+                  <div class="col-md-2">
+                    <div class="campo">
+                      <label>Unidad</label>
+
+                      <select class="form-select unidad-ingrediente" disabled>
+                        <option value="" selected disabled>Seleccione</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Eliminar -->
+                  <div class="col-md-1 text-center">
+                    <button
+                      type="button"
+                      class="btn btn-outline-danger btnEliminarIngrediente w-100"
+                      title="Eliminar ingrediente"
+                      style="height: 48px; border-radius: 12px">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <small class="text-muted mt-2 d-block">
+                Agregue las materias primas o productos necesarios para elaborar
+                el producto.
+              </small>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Pie con botones centrados -->
+      <div class="modal-botones">
+        <button type="button" class="btnCancelar" data-bs-dismiss="modal">
+          <i class="fa-solid fa-xmark me-1"></i> Cancelar
+        </button>
+        <button type="button" id="guardarProducto" class="btnGuardar">
+          <span
+            class="spinner-border spinner-border-sm d-none"
+            id="spinnerGuardarProducto"
+            role="status"
+            aria-hidden="true"></span>
+          <span id="textoGuardarProducto">Guardar producto</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- La clase del botón de guardar producto es BtnGuardar -->

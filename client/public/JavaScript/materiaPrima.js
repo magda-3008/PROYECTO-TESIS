@@ -55,16 +55,7 @@ const vistas = {
                 formatter: function (cell) {
                     const data = cell.getRow().getData();
 
-                    const stock = Number(data.stock_actual_i) || 0;
-
-                    const cantidad = decimalAFraccion(stock);
-
-                    const unidad = pluralizarUnidad(
-                        data.unidad_existencia,
-                        stock
-                    );
-
-                    return `${cantidad} ${unidad}`;
+                    return formatearStockMateriaPrima(data);
                 }
             },
             {
@@ -72,12 +63,12 @@ const vistas = {
                 formatter: function () {
                     return `
                         <div class="acciones-tabla">
-                            <button class="btnAccion btnPerdida" title="Registrar pérdida">
-                                <i class="bi bi-cart-dash"></i>
-                            </button>
-
                             <button class="btnAccion btnEntrada" title="Registrar entrada">
                                 <i class="bi bi-cart-plus"></i>
+                            </button>
+                        
+                            <button class="btnAccion btnSalida" title="Registrar pérdida">
+                                <i class="bi bi-cart-dash"></i>
                             </button>
 
                             <button class="btnAccion btnHistorial" title="Ver historial">
@@ -90,8 +81,8 @@ const vistas = {
                 cellClick: function (e, cell) {
                     const ingrediente = cell.getRow().getData();
 
-                    if (e.target.closest(".btnPerdida")) {
-                        abrirModalPerdida(ingrediente);
+                    if (e.target.closest(".btnSalida")) {
+                        abrirModalSalidaMP(ingrediente);
                         return;
                     }
 

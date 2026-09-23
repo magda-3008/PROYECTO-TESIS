@@ -15,11 +15,13 @@ router.get("/:id", async (req, res) => {
                 r.id_receta,
                 r.nombre_receta,
                 r.cantidad_producida_base,
-                r.imagen_url,
+                pr.foto_producto AS imagen_url,
                 r.descripcion,
 
                 dr.id_detalle_receta,
                 dr.cantidad_utilizada,
+                dr.cantidad_ingresada,
+                dr.unidad_ingresada,
 
                 COALESCE(mp.nombre, p.nombre) AS nombre_insumo,
 
@@ -34,6 +36,9 @@ router.get("/:id", async (req, res) => {
                 END AS tipo_insumo
 
             FROM receta r
+
+            LEFT JOIN producto pr
+                ON r.id_producto = pr.id_producto
 
             INNER JOIN detalle_receta dr
                 ON r.id_receta = dr.id_receta

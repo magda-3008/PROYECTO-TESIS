@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../config/db");
+
 router.get("/", async (req, res) => {
 	const {
 		ingrediente,
@@ -11,12 +12,14 @@ router.get("/", async (req, res) => {
             SELECT DISTINCT
                 r.id_receta,
                 r.nombre_receta,
-                r.imagen_url,
+                p.foto_producto AS imagen_url,
                 r.cantidad_producida_base,
                 r.descripcion
             FROM receta r
             INNER JOIN detalle_receta dr
                 ON dr.id_receta = r.id_receta
+            LEFT JOIN producto p
+                ON p.id_producto = r.id_producto
         `;
 		let condiciones = [];
 		let parametros = [];
@@ -47,6 +50,7 @@ router.get("/", async (req, res) => {
 		});
 	}
 });
+
 //Buscar cantidad producida base de una receta para el modal de entradas
 router.get("/producto/:id_producto", async (req, res) => {
 	const {
@@ -71,4 +75,5 @@ router.get("/producto/:id_producto", async (req, res) => {
 		});
 	}
 });
+
 module.exports = router;

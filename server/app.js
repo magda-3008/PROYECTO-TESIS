@@ -1,7 +1,10 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const pool = require("./config/db");
+const supabase = require("./config/supabase");
 
 //Rutas del sistema
 const productoRoutes = require("./routes/productoRoutes");
@@ -10,9 +13,11 @@ const detalleRecetaRoutes = require("./routes/detalleRecetaRoutes");
 const materiaPrimaRoutes = require("./routes/materiaPrimaRoutes");
 const usuarioRoutes = require("./routes/usuariosRoutes");
 const movimientoProductoRoutes = require("./routes/movimientoProductoRoutes");
-const perdidaProductoRoutes = require("./routes/perdidaProductoRoutes");
+const salidaProductoRoutes = require("./routes/salidaProductoRoutes");
 const movimientoHistorial = require("./routes/movimientosHistorial");
+const movimientoHistorialMPRoutes = require("./routes/movimientosHistorialMP");
 const movimientoMPRoutes = require("./routes/movimientoMPRoutes");
+const salidaMPRoutes = require("./routes/salidaMPRoutes");
 
 const app = express();
 app.use(cors());
@@ -31,9 +36,40 @@ app.use("/api/detalle_receta", detalleRecetaRoutes);
 app.use("/api/materiaprima", materiaPrimaRoutes);
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/entrada", movimientoProductoRoutes);
-app.use("/api/perdida", perdidaProductoRoutes);
+app.use("/api/salida", salidaProductoRoutes);
 app.use("/api/historial", movimientoHistorial);
+app.use("/api/historialMP", movimientoHistorialMPRoutes);
 app.use("/api/entradaMP", movimientoMPRoutes);
+app.use("/api/salidaMP", salidaMPRoutes);
+
+app.get("/api/test-supabase", async (req, res) => {
+	try {
+		const { data, error } = await supabase.storage.getBucket("recetaspatuboca");
+
+		if (error) {
+			console.error("Error de Supabase:", error);
+
+			return res.status(500).json({
+				conectado: false,
+				error: error.message
+			});
+		}
+
+		res.json({
+			conectado: true,
+			mensaje: "Conexión con Supabase exitosa.",
+			bucket: data
+		});
+
+	} catch (error) {
+		console.error("Error probando Supabase:", error);
+
+		res.status(500).json({
+			conectado: false,
+			error: error.message
+		});
+	}
+});
 
 const PORT = process.env.PORT || 3000;
 app.get("/api/test-db", async (req, res) => {

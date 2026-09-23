@@ -52,182 +52,129 @@
       <div id="tablaMateriaP"></div>
     </div>
     <!-- Modales -->
-    <!-- Modal Registrar Pérdida -->
-    <div
-      class="modal fade"
-      id="modalPerdidaMP"
-      tabindex="-1"
-      aria-labelledby="modalPerdidaMPLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalPerdidaMPLabel">
-              <i class="bi bi-cart-dash me-2 text-danger"></i> Registrar pérdida
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            <!-- Información de la materia prima -->
-            <div class="card border-0 bg-light mb-4">
-              <div class="card-body">
-                <h6 class="text-muted mb-3">Insumo seleccionado</h6>
-                <div class="row">
-                  <div class="col-8">
-                    <strong id="nombreMateriaPrimaPerdida">
-                      Nombre del insumo
-                    </strong>
-                  </div>
-                  <div class="col-4 text-end">
-                    <span class="badge bg-primary" id="tipoMateriaPrimaPerdida">
-                      Tipo
-                    </span>
-                  </div>
-                </div>
-                <hr />
-                <div class="d-flex justify-content-between">
-                  <span>Existencias actuales</span>
-                  <strong id="stockActualMPPerdida"> 0 </strong>
-                </div>
-              </div>
-            </div>
-            <!-- Cantidad -->
-            <div class="mb-3">
-              <label for="cantidadPerdida" class="form-label">
-                Cantidad perdida
-              </label>
-              <input
-                type="number"
-                class="form-control"
-                id="cantidadPerdida"
-                min="1"
-                placeholder="Ingrese la cantidad" />
-              <div id="errorCantidadPerdida" class="invalid-feedback"></div>
-            </div>
-            <!-- Motivo -->
-            <div class="mb-3">
-              <label for="motivoPerdida" class="form-label"> Motivo </label>
-              <textarea
-                id="motivoPerdida"
-                class="form-control"
-                rows="4"
-                placeholder="Describe la razón de la pérdida"></textarea>
-              <div id="errorMotivoPerdida" class="invalid-feedback"></div>
-            </div>
-          </div>
-          <div id="errorGeneralPerdida" class="text-danger small mt-2"></div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal">
-              Cancelar
-            </button>
-            <button type="button" class="btn btn-danger" id="guardarPerdida">
-              <i class="bi bi-check-lg me-1"></i> Registrar pérdida
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Modal Registrar Entrada -->
+    <!-- Modal registrar entrada -->
     <div
       class="modal fade"
       id="modalEntradaMP"
       tabindex="-1"
-      aria-labelledby="modalEntradaMPLabel"
       aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-          <!-- Encabezado -->
+          <!-- ENCABEZADO -->
           <div class="modal-header">
-            <h5 class="modal-title" id="modalEntradaMPLabel">
-              <i class="bi bi-cart-plus me-2 text-success"></i> Registrar
-              entrada
+            <h5 class="modal-title">
+              <i class="bi bi-box-arrow-in-down me-2"></i>
+              REGISTRAR ENTRADA
             </h5>
+
             <button
               type="button"
               class="btn-close"
-              data-bs-dismiss="modal"></button>
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"></button>
           </div>
-          <!-- Cuerpo -->
+
+          <!-- CUERPO -->
           <div class="modal-body">
-            <!-- Información del producto -->
-            <div class="card border-0 bg-light mb-4">
+            <!-- MATERIA PRIMA SELECCIONADA -->
+            <div class="card mb-3">
               <div class="card-body">
-                <h6 class="text-muted mb-3">Insumo seleccionado</h6>
-                <div class="row align-items-center">
-                  <div class="col-8">
-                    <strong id="nombreMateriaPrimaEntrada">
-                      Nombre del insumo
-                    </strong>
+                <h6 class="fw-bold mb-3">Materia prima seleccionada</h6>
+
+                <div class="row">
+                  <div class="col-md-7">
+                    <small class="text-muted"> Nombre </small>
+
+                    <div id="nombreMateriaPrimaEntrada" class="fw-semibold">
+                      -
+                    </div>
                   </div>
-                  <div class="col-4 text-end">
-                    <span class="badge bg-primary" id="tipoMateriaPrimaEntrada">
-                      Tipo
-                    </span>
+
+                  <div class="col-md-5">
+                    <small class="text-muted"> Tipo de insumo </small>
+
+                    <div id="tipoMateriaPrimaEntrada" class="fw-semibold">
+                      -
+                    </div>
                   </div>
                 </div>
+
                 <hr />
-                <div class="d-flex justify-content-between">
-                  <span>Existencias actuales</span>
-                  <strong id="stockActualMPEntrada"> 0 </strong>
+
+                <div>
+                  <small class="text-muted"> Stock actual </small>
+
+                  <div id="stockActualMPEntrada" class="fw-bold">-</div>
                 </div>
               </div>
             </div>
-            <!-- Tipo de entrada -->
-            <div class="mb-3">
-              <label for="tipoEntrada" class="form-label">
-                Tipo de entrada
-              </label>
-              <select id="tipoEntrada" class="form-select">
-                <option value="" selected disabled>
-                  Seleccione una opción
-                </option>
-              </select>
-              <small
-                class="text-danger d-block mt-1 error-msg"
-                id="errorTipo"></small>
-            </div>
-            <!-- Cantidad -->
-            <div class="mb-3">
-              <label
-                for="cantidadEntrada"
-                class="form-label"
-                id="labelCantidadEntrada">
-                Cantidad ingresada
-              </label>
-              <input
-                type="number"
-                class="form-control"
-                id="cantidadEntrada"
-                min="1"
-                placeholder="Ingrese la cantidad" />
-              <small
-                class="text-danger d-block mt-1 error-msg"
-                id="errorCantidad"></small>
-            </div>
 
-            <!-- Observación -->
-            <div class="mb-3">
-              <label for="observacionEntrada" class="form-label">
-                Observación
-              </label>
-              <textarea
-                class="form-control"
-                id="observacionEntrada"
-                rows="2"
-                placeholder="Detalle del movimiento (opcional)">
-              </textarea>
-            </div>
+            <!-- FORMULARIO -->
+            <form id="formEntradaMP">
+              <!-- MOTIVO -->
+              <div class="mb-3">
+                <label for="motivoEntradaMP" class="form-label fw-semibold">
+                  Motivo de entrada
+                </label>
+
+                <select id="motivoEntradaMP" class="form-select">
+                  <option value="">Seleccione un motivo</option>
+
+                  <option value="COMPRA">Compra</option>
+
+                  <option value="AJUSTE">Ajuste de inventario</option>
+
+                  <option value="OTRO">Otro</option>
+                </select>
+
+                <div
+                  id="errorMotivoEntradaMP"
+                  class="text-danger small mt-1"></div>
+              </div>
+
+              <!-- CANTIDAD -->
+              <div class="mb-3">
+                <label for="cantidadEntradaMP" class="form-label fw-semibold">
+                  Cantidad
+                </label>
+
+                <input
+                  type="number"
+                  id="cantidadEntradaMP"
+                  class="form-control"
+                  min="0.01"
+                  step="0.01"
+                  placeholder="Ingrese la cantidad" />
+
+                <div
+                  id="errorCantidadEntradaMP"
+                  class="text-danger small mt-1"></div>
+              </div>
+
+              <!-- OBSERVACIÓN -->
+              <div class="mb-3">
+                <label
+                  for="observacionEntradaMP"
+                  class="form-label fw-semibold">
+                  Observación
+                  <span class="text-muted fw-normal"> (opcional) </span>
+                </label>
+
+                <textarea
+                  id="observacionEntradaMP"
+                  class="form-control"
+                  rows="3"
+                  placeholder="Agregue una observación (opcional)"></textarea>
+              </div>
+
+              <!-- ERROR GENERAL -->
+              <div
+                id="errorGeneralEntradaMP"
+                class="alert alert-danger d-none"></div>
+            </form>
           </div>
-          <small
-            class="text-danger d-block mb-2 text-center error-msg"
-            id="errorGeneral"></small>
-          <!-- Pie -->
+
+          <!-- PIE -->
           <div class="modal-footer">
             <button
               type="button"
@@ -235,13 +182,148 @@
               data-bs-dismiss="modal">
               Cancelar
             </button>
-            <button type="button" class="btn btn-success" id="guardarEntrada">
-              <i class="bi bi-check-lg me-1"></i> Registrar entrada
+
+            <button type="button" id="guardarEntradaMP" class="btn btn-primary">
+              <i class="bi bi-check-lg me-1"></i>
+              Registrar entrada
             </button>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Modal registrar salida -->
+    <div class="modal fade" id="modalSalidaMP" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <!-- ENCABEZADO -->
+          <div class="modal-header">
+            <h5 class="modal-title">
+              <i class="bi bi-box-arrow-up me-2"></i>
+              REGISTRAR SALIDA
+            </h5>
+
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"></button>
+          </div>
+
+          <!-- CUERPO -->
+          <div class="modal-body">
+            <!-- MATERIA PRIMA SELECCIONADA -->
+            <div class="card mb-3">
+              <div class="card-body">
+                <h6 class="fw-bold mb-3">Materia prima seleccionada</h6>
+
+                <div class="row">
+                  <div class="col-md-7">
+                    <small class="text-muted"> Nombre </small>
+
+                    <div id="nombreMateriaPrimaSalida" class="fw-semibold">
+                      -
+                    </div>
+                  </div>
+
+                  <div class="col-md-5">
+                    <small class="text-muted"> Tipo de insumo </small>
+
+                    <div id="tipoMateriaPrimaSalida" class="fw-semibold">-</div>
+                  </div>
+                </div>
+
+                <hr />
+
+                <div>
+                  <small class="text-muted"> Stock actual </small>
+
+                  <div id="stockActualMPSalida" class="fw-bold">-</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- FORMULARIO -->
+            <form id="formSalidaMP">
+              <!-- MOTIVO -->
+              <div class="mb-3">
+                <label for="motivoSalidaMP" class="form-label fw-semibold">
+                  Motivo de salida
+                </label>
+
+                <select id="motivoSalidaMP" class="form-select">
+                  <option value="">Seleccione un motivo</option>
+
+                  <option value="PERDIDA">Pérdida</option>
+
+                  <option value="AJUSTE">Ajuste de inventario</option>
+
+                  <option value="OTRO">Otro</option>
+                </select>
+
+                <div
+                  id="errorMotivoSalidaMP"
+                  class="text-danger small mt-1"></div>
+              </div>
+
+              <!-- CANTIDAD -->
+              <div class="mb-3">
+                <label for="cantidadSalidaMP" class="form-label fw-semibold">
+                  Cantidad
+                </label>
+
+                <input
+                  type="number"
+                  id="cantidadSalidaMP"
+                  class="form-control"
+                  min="0.01"
+                  step="0.01"
+                  placeholder="Ingrese la cantidad" />
+
+                <div
+                  id="errorCantidadSalidaMP"
+                  class="text-danger small mt-1"></div>
+              </div>
+
+              <!-- OBSERVACIÓN -->
+              <div class="mb-3">
+                <label for="observacionSalidaMP" class="form-label fw-semibold">
+                  Observación
+                  <span class="text-muted fw-normal"> (opcional) </span>
+                </label>
+
+                <textarea
+                  id="observacionSalidaMP"
+                  class="form-control"
+                  rows="3"
+                  placeholder="Agregue una observación (opcional)"></textarea>
+              </div>
+
+              <!-- ERROR GENERAL -->
+              <div
+                id="errorGeneralSalidaMP"
+                class="alert alert-danger d-none"></div>
+            </form>
+          </div>
+
+          <!-- PIE -->
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal">
+              Cancelar
+            </button>
+
+            <button type="button" id="guardarSalidaMP" class="btn btn-primary">
+              <i class="bi bi-check-lg me-1"></i>
+              Registrar salida
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Modal Historial de Movimientos -->
     <div
       class="modal fade"
@@ -359,12 +441,14 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
     <script src="./JavaScript/ModalesMP/modalHistorialMP.js"></script>
-    <script src="./JavaScript/ModalesMP/modalPerdidaMP.js"></script>
+    <script src="./JavaScript/ModalesMP/modalSalidaMP.js"></script>
     <script src="./JavaScript/ModalesMP/modalEntradaMP.js"></script>
     <script src="./JavaScript/utilities/formateoDecimal.js"></script>
     <script src="./JavaScript/utilities/formateoMoneda.js"></script>
     <script src="./JavaScript/utilities/formateoPorcentaje.js"></script>
+    <script src="./JavaScript//utilities//formateoUnidad.js"></script>
     <script src="./JavaScript/utilities/formateoUnidadesPlural.js"></script>
+    <script src="./JavaScript/utilities/formateoStockMP.js"></script>
     <script src="./JavaScript/materiaPrima.js"></script>
   </body>
 </html>

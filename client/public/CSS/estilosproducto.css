@@ -1,25 +1,23 @@
 :root {
-	--header: #ff9fbe;
-	--principal: #61bcd7;
-	--principalHover: #1a81a0;
-	--titulo: #4a7f83;
-	--blanco: #ffffff;
-	--texto: #000000;
-	--borde: #d7eef5;
-	--fondo: rgba(207, 11, 11, .12);
-	--sombra: 0 8px 18px rgba(0, 0, 0, .12);
-	--radio: 18px;
-	--transicion: .30s ease;
-	--menu: 240px;
+    --header: #befbfc;
+    --principal: #1a81a0;
+    --principal-hover: #16738f;
+    --titulo: #3f7478;
+    --texto: #111010;
+    --blanco: #ffffff;
+    --fondo: #f2b5bf;
+    --borde: #1a81a0;
+    --menu: 240px;
+    --radio: 20px;
+    --transicion: .30s ease;
 }
-/*==============================
-RESET
-===============================*/
+
 * {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
+
 html,
 body,
 button,
@@ -37,275 +35,191 @@ h6,
 p,
 a,
 span {
-	font-family: 'Baloo 2', cursive !important;
+    font-family: 'Baloo 2', cursive !important;
 }
+
 body {
-	background: var(--fondo);
-	color: var(--texto);
-	overflow-x: hidden;
+    background: var(--fondo) !important;
+    color: var(--texto);
+    overflow-x: hidden;
 }
-/*==============================
-FONDO
-===============================*/
+
 .Fondo {
-	background-color: #61bcd7;
+    background: var(--fondo);
 }
-/*==============================
-MENÚ LATERAL
-===============================*/
+
+/*MENÚ LATERAL*/
 .Menu-lateral {
-	position: fixed;
-	top: 0;
-	left: calc(var(--menu) * -1);
-	width: var(--menu);
-	height: 100vh;
-	background: #ff9fbe;
-	box-shadow: 3px 0 10px rgba(0, 0, 0, .12);
-	transition: var(--transicion);
-	z-index: 1000;
+    position: fixed;
+    top: 0;
+    left: calc(var(--menu) * -1);
+    width: var(--menu);
+    height: 100vh;
+    background: #befbfc;
+    box-shadow: 3px 0 12px rgba(0, 0, 0, .12);
+    transition: left var(--transicion);
+    z-index: 1100;
 }
+
 .Menu-lateral.activo {
-	left: 0;
+    left: 0;
 }
+
 .Menu-lateral nav {
-	display: flex;
-	flex-direction: column;
-	padding-top: 15px;
+    display: flex;
+    flex-direction: column;
+    padding-top: 15px;
 }
+
 .Seccion-menu {
-	padding: 15px 25px 8px;
-	text-align: center;
-	color: #000;
-	font-size: 20px;
-	font-weight: 700;
+    padding: 15px 15px 8px;
+    text-align: center;
+    color: var(--titulo);
+    font-size: 18px;
+    font-weight: 800;
 }
+
 .Item-menu {
-	display: flex;
-	align-items: center;
-	gap: 15px;
-	padding: 13px 25px;
-	color: #fff;
-	text-decoration: none;
-	font-size: 20px;
-	transition: .25s;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 13px 25px;
+    color: var(--titulo);
+    text-decoration: none;
+    font-size: 17px;
+    transition: .20s;
 }
+
 .Item-menu i {
-	width: 22px;
-	text-align: center;
+    width: 20px;
+    text-align: center;
 }
+
 .Item-menu:hover,
 .Item-menu.activo {
-	background: #d18da3;
-	font-weight: 700;
+    background: #91c5c6;
+    transform: scale(1.01);
 }
+
 .Menu-lateral hr {
-	margin: 18px 20px;
-	border: none;
-	border-top: 1px solid rgba(255, 255, 255, .30);
+    margin: 18px 20px;
+    border: none;
+    border-top: 1px solid rgba(230, 223, 223, .45);
 }
-/*==============================
-ENCABEZADO
-===============================*/
+
+/*ENCABEZADO*/
 .Encabezado {
-	position: sticky;
-	top: 0;
-	z-index: 999;
-	background: var(--header);
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 16px 35px;
-	box-shadow: 0 3px 8px rgba(0, 0, 0, .12);
-	transition: var(--transicion);
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+    width: 100%;
+    min-height: 110px;
+    background: var(--header);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 35px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, .10);
+    transition:
+        margin-left var(--transicion),
+        width var(--transicion);
 }
+
+@media (min-width: 901px) {
+    body.menu-abierto .Encabezado {
+        margin-left: var(--menu);
+        width: calc(100% - var(--menu));
+    }
+}
+
 .Encabezado-izquierda,
 .Encabezado-derecha {
-	display: flex;
-	align-items: center;
+    display: flex;
+    align-items: center;
 }
+
 .Encabezado-izquierda {
-	gap: 18px;
+    gap: 18px;
 }
+
 .Encabezado-derecha {
-	gap: 18px;
+    gap: 18px;
 }
-/*==============================
-BOTÓN MENÚ
-===============================*/
+
+/*BOTÓN DEL MENÚ*/
 .btnMenu {
-	background: none;
-	border: none;
-	color: #000;
-	font-size: 28px;
-	cursor: pointer;
-	transition: .25s;
+    background: none;
+    border: none;
+    color: var(--principal);
+    font-size: 30px;
+    cursor: pointer;
+    margin-left: 20px;
+    margin-top: 5px;
+    transition: .25s;
 }
+
 .btnMenu:hover {
-	transform: scale(1.08);
+    transform: scale(1.08);
 }
-/*==============================
-MARCA
-===============================*/
+
+/*TÍTULO DEL RECETAS*/
 .Marca {
-	display: flex;
-	flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    margin-left: 15px;
+    margin-top: 6px;
 }
+
 .Marca h1 {
-	font-size: 32px;
-	line-height: 1;
-	font-weight: 700;
-	color: #000;
+    font-size: 30px;
+    line-height: 1;
+    font-weight: 700;
+    color: var(--titulo);
 }
-.Marca p {
-	margin-top: 4px;
-	margin-left: 24px;
-	font-size: 14px;
-	color: #000;
-	font-style: italic;
-}
-/*==============================
-BOTÓN AÑADIR VENTA
-===============================*/
+
+/*BOTÓN AÑADIR VENTA*/
 .btnVenta {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	padding: 12px 22px;
-	border: none;
-	border-radius: 25px;
-	background: #61bcd7;
-	color: #fff;
-	font-size: 15px;
-	font-weight: 700;
-	cursor: pointer;
-	transition: .25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 50px;
+    padding: 0 24px;
+    border: none;
+    border-radius: 14px;
+    background: var(--principal);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .25s;
 }
+
 .btnVenta:hover {
-	background: #1a81a0;
-	transform: scale(1.03);
+    background: var(--principal-hover);
+    transform: translateY(-2px);
 }
-/*==============================
-LOGO
-===============================*/
+
+/*LOGO*/
 .logoEmpresa {
-	width: 75px;
-	height: 75px;
-	border-radius: 50%;
-	object-fit: cover;
-	margin-left: 20px;
-	transition: .30s;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-left: 20px;
+    transition: .30s;
 }
+
 .logoEmpresa:hover {
-	transform: scale(1.05);
+    transform: scale(1.05);
 }
+
 #btnCerrarSesion {
-	display: flex;
-	align-items: center;
+    display: flex;
+    align-items: center;
 }
 
-
-/* ================================
-        BOTONES DE ACCIONES DE TABLA
-================================ */
-
-.acciones-tabla {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-}
-
-.btnAccion {
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  cursor: pointer;
-  transition: 0.25s;
-}
-
-.btnAccion i {
-  font-size: 16px;
-}
-
-/* Registrar pérdida */
-.btnPerdida {
-  background: #ef5b5b;
-}
-
-.btnPerdida:hover {
-  background: #d84242;
-  transform: scale(1.08);
-}
-
-/* Registrar entrada */
-.btnEntrada {
-  background: #3cb878;
-}
-
-.btnEntrada:hover {
-  background: #2c9961;
-  transform: scale(1.08);
-}
-
-/* Historial */
-.btnHistorial {
-  background: #4d8ef7;
-}
-
-.btnHistorial:hover {
-  background: #3574da;
-  transform: scale(1.08);
-}
-
-/*Celdas iluminadas para indicar un cambio*/
-.celda-actualizada {
-    animation: resaltarCelda 4s ease;
-}
-
-@keyframes resaltarCelda {
-    0% {
-        background-color: #a3dac1;
-    }
-
-    100% {
-        background-color: transparent;
-    }
-}
-
-.celda-error {
-    animation: resaltarError 4s ease;
-}
-
-@keyframes resaltarError {
-    0% {
-        background-color: #f8d7da;
-    }
-
-    100% {
-        background-color: transparent;
-    }
-}
-
-/*responsive de la tabla*/
-@media (max-width: 768px) {
-    .tabulator {
-        font-size: 10px;
-    }
-
-    .columna-texto-ajustable {
-        white-space: normal !important;
-        word-wrap: break-word;
-    }
-}
-
-/*=========================================
-MODAL AGREGAR VENTA
-=========================================*/
+/*MODAL AGREGAR VENTA*/
 .modalVenta {
 	position: fixed;
 	inset: 0;
@@ -459,9 +373,306 @@ MODAL AGREGAR VENTA
 .btnGuardar:hover {
 	background: #37b458;
 }
-/*=========================================
-RESPONSIVE
-=========================================*/
+
+/*FONDO BLANCO*/
+.container-fluid {
+    position: relative;
+    width: min(92%, 1400px) !important;
+    max-width: 1400px !important;
+    min-height: 0;
+    margin: 30px auto 20px auto;
+    padding: 38px 48px 32px;
+    background: rgba(255, 255, 255, .98);
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .08);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+        "titulo titulo"
+        "buscador boton"
+        "filtros filtros"
+        "tabla tabla";
+
+    column-gap: 20px;
+    row-gap: 0;
+
+    transition:
+        margin-left var(--transicion),
+        width var(--transicion),
+        max-width var(--transicion);
+}
+
+/* Abrir menú: el bloque blanco se adapta al espacio disponible */
+@media (min-width: 901px) {
+    body.menu-abierto .container-fluid {
+        width: calc(100% - var(--menu) - 60px) !important;
+        max-width: 1400px !important;
+        margin-left: calc(var(--menu) + 30px) !important;
+        margin-right: 30px !important;
+    }
+}
+
+/*TÍTULO DE INVENTARIO*/
+.container-fluid > .d-flex:first-child {
+    display: contents !important;
+}
+
+.container-fluid > .d-flex:first-child > div:first-child {
+    grid-area: titulo;
+    margin-bottom: 24px;
+}
+
+.container-fluid > .d-flex:first-child h1 {
+    color: #4a7f83;
+    font-size: 25px;
+    line-height: 1.1;
+    font-weight: 800;
+    margin-bottom: 5px;
+}
+
+.container-fluid > .d-flex p {
+    font-size: 16px;
+    color: #667;
+}
+
+/*BUSCADOR + BOTÓN AGREGAR PRODUCTO*/
+.container-fluid > div.mb-3:not(:first-child) {
+    grid-area: buscador;
+    width: 100%;
+    margin: 0 0 24px !important;
+}
+
+#buscar {
+    position: relative;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    height: 52px !important;
+    padding: 0 18px 0 48px !important;
+    background-color: #fff !important;
+    border: 1px solid var(--borde) !important;
+    border-radius: 16px !important;
+    font-family: 'Baloo 2', cursive !important;
+    font-size: 16px !important;
+    color: #000 !important;
+    outline: none !important;
+    transition: .25s !important;
+}
+
+#buscar:hover {
+    border-color: #1a81a0
+}
+
+#buscar:focus {
+   border-color: var(--principalHover);
+    box-shadow: 0 0 0 3px rgba(246, 247, 248, 0.959);
+}
+
+#buscar::placeholder {
+    color: #667 !important;
+}
+
+#buscar {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%234a7f83' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'%3E%3C/circle%3E%3Cline x1='16.65' y1='16.65' x2='21' y2='21'%3E%3C/line%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: 17px center !important;
+    background-size: 20px 20px !important;
+}
+
+/*FILTROS*/
+#panelFiltros {
+    grid-area: filtros;
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 0 8px;
+}
+
+/* Título "Filtrar por:" */
+#panelFiltros .filtro-titulo {
+    color:  #1a81a0 !important;
+    font-size: 25px !important;
+    font-weight: 800 !important;
+    text-transform: none !important;
+    margin: 0 0 10px !important;
+}
+
+.select-filtro,
+#panelFiltros select,
+select.form-control,
+select.form-select {
+    height: 52px !important;
+    padding: 0 40px 0 18px !important;
+    background-color: #fff !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 15px center !important;
+    background-size: 18px !important;
+    border: 1px solid var(--borde) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 3px 8px rgba(250, 249, 249, 0.921) !important;
+    font-family: 'Baloo 2', cursive !important;
+    font-size: 16px !important;
+    color: #000 !important;
+    outline: none !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    cursor: pointer !important;
+    transition: .25s !important;
+}
+
+/*BOTONES DE ACCIONES DE TABLA*/
+.acciones-tabla {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.btnAccion {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.btnAccion i {
+  font-size: 16px;
+}
+
+/* Registrar salida */
+.btnSalida {
+  background: #ef5b5b;
+}
+
+.btnSalida:hover {
+  background: #d84242;
+  transform: scale(1.08);
+}
+
+/* Registrar entrada */
+.btnEntrada {
+  background: #3cb878;
+}
+
+.btnEntrada:hover {
+  background: #2c9961;
+  transform: scale(1.08);
+}
+
+/* Historial */
+.btnHistorial {
+  background: #4d8ef7;
+}
+
+.btnHistorial:hover {
+  background: #3574da;
+  transform: scale(1.08);
+}
+
+/*PESTAÑAS / BOTONES*/
+#tabsProductos {
+    border-bottom: 2px solid var(--borde);
+    margin-top: 10px;
+}
+
+#tabsProductos .nav-link {
+    border: none;
+    border-radius: 14px 14px 0 0;
+    color: var(--titulo);
+    font-size: 16px;
+    padding: 10px 18px;
+    transition: .25s;
+}
+
+#tabsProductos .nav-link:hover {
+    background: rgba(97, 188, 215, .12);
+    color: var(--principalHover);
+}
+
+#tabsProductos .nav-link.active {
+    background: var(--principal);
+    color: #fff;
+    font-weight: 700;
+}
+
+/*Celdas iluminadas para indicar un cambio*/
+.celda-actualizada {
+    animation: resaltarCelda 4s ease;
+}
+
+@keyframes resaltarCelda {
+    0% {
+        background-color: #a3dac1;
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
+.celda-error {
+    animation: resaltarError 4s ease;
+}
+
+@keyframes resaltarError {
+    0% {
+        background-color: #f8d7da;
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
+/*RESPONSIVE DE LA TABLA*/
+@media (max-width: 768px) {
+    .tabulator {
+        font-size: 10px;
+    }
+
+    .columna-texto-ajustable {
+        white-space: normal !important;
+        word-wrap: break-word;
+    }
+}
+
+/*ANIMACIONES DE TABLA*/
+.celda-actualizada {
+    animation: resaltarCelda 4s ease;
+}
+
+@keyframes resaltarCelda {
+    0% {
+        background-color: #a3dac1;
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
+.celda-error {
+    animation: resaltarError 4s ease;
+}
+
+@keyframes resaltarError {
+    0% {
+        background-color: #f8d7da;
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
+/*RESPONSIVE PRINCIPAL*/
 @media (min-width:901px) {
 	body.menu-abierto .Encabezado,
 	body.menu-abierto .Contenido {
@@ -554,9 +765,8 @@ RESPONSIVE
 		height: 48px;
 	}
 }
-/*=========================================
-ANIMACIONES
-=========================================*/
+
+/*ANIMACIONES PRINCIPALES*/
 html {
 	scroll-behavior: smooth;
 }
@@ -582,149 +792,88 @@ button:active {
 	}
 }
 
-/* =========================================
-   AJUSTES VISUALES - PRODUCTOS
-   Mantiene la estructura y funcionalidad actual
-   ========================================= */
-
-
-/* =========================================
-   FONDO
-   ========================================= */
-
-body {
-    background: #fce1e1;
+/*MODALES BOOTSTRAP*/
+/* Adaptación de componentes nativos de Bootstrap al estilo Pa'TuBoca */
+.modal-content {
+  border-radius: 22px;
+  border: none;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, .20);
 }
 
-.Fondo {
-    display: none;
+.modal-dialog {
+  max-width: 720px;
 }
 
-
-/* =========================================
-   CONTENIDO PRINCIPAL
-   ========================================= */
-
-.container-fluid {
-    padding: 30px 35px;
-    transition: var(--transicion);
+/* Campos de entrada dentro de los modales */
+.campo select,
+.campo textarea {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #d9d9d9;
+  border-radius: 12px;
+  outline: none;
+  font-size: 15px;
+  transition: .25s;
 }
 
-
-/* =========================================
-   TÍTULO DE INVENTARIO
-   ========================================= */
-
-.container-fluid > .d-flex h1 {
-    color: var(--titulo);
-    font-size: 32px;
-    font-weight: 700;
-    margin-bottom: 5px;
+.campo select {
+  height: 48px;
 }
 
-.container-fluid > .d-flex p {
-    font-size: 16px;
-    color: #555;
+.campo select:focus,
+.campo textarea:focus {
+  border-color: #61bcd7;
+  box-shadow: none;
 }
 
-
-/* =========================================
-   TARJETA PERÍODO ACTUAL
-   ========================================= */
-
-.container-fluid > .d-flex > .card {
-    border: 2px solid var(--borde);
-    border-radius: 16px;
-    box-shadow: var(--sombra) !important;
+/* Ajustes para el contenedor y tabla dentro del modalHistorial */
+#modalHistorial .modal-body {
+  padding: 25px 30px;
 }
 
-
-/* =========================================
-   PESTAÑAS / BOTONES
-   ========================================= */
-
-#tabsProductos {
-    border-bottom: 2px solid var(--borde);
-    margin-top: 10px;
+#modalHistorial .table-responsive {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #d7eef5;
 }
 
-#tabsProductos .nav-link {
-    border: none;
-    border-radius: 14px 14px 0 0;
-    color: var(--titulo);
-    font-size: 16px;
-    padding: 10px 18px;
-    transition: .25s;
+#modalHistorial .table {
+  margin-bottom: 0;
 }
 
-#tabsProductos .nav-link:hover {
-    background: rgba(97, 188, 215, .12);
-    color: var(--principalHover);
+#modalHistorial .table thead {
+  background-color: #befbfc;
 }
 
-#tabsProductos .nav-link.active {
-    background: var(--principal);
-    color: #fff;
-    font-weight: 700;
+#modalHistorial .table thead th {
+  color: #4a7f83;
+  font-weight: 700;
+  border-bottom: 1px solid #d7eef5;
+  padding: 12px 16px;
 }
 
-
-/* =========================================
-   BUSCADOR
-   Mismo estilo visual de RECETAS
-   ========================================= */
-
-#buscar {
-    width: 100%;
-    height: 52px;
-    padding: 0 18px;
-
-    background: #fff;
-    border: 2px solid var(--borde);
-    border-radius: 16px;
-
-    box-shadow: 0 3px 8px rgba(0, 0, 0, .08);
-
-    font-family: 'Baloo 2', cursive !important;
-    font-size: 16px;
-    color: #000;
-
-    outline: none;
-    transition: .25s;
+#modalHistorial .table tbody td {
+  padding: 12px 16px;
+  vertical-align: middle;
 }
 
-#buscar:hover {
-    border-color: var(--principal);
-}
+/*RESPONSIVE - TABLET*/
+@media (max-width: 900px) {
 
-#buscar:focus {
-    border-color: var(--principalHover);
-    box-shadow: 0 0 0 3px rgba(97, 188, 215, .20);
-}
-
-#buscar::placeholder {
-    color: #8b8b8b;
-}
-
-/* =========================================
-   RESPONSIVE
-   ========================================= */
-
-
-/* Cuando se abre el menú en computadora */
-@media (min-width: 901px) {
-
-    body.menu-abierto .Encabezado,
-    body.menu-abierto .container-fluid {
-        margin-left: var(--menu);
+    .Encabezado {
+        padding: 12px 20px;
     }
 
-    body.menu-abierto .container-fluid {
-        width: calc(100% - var(--menu));
+    .container-fluid {
+        width: calc(100% - 36px) !important;
+        max-width: none !important;
+
+        margin: 20px auto;
+        padding: 30px;
     }
 
+    .Marca h1 {
+        font-size: 27px;
+    }
 }
-
-
-
-

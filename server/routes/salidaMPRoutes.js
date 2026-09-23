@@ -17,7 +17,7 @@ router.post("/", async (req, res) => {
         } = req.body;
 
         // ==========================================
-        // VALIDACIONES
+        // VALIDACIONES BÁSICAS
         // ==========================================
 
         if (
@@ -30,23 +30,35 @@ router.post("/", async (req, res) => {
             throw new Error("Datos incompletos o inválidos.");
         }
 
-        if (tipo_movimiento !== "ENTRADA") {
+        // ==========================================
+        // VALIDAR TIPO DE MOVIMIENTO
+        // ==========================================
+
+        if (tipo_movimiento !== "SALIDA") {
             throw new Error(
-                "El tipo de movimiento debe ser ENTRADA."
+                "El tipo de movimiento debe ser SALIDA."
             );
         }
 
+        // ==========================================
+        // VALIDAR MOTIVO
+        // ==========================================
+
         const motivosValidos = [
-            "COMPRA",
+            "PERDIDA",
             "AJUSTE",
             "OTRO"
         ];
 
         if (!motivosValidos.includes(motivo)) {
             throw new Error(
-                "El motivo de entrada no es válido."
+                "El motivo de salida no es válido."
             );
         }
+
+        // ==========================================
+        // FECHA / PERÍODO
+        // ==========================================
 
         const ahora = new Date();
 
@@ -56,12 +68,11 @@ router.post("/", async (req, res) => {
         const mes =
             req.body.mes || ahora.getMonth() + 1;
 
-
         // ==========================================
-        // REGISTRAR ENTRADA
+        // REGISTRAR SALIDA
         // ==========================================
 
-        await registrarMovimientoEntrada(
+        await registrarMovimientoSalida(
             client,
             id_ma,
             tipo_movimiento,
@@ -72,7 +83,6 @@ router.post("/", async (req, res) => {
             mes
         );
 
-
         // ==========================================
         // CONFIRMAR TRANSACCIÓN
         // ==========================================
@@ -80,7 +90,7 @@ router.post("/", async (req, res) => {
         await client.query("COMMIT");
 
         res.json({
-            mensaje: "Entrada registrada correctamente."
+            mensaje: "Salida registrada correctamente."
         });
 
     } catch (error) {
@@ -88,7 +98,7 @@ router.post("/", async (req, res) => {
         await client.query("ROLLBACK");
 
         console.error(
-            "Error en /api/entradaMP:",
+            "Error en /api/salidaMP:",
             error
         );
 
@@ -97,13 +107,12 @@ router.post("/", async (req, res) => {
         });
 
     } finally {
-
         client.release();
     }
 });
 
 
-async function registrarMovimientoEntrada(
+async function registrarMovimientoSalida(
     client,
     id_ma,
     tipo_movimiento,
@@ -115,14 +124,14 @@ async function registrarMovimientoEntrada(
 ) {
 
     // ==========================================
-    // VERIFICAR MATERIA PRIMA
-    // Y BLOQUEAR SU REGISTRO
+    // OBTENER MATERIA PRIMA Y BLOQUEAR REGISTRO
     // ==========================================
 
     const resMateriaPrima = await client.query(
         `
         SELECT
             id_ma,
+            stock_actual_i,
             costo_total_ingrediente,
             unidad_por_paquete,
             unidad_medida,
@@ -142,8 +151,12 @@ async function registrarMovimientoEntrada(
 
     const materiaPrima = resMateriaPrima.rows[0];
 
+    const stockActual =
+        Number(materiaPrima.stock_actual_i || 0);
+
     // ==========================================
-    // CONVERTIR CANTIDAD
+    // CONVERTIR CANTIDAD HUMANA
+    // A UNIDAD NORMALIZADA
     // ==========================================
 
     const cantidadFinal =
@@ -153,7 +166,19 @@ async function registrarMovimientoEntrada(
         );
 
     // ==========================================
-    // OBTENER COSTO
+    // VALIDAR STOCK DISPONIBLE
+    // ==========================================
+
+    if (cantidadFinal > stockActual) {
+        throw new Error(
+            `No hay suficiente stock disponible. ` +
+            `Stock actual: ${stockActual} ` +
+            `${materiaPrima.unidad_medida}.`
+        );
+    }
+
+    // ==========================================
+    // CALCULAR COSTO UNITARIO
     // ==========================================
 
     const costoUnitario =
@@ -163,6 +188,10 @@ async function registrarMovimientoEntrada(
         Number(
             materiaPrima.unidad_por_paquete || 1
         );
+
+    // ==========================================
+    // CALCULAR COSTO TOTAL
+    // ==========================================
 
     const costoTotal =
         cantidadFinal * costoUnitario;
@@ -174,7 +203,7 @@ async function registrarMovimientoEntrada(
     const resStock = await client.query(
         `
         UPDATE materia_prima_y_cd
-        SET stock_actual_i = stock_actual_i + $1
+        SET stock_actual_i = stock_actual_i - $1
         WHERE id_ma = $2
         RETURNING stock_actual_i
         `,
@@ -209,8 +238,15 @@ async function registrarMovimientoEntrada(
         )
         VALUES
         (
-            $1, $2, $3, $4, $5,
-            $6, $7, $8, $9
+            $1,
+            $2,
+            $3,
+            $4,
+            $5,
+            $6,
+            $7,
+            $8,
+            $9
         )
         `,
         [
@@ -232,46 +268,64 @@ async function registrarMovimientoEntrada(
         costoUnitario,
         costoTotal
     };
+}
 
-    function convertirCantidadAUnidadMedida(cantidad, materiaPrima) {
-        const cantidadHumana = Number(cantidad);
 
-        const unidadMedida =
-            String(materiaPrima.unidad_medida || "").trim();
+// ==========================================
+// CONVERSIÓN DE UNIDAD DE EXISTENCIA
+// A UNIDAD DE MEDIDA
+// ==========================================
 
-        const unidadExistencia =
-            String(materiaPrima.unidad_existencia || "").trim();
+function convertirCantidadAUnidadMedida(
+    cantidad,
+    materiaPrima
+) {
 
-        const unidadPorPaquete =
-            Number(materiaPrima.unidad_por_paquete);
+    const cantidadHumana = Number(cantidad);
 
-        if (
-            !Number.isFinite(cantidadHumana) ||
-            cantidadHumana <= 0
-        ) {
-            throw new Error(
-                "La cantidad debe ser mayor que cero."
-            );
-        }
+    const unidadMedida =
+        String(
+            materiaPrima.unidad_medida || ""
+        ).trim();
 
-        if (
-            unidadMedida.toLowerCase() ===
-            unidadExistencia.toLowerCase()
-        ) {
-            return cantidadHumana;
-        }
+    const unidadExistencia =
+        String(
+            materiaPrima.unidad_existencia || ""
+        ).trim();
 
-        if (
-            !Number.isFinite(unidadPorPaquete) ||
-            unidadPorPaquete <= 0
-        ) {
-            throw new Error(
-                "La materia prima no tiene una equivalencia de presentación válida."
-            );
-        }
+    const unidadPorPaquete =
+        Number(
+            materiaPrima.unidad_por_paquete
+        );
 
-        return cantidadHumana * unidadPorPaquete;
+    if (
+        !Number.isFinite(cantidadHumana) ||
+        cantidadHumana <= 0
+    ) {
+        throw new Error(
+            "La cantidad debe ser mayor que cero."
+        );
     }
+
+    // Las unidades representan directamente
+    // la misma unidad de inventario.
+    if (
+        unidadMedida.toLowerCase() ===
+        unidadExistencia.toLowerCase()
+    ) {
+        return cantidadHumana;
+    }
+
+    if (
+        !Number.isFinite(unidadPorPaquete) ||
+        unidadPorPaquete <= 0
+    ) {
+        throw new Error(
+            "La materia prima no tiene una equivalencia de presentación válida."
+        );
+    }
+
+    return cantidadHumana * unidadPorPaquete;
 }
 
 
