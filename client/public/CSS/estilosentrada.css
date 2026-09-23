@@ -4,16 +4,18 @@
 	box-sizing: border-box;
 	font-family: 'Baloo 2', cursive;
 }
+
 /*Centro el formulario en la pantalla y coloca la imagen de fondo*/
 body {
 	min-height: 100vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background: url('../Resources/Fondo1.png') no-repeat center center;
+	background: url('../Resources/Fondo.png') no-repeat center center;
 	background-size: cover;
 	padding: 20px;
 }
+
 /*Es la tarjeta donde se encuentra el formulario*/
 .Contenedor-general {
 	position: relative;
@@ -26,6 +28,7 @@ body {
 	/* Sombra para dar profundidad */
 	text-align: center;
 }
+
 /*Permite colocar el logo sobresaliendo de de la tarjeta*/
 .Contenedor-logo {
 	position: absolute;
@@ -33,6 +36,7 @@ body {
 	left: 50%;
 	transform: translateX(-50%);
 }
+
 /*Tamaño del logo y proporción*/
 .logo-img {
 	width: 135px;
@@ -40,7 +44,8 @@ body {
 	object-fit: contain;
 	transition: transform .3s ease;
 }
-/*Titulo*/
+
+/*TITULO*/
 .Contenedor-general h2 {
 	margin-top: 40px;
 	margin-bottom: 30px;
@@ -49,11 +54,13 @@ body {
 	font-weight: 700;
 	letter-spacing: 1px;
 }
+
 /*Agrupa la etiqueta y el campo de texto*/
 .Titulo-caja {
 	text-align: left;
 	margin-bottom: 25px;
 }
+
 /*Etiquetas labels*/
 .Titulo-caja label {
 	display: block;
@@ -62,6 +69,7 @@ body {
 	font-size: 15px;
 	font-weight: bold;
 }
+
 /*Corazones antes del texto*/
 .Titulo-caja label::before {
 	content: "♥";
@@ -69,7 +77,8 @@ body {
 	color: #4a7f83;
 	font-size: 15px;
 }
-/*Inputs*/
+
+/*INPUTS*/
 .Titulo-caja input {
 	width: 100%;
 	padding: 8px 4px;
@@ -81,14 +90,17 @@ body {
 	outline: none;
 	transition: border-color .3s ease;
 }
+
 /*Color del texto de referencia*/
 .Titulo-caja input::placeholder {
 	color: #667;
 }
+
 /*Cambia el color de la línea inferior cuando el usuario hace clic en el campo*/
 .Titulo-caja input:focus {
 	border-bottom: 1px solid #1a81a0;
 }
+
 /*Centra el botón horizontal*/
 .Redondo {
 	display: flex;
@@ -96,27 +108,35 @@ body {
 	margin-top: 40px;
 	border: none;
 }
-/*Boton*/
+
+/*BOTÓN*/
 .btn-login {
-	display: inline-block;
-	width: 100%;
-	padding: 12px;
-	background-color: #61bcd7;
-	color: #ffffff;
-	text-decoration: none;
-	text-align: center;
-	font-size: 16px;
-	font-weight: bold;
-	border-radius: 25px;
-	transition: background-color .3s ease,
-		transform .2s ease;
+display: inline-block;
+    width: 100%;
+    height: 50px;                 
+    padding: 0 24px;              
+    background: var(--principal, #1a81a0); 
+    color: #ffffff;
+    text-decoration: none;
+    text-align: center;
+    display: flex;                
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;              
+    font-weight: 700;             
+    border: none;
+    border-radius: 14px;          
+    cursor: pointer;
+    transition: all 0.25s ease;	
 }
+
 /*Efecto al pasar el mouse por el boton*/
 .btn-login:hover {
-	background-color: #1a81a0;
-	transform: scale(1.02);
+	background: #1a81a0;
+	transform: scale(1.03);
 }
-/*Responsive general*/
+
+/*RESPONSIVE PRINCIPAL*/
 @media (max-width: 480px) {
 	.Contenedor-general {
 		padding: 35px 20px;
@@ -133,7 +153,7 @@ body {
 	}
 }
 .mensaje-login {
-	color: #dc3545;
+	color: #b92d3b;
 	font-size: 0.9rem;
 	margin-top: 10px;
 	text-align: center;
@@ -154,7 +174,7 @@ body {
 	border: none;
 	background: transparent;
 	cursor: pointer;
-	color: #4a7f83;
+	color: #1a81a0;
 	font-size: 18px;
 	display: flex;
 	align-items: center;

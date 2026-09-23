@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>♥ Pa'TuBoca</title>
+    <title>♥Pa'tuboca Delicias y más♥</title>
 
     <!-- CSS propio -->
     <link rel="stylesheet" href="./CSS/estilosreceta.css" />
@@ -38,7 +38,7 @@
 
     <aside class="Menu-lateral" id="menuLateral">
       <nav>
-        <div class="Seccion-menu">CONTROL</div>
+        <div class="Seccion-menu">CONTROL DE INVENTARIOS</div>
 
         <a href="productos.html" class="Item-menu">
           <i class="fa-solid fa-box-open"></i>
@@ -46,7 +46,7 @@
         </a>
 
         <a href="#" class="Item-menu">
-          <i class="fa-solid fa-carrot"></i>
+          <i class="fa-solid fa-boxes-stacked"></i>
           <span>Materia prima</span>
         </a>
 
@@ -78,9 +78,8 @@
         </button>
 
         <div class="Marca">
-          <h1>Pa'TuBoca | Recetas</h1>
+          <h1>| RECETAS</h1>
 
-          <p>Delicias y más</p>
         </div>
       </div>
 
@@ -98,37 +97,36 @@
       </div>
     </header>
 
-    <main class="Contenido">
-      <!-- ========================= -->
-      <!-- BUSCADOR DE RECETAS -->
-      <!-- ========================= -->
+   <main class="Contenido">
+  <!-- ========================= -->
+  <!-- BUSCADOR DE RECETAS -->
+  <!-- ========================= -->
 
-      <section class="busqueda-recetas">
-        <!-- Buscador -->
-        <div class="contenedor-busqueda">
-          <div class="campo-busqueda">
-            <i class="fa-solid fa-magnifying-glass"></i>
-
-            <input
-              type="search"
-              id="buscar-receta"
-              name="buscar-receta"
-              placeholder="Escribe aquí el nombre de la receta (Ej.: Gelatina)" />
-          </div>
-
-          <button type="button" class="btnBuscar">Buscar</button>
+  <section class="busqueda-recetas-tarjeta"> <!-- Contenedor con fondo blanco -->
+    <div class="busqueda-recetas">
+      <!-- Buscador -->
+      <div class="contenedor-busqueda">
+        <div class="campo-busqueda">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input
+            type="search"
+            id="buscar-receta"
+            name="buscar-receta"
+            placeholder="Escribe aquí el nombre de la receta (Ej.: Gelatina)" />
         </div>
+        <button type="button" class="btnBuscar">Buscar</button>
+      </div>
 
-        <!-- Filtro -->
-        <div class="contenedor-filtro">
-          <label for="ingrediente"> Filtrar por: </label>
-
-          <select name="ingrediente" id="ingrediente">
-            <option value="">Ingrediente</option>
-          </select>
-        </div>
-      </section>
-    </main>
+      <!-- Filtro -->
+      <div class="contenedor-filtro">
+        <label for="ingrediente"> FILTRAR POR </label>
+        <select name="ingrediente" id="ingrediente">
+          <option value="">Ingrediente</option>
+        </select>
+      </div>
+    </div>
+  </section>
+</main>
 
     <div class="container mt-4">
       <div id="contenedor-recetas" class="row justify-content-center g-4"></div>

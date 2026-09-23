@@ -291,7 +291,7 @@ function crearFiltros() {
   const panel = document.getElementById("panelFiltros");
 
   panel.innerHTML = `
-        <h3>Filtrar por:</h3>
+        <h3>FILTRAR POR</h3>
         <div class="row g-2">
             <div class="col-md-3">
                 <select id="filtroEstado" class="form-select">
