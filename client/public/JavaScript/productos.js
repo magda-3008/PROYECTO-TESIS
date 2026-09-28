@@ -154,6 +154,7 @@ const productosInventario = {
 
 // Cargar vista de Inventario
 async function cargarVista() {
+  
   const endpoint = productosInventario.endpoint;
 
   // Elimina la tabla anterior si existe
@@ -291,7 +292,7 @@ function crearFiltros() {
   const panel = document.getElementById("panelFiltros");
 
   panel.innerHTML = `
-        <h3>FILTRAR POR</h3>
+        <h3 style="color: #4a7f83; font-weight: 800; font-size: 20px; margin-bottom: 12px;">FILTRAR POR</h3>
         <div class="row g-2">
             <div class="col-md-3">
                 <select id="filtroEstado" class="form-select">

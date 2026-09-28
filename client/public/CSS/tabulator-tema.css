@@ -1,7 +1,4 @@
-/*==================================================
-=            TEMA PERSONALIZADO TABULATOR          =
-==================================================*/
-
+/*TEMA PERSONALIZADO TABULATOR*/
 /* Contenedor principal */
 .tabulator{
     background: #fff;
@@ -13,10 +10,7 @@
     font-family: 'Baloo 2', cursive;
 }
 
-/*==================================================
-=                 ENCABEZADO                       =
-==================================================*/
-
+/*ENCABEZADO*/
 .tabulator .tabulator-header{
     background: #1a81a0;
     border-bottom: none;
@@ -49,10 +43,7 @@
     line-height: 1.1;
 }
 
-/*==================================================
-=                    FILAS                         =
-==================================================*/
-
+/*FILAS*/
 .tabulator-row{
     background: white;
     min-height: 60px;
@@ -70,10 +61,7 @@
     background: #d9f5ff;
 }
 
-/*==================================================
-=                   CELDAS                         =
-==================================================*/
-
+/*CELDAS*/
 .tabulator-cell{
     padding: 18px 20px !important;
     border-right: none !important;
@@ -83,10 +71,7 @@
     align-items: center;
 }
 
-/*==================================================
-=              HEADER DE NUMERACIÓN                =
-==================================================*/
-
+/*HEADER DE NUMERACIÓN*/
 .tabulator-row-header,
 .tabulator-row-header-holder{
 
@@ -99,10 +84,7 @@
     font-weight: bold;
 }
 
-/*==================================================
-=                 PAGINACIÓN                       =
-==================================================*/
-
+/*PAGINACIÓN*/
 .tabulator-footer{
     background: white;
     border-top: 1px solid rgba(28,66,147,.15);
@@ -125,10 +107,7 @@
     color: white;
 }
 
-/*==================================================
-=                MENÚ CONTEXTUAL                   =
-==================================================*/
-
+/*MENÚ CONTEXTUAL*/
 .tabulator-menu{
     border: none;
     border-radius: 12px;
@@ -146,10 +125,7 @@
     background: #befbfc;
 }
 
-/*==================================================
-=               ICONO DE ACCIONES                  =
-==================================================*/
-
+/*ICONO DE ACCIONES*/
 .bi-three-dots-vertical{
     font-size: 22px;
     color: #1a81a0;
@@ -162,10 +138,7 @@
     transform: scale(1.2);
 }
 
-/*==================================================
-=                  SCROLLBAR                       =
-==================================================*/
-
+/*SCROLLBAR*/
 .tabulator-tableHolder::-webkit-scrollbar{
     height: 10px;
     width: 10px;
@@ -180,10 +153,7 @@
     background: #87bfd2;
 }
 
-/*==================================================
-=              INPUTS DE EDICIÓN                   =
-==================================================*/
-
+/*INPUTS DE EDICIÓN*/
 .tabulator-editing{
     padding: 0 !important;
 }
@@ -197,10 +167,7 @@
     padding: 10px;
 }
 
-/*==================================================
-=             ORDENAMIENTO COLUMNAS                =
-==================================================*/
-
+/*ORDENAMIENTO COLUMNAS*/
 .tabulator-arrow{
     border-top-color: white !important;
 }
@@ -214,109 +181,87 @@
     padding-right: 40px;
 }
 
-/* ================================
-        CARGANDO TABLA
-================================ */
-
+/*CARGANDO TABLA*/
 .tabla-cargando{
-
     min-height:350px;
-
     display:flex;
     flex-direction:column;
     justify-content:center;
     align-items:center;
-
     gap:15px;
-
     color:#1a81a0;
-
     font-size:18px;
-
 }
 
 .tabla-cargando .spinner-border{
-
     width:3rem;
     height:3rem;
-
 }
 
 
-/* ================================
-        TABLA VACÍA
-================================ */
-
+/*TABLA VACÍA*/
 .tabla-vacia{
-
     padding:60px 20px;
-
     text-align:center;
-
-    color:#777;
-
+    color:#667;
 }
 
 .tabla-vacia i{
-
     font-size:55px;
-
     color:#1a81a0;
-
 }
 
 .tabla-vacia h4{
-
     margin-top:15px;
-
     font-size:22px;
-
 }
 
 .tabla-vacia p{
-
     margin-top:8px;
-
     font-size:17px;
-
 }
 
-
-/* ================================
-        ERROR AL CARGAR
-================================ */
-
+/*ERROR AL CARGAR*/
 .tabla-error{
-
     min-height:350px;
-
     display:flex;
     flex-direction:column;
     justify-content:center;
     align-items:center;
-
     text-align:center;
-
     gap:10px;
-
-    color:#dc3545;
-
+    color:#161616;
 }
 
 .tabla-error i{
-
     font-size:60px;
-
 }
 
 .tabla-error h4{
-
     margin:0;
-
 }
 
 .tabla-error p{
+    color:#667;
+}
 
-    color:#666;
+.tabla-error .btn,
+.tabla-error button,
+.swal2-confirm {
+    background-color: #6c5ce7 !important; 
+    border-color: #6c5ce7 !important;
+    color: #fff !important;
+    border-radius: 12px !important;
+    font-family: 'Baloo 2', cursive !important;
+    font-size: 16px !important;
+    padding: 8px 30px !important;
+    box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.2) !important; 
+    transition: .25s !important;
+}
 
+.tabla-error .btn:hover,
+.tabla-error button:hover,
+.swal2-confirm:hover {
+    background-color: #5b4bc4 !important;
+    border-color: #5b4bc4 !important;
 }
