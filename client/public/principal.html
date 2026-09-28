@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>♥ Pa'TuBoca</title>
+
+    <title>♥Pa'tuboca Delicias y más♥</title>
     <link rel="stylesheet" href="./CSS/estilosprincipal.css" />
-    <!-- Fuentes -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
@@ -15,25 +15,34 @@
       href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap"
       rel="stylesheet" />
   </head>
-  <body>
-    <div class="Fondo"></div>
 
-    <!--Encabezado titulo-->
-    <header>
-      <div class="Marca">
-        <h1>Pa'TuBoca</h1>
-        <p>Delicias y más</p>
-      </div>
-      <!-- Botón para añadir ventas y logo en la barra rosa el logo deberia cerrar sesión -->
-      <div class="Header">
+  <body>
+    
+    <!-- Contenedor del video de fondo -->
+    <div class="Fondo">
+        <video autoplay muted loop playsinline class="video-fondo">
+            <source src="Resources/Video_fondo.mp4" type="video/mp4">
+            Tu navegador no soporta videos de fondo.
+        </video>
+        <!-- Capa semitransparente opcional para que el texto resalte más -->
+        <div class="capa-overlay"></div>
+    </div>
+
+    <!--ENCABEZADO-->
+    <header class="Encabezado">
+
+      <!--Derecha-->
+      <div class="Encabezado-derecha">
         <button class="btnVenta" type="button">
-          <i class="fa-solid fa-plus"></i><span>Añadir venta</span>
+          <i class="fa-solid fa-plus"></i>
+          <span>Agregar venta</span>
         </button>
-        <!-- Logo de la empresa -->
-        <a href="" id="btnCerrarSesion"
-          ><img src="Resources/Logo.png" alt="Logo" class="logoEmpresa"
-        /></a>
+
+        <a href="" id="btnCerrarSesion">
+          <img src="Resources/Logo.png" alt="Logo" class="logoEmpresa" />
+        </a>
       </div>
+
     </header>
 
     <!--Contenido que esta bajo el header color rosa -->
@@ -42,7 +51,7 @@
 
       <!-- Apartado de gestión -->
       <section>
-        <h3 class="tituloSeccion">INVENTARIO</h3>
+        
         <div class="contenedor">
           <!-- Tarjeta Productos -->
           <a href="productos.html" class="card">
@@ -53,7 +62,7 @@
 
           <!-- Tarjeta Ingredientes -->
           <a href="materiaprima.html" class="card">
-            <div class="icono"><i class="fa-solid fa-carrot"></i></div>
+            <div class="icono"><i class="fa-solid fa-boxes-stacked"></i></div>
             <span>Materia prima</span
             ><i class="fa-solid fa-chevron-right flecha"></i>
           </a>
@@ -63,73 +72,81 @@
             <div class="icono"><i class="fa-solid fa-book-open"></i></div>
             <span>Recetas</span><i class="fa-solid fa-chevron-right flecha"></i>
           </a>
-        </div>
-      </section>
 
-      <!-- Apartado del Panel de control -->
-      <section>
-        <h3 class="tituloSeccion">TABLERO DE VENTAS</h3>
-        <div class="contenedor">
           <!-- Tarjeta Ventas -->
           <a href="ventas.html" class="card">
             <div class="icono"><i class="fa-solid fa-cash-register"></i></div>
             <span>Ventas</span><i class="fa-solid fa-chevron-right flecha"></i>
           </a>
         </div>
+
       </section>
     </main>
 
-    <!-- Añadir venta botón de arriba esto de aca es la estructura del formulario que se abre aqui mismo y no crear otra pag -->
-    <div class="modal" id="modalVenta">
+    <!--MODAL AGREGAR VENTA-->
+    <div class="modalVenta" id="modalVenta">
+
       <div class="modal-contenido">
-        <!-- Encabezado -->
-        <div class="modal-header">
-          <h2>🛒AGREGAR VENTA</h2>
-          <button class="cerrarModal" id="cerrarModal">
+        <!--Encabezado-->
+        <div class="venta-header">
+          <h2><i class="fa-solid fa-cash-register"></i> AGREGAR VENTA</h2>
+
+          <button type="button" class="cerrarModal" id="cerrarModal">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
 
-        <!-- Buscar producto la lupa o algo asi -->
+        <!--Buscar producto-->
         <div class="grupoBusqueda">
           <i class="fa-solid fa-magnifying-glass iconoBuscar"></i>
+
           <input
             type="text"
             class="buscarProducto"
             placeholder="Buscar producto..." />
         </div>
 
-        <!-- Formulario de añadir venta que se abre desde el botón-->
+        <!--Formulario-->
         <form class="formVenta">
           <div class="campo">
-            <label>Nombre</label><input type="text" readonly />
+            <label>NOMBRE</label>
+
+            <input type="text"/>
           </div>
 
           <div class="campo">
-            <label>Cantidad</label><input type="number" min="1" />
+            <label>CANTIDAD</label>
+
+            <input type="number" min="1" />
           </div>
 
           <div class="campo">
-            <label>Precio</label><input type="text" readonly />
+            <label>PRECIO</label>
+
+            <input type="text"/>
           </div>
 
           <div class="campo">
-            <label>Total</label><input type="text" readonly />
+            <label>TOTAL</label>
+
+            <input type="text"/>
           </div>
         </form>
 
-        <!-- Botones -->
+        <!--Botones-->
         <div class="modal-botones">
           <button type="button" class="btnCancelar" id="btnCancelar">
-            Cancelar
+            <i class="fa-solid fa-xmark"></i> Cancelar
           </button>
-          <button type="submit" class="btnGuardar">Guardar</button>
+
+          <button type="submit" class="btnGuardar"><i class="fa-solid fa-check"></i> Guardar</button>
         </div>
       </div>
     </div>
 
-    <!-- Javascript no como backend sino para animar algunos elementos por ej el formulario de añadir v-->
     <script>
+      
+      /* ========= Modal Agregar Venta ========= */
       const modal = document.getElementById("modalVenta");
       const btnVenta = document.querySelector(".btnVenta");
       const cerrarModal = document.getElementById("cerrarModal");
@@ -138,18 +155,18 @@
       btnVenta.addEventListener("click", () => {
         modal.classList.add("activo");
       });
+
       cerrarModal.addEventListener("click", () => {
         modal.classList.remove("activo");
       });
 
-      // Botòn cancelar //
       btnCancelar.addEventListener("click", (event) => {
         event.preventDefault();
-        // Limpia el buscador
+
         document.querySelector(".buscarProducto").value = "";
-        // Limpia el formulario
+
         document.querySelector(".formVenta").reset();
-        // Limpia los campos de solo lectura
+
         document.querySelectorAll(".campo input[readonly]").forEach((input) => {
           input.value = "";
         });
