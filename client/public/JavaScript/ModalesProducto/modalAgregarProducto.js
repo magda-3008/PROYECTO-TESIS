@@ -517,19 +517,35 @@ document.addEventListener("DOMContentLoaded", async () => {
                     precioVenta.classList.add("is-invalid");
                     formularioValido = false;
                 }
-                const stockInicial = document.getElementById("stockInicial");
-
-                if (
-                    !stockInicial.value ||
-                    !Number.isInteger(Number(stockInicial.value)) ||
-                    Number(stockInicial.value) < 0
-                ) {
-                    stockInicial.classList.add("is-invalid");
-                    formularioValido = false;
+                if (tipoProducto.value === "Reventa") {
+                    // En Reventa el stock inicial es obligatorio
+                    if (
+                        stockInicial.value === "" ||
+                        !Number.isInteger(Number(stockInicial.value)) ||
+                        Number(stockInicial.value) < 0
+                    ) {
+                        stockInicial.classList.add("is-invalid");
+                        formularioValido = false;
+                    }
                 }
 
+                if (tipoProducto.value === "Elaborado") {
+                    // En Elaborado el stock inicial es opcional
+                    if (
+                        stockInicial.value !== "" &&
+                        (
+                            !Number.isInteger(Number(stockInicial.value)) ||
+                            Number(stockInicial.value) < 0
+                        )
+                    ) {
+                        stockInicial.classList.add("is-invalid");
+                        formularioValido = false;
+                    }
+                }
+
+                // Stock mínimo: sigue siendo obligatorio
                 if (
-                    !stockMinimo.value ||
+                    stockMinimo.value === "" ||
                     !Number.isInteger(Number(stockMinimo.value)) ||
                     Number(stockMinimo.value) < 0
                 ) {
@@ -612,7 +628,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                 formData.append("nombre", nombreProducto.value.trim());
                 formData.append("tipo", tipoProducto.value);
                 formData.append("precio_venta", Number(precioVenta.value));
-                formData.append("stock_inicial", Number(stockInicial.value));
+
+                if (stockInicial.value === "") {
+                    formData.append("stock_inicial", "");
+                } else {
+                    formData.append("stock_inicial", Number(stockInicial.value));
+                }
+
                 formData.append("stock_minimo_p", Number(stockMinimo.value));
                 if (tipoProducto.value === "Reventa") {
                     formData.append("costo_compra", Number(document.getElementById("costoCompra").value));
