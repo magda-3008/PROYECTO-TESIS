@@ -1,21 +1,25 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>♥Pa'tuboca Delicias y más♥</title>
-    
+    <title>Productos</title>
+    <!-- Bootstrap CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       rel="stylesheet" />
+    <!-- Bootstrap icons -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <!-- Tabulator -->
     <link
       href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator.min.css"
       rel="stylesheet" />
     <link rel="stylesheet" href="./CSS/estilosproducto.css" />
+    <link rel="stylesheet" href="./CSS/estilosmodales.css" />
     <link rel="stylesheet" href="./CSS/tabulator-tema.css" />
+    <!-- Fuentes -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
@@ -27,98 +31,80 @@
   </head>
 
   <body>
-    <!--FONDO-->
+    <!-- Fondo -->
     <div class="Fondo"></div>
-
-    <!--MENÚ LATERAL-->
+    <!-- Menú lateral -->
     <aside class="Menu-lateral" id="menuLateral">
       <nav>
-        <div class="Seccion-menu">CONTROL DE INVENTARIOS</div>
-
+        <div class="Seccion-menu">CONTROL</div>
         <a href="productos.html" class="Item-menu activo">
           <i class="fa-solid fa-box-open"></i>
           <span>Productos</span>
         </a>
-
         <a href="#" class="Item-menu">
-          <i class="fa-solid fa-boxes-stacked"></i>
+          <i class="fa-solid fa-carrot"></i>
           <span>Materia prima</span>
         </a>
-
         <a href="recetas.html" class="Item-menu">
           <i class="fa-solid fa-book-open"></i>
           <span>Recetas</span>
         </a>
-
         <hr />
-
         <div class="Seccion-menu">TABLERO DE VENTAS</div>
-
         <a href="ventas.html" class="Item-menu">
           <i class="fa-solid fa-cash-register"></i>
           <span>Ventas</span>
         </a>
-
       </nav>
     </aside>
-
-    <!--ENCABEZADO-->
+    <!-- ENCABEZADO -->
     <header class="Encabezado">
-
-      <!--Izquierda-->
+      <!-- Izquierda -->
       <div class="Encabezado-izquierda">
         <button class="btnMenu" id="btnMenu" aria-label="Abrir menú">
           <i class="fa-solid fa-bars"></i>
         </button>
-
         <div class="Marca">
-          <h1>| PRODUCTOS</h1>
-
+          <h1>Pa'TuBoca | Productos</h1>
+          <p>Delicias y más</p>
         </div>
       </div>
-
-      <!--Derecha-->
+      <!-- Derecha -->
       <div class="Encabezado-derecha">
         <button class="btnVenta" type="button">
           <i class="fa-solid fa-plus"></i>
-          <span>Agregar venta</span>
+          <span>Añadir venta</span>
         </button>
-
-        <a href="" id="btnCerrarSesion">
+        <a href="./principal.html" id="btnCerrarSesion">
           <img src="Resources/Logo.png" alt="Logo" class="logoEmpresa" />
         </a>
       </div>
-
     </header>
-
-    <div class="container-fluid">
-
-      <div class="mb-4">
-        <h1>INVENTARIO DE PRODUCTOS</h1>
-        <p class="text-muted mb-0">
-          Consulta y administra las existencias diarias de los productos
-        </p>
+    <div class="container-fluid mt-3">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h1>Inventario de productos</h1>
+          <p class="text-muted mb-0">
+            Consulta y administra las existencias diarias de los productos.
+          </p>
+        </div>
+        <div>
+          <button class="btnVenta" id="btnAgregarProducto">
+            <i class="fa-solid fa-plus"></i>
+            <span>Agregar producto</span>
+          </button>
+        </div>
       </div>
-
-      <!--Buscador y botón juntos-->
-      <div class="d-flex align-items-center gap-3 mb-4">
+      <div class="mb-3">
         <input
           class="form-control"
           id="buscar"
           placeholder="Escribe el nombre del producto..." />
-        <button class="btnVenta" id="btnAgregarProducto">
-          <i class="fa-solid fa-plus"></i>
-          <span>Agregar producto</span>
-        </button>
       </div>
-
-      <div id="panelFiltros" class="mb-0"></div>
-
+      <div id="panelFiltros" class="mb-3"></div>
+      <div id="tablaProductos"></div>
     </div>
-
-    <div id="tablaProductos" class="mt-4"></div>
-  
-    <!--Modales-->
+    <!-- Modales -->
     <!-- Modal Registrar Entrada -->
     <div
       class="modal fade"
@@ -141,7 +127,6 @@
               <i class="fa-solid fa-xmark"></i>
             </button>
           </div>
-
           <div class="p-4 pb-0">
             <div class="card border-0 bg-light p-3" style="border-radius: 14px">
               <h6 class="text-muted mb-2">Producto seleccionado</h6>
@@ -152,10 +137,11 @@
                   >
                 </div>
                 <div class="col-4 text-end">
-                  <span class="badge bg-primary" id="tipoProductoEntrada">Tipo</span>
+                  <span class="badge bg-primary" id="tipoProductoEntrada"
+                    >Tipo</span
+                  >
                 </div>
               </div>
-
               <hr class="my-2" />
               <div class="d-flex justify-content-between text-secondary">
                 <span>Existencias actuales</span>
@@ -163,7 +149,6 @@
               </div>
             </div>
           </div>
-
           <form class="formVenta pb-2">
             <div class="campo">
               <label for="tipoEntrada">Tipo de entrada</label>
@@ -176,9 +161,10 @@
                 class="text-danger d-block mt-1 error-msg"
                 id="errorTipo"></small>
             </div>
-
             <div class="campo">
-              <label for="cantidadEntrada" id="labelCantidadEntrada">Cantidad ingresada</label>
+              <label for="cantidadEntrada" id="labelCantidadEntrada"
+                >Cantidad ingresada</label
+              >
               <input
                 type="number"
                 id="cantidadEntrada"
@@ -191,36 +177,34 @@
                 class="text-danger d-block mt-1 error-msg"
                 id="errorCantidad"></small>
             </div>
-
             <div class="campo" style="grid-column: span 2">
-              <label for="observacionEntrada">Observación</label>
+              <label for="observacionEntrada"
+                >Observación
+                <span class="text-muted font-normal">(opcional)</span></label
+              >
               <textarea
                 id="observacionEntrada"
                 rows="2"
-                placeholder="Detalle del movimiento (opcional)">
-              </textarea>
+                placeholder="Agregue una observación"></textarea>
             </div>
           </form>
-
           <small
             class="text-danger d-block mb-3 text-center error-msg"
-            id="errorGeneral">
-          </small>
-
-          <!--Botones centrados-->
+            id="errorGeneral"></small>
+          <!-- Botones centrados -->
           <div class="modal-botones">
+            <button type="button" class="btnGuardar" id="guardarEntrada">
+              Registrar
+            </button>
             <button type="button" class="btnCancelar" data-bs-dismiss="modal">
               Cancelar
-            </button>
-            <button type="button" class="btnGuardar" id="guardarEntrada">
-              <i class="bi bi-check-lg me-1"></i> Registrar
             </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!--Modal registrar salida-->
+    <!-- Modal registrar salida -->
     <div
       class="modal fade"
       id="modalSalida"
@@ -229,8 +213,7 @@
       aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-
-          <!--Encabezado-->
+          <!-- Encabezado -->
           <div class="venta-header">
             <h2>
               <i class="bi bi-cart-dash me-2 text-danger"></i> REGISTRAR SALIDA
@@ -243,22 +226,22 @@
               <i class="fa-solid fa-xmark"></i>
             </button>
           </div>
-
           <!-- Tarjeta informativa -->
           <div class="p-4 pb-0">
             <div class="card border-0 bg-light p-3" style="border-radius: 14px">
               <h6 class="text-muted mb-2">Producto seleccionado</h6>
               <div class="row align-items-center">
                 <div class="col-8">
-                  <strong id="nombreProductoSalida" class="fs-5 text-dark">Nombre del producto</strong>
+                  <strong id="nombreProductoSalida" class="fs-5 text-dark"
+                    >Nombre del producto</strong
+                  >
                 </div>
-
                 <div class="col-4 text-end">
                   <span class="badge bg-primary" id="tipoProductoSalida"
-                    >Tipo</span>
+                    >Tipo</span
+                  >
                 </div>
               </div>
-
               <hr class="my-2" />
               <div class="d-flex justify-content-between text-secondary">
                 <span>Existencias actuales</span>
@@ -266,8 +249,7 @@
               </div>
             </div>
           </div>
-
-          <!--Formulario-->
+          <!-- Formulario -->
           <form class="formVenta pb-2">
             <div class="campo">
               <label for="motivoSalida">Motivo de salida</label>
@@ -279,7 +261,6 @@
               </select>
               <div id="errorMotivoSalida" class="text-danger small mt-1"></div>
             </div>
-
             <div class="campo">
               <label for="cantidadSalida">Cantidad a retirar</label>
               <input
@@ -289,39 +270,34 @@
                 placeholder="Ingrese la cantidad" />
               <div
                 id="errorCantidadSalida"
-                class="text-danger small mt-1">
-              </div>
+                class="text-danger small mt-1"></div>
             </div>
-
             <div class="campo" style="grid-column: span 2">
-              <label for="observacionSalida">Observación
-                <span class="text-muted font-normal">(opcional)</span>
-              </label>
+              <label for="observacionSalida"
+                >Observación
+                <span class="text-muted font-normal">(opcional)</span></label
+              >
               <textarea
                 id="observacionSalida"
                 rows="2"
-                placeholder="Agregue una observación (opcional)"></textarea>
+                placeholder="Agregue una observación"></textarea>
             </div>
           </form>
-
           <div
             id="errorGeneralSalida"
-            class="text-danger small text-center mb-3">
-          </div>
-
+            class="text-danger small text-center mb-3"></div>
           <div class="modal-botones">
+            <button type="button" class="btnGuardar" id="guardarSalida">
+              Registrar
+            </button>
             <button type="button" class="btnCancelar" data-bs-dismiss="modal">
               Cancelar
-            </button>
-            <button type="button" class="btnGuardar" id="guardarSalida">
-              <i class="bi bi-check-lg me-1"></i> Registrar
             </button>
           </div>
         </div>
       </div>
     </div>
-
-    <!--Modal Historial de Movimientos-->
+    <!-- Modal Historial de Movimientos -->
     <div
       class="modal fade"
       id="modalHistorial"
@@ -330,8 +306,7 @@
       aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-
-          <!--Encabezado unificado-->
+          <!-- Encabezado unificado -->
           <div class="venta-header">
             <h2>
               <i class="bi bi-clock-history me-2"></i> HISTORIAL DE MOVIMIENTOS
@@ -344,10 +319,8 @@
               <i class="fa-solid fa-xmark"></i>
             </button>
           </div>
-
           <!-- Cuerpo del Modal -->
           <div class="modal-body">
-
             <!-- Tarjeta de información del producto -->
             <div
               class="card border-0 bg-light p-3 mb-4"
@@ -358,21 +331,18 @@
                     Nombre del producto
                   </strong>
                 </div>
-
                 <div class="col-4 text-end">
                   <span class="badge bg-primary" id="tipoProductoHistorial">
                     Tipo
                   </span>
                 </div>
               </div>
-
               <hr class="my-2" />
               <div class="d-flex justify-content-between text-secondary">
                 <span>Stock actual</span>
                 <strong id="stockActualHistorial" class="text-dark"> 0 </strong>
               </div>
             </div>
-
             <!-- Indicador de carga -->
             <div id="cargandoHistorial" class="text-center d-none my-4">
               <div class="spinner-border text-info" role="status">
@@ -392,8 +362,7 @@
               <div class="col-auto">
                 <select
                   id="periodoHistorial"
-                  class="form-select form-select-sm">
-                </select>
+                  class="form-select form-select-sm"></select>
               </div>
             </div>
 
@@ -409,7 +378,6 @@
                     <th>Observación</th>
                   </tr>
                 </thead>
-
                 <tbody id="tablaMovimientos">
                   <tr>
                     <td colspan="5" class="text-center text-muted py-4">
@@ -419,122 +387,113 @@
                 </tbody>
               </table>
             </div>
-
           </div>
-
           <!-- Pie con botón único unificado -->
           <div class="modal-botones">
             <button type="button" class="btnCancelar" data-bs-dismiss="modal">
               Cerrar
             </button>
           </div>
-
         </div>
       </div>
     </div>
-
-    <!--MODAL AGREGAR VENTA-->
+    <!-- ========================================= -->
+    <!-- MODAL AGREGAR VENTA -->
+    <!-- ========================================= -->
     <div class="modalVenta" id="modalVenta">
-
       <div class="modal-contenido">
-        <!--Encabezado-->
+        <!-- Encabezado -->
         <div class="venta-header">
-          <h2><i class="fa-solid fa-cash-register"></i> AGREGAR VENTA</h2>
-
+          <h2>🛒 AGREGAR VENTA</h2>
           <button type="button" class="cerrarModal" id="cerrarModal">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
-
-        <!--Buscar producto-->
+        <!-- Buscar producto -->
         <div class="grupoBusqueda">
           <i class="fa-solid fa-magnifying-glass iconoBuscar"></i>
-
           <input
             type="text"
             class="buscarProducto"
             placeholder="Buscar producto..." />
         </div>
-
-        <!--Formulario-->
+        <!-- Formulario -->
         <form class="formVenta">
           <div class="campo">
-            <label>NOMBRE</label>
-
-            <input type="text"/>
+            <label>Nombre</label>
+            <input type="text" readonly />
           </div>
-
           <div class="campo">
-            <label>CANTIDAD</label>
-
+            <label>Cantidad</label>
             <input type="number" min="1" />
           </div>
-
           <div class="campo">
-            <label>PRECIO</label>
-
-            <input type="text"/>
+            <label>Precio</label>
+            <input type="text" readonly />
           </div>
-
           <div class="campo">
-            <label>TOTAL</label>
-
-            <input type="text"/>
+            <label>Total</label>
+            <input type="text" readonly />
           </div>
         </form>
-
-        <!--Botones-->
+        <!-- Botones -->
         <div class="modal-botones">
           <button type="button" class="btnCancelar" id="btnCancelar">
-            <i class="fa-solid fa-xmark"></i> Cancelar
+            Cancelar
           </button>
-
-          <button type="submit" class="btnGuardar"><i class="fa-solid fa-check"></i> Guardar</button>
+          <button type="submit" class="btnGuardar">Guardar</button>
         </div>
       </div>
     </div>
-
-    <!--Modal agregar producto-->
+    <!-- Modal agregar producto -->
     <div id="contenedorModalAgregarProducto"></div>
 
-    <!--JAVASCRIPT-->
+    <!-- Modal editar producto -->
+    <div id="contenedorModalEditarProducto"></div>
+    <!-- ========================================= -->
+    <!-- JAVASCRIPT -->
+    <!-- ========================================= -->
     <script>
       /* ========= Menú lateral ========= */
       const btnMenu = document.getElementById("btnMenu");
       const menuLateral = document.getElementById("menuLateral");
-
       btnMenu.addEventListener("click", () => {
         menuLateral.classList.toggle("activo");
         document.body.classList.toggle("menu-abierto");
-      });
 
+        // Ejemplo al hacer clic en el botón del menú:
+        document.querySelector(".btnMenu").addEventListener("click", () => {
+          document.body.classList.toggle("menu-abierto");
+          document.querySelector(".Menu-lateral").classList.toggle("activo");
+
+          // Espera a que termine la transición CSS (.3s) y redimensiona la tabla
+          setTimeout(() => {
+            if (typeof tabla !== "undefined") {
+              tabla.redraw(true);
+            }
+          }, 300);
+        });
+      });
       /* ========= Modal Agregar Venta ========= */
       const modal = document.getElementById("modalVenta");
       const btnVenta = document.querySelector(".btnVenta");
       const cerrarModal = document.getElementById("cerrarModal");
       const btnCancelar = document.getElementById("btnCancelar");
-
       btnVenta.addEventListener("click", () => {
         modal.classList.add("activo");
       });
-
       cerrarModal.addEventListener("click", () => {
         modal.classList.remove("activo");
       });
-
       btnCancelar.addEventListener("click", (event) => {
         event.preventDefault();
-
         document.querySelector(".buscarProducto").value = "";
-
         document.querySelector(".formVenta").reset();
-
         document.querySelectorAll(".campo input[readonly]").forEach((input) => {
           input.value = "";
         });
       });
     </script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
@@ -543,6 +502,7 @@
     <script src="./JavaScript/ModalesProducto/modalEntrada.js"></script>
     <script src="./JavaScript/utilities/formateoMoneda.js"></script>
     <script src="./JavaScript/utilities/formateoPorcentaje.js"></script>
+    <script src="./JavaScript/ModalesProducto/modalEditarProducto.js"></script>
     <script src="./JavaScript/ModalesProducto/modalAgregarProducto.js"></script>
     <script src="./JavaScript/productos.js"></script>
   </body>

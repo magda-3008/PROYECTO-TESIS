@@ -394,13 +394,15 @@ body {
 /*FONDO BLANCO*/
 .container-fluid {
     position: relative;
-    width: min(92%, 1400px) !important;
-    margin: 50px auto 20px auto !important;
+    width: calc(100% - 60px) !important; 
+    max-width: 1400px !important;       
+    margin: 40px auto 20px auto !important;
     padding: 38px 48px 24px !important;
     background: rgba(255, 255, 255, .98);
     border-radius: 20px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, .08);
     display: block !important;
+    transition: all var(--transicion) !important; 
 }
 
 .container-fluid > div:nth-of-type(2) {
@@ -636,15 +638,13 @@ select.form-select {
    TABLA (Ajuste dentro del contenedor blanco)
    ========================================== */
 #tablaProductos {
-    width: 100% !important;
+    width: 100% !important;     
     max-width: 100% !important;
     margin: 20px 0 0 0 !important;
-    background: #fff !important;
+    background: transparent !important;
     box-shadow: none !important;
-    display: block !important; /* Devuelve el comportamiento correcto a Tabulator */
+    display: block !important;
     box-sizing: border-box !important;
-    border-radius: 12px;
-    overflow: hidden;
 }
 
 .acciones-tabla {
@@ -744,8 +744,8 @@ body {
     transition: all var(--transicion);
 }
 
+/* CUANDO EL MENÚ LATERAL SE ABRE (Pantallas grandes) */
 @media (min-width: 901px) {
-    /* Desplaza todo el contenedor principal (incluyendo la tabla en su interior) */
     body.menu-abierto .container-fluid {
         width: calc(100% - var(--menu) - 60px) !important;
         max-width: 1400px !important;
