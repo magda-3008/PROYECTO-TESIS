@@ -395,7 +395,7 @@ body {
 .container-fluid {
     position: relative;
     width: calc(100% - 60px) !important; 
-    max-width: 2000px !important;       
+    max-width: 1400px !important;       
     margin: 40px auto 20px auto !important;
     padding: 38px 48px 24px !important;
     background: rgba(255, 255, 255, .98);
@@ -480,26 +480,23 @@ body {
 }
 
 /*BOTÒN AGREGAR PRODUCTOS*/
-#btnAgregarProducto {
+.btnAgregar {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 10px;
-    height: 50px;           
-    padding: 0 24px;        
+    padding: 12px 22px;
     border: none;
-    border-radius: 14px;    
-    background: var(--principal);
+    border-radius: 25px;
+    background: #61bcd7;
     color: #fff;
-    font-size: 18px;        
-    font-weight: normal;
+    font-size: 15px;
+    font-weight: 700;
     cursor: pointer;
     transition: .25s;
 }
-
-#btnAgregarProducto:hover {
+.btnAgregar:hover {
     background: #1a81a0;
-	transform: scale(1.03);
+    transform: scale(1.03);
 }
 
 /*MODALES BOOTSTRAP AGREGAR PRODUCTO*/
@@ -977,23 +974,4 @@ button:active {
         white-space: normal !important;
         word-wrap: break-word;
     }
-}
-
-.btnAgregar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 22px;
-    border: none;
-    border-radius: 25px;
-    background: #61bcd7;
-    color: #fff;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: .25s;
-}
-.btnAgregar:hover {
-    background: #1a81a0;
-    transform: scale(1.03);
 }
