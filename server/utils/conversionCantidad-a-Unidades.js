@@ -25,3 +25,7 @@ function convertirCantidadAUnidadMedida(cantidad, materiaPrima) {
 
     return cantidadHumana * unidadPorPaquete;
 }
+
+module.exports = {
+    convertirCantidadAUnidadMedida
+};
