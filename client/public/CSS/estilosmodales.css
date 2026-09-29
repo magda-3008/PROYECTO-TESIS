@@ -286,22 +286,3 @@
 		align-items: center;
 	}
 }
-
-/* =========================================
-        ESTADO DEL STOCK
-========================================= */
-
-/* Stock normal */
-.tabulator-row.stock-normal .tabulator-cell {
-    background-color: white !important;
-}
-
-/* Stock bajo */
-.tabulator-row.stock-bajo .tabulator-cell {
-    background-color: #fff3cd !important;
-}
-
-/* Stock agotado */
-.tabulator-row.stock-agotado .tabulator-cell {
-    background-color: #f8d7da !important;
-}
