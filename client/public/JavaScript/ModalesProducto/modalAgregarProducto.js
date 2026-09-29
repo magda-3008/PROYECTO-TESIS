@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const nombreProducto = document.getElementById("nombreProducto");
         const nombreReceta = document.getElementById("nombreReceta");
         const stockInicial = document.getElementById("stockInicial");
+        const stockMinimo = document.getElementById("stockMinimoProducto");
         const cantidadProducidaBase = document.getElementById("cantidadProducidaBase");
         const vistaPreviaImagen = document.getElementById("vistaPreviaImagen");
         const listaIngredientes = document.getElementById("listaIngredientes");
@@ -70,8 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 }
 
-                // Si volvió a activo, necesitamos volver
-                // a cargar la lista para incorporarlo
+                // Si volvió a activo, se carga la lista para incorporarlo
                 else if (estado === "Activo") {
 
                     cargarProductosElaborados();
@@ -153,9 +153,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     `;
             selectUnidad.disabled = true;
             const tipo = selectTipo.value;
-            // =====================================
-            // PRODUCTO ELABORADO
-            // =====================================
+
+            //Producto elaborado
             if (tipo === "producto") {
                 const opcion = document.createElement("option");
                 opcion.value = "unidad";
@@ -166,9 +165,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 selectUnidad.disabled = false;
                 return;
             }
-            // =====================================
-            // MATERIA PRIMA
-            // =====================================
+
+            //Materia prima
             if (tipo !== "materia_prima") {
                 return;
             }
@@ -297,22 +295,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         <!-- Tipo de insumo -->
         <div class="col-md-3">
-
             <div class="campo">
-
-                <label>
-                    Tipo de insumo
-                </label>
-
-                <select
-                    class="form-select tipo-insumo-select"
-                >
-
-                    <option
-                        value=""
-                        selected
-                        disabled
-                    >
+                <label>Tipo de insumo</label>
+                <select class="form-select tipo-insumo-select">
+                    <option value="" selected disabled>
                         Seleccione
                     </option>
 
@@ -323,119 +309,63 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <option value="producto">
                         Producto elaborado
                     </option>
-
                 </select>
-
             </div>
-
         </div>
-
 
         <!-- Insumo -->
         <div class="col-md-4">
-
             <div class="campo">
-
-                <label>
-                    Insumo
-                </label>
-
-                <select
-                    class="form-select ingrediente-select"
-                    disabled
-                >
-
-                    <option
-                        value=""
-                        selected
-                        disabled
-                    >
+                <label> Insumo </label>
+                <select class="form-select ingrediente-select" disabled>
+                    <option value="" selected disabled>
                         Seleccione un insumo
                     </option>
-
                 </select>
-
             </div>
-
         </div>
-
 
         <!-- Cantidad -->
         <div class="col-md-2">
-
             <div class="campo">
-
-                <label>
-                    Cantidad
-                </label>
-
+                <label>Cantidad</label>
                 <input
                     type="number"
                     class="form-control cantidad-ingrediente"
                     min="0"
                     step="0.01"
-                    placeholder="Cantidad"
-                >
-
+                    placeholder="Cantidad">
             </div>
-
         </div>
-
 
         <!-- Unidad -->
         <div class="col-md-2">
-
             <div class="campo">
-
-                <label>
-                    Unidad
-                </label>
-
-                <select
-                    class="form-select unidad-ingrediente"
-                    disabled
-                >
-
-                    <option
-                        value=""
-                        selected
-                        disabled
-                    >
+                <label>Unidad</label>
+                <select class="form-select unidad-ingrediente" disabled>
+                    <option value="" selected disabled>
                         Seleccione
                     </option>
-
                 </select>
-
             </div>
-
         </div>
-
 
         <!-- Eliminar -->
         <div class="col-md-1">
-
             <button
                 type="button"
                 class="btn btn-danger w-100 btnEliminarIngrediente"
                 title="Eliminar ingrediente"
-                style="
-                    height: 48px;
-                    border-radius: 12px;
-                "
-            >
-
+                style="height: 48px; border-radius: 12px;">
                 <i class="fa-solid fa-trash"></i>
-
             </button>
-
         </div>
 
     `;
             return nuevaFila;
         }
-        // =========================================
-        // OBTENER INGREDIENTES DE LA RECETA
-        // =========================================
+
+        //Obtener ingredientes de la receta
         function obtenerIngredientesReceta() {
             if (!listaIngredientes) {
                 return [];
@@ -479,9 +409,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     if (!fila) {
                         return;
                     }
-                    // =====================================
-                    // CAMBIO DE TIPO DE INSUMO
-                    // =====================================
+                    //Cambio de tipo de insumo
                     if (elemento.classList.contains("tipo-insumo-select")) {
                         const tipo = elemento.value;
                         const selectInsumo = fila.querySelector(".ingrediente-select");
@@ -491,47 +419,35 @@ document.addEventListener("DOMContentLoaded", async () => {
                         }
                         // Limpiar unidades
                         selectUnidad.innerHTML = `
-                    <option
-                        value=""
-                        selected
-                        disabled
-                    >
+                    <option value="" selected disabled>
                         Seleccione
                     </option>
                 `;
                         selectUnidad.disabled = true;
-                        // -----------------------------
-                        // Materia prima
-                        // -----------------------------
+
+                        //Materia prima
                         if (tipo === "materia_prima") {
                             llenarSelectMateriaPrima(selectInsumo, materiasPrimas);
                             return;
                         }
-                        // -----------------------------
-                        // Producto elaborado
-                        // -----------------------------
+
+                        //Producto elaborado
                         if (tipo === "producto") {
                             llenarSelectProductoElaborado(selectInsumo, productosElaborados);
                             return;
                         }
-                        // -----------------------------
-                        // Ningún tipo
-                        // -----------------------------
+
+                        //Ningún tipo
                         selectInsumo.innerHTML = `
-                    <option
-                        value=""
-                        selected
-                        disabled
-                    >
+                    <option value="" selected disabled>
                         Seleccione un insumo
                     </option>
                 `;
                         selectInsumo.disabled = true;
                         return;
                     }
-                    // =====================================
-                    // CAMBIO DE INSUMO
-                    // =====================================
+
+                    //Cambio de insumo
                     if (elemento.classList.contains("ingrediente-select")) {
                         llenarSelectUnidad(fila);
                     }
@@ -574,11 +490,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             src="${urlImagen}"
                             alt="Vista previa"
                             class="img-fluid rounded"
-                            style="
-                                max-height: 135px;
-                                object-fit: contain;
-                            "
-                        >
+                            style="max-height: 135px; object-fit: contain;">
                     `;
                 });
         }
@@ -606,8 +518,22 @@ document.addEventListener("DOMContentLoaded", async () => {
                     formularioValido = false;
                 }
                 const stockInicial = document.getElementById("stockInicial");
-                if (!stockInicial.value || Number(stockInicial.value) < 0) {
+
+                if (
+                    !stockInicial.value ||
+                    !Number.isInteger(Number(stockInicial.value)) ||
+                    Number(stockInicial.value) < 0
+                ) {
                     stockInicial.classList.add("is-invalid");
+                    formularioValido = false;
+                }
+
+                if (
+                    !stockMinimo.value ||
+                    !Number.isInteger(Number(stockMinimo.value)) ||
+                    Number(stockMinimo.value) < 0
+                ) {
+                    stockMinimo.classList.add("is-invalid");
                     formularioValido = false;
                 }
                 if (tipoProducto.value === "Reventa") {
@@ -687,6 +613,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 formData.append("tipo", tipoProducto.value);
                 formData.append("precio_venta", Number(precioVenta.value));
                 formData.append("stock_inicial", Number(stockInicial.value));
+                formData.append("stock_minimo_p", Number(stockMinimo.value));
                 if (tipoProducto.value === "Reventa") {
                     formData.append("costo_compra", Number(document.getElementById("costoCompra").value));
                 }
@@ -747,7 +674,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         spinnerGuardarProducto.classList.add("d-none");
                     }
                     if (textoGuardarProducto) {
-                        textoGuardarProducto.textContent = "Guardar producto";
+                        textoGuardarProducto.textContent = "Guardar";
                     }
                 }
             });
@@ -772,7 +699,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     spinnerGuardarProducto.classList.add("d-none");
                 }
                 if (textoGuardarProducto) {
-                    textoGuardarProducto.textContent = "Guardar producto";
+                    textoGuardarProducto.textContent = "Guardar";
                 }
                 // Restablecer vista previa
                 if (vistaPreviaImagen) {
@@ -805,11 +732,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         }
                         if (selectUnidad) {
                             selectUnidad.innerHTML = `
-                                <option
-                                    value=""
-                                    selected
-                                    disabled
-                                >
+                                <option value="" selected disabled>
                                     Seleccione
                                 </option>
                             `;

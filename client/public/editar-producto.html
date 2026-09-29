@@ -1,0 +1,198 @@
+<!-- Modal Editar Producto -->
+<div
+  class="modal fade"
+  id="modalEditarProducto"
+  tabindex="-1"
+  aria-labelledby="tituloModalEditarProducto"
+  aria-hidden="true">
+  <div
+    class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <!-- Encabezado estilo Pa'TuBoca -->
+      <div class="venta-header">
+        <h2 id="tituloModalEditarProducto">
+          <i class="fa-solid fa-pen-to-square me-2"></i> EDITAR PRODUCTO
+        </h2>
+        <button
+          type="button"
+          class="cerrarModal"
+          data-bs-dismiss="modal"
+          aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Cuerpo del modal -->
+      <div class="modal-body p-4">
+        <form id="formEditarProducto">
+          <!-- Sección: Información del producto -->
+          <div class="mb-2">
+            <h6 class="text-muted mb-3 fw-bold">
+              <i class="fa-solid fa-circle-info me-2 text-info"></i> Información
+              del producto
+            </h6>
+
+            <div class="row g-4 align-items-center">
+              <!-- Columna Izquierda: Sección de Foto -->
+              <div class="col-md-5 text-center border-end-md pe-md-4">
+                <div class="campo campo-foto">
+                  <div
+                    id="contenedorFotoEditar"
+                    class="contenedor-foto border rounded p-2 d-flex align-items-center justify-content-center bg-light mb-3 overflow-hidden mx-auto shadow-sm"
+                    style="
+                      height: 180px;
+                      width: 100%;
+                      max-width: 180px;
+                      border-radius: 16px !important;
+                    ">
+                    <img
+                      id="previewFotoProducto"
+                      src=""
+                      alt="Foto del producto"
+                      style="width: 100%; height: 100%; object-fit: cover" />
+                    <div id="sinFotoEditar" class="sin-foto text-muted">
+                      <i
+                        class="fa-solid fa-image fa-2x mb-2 text-secondary d-block"></i>
+                      <span class="small fw-semibold">Sin foto</span>
+                    </div>
+                  </div>
+
+                  <label
+                    for="editarFotoProducto"
+                    class="btn btn-outline-info rounded-pill w-100 mb-1 fw-semibold py-2">
+                    <i class="fa-solid fa-camera me-1"></i> Seleccionar foto
+                  </label>
+                  <input
+                    type="file"
+                    id="editarFotoProducto"
+                    name="foto_producto"
+                    accept="image/jpeg,image/png,image/webp"
+                    hidden />
+                  <small class="form-text text-muted d-block text-center mt-1">
+                    JPG, PNG o WEBP.
+                  </small>
+                </div>
+              </div>
+
+              <!-- Columna Derecha: Campos del producto -->
+              <div class="col-md-7 ps-md-3">
+                <div class="row g-3">
+                  <!-- Nombre del Producto -->
+                  <div class="col-12">
+                    <div class="campo">
+                      <label for="editarNombreProducto" class="fw-semibold">
+                        Nombre del producto
+                      </label>
+
+                      <input
+                        type="text"
+                        id="editarNombreProducto"
+                        name="nombre"
+                        placeholder="Ej. Chocolate caliente"
+                        required />
+
+                      <div
+                        id="errorNombreProducto"
+                        class="text-danger small mt-1 error-msg"></div>
+                    </div>
+                  </div>
+
+                  <!-- Precio de venta -->
+                  <div class="col-md-6">
+                    <div class="campo">
+                      <label for="editarPrecioVenta" class="fw-semibold">
+                        Precio de venta (C$)
+                      </label>
+
+                      <input
+                        type="number"
+                        id="editarPrecioVenta"
+                        name="precio_venta"
+                        min="0"
+                        step="0.01"
+                        placeholder="0.00"
+                        required />
+
+                      <div
+                        id="errorPrecioVenta"
+                        class="text-danger small mt-1 error-msg"></div>
+                    </div>
+                  </div>
+
+                  <!-- Costo -->
+                  <div class="col-md-6">
+                    <div class="campo">
+                      <label for="editarCostoProducto" class="fw-semibold">
+                        Costo (C$)
+                      </label>
+
+                      <input
+                        type="number"
+                        id="editarCostoProducto"
+                        name="costo"
+                        min="0"
+                        step="0.01"
+                        placeholder="0.00"
+                        disabled />
+
+                      <div
+                        id="errorCostoProducto"
+                        class="text-danger small mt-1 error-msg"></div>
+                    </div>
+                  </div>
+
+                  <!-- Stock mínimo -->
+                  <div class="col-12">
+                    <div class="campo">
+                      <label for="editarStockMinimo" class="fw-semibold">
+                        Stock mínimo
+                      </label>
+
+                      <input
+                        type="number"
+                        id="editarStockMinimo"
+                        name="stock_minimo_p"
+                        min="0"
+                        step="1"
+                        placeholder="Ej. 5"
+                        required />
+
+                      <small class="form-text text-muted">
+                        Cantidad mínima que debe mantenerse en inventario.
+                      </small>
+
+                      <div
+                        id="errorStockMinimo"
+                        class="text-danger small mt-1 error-msg"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ERROR GENERAL -->
+          <div
+            id="errorGeneralEditar"
+            class="text-danger small mt-2 text-center error-msg"></div>
+        </form>
+      </div>
+
+      <!-- Pie con botones estilo Pa'TuBoca -->
+      <div class="modal-botones">
+        <button type="button" id="btnGuardarEdicionProducto" class="btnGuardar">
+          <span
+            class="spinner-border spinner-border-sm d-none"
+            id="spinnerGuardarEdicionProducto"
+            role="status"
+            aria-hidden="true"></span>
+          <span id="textoGuardarEdicionProducto"> Guardar cambios </span>
+        </button>
+
+        <button type="button" class="btnCancelar" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

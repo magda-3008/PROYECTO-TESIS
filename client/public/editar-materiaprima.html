@@ -1,0 +1,148 @@
+<div
+  class="modal fade"
+  id="modalEditarMateriaPrima"
+  tabindex="-1"
+  aria-labelledby="tituloModalEditarMateriaPrima"
+  aria-hidden="true">
+  <div
+    class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="venta-header">
+        <h2 id="tituloModalEditarMateriaPrima">
+          <i class="fa-solid fa-pen-to-square me-2"></i> EDITAR MATERIA PRIMA
+        </h2>
+        <button
+          type="button"
+          class="cerrarModal"
+          data-bs-dismiss="modal"
+          aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body p-4">
+        <form id="formEditarMateriaPrima">
+          <div class="mb-2">
+            <h6 class="text-muted mb-3 fw-bold">
+              <i class="fa-solid fa-circle-info me-2 text-info"></i> Información
+              del insumo
+            </h6>
+            <div class="row g-3">
+              <!-- Nombre -->
+              <div class="col-12">
+                <div class="campo">
+                  <label for="editarNombreMateriaPrima" class="fw-semibold">
+                    Nombre del insumo
+                  </label>
+                  <input
+                    type="text"
+                    id="editarNombreMateriaPrima"
+                    name="nombre"
+                    placeholder="Ej. Aceite vegetal"
+                    autocomplete="off"
+                    required />
+                  <div
+                    id="errorNombreMateriaPrima"
+                    class="text-danger small mt-1 error-msg"></div>
+                </div>
+              </div>
+              <!-- Unidad de medida -->
+              <div class="col-md-6">
+                <div class="campo">
+                  <label
+                    for="editarUnidadMedidaMateriaPrima"
+                    class="fw-semibold">
+                    Unidad de medida
+                  </label>
+                  <input
+                    type="text"
+                    id="editarUnidadMedidaMateriaPrima"
+                    disabled />
+                </div>
+              </div>
+              <!-- Cantidad por presentación -->
+              <div class="col-md-6">
+                <div class="campo">
+                  <label
+                    for="editarCantidadPresentacionMateriaPrima"
+                    class="fw-semibold">
+                    Cantidad por presentación
+                  </label>
+                  <input
+                    type="text"
+                    id="editarCantidadPresentacionMateriaPrima"
+                    disabled />
+                </div>
+              </div>
+              <!-- Costo -->
+              <div class="col-md-6">
+                <div class="campo">
+                  <label for="editarCostoMateriaPrima" class="fw-semibold">
+                    Costo del insumo (C$)
+                  </label>
+                  <input
+                    type="number"
+                    id="editarCostoMateriaPrima"
+                    name="costo_total_ingrediente"
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00"
+                    required />
+                  <div
+                    id="errorCostoMateriaPrima"
+                    class="text-danger small mt-1 error-msg"></div>
+                </div>
+              </div>
+              <!-- Stock mínimo -->
+              <div class="col-md-6">
+                <div class="campo">
+                  <label
+                    for="editarStockMinimoMateriaPrima"
+                    class="fw-semibold">
+                    Stock mínimo
+                  </label>
+                  <div class="d-flex align-items-center gap-2">
+                    <input
+                      type="text"
+                      id="editarStockMinimoMateriaPrima"
+                      name="stock_minimo"
+                      min="0"
+                      placeholder="Ej. 1/2"
+                      autocomplete="off"
+                      required />
+                    <span
+                      id="unidadStockMinimoMateriaPrima"
+                      class="fw-semibold text-muted">
+                    </span>
+                  </div>
+                  <div
+                    id="errorStockMinimoMateriaPrima"
+                    class="text-danger small mt-1 error-msg"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            id="errorGeneralEditarMateriaPrima"
+            class="text-danger small mt-2 text-center error-msg"></div>
+        </form>
+      </div>
+      <div class="modal-botones">
+        <button
+          type="button"
+          id="btnGuardarEdicionMateriaPrima"
+          class="btnGuardar">
+          <span
+            class="spinner-border spinner-border-sm d-none"
+            id="spinnerGuardarEdicionMateriaPrima"
+            role="status"
+            aria-hidden="true">
+          </span>
+          <span id="textoGuardarEdicionMateriaPrima"> Guardar cambios </span>
+        </button>
+        <button type="button" class="btnCancelar" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

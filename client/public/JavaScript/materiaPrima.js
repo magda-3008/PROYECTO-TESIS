@@ -38,9 +38,37 @@ let ingredienteSeleccionado = null;
 const vistas = {
     inventarioMD: {
         endpoint: "/api/materiaprima",
+        rowFormatter: function (row) {
+
+            const data = row.getData();
+
+            const stockActual = Number(data.stock_actual_i);
+            const stockMinimo = Number(data.stock_minimo);
+
+            const elemento = row.getElement();
+
+            elemento.classList.remove(
+                "stock-normal",
+                "stock-bajo",
+                "stock-agotado"
+            );
+
+            if (stockActual <= 0) {
+
+                elemento.classList.add("stock-agotado");
+
+            } else if (stockActual <= stockMinimo) {
+
+                elemento.classList.add("stock-bajo");
+
+            } else {
+
+                elemento.classList.add("stock-normal");
+            }
+        },
         columns: [
             { title: "Insumo", field: "nombre", frozen: true, width: 160, cssClass: "columna-texto-ajustable", headerWordWrap: true, headerToolTip: true, editor: "input" },
-            { title: "Tipo de insumo", field: "tipo_insumo", hozAlign: "center", minWidth: 80 },
+            //{ title: "Tipo de insumo", field: "tipo_insumo", hozAlign: "center", minWidth: 80 },
             {
                 title: "Costo de insumo", field: "costo_total_ingrediente", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true,
                 editor: "number", editorParams: { min: 0, step: 0.01 }
@@ -74,6 +102,8 @@ const vistas = {
                             <button class="btnAccion btnHistorial" title="Ver historial">
                                 <i class="bi bi-clock-history"></i>
                             </button>
+
+                            <button class="btnAccion btnEditar" title="Editar insumo"> <i class="bi bi-pencil"></i> </button>
                         </div>
                     `;
                 },
@@ -93,6 +123,10 @@ const vistas = {
 
                     if (e.target.closest(".btnHistorial")) {
                         abrirHistorialMP(ingrediente);
+                    }
+
+                    if (e.target.closest(".btnEditar")) {
+                        abrirModalEditarMP(ingrediente);
                     }
                 },
             },
@@ -161,6 +195,7 @@ async function cargarVista(vista) {
         columnHeaderVertAlign: "middle",
         pagination: true,
         paginationSize: 30,
+        rowFormatter: configuracion.rowFormatter,
 
         rowHeader: {
             formatter: "rownum",
@@ -269,17 +304,8 @@ function crearFiltros(vista) {
           </div>
 
           <div class="col-md-3">
-            <select id="filtroTipoInsumo" class="form-select">
-              <option value="">Tipo de insumo</option>
-              <option value="Ingrediente">Ingrediente</option>
-              <option value="Empaque">Empaque</option>
-              <option value="Costo indirecto">Costo indirecto</option>
-            </select>
-          </div>
-
-          <div class="col-md-3">
             <select id="filtroStock" class="form-select">
-              <option value="">Cantidad de existencias</option>
+              <option value="">Todas las existencias</option>
               <option value="0">Sin stock</option>
               <option value="bajo">Stock bajo</option>
               <option value="normal">Con stock</option>
@@ -299,9 +325,9 @@ function inicializarEventosFiltros(vista) {
     document
         .getElementById("filtroUnidadMedida")
         .addEventListener("change", aplicarFiltros);
-    document
-        .getElementById("filtroTipoInsumo")
-        .addEventListener("change", aplicarFiltros);
+    // document
+    //     .getElementById("filtroTipoInsumo")
+    //     .addEventListener("change", aplicarFiltros);
     document
         .getElementById("filtroStock")
         .addEventListener("change", aplicarFiltros);
@@ -316,8 +342,8 @@ function aplicarFiltros() {
 
     const unidad =
         document.getElementById("filtroUnidadMedida")?.value ?? "";
-    const tipo =
-        document.getElementById("filtroTipoInsumo")?.value ?? "";
+    // const tipo =
+    //     document.getElementById("filtroTipoInsumo")?.value ?? "";
     const stock =
         document.getElementById("filtroStock")?.value ?? "";
 
@@ -339,12 +365,6 @@ function aplicarFiltros() {
             coincide =
                 data.unidad_medida === unidad;
 
-        }
-
-        //Tipo de insumo
-        if (coincide && tipo) {
-            coincide =
-                data.tipo_insumo === tipo;
         }
 
         //Stock

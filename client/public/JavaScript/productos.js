@@ -4,13 +4,41 @@ let productoSeleccionado = null;
 // Configuración de vista (solo inventario)
 const productosInventario = {
   endpoint: "/api/productos",
+  rowFormatter: function (row) {
+
+    const data = row.getData();
+
+    const elemento = row.getElement();
+
+    elemento.classList.remove(
+      "stock-normal",
+      "stock-bajo",
+      "stock-agotado",
+      "stock-no-controlado"
+    );
+
+    if (data.stock_actual === null) {
+      elemento.classList.add("stock-no-controlado");
+      return;
+    }
+
+    const stockActual = Number(data.stock_actual);
+    const stockMinimo = Number(data.stock_minimo_p);
+
+    if (stockActual <= 0) {
+      elemento.classList.add("stock-agotado");
+
+    } else if (stockActual <= stockMinimo) {
+      elemento.classList.add("stock-bajo");
+
+    } else {
+      elemento.classList.add("stock-normal");
+    }
+  },
   columns: [
-    { title: "Nombre del producto", field: "nombre", frozen: true, width: 160, cssClass: "columna-texto-ajustable", headerWordWrap: true, headerToolTip: true, editor: "input" },
+    { title: "Nombre del producto", field: "nombre", frozen: true, width: 160, cssClass: "columna-texto-ajustable", headerWordWrap: true, headerTooltip: true },
     { title: "Tipo", field: "tipo", hozAlign: "center", minWidth: 80 },
-    {
-      title: "Precio de venta", field: "precio_venta", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true, editor: "number",
-      editorParams: { min: 0, step: 0.01 }
-    },
+    { title: "Precio de venta", field: "precio_venta", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
     { title: "Costo de compra/producción", field: "costo", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
     {
       title: "Estado",
@@ -98,15 +126,15 @@ const productosInventario = {
     {
       title: "Existencia actual", field: "stock_actual", hozAlign: "center", minWidth: 80, headerWordWrap: true, headerTooltip: true,
       formatter: function (cell) {
-        const data = cell.getRow().getData();
-        if (
-          data.nombre === "Chocobanano preparado" ||
-          data.nombre === "Frappé"
-        ) {
+        const valor = cell.getValue();
+
+        if (valor === null) {
           return "—";
         }
-        const stock = Number(cell.getValue());
-        return isNaN(stock) ? 0 : Math.floor(stock);
+
+        const stock = Number(valor);
+
+        return Number.isNaN(stock) ? 0 : Math.floor(stock);
       },
     },
     {
@@ -117,16 +145,13 @@ const productosInventario = {
       formatter: function () {
         return `
                     <div class="acciones-tabla">
-                        <button class="btnAccion btnEntrada" title="Registrar entrada">
-                            <i class="bi bi-cart-plus"></i>
-                        </button>
-                        <button class="btnAccion btnSalida" title="Registrar salida">
-                            <i class="bi bi-cart-dash"></i>
-                        </button>
+                        <button class="btnAccion btnEntrada" title="Registrar entrada"> <i class="bi bi-cart-plus"></i> </button>
 
-                        <button class="btnAccion btnHistorial" title="Ver historial">
-                            <i class="bi bi-clock-history"></i>
-                        </button>
+                        <button class="btnAccion btnSalida" title="Registrar salida"> <i class="bi bi-cart-dash"></i> </button>
+
+                        <button class="btnAccion btnHistorial" title="Ver historial"> <i class="bi bi-clock-history"></i> </button>
+
+                        <button class="btnAccion btnEditar" title="Editar producto"> <i class="bi bi-pencil"></i> </button>
                     </div>
                 `;
       },
@@ -147,6 +172,10 @@ const productosInventario = {
         if (e.target.closest(".btnHistorial")) {
           abrirHistorial(producto);
         }
+
+        if (e.target.closest(".btnEditar")) {
+          abrirModalEditarProducto(producto, cell.getRow());
+        }
       },
     },
   ],
@@ -154,7 +183,6 @@ const productosInventario = {
 
 // Cargar vista de Inventario
 async function cargarVista() {
-  
   const endpoint = productosInventario.endpoint;
 
   // Elimina la tabla anterior si existe
@@ -211,6 +239,8 @@ async function cargarVista() {
     columnHeaderVertAlign: "middle",
     pagination: true,
     paginationSize: 30,
+    rowFormatter: productosInventario.rowFormatter,
+
     rowHeader: {
       formatter: "rownum",
       width: 40,
@@ -222,68 +252,6 @@ async function cargarVista() {
     placeholder: "No se encontraron resultados",
   });
 
-  // ESCUCHA DE CAMBIOS EN CELDAS
-  tabla.on("cellEdited", async function (cell) {
-    const valorNuevo = cell.getValue();
-    const valorAnterior = cell.getOldValue();
-
-    if (valorNuevo === valorAnterior) return;
-
-    const filaData = cell.getRow().getData();
-    const idProducto = filaData.id_producto;
-    const campoEditado = cell.getField();
-
-    try {
-      const respuesta = await fetch(`/api/productos/${idProducto}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          [campoEditado]: valorNuevo
-        }),
-      });
-
-      if (!respuesta.ok) {
-        throw new Error("Error al guardar el cambio.");
-      }
-
-      cell.getElement().classList.add("celda-actualizada");
-
-      setTimeout(() => {
-        cell.getElement().classList.remove("celda-actualizada");
-      }, 7000);
-
-      if (campoEditado !== "estado") {
-        Swal.fire({
-          icon: "success",
-          title: "Cambio guardado correctamente",
-          returnFocus: false
-        });
-      }
-
-    } catch (error) {
-      console.error(
-        "Error al actualizar la base de datos:",
-        error
-      );
-
-      cell.setValue(valorAnterior, false);
-
-      cell.getElement().classList.add("celda-error");
-
-      setTimeout(() => {
-        cell.getElement().classList.remove("celda-error");
-      }, 7000);
-
-      Swal.fire({
-        icon: "error",
-        title: "No se pudo guardar la modificación",
-        returnFocus: false
-      });
-    }
-  });
-
   inicializarEventosFiltros();
 }
 
@@ -292,7 +260,7 @@ function crearFiltros() {
   const panel = document.getElementById("panelFiltros");
 
   panel.innerHTML = `
-        <h3 style="color: #4a7f83; font-weight: 800; font-size: 20px; margin-bottom: 12px;">FILTRAR POR</h3>
+        <h3>Filtrar por:</h3>
         <div class="row g-2">
             <div class="col-md-3">
                 <select id="filtroEstado" class="form-select">
@@ -308,6 +276,7 @@ function crearFiltros() {
                     <option value="0">Sin stock</option>
                     <option value="bajo">Stock bajo</option>
                     <option value="normal">Con stock</option>
+                    <option value="no-controla">No controla stock</option>
                 </select>
             </div>
         </div>
@@ -346,16 +315,28 @@ function aplicarFiltros() {
 
     if (coincide) {
       switch (stock) {
+
         case "0":
-          coincide = Number(data.stock_actual) === 0;
+          coincide =
+            data.stock_actual !== null &&
+            Number(data.stock_actual) <= 0;
           break;
 
         case "bajo":
-          coincide = Number(data.stock_actual) <= 5;
+          coincide =
+            data.stock_actual !== null &&
+            Number(data.stock_actual) > 0 &&
+            Number(data.stock_actual) <= Number(data.stock_minimo_p);
           break;
 
         case "normal":
-          coincide = Number(data.stock_actual) > 5;
+          coincide =
+            data.stock_actual !== null &&
+            Number(data.stock_actual) > Number(data.stock_minimo_p);
+          break;
+
+        case "no-controla":
+          coincide = data.stock_actual === null;
           break;
       }
     }

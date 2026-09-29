@@ -13,38 +13,54 @@ const {
 const upload = multer({
     storage: multer.memoryStorage()
 });
-
 router.get("/", async (req, res) => {
     try {
         const resultado = await pool.query(`
+
             SELECT
+
                 p.id_producto,
                 p.nombre,
                 p.tipo,
                 p.precio_venta,
+                p.foto_producto,
+                p.stock_minimo_p,
+
                 CASE
                     WHEN p.tipo = 'Reventa'
                         THEN pr.costo_compra
+
                     WHEN p.tipo = 'Elaborado'
                         THEN COALESCE(v.costo_unitario_prod, 0.00)
+
                     ELSE 0.00
                 END AS costo,
+
                 p.estado,
+
                 CASE
                     WHEN p.tipo = 'Reventa'
-                        THEN COALESCE(pr.stock_actual_pr, 0)
+                        THEN pr.stock_actual_pr
+
                     WHEN p.tipo = 'Elaborado'
-                        THEN COALESCE(pe.stock_actual_pe, 0)
-                    ELSE 0
+                        THEN pe.stock_actual_pe
+
+                    ELSE NULL
                 END AS stock_actual
+
             FROM producto p
+
             LEFT JOIN producto_reventa pr
                 ON p.id_producto = pr.id_producto
+
             LEFT JOIN producto_elaborado pe
                 ON p.id_producto = pe.id_producto
+
             LEFT JOIN v_productos_elaborados_costo_actual v
                 ON p.id_producto = v.id_producto
+
             ORDER BY p.nombre;
+
         `);
         res.json(resultado.rows);
     } catch (error) {
@@ -54,7 +70,6 @@ router.get("/", async (req, res) => {
         });
     }
 });
-
 // Crear producto de reventa o elaborado
 router.post("/", upload.single("foto"), async (req, res) => {
     const {
@@ -62,6 +77,7 @@ router.post("/", upload.single("foto"), async (req, res) => {
         tipo,
         precio_venta,
         stock_inicial,
+        stock_minimo_p,
         costo_compra,
         // Datos de receta
         nombre_receta,
@@ -87,6 +103,17 @@ router.post("/", upload.single("foto"), async (req, res) => {
     if (stock_inicial === undefined || Number(stock_inicial) < 0) {
         return res.status(400).json({
             error: "El stock inicial no puede ser negativo."
+        });
+    }
+    const stockMinimoNumero = Number(stock_minimo_p);
+
+    if (
+        stock_minimo_p === undefined ||
+        !Number.isInteger(stockMinimoNumero) ||
+        stockMinimoNumero < 0
+    ) {
+        return res.status(400).json({
+            error: "El stock mínimo debe ser un número entero mayor o igual a 0."
         });
     }
     if (tipo === "Reventa") {
@@ -121,15 +148,17 @@ router.post("/", upload.single("foto"), async (req, res) => {
             INSERT INTO producto (
                 nombre,
                 tipo,
-                precio_venta
+                precio_venta,
+                stock_minimo_p
             )
-            VALUES ($1, $2, $3)
+            VALUES ($1, $2, $3, $4)
             RETURNING *;
             `,
             [
                 nombre.trim(),
                 tipo,
-                Number(precio_venta)
+                Number(precio_venta),
+                stockMinimoNumero
             ]);
         const producto = resultadoProducto.rows[0];
         if (req.file) {
@@ -209,103 +238,52 @@ router.post("/", upload.single("foto"), async (req, res) => {
                 throw new Error("La receta debe contener al menos un ingrediente.");
             }
             for (const ingrediente of ingredientesParseados) {
-
                 // Validar el tipo de insumo
-                if (
-                    ingrediente.tipo !== "materia_prima" &&
-                    ingrediente.tipo !== "producto"
-                ) {
-                    throw new Error(
-                        "El tipo de insumo de uno de los ingredientes no es válido."
-                    );
+                if (ingrediente.tipo !== "materia_prima" && ingrediente.tipo !== "producto") {
+                    throw new Error("El tipo de insumo de uno de los ingredientes no es válido.");
                 }
-
                 // Validar que tenga el ID correspondiente
-                if (
-                    ingrediente.tipo === "materia_prima" &&
-                    !ingrediente.id_ma
-                ) {
-                    throw new Error(
-                        "Todos los ingredientes de materia prima deben tener una materia prima seleccionada."
-                    );
+                if (ingrediente.tipo === "materia_prima" && !ingrediente.id_ma) {
+                    throw new Error("Todos los ingredientes de materia prima deben tener una materia prima seleccionada.");
                 }
-
-                if (
-                    ingrediente.tipo === "producto" &&
-                    !ingrediente.id_producto_insumo
-                ) {
-                    throw new Error(
-                        "Todos los ingredientes de producto deben tener un producto elaborado seleccionado."
-                    );
+                if (ingrediente.tipo === "producto" && !ingrediente.id_producto_insumo) {
+                    throw new Error("Todos los ingredientes de producto deben tener un producto elaborado seleccionado.");
                 }
-
                 // Validar cantidad
                 if (ingrediente.cantidad === undefined) {
-                    throw new Error(
-                        "Todos los ingredientes deben tener una cantidad mayor que 0."
-                    );
+                    throw new Error("Todos los ingredientes deben tener una cantidad mayor que 0.");
                 }
-
                 try {
-                    const cantidadNumerica =
-                        convertirTextoANumero(ingrediente.cantidad);
-
+                    const cantidadNumerica = convertirTextoANumero(ingrediente.cantidad);
                     if (cantidadNumerica <= 0) {
-                        throw new Error(
-                            "Todos los ingredientes deben tener una cantidad mayor que 0."
-                        );
+                        throw new Error("Todos los ingredientes deben tener una cantidad mayor que 0.");
                     }
                 } catch (error) {
-                    throw new Error(
-                        `La cantidad "${ingrediente.cantidad}" no es válida. ${error.message}`
-                    );
+                    throw new Error(`La cantidad "${ingrediente.cantidad}" no es válida. ${error.message}`);
                 }
-
                 // Validar unidad
-                if (
-                    !ingrediente.unidad ||
-                    !ingrediente.unidad.trim()
-                ) {
-                    throw new Error(
-                        "Todos los ingredientes deben tener una unidad seleccionada."
-                    );
+                if (!ingrediente.unidad || !ingrediente.unidad.trim()) {
+                    throw new Error("Todos los ingredientes deben tener una unidad seleccionada.");
                 }
-
                 // Si es producto, verificar que exista y sea Elaborado
                 if (ingrediente.tipo === "producto") {
-
-                    const resultadoProductoInsumo =
-                        await cliente.query(`
+                    const resultadoProductoInsumo = await cliente.query(`
                 SELECT id_producto, nombre, tipo
                 FROM producto
                 WHERE id_producto = $1;
             `, [
-                            Number(ingrediente.id_producto_insumo)
-                        ]);
-
+                        Number(ingrediente.id_producto_insumo)
+                    ]);
                     if (resultadoProductoInsumo.rowCount === 0) {
-                        throw new Error(
-                            "Uno de los productos seleccionados como insumo no existe."
-                        );
+                        throw new Error("Uno de los productos seleccionados como insumo no existe.");
                     }
-
-                    const productoInsumo =
-                        resultadoProductoInsumo.rows[0];
-
+                    const productoInsumo = resultadoProductoInsumo.rows[0];
                     if (productoInsumo.tipo !== "Elaborado") {
-                        throw new Error(
-                            `El producto "${productoInsumo.nombre}" no puede utilizarse como insumo porque no es un producto elaborado.`
-                        );
+                        throw new Error(`El producto "${productoInsumo.nombre}" no puede utilizarse como insumo porque no es un producto elaborado.`);
                     }
-
                     // Evitar que un producto se utilice a sí mismo
-                    if (
-                        Number(ingrediente.id_producto_insumo) ===
-                        Number(producto.id_producto)
-                    ) {
-                        throw new Error(
-                            "Un producto elaborado no puede utilizarse a sí mismo como insumo."
-                        );
+                    if (Number(ingrediente.id_producto_insumo) === Number(producto.id_producto)) {
+                        throw new Error("Un producto elaborado no puede utilizarse a sí mismo como insumo.");
                     }
                 }
             }
@@ -327,41 +305,17 @@ router.post("/", upload.single("foto"), async (req, res) => {
                 ]);
             const receta = resultadoReceta.rows[0];
             const detallesReceta = [];
-
             for (const ingrediente of ingredientesParseados) {
-
-                const idMa =
-                    ingrediente.tipo === "materia_prima"
-                        ? Number(ingrediente.id_ma)
-                        : null;
-
-                const idProductoInsumo =
-                    ingrediente.tipo === "producto"
-                        ? Number(ingrediente.id_producto_insumo)
-                        : null;
-
+                const idMa = ingrediente.tipo === "materia_prima" ? Number(ingrediente.id_ma) : null;
+                const idProductoInsumo = ingrediente.tipo === "producto" ? Number(ingrediente.id_producto_insumo) : null;
                 let cantidadUtilizada;
-
                 // Si es materia prima se convierte la cantidad ingresada a la unidad con la que se controla el inventario
                 if (ingrediente.tipo === "materia_prima") {
-
-                    const resultadoConversion = await convertirCantidad(
-                        cliente,
-                        idMa,
-                        ingrediente.cantidad,
-                        ingrediente.unidad
-                    );
-
-                    cantidadUtilizada =
-                        resultadoConversion.cantidadUtilizada;
+                    const resultadoConversion = await convertirCantidad(cliente, idMa, ingrediente.cantidad, ingrediente.unidad);
+                    cantidadUtilizada = resultadoConversion.cantidadUtilizada;
+                } else if (ingrediente.tipo === "producto") {
+                    cantidadUtilizada = convertirTextoANumero(ingrediente.cantidad);
                 }
-
-                else if (ingrediente.tipo === "producto") {
-
-                    cantidadUtilizada =
-                        convertirTextoANumero(ingrediente.cantidad);
-                }
-
                 const resultadoDetalle = await cliente.query(`
                         INSERT INTO detalle_receta (
                             id_receta,
@@ -381,23 +335,11 @@ router.post("/", upload.single("foto"), async (req, res) => {
                     ingrediente.unidad.trim(),
                     cantidadUtilizada
                 ]);
-
-                detallesReceta.push(
-                    resultadoDetalle.rows[0]
-                );
+                detallesReceta.push(resultadoDetalle.rows[0]);
             }
-
             // Registrar la producción inicial.
             // El stock_inicial representa las unidades que ya fueron elaboradas.
-            const primeraProduccion = await registrarPrimeraProduccion(
-                cliente,
-                producto.id_producto,
-                detallesReceta,
-                Number(stock_inicial),
-                Number(cantidad_producida_base)
-            );
-
-
+            const primeraProduccion = await registrarPrimeraProduccion(cliente, producto.id_producto, detallesReceta, Number(stock_inicial), Number(cantidad_producida_base));
             await cliente.query("COMMIT");
             return res.status(201).json({
                 mensaje: "Producto elaborado creado correctamente.",
@@ -427,47 +369,198 @@ router.post("/", upload.single("foto"), async (req, res) => {
         cliente.release();
     }
 });
-
 // Actualizar parcialmente un producto
 router.patch("/:id", async (req, res) => {
     const {
         id
     } = req.params;
     const updates = req.body;
-    // Campos permitidos para modificar en la tabla 'producto'
-    const camposPermitidos = ["nombre", "precio_venta", "estado"];
-    // Filtrar solo las claves del body que estén en la lista permitida
-    const camposAActualizar = Object.keys(updates).filter(campo => camposPermitidos.includes(campo));
-    if (camposAActualizar.length === 0) {
-        return res.status(400).json({
-            error: "No se enviaron campos válidos para actualizar."
-        });
-    }
-    const setClause = camposAActualizar.map((campo, index) => `${campo} = $${index + 1}`).join(", ");
-    const valores = camposAActualizar.map(campo => updates[campo]);
-    valores.push(id);
+    const client = await pool.connect();
     try {
-        const consulta = `
-            UPDATE producto
-            SET ${setClause}
-            WHERE id_producto = $${valores.length}
-            RETURNING *;
-        `;
-        const resultado = await pool.query(consulta, valores);
-        if (resultado.rowCount === 0) {
+        await client.query("BEGIN");
+        const productoResult = await client.query(`
+      SELECT
+        id_producto,
+        tipo
+      FROM producto
+      WHERE id_producto = $1;
+      `,
+            [id]);
+        if (productoResult.rowCount === 0) {
+            await client.query("ROLLBACK");
             return res.status(404).json({
                 error: "Producto no encontrado."
             });
         }
+        const producto = productoResult.rows[0];
+        const camposPermitidos = ["nombre", "precio_venta", "estado", "stock_minimo_p"];
+        const camposAActualizar = Object.keys(updates).filter(campo => camposPermitidos.includes(campo));
+        if (camposAActualizar.length > 0) {
+            const setClause = camposAActualizar.map((campo, index) => `${campo} = $${index + 1}`).join(", ");
+            const valores = camposAActualizar.map(campo => updates[campo]);
+            valores.push(id);
+            await client.query(`
+        UPDATE producto
+        SET ${setClause}
+        WHERE id_producto = $${valores.length};
+        `, valores);
+        }
+        if (updates.costo !== undefined) {
+            if (producto.tipo !== "Reventa") {
+                await client.query("ROLLBACK");
+                return res.status(400).json({
+                    error: "El costo de un producto Elaborado no puede modificarse manualmente."
+                });
+            }
+            const costo = Number(updates.costo);
+            if (Number.isNaN(costo) || costo < 0) {
+                await client.query("ROLLBACK");
+                return res.status(400).json({
+                    error: "El costo debe ser un valor válido mayor o igual a 0."
+                });
+            }
+            const resultadoCosto = await client.query(`
+        UPDATE producto_reventa
+        SET costo_compra = $1
+        WHERE id_producto = $2
+        RETURNING costo_compra;
+        `,
+                [costo, id]);
+            if (resultadoCosto.rowCount === 0) {
+                await client.query("ROLLBACK");
+                return res.status(400).json({
+                    error: "No se encontró la información de reventa del producto."
+                });
+            }
+        }
+        const productoActualizado = await client.query(`
+      SELECT
+        p.*,
+        CASE
+          WHEN p.tipo = 'Reventa'
+            THEN pr.costo_compra
+          ELSE v.costo_unitario_prod
+        END AS costo
+      FROM producto p
+      LEFT JOIN producto_reventa pr
+        ON pr.id_producto = p.id_producto
+      LEFT JOIN v_productos_elaborados_costo_actual v
+        ON v.id_producto = p.id_producto
+      WHERE p.id_producto = $1;
+      `,
+            [id]);
+        await client.query("COMMIT");
         res.json({
             mensaje: "Producto actualizado correctamente.",
-            producto: resultado.rows[0]
+            producto: productoActualizado.rows[0]
         });
     } catch (error) {
+        await client.query("ROLLBACK");
         console.error("Error al actualizar el producto:", error);
         res.status(500).json({
             error: "Error interno al actualizar el producto."
         });
+    } finally {
+        client.release();
     }
 });
+router.patch("/:id/foto", upload.single("foto"), async (req, res) => {
+    const {
+        id
+    } = req.params;
+    let nuevaRuta = null;
+    try {
+        const resultadoProducto = await pool.query(`
+            SELECT
+                id_producto,
+                foto_producto
+            FROM producto
+            WHERE id_producto = $1;
+            `,
+            [id]);
+        if (resultadoProducto.rowCount === 0) {
+            return res.status(404).json({
+                error: "Producto no encontrado."
+            });
+        }
+        const producto = resultadoProducto.rows[0];
+        if (!req.file) {
+            return res.status(400).json({
+                error: "No se seleccionó ninguna imagen."
+            });
+        }
+        const tiposPermitidos = ["image/jpeg", "image/png", "image/webp"];
+        if (!tiposPermitidos.includes(req.file.mimetype)) {
+            return res.status(400).json({
+                error: "El formato de imagen no es válido. Utilice JPG, PNG o WEBP."
+            });
+        }
+        const rutaImagenAnterior = obtenerRutaImagenSupabase(producto.foto_producto);
+        const extension = req.file.originalname.split(".").pop().toLowerCase();
+        nuevaRuta = `productos/${id}-${Date.now()}.${extension}`;
+        const {
+            error: errorSubida
+        } = await supabase.storage.from("recetaspatuboca").upload(nuevaRuta, req.file.buffer, {
+            contentType: req.file.mimetype,
+            upsert: false
+        });
+        if (errorSubida) {
+            throw new Error(`No se pudo subir la nueva imagen: ${errorSubida.message}`);
+        }
+        const {
+            data: urlData
+        } = supabase.storage.from("recetaspatuboca").getPublicUrl(nuevaRuta);
+        const nuevaUrl = urlData.publicUrl;
+        const resultado = await pool.query(`
+                UPDATE producto
+                SET foto_producto = $1
+                WHERE id_producto = $2
+                RETURNING *;
+                `,
+            [
+                nuevaUrl,
+                id
+            ]);
+        if (rutaImagenAnterior) {
+            const {
+                error: errorEliminacion
+            } = await supabase.storage.from("recetaspatuboca").remove([
+                rutaImagenAnterior
+            ]);
+            if (errorEliminacion) {
+                console.error("La nueva imagen se guardó correctamente, pero no se pudo eliminar la imagen anterior:", errorEliminacion);
+            }
+        }
+        return res.json({
+            mensaje: producto.foto_producto ? "Foto reemplazada correctamente." : "Foto agregada correctamente.",
+            producto: resultado.rows[0]
+        });
+    } catch (error) {
+        if (nuevaRuta) {
+            try {
+                await supabase.storage.from("recetaspatuboca").remove([
+                    nuevaRuta
+                ]);
+            } catch (errorLimpieza) {
+                console.error("No se pudo eliminar la nueva imagen después del error:", errorLimpieza);
+            }
+        }
+        console.error("Error al actualizar la foto del producto:", error);
+        return res.status(500).json({
+            error: error.message || "No se pudo actualizar la foto del producto."
+        });
+    }
+});
+
+function obtenerRutaImagenSupabase(url) {
+    if (!url) {
+        return null;
+    }
+    const marcador = "/storage/v1/object/public/recetaspatuboca/";
+    const posicion = url.indexOf(marcador);
+    if (posicion === -1) {
+        return null;
+    }
+    return url.substring(posicion + marcador.length);
+}
 module.exports = router;
