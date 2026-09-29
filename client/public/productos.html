@@ -89,7 +89,7 @@
           </p>
         </div>
         <div>
-          <button class="btnAgregar" id="btnAgregarProducto">
+          <button class="btnAgregarProducto" id="btnAgregarProducto">
             <i class="fa-solid fa-plus"></i>
             <span>Agregar producto</span>
           </button>
@@ -457,22 +457,16 @@
       /* ========= Menú lateral ========= */
       const btnMenu = document.getElementById("btnMenu");
       const menuLateral = document.getElementById("menuLateral");
+
       btnMenu.addEventListener("click", () => {
         menuLateral.classList.toggle("activo");
         document.body.classList.toggle("menu-abierto");
 
-        // Ejemplo al hacer clic en el botón del menú:
-        document.querySelector(".btnMenu").addEventListener("click", () => {
-          document.body.classList.toggle("menu-abierto");
-          document.querySelector(".Menu-lateral").classList.toggle("activo");
-
-          // Espera a que termine la transición CSS (.3s) y redimensiona la tabla
-          setTimeout(() => {
-            if (typeof tabla !== "undefined") {
-              tabla.redraw(true);
-            }
-          }, 300);
-        });
+        setTimeout(() => {
+          if (typeof tabla !== "undefined") {
+            tabla.redraw(true);
+          }
+        }, 300);
       });
       /* ========= Modal Agregar Venta ========= */
       const modal = document.getElementById("modalVenta");

@@ -414,12 +414,15 @@ body {
 
 /*TÍTULO DE INVENTARIO*/
 .container-fluid > .d-flex:first-child {
-    display: contents !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important; 
+    margin-bottom: 24px !important;
+    width: 100% !important;
 }
 
 .container-fluid > .d-flex:first-child > div:first-child {
-    grid-area: titulo;
-    margin-bottom: 24px;
+    margin-bottom: 0 !important;
 }
 
 .container-fluid h1 {
@@ -435,10 +438,12 @@ body {
 }
 
 /*BUSCADOR + BOTÓN AGREGAR PRODUCTO*/
-.container-fluid > div.mb-3:not(:first-child) {
-    grid-area: buscador;
-    width: 100%;
-    margin: 0 0 24px !important;
+.container-fluid > div:nth-of-type(2) {
+    display: flex !important;
+    justify-content: space-between !important;
+    gap: 15px !important;
+    align-items: center !important;
+    margin-bottom: 20px !important;
 }
 
 #buscar {
@@ -480,23 +485,27 @@ body {
 }
 
 /*BOTÒN AGREGAR PRODUCTOS*/
-.btnAgregar {
+#btnAgregarProducto {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
-    padding: 12px 22px;
+    height: 50px;           
+    padding: 0 24px;        
     border: none;
-    border-radius: 25px;
-    background: #61bcd7;
+    border-radius: 14px;    
+    background: var(--principal);
     color: #fff;
-    font-size: 15px;
-    font-weight: 700;
+    font-size: 18px;        
+    font-weight: normal;
     cursor: pointer;
     transition: .25s;
+	margin-left: auto;
 }
-.btnAgregar:hover {
+
+#btnAgregarProducto:hover {
     background: #1a81a0;
-    transform: scale(1.03);
+	transform: scale(1.03);
 }
 
 /*MODALES BOOTSTRAP AGREGAR PRODUCTO*/
