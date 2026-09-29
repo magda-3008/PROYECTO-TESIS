@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../config/db");
+const {
+    convertirCantidadAUnidadMedida
+} = require("../utils/conversionCantidad-a-Unidades");
 
 router.post("/", async (req, res) => {
     const client = await pool.connect();
@@ -72,7 +75,7 @@ router.post("/", async (req, res) => {
         // REGISTRAR SALIDA
         // ==========================================
 
-        await registrarMovimientoSalida(
+        const resultado = await registrarMovimientoSalida(
             client,
             id_ma,
             tipo_movimiento,
@@ -90,7 +93,8 @@ router.post("/", async (req, res) => {
         await client.query("COMMIT");
 
         res.json({
-            mensaje: "Salida registrada correctamente."
+            mensaje: "Salida registrada correctamente.",
+            nuevoStock: resultado.nuevoStock
         });
 
     } catch (error) {
@@ -269,64 +273,5 @@ async function registrarMovimientoSalida(
         costoTotal
     };
 }
-
-
-// ==========================================
-// CONVERSIÓN DE UNIDAD DE EXISTENCIA
-// A UNIDAD DE MEDIDA
-// ==========================================
-
-function convertirCantidadAUnidadMedida(
-    cantidad,
-    materiaPrima
-) {
-
-    const cantidadHumana = Number(cantidad);
-
-    const unidadMedida =
-        String(
-            materiaPrima.unidad_medida || ""
-        ).trim();
-
-    const unidadExistencia =
-        String(
-            materiaPrima.unidad_existencia || ""
-        ).trim();
-
-    const unidadPorPaquete =
-        Number(
-            materiaPrima.unidad_por_paquete
-        );
-
-    if (
-        !Number.isFinite(cantidadHumana) ||
-        cantidadHumana <= 0
-    ) {
-        throw new Error(
-            "La cantidad debe ser mayor que cero."
-        );
-    }
-
-    // Las unidades representan directamente
-    // la misma unidad de inventario.
-    if (
-        unidadMedida.toLowerCase() ===
-        unidadExistencia.toLowerCase()
-    ) {
-        return cantidadHumana;
-    }
-
-    if (
-        !Number.isFinite(unidadPorPaquete) ||
-        unidadPorPaquete <= 0
-    ) {
-        throw new Error(
-            "La materia prima no tiene una equivalencia de presentación válida."
-        );
-    }
-
-    return cantidadHumana * unidadPorPaquete;
-}
-
 
 module.exports = router;

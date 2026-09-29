@@ -1,104 +1,95 @@
 function cargarUnidadesMateriaPrima(datos) {
-    const select = document.getElementById("filtroUnidadMedida");
+    const select =
+        document.getElementById("filtroUnidadMedida");
     if (!select) return;
+
     // Limpiar las opciones existentes
     select.innerHTML = `
         <option value="">Unidad de medida</option>
     `;
+
     // Obtener unidades únicas
-    const unidades = [...new Set(datos.map(item => item.unidad_medida).filter(unidad => unidad))];
+    const unidades = [
+        ...new Set(
+            datos
+                .map(item => item.unidad_medida)
+                .filter(unidad => unidad)
+        )
+    ];
     // Ordenar alfabéticamente
-    unidades.sort((a, b) => a.localeCompare(b));
+    unidades.sort((a, b) =>
+        a.localeCompare(b)
+    );
     // Crear opciones
     unidades.forEach(unidad => {
-        const option = document.createElement("option");
+        const option =
+            document.createElement("option");
         option.value = unidad;
         option.textContent = unidad;
         select.appendChild(option);
+
     });
 }
+
 let tablaMD = null;
 let ingredienteSeleccionado = null;
+
 // configuración de vistas
 const vistas = {
     inventarioMD: {
         endpoint: "/api/materiaprima",
         rowFormatter: function (row) {
+
             const data = row.getData();
+
             const stockActual = Number(data.stock_actual_i);
             const stockMinimo = Number(data.stock_minimo);
+
             const elemento = row.getElement();
-            elemento.classList.remove("stock-normal", "stock-bajo", "stock-agotado");
+
+            elemento.classList.remove(
+                "stock-normal",
+                "stock-bajo",
+                "stock-agotado"
+            );
+
             if (stockActual <= 0) {
+
                 elemento.classList.add("stock-agotado");
+
             } else if (stockActual <= stockMinimo) {
+
                 elemento.classList.add("stock-bajo");
+
             } else {
+
                 elemento.classList.add("stock-normal");
             }
         },
-        columns: [{
-            title: "Insumo",
-            field: "nombre",
-            frozen: true,
-            width: 160,
-            cssClass: "columna-texto-ajustable",
-            headerWordWrap: true,
-            headerToolTip: true,
-            editor: "input"
-        },
-        //{ title: "Tipo de insumo", field: "tipo_insumo", hozAlign: "center", minWidth: 80 },
-        {
-            title: "Costo de insumo",
-            field: "costo_total_ingrediente",
-            formatter: formatoMoneda,
-            hozAlign: "center",
-            minWidth: 100,
-            headerWordWrap: true,
-            headerTooltip: true,
-            editor: "number",
-            editorParams: {
-                min: 0,
-                step: 0.01
-            }
-        }, {
-            title: "Unidad de medida",
-            field: "unidad_medida",
-            hozAlign: "center",
-            minWidth: 100,
-            headerWordWrap: true,
-            headerTooltip: true
-        }, {
-            title: "Cantidad por presentación",
-            field: "unidad_por_paquete",
-            variableHeight: true,
-            hozAlign: "center",
-            minWidth: 100,
-            headerWordWrap: true,
-            headerTooltip: true,
-            editor: "number",
-            editorParams: {
-                min: 0,
-                step: 0.01
-            }
-        }, {
-            title: "Existencia actual",
-            field: "stock_actual_i",
-            hozAlign: "center",
-            minWidth: 100,
-            headerWordWrap: true,
-            headerTooltip: true,
-            formatter: function (cell) {
-                const data = cell.getRow().getData();
-                return formatearStockMateriaPrima(data);
-            }
-        }, {
-            title: "Acciones",
-            hozAlign: "center",
-            headerSort: false,
-            minWidth: 120,
-            formatter: function () {
-                return `
+        columns: [
+            { title: "Insumo", field: "nombre", frozen: true, width: 160, cssClass: "columna-texto-ajustable", headerWordWrap: true, headerTooltip: true, editor: "input" },
+            //{ title: "Tipo de insumo", field: "tipo_insumo", hozAlign: "center", minWidth: 80 },
+            {
+                title: "Costo de insumo", field: "costo_total_ingrediente", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true,
+                editor: "number", editorParams: { min: 0, step: 0.01 }
+            },
+            { title: "Unidad de medida", field: "unidad_medida", hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
+            {
+                title: "Cantidad por presentación", field: "unidad_por_paquete", variableHeight: true, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true,
+                editor: "number", editorParams: { min: 0, step: 0.01 }
+            },
+            {
+                title: "Existencia actual", field: "stock_actual_i", hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true,
+                formatter: function (cell) {
+                    const data = cell.getRow().getData();
+
+                    return formatearStockMateriaPrima(data);
+                }
+            },
+            {
+                title: "Acciones", hozAlign: "center", headerSort: false, minWidth: 120,
+                formatter: function () {
+                    return `
                         <div class="acciones-tabla">
                             <button class="btnAccion btnEntrada" title="Registrar entrada">
                                 <i class="bi bi-cart-plus"></i>
@@ -115,38 +106,48 @@ const vistas = {
                             <button class="btnAccion btnEditar" title="Editar insumo"> <i class="bi bi-pencil"></i> </button>
                         </div>
                     `;
+                },
+
+                cellClick: function (e, cell) {
+                    const ingrediente = cell.getRow().getData();
+
+                    if (e.target.closest(".btnSalida")) {
+                        abrirModalSalidaMP(ingrediente);
+                        return;
+                    }
+
+                    if (e.target.closest(".btnEntrada")) {
+                        abrirModalEntradaMP(ingrediente);
+                        return;
+                    }
+
+                    if (e.target.closest(".btnHistorial")) {
+                        abrirHistorialMP(ingrediente);
+                    }
+
+                    if (e.target.closest(".btnEditar")) {
+                        abrirModalEditarMP(ingrediente);
+                    }
+                },
             },
-            cellClick: function (e, cell) {
-                const ingrediente = cell.getRow().getData();
-                if (e.target.closest(".btnSalida")) {
-                    abrirModalSalidaMP(ingrediente);
-                    return;
-                }
-                if (e.target.closest(".btnEntrada")) {
-                    abrirModalEntradaMP(ingrediente);
-                    return;
-                }
-                if (e.target.closest(".btnHistorial")) {
-                    abrirHistorialMP(ingrediente);
-                }
-                if (e.target.closest(".btnEditar")) {
-                    abrirModalEditarMP(ingrediente);
-                }
-            },
-        },
         ],
     }
 };
+
 // cargar vista
 async function cargarVista(vista) {
+
     const configuracion = vistas[vista];
     const endpoint = configuracion.endpoint;
+
     // Elimina la tabla anterior
     if (tablaMD) {
         tablaMD.destroy();
         tablaMD = null;
     }
+
     crearFiltros(vista);
+
     // Mostrar indicador de carga
     document.getElementById("tablaMateriaP").innerHTML = `
         <div class="tabla-cargando">
@@ -154,16 +155,23 @@ async function cargarVista(vista) {
             <p>Cargando información...</p>
         </div>
     `;
+
     let datos = [];
+
     try {
         const respuesta = await fetch(endpoint);
+
         if (!respuesta.ok) {
             throw new Error("No se pudieron obtener los datos.");
         }
+
         datos = await respuesta.json();
+
         cargarUnidadesMateriaPrima(datos);
+
     } catch (error) {
         console.error(error);
+
         document.getElementById("tablaMateriaP").innerHTML = `
             <div class="tabla-error">
                 <i class="bi bi-exclamation-triangle-fill"></i>
@@ -174,8 +182,10 @@ async function cargarVista(vista) {
                 </button>
             </div>
         `;
+
         return;
     }
+
     tablaMD = new Tabulator("#tablaMateriaP", {
         data: datos,
         tooltipGenerationMode: "hover",
@@ -186,6 +196,7 @@ async function cargarVista(vista) {
         pagination: true,
         paginationSize: 30,
         rowFormatter: configuracion.rowFormatter,
+
         rowHeader: {
             formatter: "rownum",
             width: 40,
@@ -193,19 +204,26 @@ async function cargarVista(vista) {
             headerSort: false,
             frozen: true,
         },
+
         columns: configuracion.columns,
         placeholder: "No se encontraron resultados",
     });
+
     // ESCUCHA DE CAMBIOS EN CELDAS
     tablaMD.on("cellEdited", async function (cell) {
+
         const valorNuevo = cell.getValue();
         const valorAnterior = cell.getOldValue();
+
         // Si no hubo un cambio real, no hacemos la petición HTTP
         if (valorNuevo === valorAnterior) return;
+
         const filaData = cell.getRow().getData();
         const idMA = filaData.id_ma;
         const campoEditado = cell.getField();
+
         try {
+
             // TODO:
             // Definir posteriormente el endpoint definitivo para actualizar
             // materia prima.
@@ -220,30 +238,44 @@ async function cargarVista(vista) {
             //         [campoEditado]: valorNuevo
             //     }),
             // });
+
             /*
             if (!respuesta.ok) {
                 throw new Error("Error al guardar el cambio.");
             }
             */
+
             // Por ahora solo dejamos preparada la lógica visual
+
             cell.getElement().classList.add("celda-actualizada");
+
             setTimeout(() => {
                 cell.getElement().classList.remove("celda-actualizada");
             }, 7000);
+
             Swal.fire({
                 icon: "success",
                 title: "Cambio guardado correctamente",
                 returnFocus: false
             });
+
         } catch (error) {
-            console.error("Error al actualizar la base de datos:", error);
+
+            console.error(
+                "Error al actualizar la base de datos:",
+                error
+            );
+
             // Restaurar valor anterior
             cell.setValue(valorAnterior, false);
+
             // Resaltar error
             cell.getElement().classList.add("celda-error");
+
             setTimeout(() => {
                 cell.getElement().classList.remove("celda-error");
             }, 7000);
+
             Swal.fire({
                 icon: "error",
                 title: "No se pudo guardar la modificación",
@@ -251,11 +283,13 @@ async function cargarVista(vista) {
             });
         }
     });
+
     inicializarEventosFiltros(vista);
 }
 
 function crearFiltros(vista) {
     const panel = document.getElementById("panelFiltros");
+
     switch (vista) {
         case "inventarioMD":
             panel.innerHTML = `
@@ -285,47 +319,92 @@ function crearFiltros(vista) {
 }
 
 function inicializarEventosFiltros(vista) {
-    document.getElementById("buscar").addEventListener("input", aplicarFiltros);
-    document.getElementById("filtroUnidadMedida").addEventListener("change", aplicarFiltros);
+    document
+        .getElementById("buscar")
+        .addEventListener("input", aplicarFiltros);
+    document
+        .getElementById("filtroUnidadMedida")
+        .addEventListener("change", aplicarFiltros);
     // document
     //     .getElementById("filtroTipoInsumo")
     //     .addEventListener("change", aplicarFiltros);
-    document.getElementById("filtroStock").addEventListener("change", aplicarFiltros);
+    document
+        .getElementById("filtroStock")
+        .addEventListener("change", aplicarFiltros);
 }
 
 function aplicarFiltros() {
-    const texto = document.getElementById("buscar").value.toLowerCase().trim();
-    const unidad = document.getElementById("filtroUnidadMedida")?.value ?? "";
-    const stock = document.getElementById("filtroStock")?.value ?? "";
+    const texto = document
+        .getElementById("buscar")
+        .value
+        .toLowerCase()
+        .trim();
+
+    const unidad =
+        document.getElementById("filtroUnidadMedida")?.value ?? "";
+    // const tipo =
+    //     document.getElementById("filtroTipoInsumo")?.value ?? "";
+    const stock =
+        document.getElementById("filtroStock")?.value ?? "";
+
+
     tablaMD.setFilter(function (data) {
+
         let coincide = true;
+
         //Buscador por nombre
         if (texto) {
-            coincide = String(data.nombre || "").toLowerCase().includes(texto);
+            coincide = String(data.nombre || "")
+                .toLowerCase()
+                .includes(texto);
+
         }
+
         //Unidad de edida
         if (coincide && unidad) {
-            coincide = data.unidad_medida === unidad;
+            coincide =
+                data.unidad_medida === unidad;
+
         }
+
+        //Tipo de insumo
+        // if (coincide && tipo) {
+        //     coincide =
+        //         data.tipo_insumo === tipo;
+        // }
+
         //Stock
         if (coincide && stock) {
-            const stockActual = Number(data.stock_actual_i);
-            const stockMinimo = Number(data.stock_minimo);
+            const stockActual =
+                Number(data.stock_actual_i) || 0;
+
+            const stockMinimo =
+                Number(data.stock_minimo) || 1;
+
             switch (stock) {
                 case "0":
-                    coincide = stockActual === 0;
+                    coincide =
+                        stockActual === 0;
                     break;
+
                 case "bajo":
-                    coincide = stockActual > 0 && stockActual <= stockMinimo;
+                    coincide =
+                        stockActual > 0 &&
+                        stockActual <= stockMinimo;
                     break;
+
                 case "normal":
-                    coincide = stockActual > stockMinimo;
+                    coincide =
+                        stockActual > stockMinimo;
+
                     break;
             }
         }
         return coincide;
+
     });
 }
+
 document.addEventListener("DOMContentLoaded", async () => {
     cargarVista("inventarioMD");
 });
