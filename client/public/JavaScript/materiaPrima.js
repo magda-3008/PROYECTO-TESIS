@@ -67,17 +67,10 @@ const vistas = {
             }
         },
         columns: [
-            { title: "Insumo", field: "nombre", frozen: true, width: 160, cssClass: "columna-texto-ajustable", headerWordWrap: true, headerTooltip: true, editor: "input" },
-            //{ title: "Tipo de insumo", field: "tipo_insumo", hozAlign: "center", minWidth: 80 },
-            {
-                title: "Costo de insumo", field: "costo_total_ingrediente", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true,
-                editor: "number", editorParams: { min: 0, step: 0.01 }
-            },
+            { title: "Insumo", field: "nombre", frozen: true, width: 160, cssClass: "columna-texto-ajustable", headerWordWrap: true, headerTooltip: true },
+            { title: "Costo de insumo", field: "costo_total_ingrediente", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
             { title: "Unidad de medida", field: "unidad_medida", hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
-            {
-                title: "Cantidad por presentación", field: "unidad_por_paquete", variableHeight: true, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true,
-                editor: "number", editorParams: { min: 0, step: 0.01 }
-            },
+            { title: "Cantidad por presentación", field: "unidad_por_paquete", variableHeight: true, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
             {
                 title: "Existencia actual", field: "stock_actual_i", hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true,
                 formatter: function (cell) {
@@ -209,81 +202,6 @@ async function cargarVista(vista) {
         placeholder: "No se encontraron resultados",
     });
 
-    // ESCUCHA DE CAMBIOS EN CELDAS
-    tablaMD.on("cellEdited", async function (cell) {
-
-        const valorNuevo = cell.getValue();
-        const valorAnterior = cell.getOldValue();
-
-        // Si no hubo un cambio real, no hacemos la petición HTTP
-        if (valorNuevo === valorAnterior) return;
-
-        const filaData = cell.getRow().getData();
-        const idMA = filaData.id_ma;
-        const campoEditado = cell.getField();
-
-        try {
-
-            // TODO:
-            // Definir posteriormente el endpoint definitivo para actualizar
-            // materia prima.
-            //
-            // Ejemplo:
-            // const respuesta = await fetch(`/api/materiaprima/${idMA}`, {
-            //     method: "PATCH",
-            //     headers: {
-            //         "Content-Type": "application/json",
-            //     },
-            //     body: JSON.stringify({
-            //         [campoEditado]: valorNuevo
-            //     }),
-            // });
-
-            /*
-            if (!respuesta.ok) {
-                throw new Error("Error al guardar el cambio.");
-            }
-            */
-
-            // Por ahora solo dejamos preparada la lógica visual
-
-            cell.getElement().classList.add("celda-actualizada");
-
-            setTimeout(() => {
-                cell.getElement().classList.remove("celda-actualizada");
-            }, 7000);
-
-            Swal.fire({
-                icon: "success",
-                title: "Cambio guardado correctamente",
-                returnFocus: false
-            });
-
-        } catch (error) {
-
-            console.error(
-                "Error al actualizar la base de datos:",
-                error
-            );
-
-            // Restaurar valor anterior
-            cell.setValue(valorAnterior, false);
-
-            // Resaltar error
-            cell.getElement().classList.add("celda-error");
-
-            setTimeout(() => {
-                cell.getElement().classList.remove("celda-error");
-            }, 7000);
-
-            Swal.fire({
-                icon: "error",
-                title: "No se pudo guardar la modificación",
-                returnFocus: false
-            });
-        }
-    });
-
     inicializarEventosFiltros(vista);
 }
 
@@ -342,8 +260,7 @@ function aplicarFiltros() {
 
     const unidad =
         document.getElementById("filtroUnidadMedida")?.value ?? "";
-    // const tipo =
-    //     document.getElementById("filtroTipoInsumo")?.value ?? "";
+
     const stock =
         document.getElementById("filtroStock")?.value ?? "";
 
@@ -366,12 +283,6 @@ function aplicarFiltros() {
                 data.unidad_medida === unidad;
 
         }
-
-        //Tipo de insumo
-        // if (coincide && tipo) {
-        //     coincide =
-        //         data.tipo_insumo === tipo;
-        // }
 
         //Stock
         if (coincide && stock) {
