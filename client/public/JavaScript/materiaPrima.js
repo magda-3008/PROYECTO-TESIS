@@ -119,7 +119,7 @@ const vistas = {
                     }
 
                     if (e.target.closest(".btnEditar")) {
-                        abrirModalEditarMP(ingrediente);
+                        abrirModalEditarMP(ingrediente, cell.getRow());
                     }
                 },
             },
