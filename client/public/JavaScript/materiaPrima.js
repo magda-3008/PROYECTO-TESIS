@@ -367,6 +367,12 @@ function aplicarFiltros() {
 
         }
 
+        //Tipo de insumo
+        // if (coincide && tipo) {
+        //     coincide =
+        //         data.tipo_insumo === tipo;
+        // }
+
         //Stock
         if (coincide && stock) {
             const stockActual =
