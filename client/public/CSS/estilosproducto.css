@@ -632,66 +632,78 @@ select.form-select {
     transition: .25s !important;
 }
 
-/*TABLA*/
+/* ==========================================
+   TABLA (Ajuste dentro del contenedor blanco)
+   ========================================== */
 #tablaProductos {
-  width: calc(100% - 60px) !important;
-    max-width: 1400px !important;
-    margin: 20px auto !important;
-    background: transparent !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 20px 0 0 0 !important;
+    background: #fff !important;
     box-shadow: none !important;
-    display: flex !important;
-    justify-content: center !important;
+    display: block !important; /* Devuelve el comportamiento correcto a Tabulator */
     box-sizing: border-box !important;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 .acciones-tabla {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
 }
 
 .btnAccion {
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  cursor: pointer;
-  transition: 0.25s;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    cursor: pointer;
+    transition: 0.25s;
 }
 
 .btnAccion i {
-  font-size: 18px;
+    font-size: 18px;
 }
 
 .btnSalida {
-  background: #c94949;
+    background: #c94949;
 }
 
 .btnSalida:hover {
-  background: #c94949;
-  transform: scale(1.03);
+    background: #c94949;
+    transform: scale(1.03);
 }
 
 .btnEntrada {
-  background: #37b458;
+    background: #37b458;
 }
 
 .btnEntrada:hover {
-  background: #37b458;
-  transform: scale(1.03);
+    background: #37b458;
+    transform: scale(1.03);
 }
 
 .btnHistorial {
-  background: #3574da;
+    background: #3574da;
 }
 
 .btnHistorial:hover {
-  background: #3574da;
+    background: #3574da;
+    transform: scale(1.08);
+}
+
+.btnEditar {
+  background: #61bcd7;
+}
+
+.btnEditar:hover {
+  background: #306474;
   transform: scale(1.08);
 }
 
@@ -718,6 +730,28 @@ select.form-select {
     background: var(--principal);
     color: #fff;
     font-weight: 700;
+}
+
+
+/* ==========================================
+   DESPLAZAMIENTO AL ABRIR EL MENÚ LATERAL
+   ========================================== */
+body {
+    transition: margin-left var(--transicion);
+}
+
+.container-fluid {
+    transition: all var(--transicion);
+}
+
+@media (min-width: 901px) {
+    /* Desplaza todo el contenedor principal (incluyendo la tabla en su interior) */
+    body.menu-abierto .container-fluid {
+        width: calc(100% - var(--menu) - 60px) !important;
+        max-width: 1400px !important;
+        margin-left: calc(var(--menu) + 30px) !important;
+        margin-right: 30px !important;
+    }
 }
 
 /* Ajustes para el contenedor y tabla dentro del modalHistorial */
