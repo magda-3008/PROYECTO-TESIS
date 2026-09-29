@@ -100,21 +100,52 @@ router.post("/", upload.single("foto"), async (req, res) => {
             error: "El precio de venta debe ser mayor que 0."
         });
     }
-    if (stock_inicial === undefined || Number(stock_inicial) < 0) {
-        return res.status(400).json({
-            error: "El stock inicial no puede ser negativo."
-        });
+    if (tipo === "Reventa") {
+
+        // En Reventa el stock inicial es obligatorio
+        if (
+            stock_inicial === undefined ||
+            stock_inicial === null ||
+            stock_inicial === "" ||
+            Number(stock_inicial) < 0
+        ) {
+            return res.status(400).json({
+                error: "El stock inicial es obligatorio para productos de reventa y no puede ser negativo."
+            });
+        }
+
+    } else if (tipo === "Elaborado") {
+
+        // En Elaborado el stock inicial puede ser NULL
+        if (
+            stock_inicial !== undefined &&
+            stock_inicial !== null &&
+            stock_inicial !== "" &&
+            Number(stock_inicial) < 0
+        ) {
+            return res.status(400).json({
+                error: "El stock inicial no puede ser negativo."
+            });
+        }
+
     }
-    const stockMinimoNumero = Number(stock_minimo_p);
+    let stockMinimoNumero = null;
 
     if (
-        stock_minimo_p === undefined ||
-        !Number.isInteger(stockMinimoNumero) ||
-        stockMinimoNumero < 0
+        stock_minimo_p !== undefined &&
+        stock_minimo_p !== null &&
+        stock_minimo_p !== ""
     ) {
-        return res.status(400).json({
-            error: "El stock mínimo debe ser un número entero mayor o igual a 0."
-        });
+        stockMinimoNumero = Number(stock_minimo_p);
+
+        if (
+            !Number.isInteger(stockMinimoNumero) ||
+            stockMinimoNumero < 0
+        ) {
+            return res.status(400).json({
+                error: "El stock mínimo debe ser un número entero mayor o igual a 0."
+            });
+        }
     }
     if (tipo === "Reventa") {
         if (costo_compra === undefined || Number(costo_compra) <= 0) {
@@ -215,6 +246,13 @@ router.post("/", upload.single("foto"), async (req, res) => {
             });
         }
         if (tipo === "Elaborado") {
+            const stockInicialNumero =
+                stock_inicial === undefined ||
+                    stock_inicial === null ||
+                    stock_inicial === ""
+                    ? null
+                    : Number(stock_inicial);
+
             const resultadoElaborado = await cliente.query(`
                     INSERT INTO producto_elaborado (
                         id_producto,
@@ -222,11 +260,10 @@ router.post("/", upload.single("foto"), async (req, res) => {
                     )
                     VALUES ($1, $2)
                     RETURNING *;
-                    `,
-                [
-                    producto.id_producto,
-                    Number(stock_inicial)
-                ]);
+                `, [
+                producto.id_producto,
+                stockInicialNumero
+            ]);
             const productoElaborado = resultadoElaborado.rows[0];
             let ingredientesParseados;
             try {
@@ -339,7 +376,19 @@ router.post("/", upload.single("foto"), async (req, res) => {
             }
             // Registrar la producción inicial.
             // El stock_inicial representa las unidades que ya fueron elaboradas.
-            const primeraProduccion = await registrarPrimeraProduccion(cliente, producto.id_producto, detallesReceta, Number(stock_inicial), Number(cantidad_producida_base));
+            if (
+                stock_inicial !== undefined &&
+                stock_inicial !== null &&
+                stock_inicial !== ""
+            ) {
+                await registrarPrimeraProduccion(
+                    cliente,
+                    producto.id_producto,
+                    detallesReceta,
+                    Number(stock_inicial),
+                    Number(cantidad_producida_base)
+                );
+            }
             await cliente.query("COMMIT");
             return res.status(201).json({
                 mensaje: "Producto elaborado creado correctamente.",
