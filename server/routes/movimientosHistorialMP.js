@@ -50,6 +50,7 @@ router.get("/:id_ma", async (req, res) => {
                 mp.anio,
                 mp.mes,
                 mp.tipo_movimiento,
+                mp.motivo,
                 mp.cantidad,
                 mp.costo_unitario,
                 mp.costo_total,

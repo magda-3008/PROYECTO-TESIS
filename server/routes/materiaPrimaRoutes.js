@@ -4,9 +4,11 @@ const pool = require("../config/db");
 const {
     convertirCantidadAUnidadMedida
 } = require("../utils/conversionCantidad-a-Unidades");
+
 const {
     convertirTextoANumero
 } = require("../utils/conversionUnidades");
+
 router.get("/", async (req, res) => {
     try {
         const resultado = await pool.query(`
@@ -167,51 +169,100 @@ router.post("/", async (req, res) => {
         client.release();
     }
 });
+
 router.patch("/:id", async (req, res) => {
+
     const client = await pool.connect();
+
     try {
-        const {
-            id
-        } = req.params;
+
+        const { id } = req.params;
+
         const {
             nombre,
             costo_total_ingrediente,
             stock_minimo
         } = req.body;
+
+
         if (!id || isNaN(Number(id))) {
+
             return res.status(400).json({
-                error: "El identificador de la materia prima no es válido."
+                error:
+                    "El identificador de la materia prima no es válido."
             });
+
         }
-        if (nombre === undefined || !String(nombre).trim()) {
+
+
+        if (
+            nombre === undefined ||
+            !String(nombre).trim()
+        ) {
+
             return res.status(400).json({
-                error: "El nombre de la materia prima es obligatorio."
+                error:
+                    "El nombre de la materia prima es obligatorio."
             });
+
         }
-        if (costo_total_ingrediente === undefined || Number(costo_total_ingrediente) <= 0) {
+
+
+        if (
+            costo_total_ingrediente === undefined ||
+            Number(costo_total_ingrediente) <= 0
+        ) {
+
             return res.status(400).json({
-                error: "El costo de la materia prima debe ser mayor que 0."
+                error:
+                    "El costo de la materia prima debe ser mayor que 0."
             });
+
         }
+
+
         if (stock_minimo === undefined) {
+
             return res.status(400).json({
-                error: "El stock mínimo es obligatorio."
+                error:
+                    "El stock mínimo es obligatorio."
             });
+
         }
+
+
         let stockMinimoHumano;
+
         try {
-            stockMinimoHumano = convertirTextoANumero(stock_minimo);
+
+            stockMinimoHumano =
+                convertirTextoANumero(stock_minimo);
+
         } catch (error) {
+
             return res.status(400).json({
                 error: error.message
             });
+
         }
-        if (!Number.isFinite(stockMinimoHumano) || stockMinimoHumano < 0) {
+
+
+        if (
+            !Number.isFinite(stockMinimoHumano) ||
+            stockMinimoHumano < 0
+        ) {
+
             return res.status(400).json({
-                error: "El stock mínimo no puede ser negativo."
+                error:
+                    "El stock mínimo no puede ser negativo."
             });
+
         }
-        const resultadoMateriaPrima = await client.query(`
+
+
+        const resultadoMateriaPrima =
+            await client.query(
+                `
                 SELECT
                     unidad_medida,
                     unidad_existencia,
@@ -219,15 +270,36 @@ router.patch("/:id", async (req, res) => {
                 FROM materia_prima_y_cd
                 WHERE id_ma = $1;
                 `,
-            [Number(id)]);
+                [Number(id)]
+            );
+
+
         if (resultadoMateriaPrima.rowCount === 0) {
+
             return res.status(404).json({
-                error: "La materia prima no existe."
+                error:
+                    "La materia prima no existe."
             });
+
         }
-        const materiaPrimaActual = resultadoMateriaPrima.rows[0];
-        const stockMinimoNormalizado = stockMinimoHumano === 0 ? 0 : convertirCantidadAUnidadMedida(stockMinimoHumano, materiaPrimaActual);
-        const resultado = await client.query(`
+
+
+        const materiaPrimaActual =
+            resultadoMateriaPrima.rows[0];
+
+
+        const stockMinimoNormalizado =
+            stockMinimoHumano === 0
+                ? 0
+                : convertirCantidadAUnidadMedida(
+                    stockMinimoHumano,
+                    materiaPrimaActual
+                );
+
+
+        const resultado =
+            await client.query(
+                `
                 UPDATE materia_prima_y_cd
                 SET
                     nombre = $1,
@@ -236,23 +308,44 @@ router.patch("/:id", async (req, res) => {
                 WHERE id_ma = $4
                 RETURNING *;
                 `,
-            [
-                String(nombre).trim(),
-                Number(costo_total_ingrediente),
-                stockMinimoNormalizado,
-                Number(id)
-            ]);
+                [
+                    String(nombre).trim(),
+                    Number(costo_total_ingrediente),
+                    stockMinimoNormalizado,
+                    Number(id)
+                ]
+            );
+
+
         res.json({
-            mensaje: "Materia prima actualizada correctamente.",
-            materiaPrima: resultado.rows[0]
+
+            mensaje:
+                "Materia prima actualizada correctamente.",
+
+            materiaPrima:
+                resultado.rows[0]
+
         });
+
+
     } catch (error) {
-        console.error("Error al actualizar materia prima:", error);
+
+        console.error(
+            "Error al actualizar materia prima:",
+            error
+        );
+
         res.status(500).json({
-            error: "Error al actualizar la materia prima."
+            error:
+                "Error al actualizar la materia prima."
         });
+
     } finally {
+
         client.release();
+
     }
+
 });
+
 module.exports = router;
