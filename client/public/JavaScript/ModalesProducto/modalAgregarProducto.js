@@ -543,11 +543,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                     }
                 }
 
-                // Stock mínimo: sigue siendo obligatorio
                 if (
-                    stockMinimo.value === "" ||
-                    !Number.isInteger(Number(stockMinimo.value)) ||
-                    Number(stockMinimo.value) < 0
+                    stockMinimo.value !== "" &&
+                    (
+                        !Number.isInteger(Number(stockMinimo.value)) ||
+                        Number(stockMinimo.value) < 0
+                    )
                 ) {
                     stockMinimo.classList.add("is-invalid");
                     formularioValido = false;
@@ -579,53 +580,28 @@ document.addEventListener("DOMContentLoaded", async () => {
                         return;
                     }
 
-                    console.log("=== VALIDACIÓN ELABORADO ===");
-                    console.log("Stock inicial:", stockInicial.value);
-                    console.log("Stock mínimo:", stockMinimo.value);
-                    console.log("Nombre receta:", nombreReceta.value);
-                    console.log("Cantidad producida base:", cantidadProducidaBase.value);
-                    console.log("Ingredientes:", ingredientes);
-                    console.log("Formulario válido antes de ingredientes:", formularioValido);
-
-                    ingredientes.forEach((ingrediente, indice) => {
-                        console.log("Ingrediente", indice, ingrediente);
-
-                        if (
-                            ingrediente.tipo !== "materia_prima" &&
-                            ingrediente.tipo !== "producto"
-                        ) {
-                            console.log("❌ Tipo inválido");
+                    ingredientes.forEach((ingrediente) => {
+                        // Debe existir un tipo válido
+                        if (ingrediente.tipo !== "materia_prima" && ingrediente.tipo !== "producto") {
                             formularioValido = false;
                         }
-
-                        if (
-                            ingrediente.tipo === "materia_prima" &&
-                            !ingrediente.id_ma
-                        ) {
-                            console.log("❌ Falta id_ma");
+                        // Materia prima
+                        if (ingrediente.tipo === "materia_prima" && !ingrediente.id_ma) {
                             formularioValido = false;
                         }
-
-                        if (
-                            ingrediente.tipo === "producto" &&
-                            !ingrediente.id_producto_insumo
-                        ) {
-                            console.log("❌ Falta id_producto_insumo");
+                        // Producto elaborado
+                        if (ingrediente.tipo === "producto" && !ingrediente.id_producto_insumo) {
                             formularioValido = false;
                         }
-
+                        // Cantidad
                         if (!ingrediente.cantidad || !ingrediente.cantidad.trim()) {
-                            console.log("❌ Falta cantidad");
                             formularioValido = false;
                         }
-
+                        // Unidad
                         if (!ingrediente.unidad) {
-                            console.log("❌ Falta unidad");
                             formularioValido = false;
                         }
                     });
-
-                    console.log("Formulario válido después de ingredientes:", formularioValido);
                     if (!formularioValido) {
                         Swal.fire({
                             icon: "warning",
@@ -661,7 +637,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                     formData.append("stock_inicial", Number(stockInicial.value));
                 }
 
-                formData.append("stock_minimo_p", Number(stockMinimo.value));
+                if (stockMinimo.value === "") {
+                    formData.append("stock_minimo_p", "");
+                } else {
+                    formData.append("stock_minimo_p", Number(stockMinimo.value));
+                }
+
                 if (tipoProducto.value === "Reventa") {
                     formData.append("costo_compra", Number(document.getElementById("costoCompra").value));
                 }
