@@ -334,165 +334,174 @@
 
 @media (max-width: 576px) {
 
-    /* CONTENEDOR PRINCIPAL Y TABLA */
+    /* CONTENEDOR DE LA TABLA */
+
     .tabulator {
         width: 100%;
         font-size: 14px;
-        border: none !important;
-        background-color: #ffffff;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        border-radius: 12px;
-        overflow: hidden;
+        border-radius: 16px;
     }
 
-    /* ENCABEZADO ESTILO TARJETA AZUL */
+    /* ENCABEZADO */
+
     .tabulator .tabulator-header {
-        background-color: #157B9B !important; /* Azul turquesa de la imagen */
-        color: #ffffff !important;
-        border-bottom: none !important;
-        border-radius: 12px 12px 0 0;
-        font-weight: 600;
+        min-height: 44px;
     }
 
     .tabulator .tabulator-header .tabulator-col {
-        background-color: transparent !important;
-        border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
-        min-height: 48px;
-    }
-
-    .tabulator .tabulator-header .tabulator-col:last-child {
-        border-right: none !important;
+        min-height: 44px;
     }
 
     .tabulator .tabulator-header .tabulator-col-content {
-        padding: 10px 8px;
-        text-align: center;
+        padding: 7px 6px;
     }
 
     .tabulator .tabulator-header .tabulator-col-title {
-        font-size: 14px;
-        line-height: 1.2;
-        color: #ffffff !important;
-        white-space: normal;
-        text-align: center;
+        font-size: 13px;
+        line-height: 1.15;
     }
 
-    /* FLECHAS DE ORDENAMIENTO EN BLANCO */
-    .tabulator .tabulator-header .tabulator-col .tabulator-arrow {
-        border-bottom-color: #ffffff !important;
-        border-top-color: #ffffff !important;
-    }
 
-    /* FILAS Y LÍNEAS DIVISORAS */
+    /* FILAS */
+
     .tabulator-row {
         min-height: 48px;
-        background-color: #ffffff !important;
-        border-bottom: 1px solid #e2e8f0 !important; /* Línea gris tenue entre filas */
     }
 
-    .tabulator-row:last-child {
-        border-bottom: none !important;
-    }
 
-    .tabulator-row.tabulator-row-even {
-        background-color: #ffffff !important; /* Desactiva el intercalado si deseas fondo blanco uniforme */
-    }
+    /* CELDAS */
 
-    /* CELDAS Y ALINEACIÓN DE TEXTO */
     .tabulator-cell {
-        padding: 10px 8px !important;
+        padding: 9px 8px !important;
         font-size: 14px;
-        color: #2d3748;
-        border-right: none !important;
-        display: flex;
-        align-items: center;
+        line-height: 1.2;
     }
 
-    /* AJUSTE TEXTO LARGO (Nombres de producto) */
+
+    /* NOMBRES DE PRODUCTOS E INSUMOS */
+
     .columna-texto-ajustable {
         white-space: normal !important;
         overflow-wrap: break-word;
         word-break: normal;
-        line-height: 1.25;
-        font-weight: 500;
+        width: 60px;
+        line-height: 1.15;
     }
 
-    /* COLUMNA DE PRECIO / VALORES A LA DERECHA */
-    .tabulator-cell[tabulator-field="precio"], 
-    .tabulator-cell.text-right {
-        justify-content: flex-end;
-        text-align: right;
-        font-weight: 600;
-        color: #1a202c;
+
+    /* BOTONES / ACCIONES */
+
+    .tabulator-cell .btn {
+        min-width: 34px;
+        min-height: 34px;
+        padding: 5px 7px;
     }
 
-    /* SCROLLBAR MÓVIL DISCRETO */
+    .bi-three-dots-vertical {
+        font-size: 21px;
+    }
+
+
+    /* MENÚ CONTEXTUAL */
+
+    .tabulator-menu {
+        border-radius: 12px;
+        max-width: calc(100vw - 30px);
+    }
+
+    .tabulator-menu-item {
+        padding: 11px 14px;
+        font-size: 15px;
+    }
+
+
+    /* PAGINACIÓN */
+
+    .tabulator-footer {
+        padding: 7px 5px;
+    }
+
+    .tabulator-page {
+        padding: 4px 8px;
+        margin: 0 2px;
+        font-size: 14px;
+    }
+
+
+    /* SCROLL HORIZONTAL */
+
     .tabulator-tableHolder {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
 
     .tabulator-tableHolder::-webkit-scrollbar {
-        height: 4px;
+        height: 7px;
     }
 
-    .tabulator-tableHolder::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 4px;
+
+    /* INPUTS DE EDICIÓN */
+
+    .tabulator-editing input,
+    .tabulator-editing select {
+        padding: 7px;
+        font-size: 14px;
     }
 
-    /* BOTONES Y ACCIONES */
-    .tabulator-cell .btn {
-        min-width: 32px;
-        min-height: 32px;
-        padding: 4px 6px;
-        border-radius: 6px;
+
+    /* MENSAJE DE TABLA VACÍA */
+
+    .tabla-vacia {
+        padding: 45px 15px;
     }
 
-    /* PAGINACIÓN LIMPIA */
-    .tabulator-footer {
-        background-color: #ffffff !important;
-        border-top: 1px solid #e2e8f0;
-        padding: 8px;
+    .tabla-vacia i {
+        font-size: 45px;
     }
 
-    .tabulator-page {
-        border-radius: 6px;
-        padding: 4px 10px;
-        margin: 0 2px;
-        font-size: 13px;
-        background: #f1f5f9;
-        border: none;
+    .tabla-vacia h4 {
+        font-size: 19px;
     }
 
-    .tabulator-page.active {
-        background-color: #157B9B !important;
-        color: #ffffff !important;
-    }
-}
-
-/* -----------------------------------------
-   CELULARES MUY PEQUEÑOS (Hasta 400px)
------------------------------------------ */
-
-@media (max-width: 400px) {
-
-    .tabulator {
-        font-size: 13px;
+    .tabla-vacia p {
+        font-size: 15px;
     }
 
-    .tabulator .tabulator-header .tabulator-col-title {
-        font-size: 12px;
+
+    /* CARGANDO */
+
+    .tabla-cargando {
+        min-height: 280px;
+        font-size: 16px;
     }
 
-    .tabulator-cell {
-        padding: 8px 5px !important;
-        font-size: 13px;
+
+    /* ERROR */
+
+    .tabla-error {
+        min-height: 280px;
+        padding: 20px;
     }
 
-    .columna-texto-ajustable {
-        line-height: 1.15;
+    .tabla-error i {
+        font-size: 50px;
     }
+
+    .tabla-error h4 {
+        font-size: 19px;
+    }
+
+    .tabla-error p {
+        font-size: 15px;
+    }
+
+    .tabla-error .btn,
+    .tabla-error button,
+    .swal2-confirm {
+        font-size: 15px !important;
+        padding: 7px 22px !important;
+    }
+
 }
 
 
