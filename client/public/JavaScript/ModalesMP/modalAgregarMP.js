@@ -122,19 +122,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             let stockMinimoNormalizado = null;
 
             if (stockMinimoMP.value.trim() !== "") {
-                try {
-                    stockMinimoNormalizado = convertirTextoANumero(
-                        stockMinimoMP.value.trim()
-                    );
 
-                    if (
-                        !Number.isFinite(stockMinimoNormalizado) ||
-                        stockMinimoNormalizado < 0
-                    ) {
-                        stockMinimoMP.classList.add("is-invalid");
-                        formularioValido = false;
-                    }
-                } catch (error) {
+                stockMinimoNormalizado = parsearCantidad(
+                    stockMinimoMP.value.trim()
+                );
+
+                if (
+                    !Number.isFinite(stockMinimoNormalizado) ||
+                    stockMinimoNormalizado < 0
+                ) {
                     stockMinimoMP.classList.add("is-invalid");
                     formularioValido = false;
                 }
