@@ -556,18 +556,26 @@ body.menu-abierto .Encabezado {
 }
 
 .tarjeta-receta {
-	width: 100%;
-	max-width: 360px;
-	border-radius: 18px;
-	overflow: hidden;
-	cursor: pointer;
-	transition: all .3s ease;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+    width: 100%; /* Ocupa el ancho disponible en la columna */
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all .3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+    animation: aparecer .35s ease;
 }
 
 .tarjeta-receta:hover {
 	transform: translateY(-6px);
 	box-shadow: 0 10px 24px rgba(0, 0, 0, .15);
+}
+
+.contenedor-recetas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    width: 100%;
+    transition: var(--transicion);
 }
 
 .imagen-receta {
