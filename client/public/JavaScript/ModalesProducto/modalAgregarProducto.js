@@ -91,11 +91,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 opcion.textContent = materia.nombre;
                 select.appendChild(opcion);
             });
-            const opcionNueva = document.createElement("option");
-            opcionNueva.value = "nueva";
-            opcionNueva.textContent = "+ Agregar nueva materia prima";
-            select.appendChild(opcionNueva);
-            select.disabled = false;
         }
 
         function llenarSelectProductoElaborado(select, productos) {
