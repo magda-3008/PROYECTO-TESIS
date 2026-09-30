@@ -1,52 +1,25 @@
-function calcularConsumoReceta(
-    detallesReceta,
-    cantidadProducir,
-    cantidadProducidaBase
-) {
+function calcularConsumoReceta(detallesReceta, cantidadProducir, cantidadProducidaBase) {
     const cantidad = Number(cantidadProducir);
     const base = Number(cantidadProducidaBase);
-
     if (!Number.isFinite(cantidad) || cantidad <= 0) {
-        throw new Error(
-            "La cantidad a producir debe ser mayor que 0."
-        );
+        throw new Error("La cantidad a producir debe ser mayor que 0.");
     }
-
     if (!Number.isFinite(base) || base <= 0) {
-        throw new Error(
-            "La cantidad producida base de la receta no es válida."
-        );
+        throw new Error("La cantidad producida base de la receta no es válida.");
     }
-
     if (!Array.isArray(detallesReceta) || detallesReceta.length === 0) {
-        throw new Error(
-            "El producto no tiene ingredientes registrados en su receta."
-        );
+        throw new Error("El producto no tiene ingredientes registrados en su receta.");
     }
-
     const factorProduccion = cantidad / base;
-
     return detallesReceta.map((detalle) => {
         const cantidadBase = Number(detalle.cantidad_utilizada);
-
         if (!Number.isFinite(cantidadBase) || cantidadBase <= 0) {
-            throw new Error(
-                `La cantidad utilizada del ingrediente ${detalle.id_detalle_receta} no es válida.`
-            );
+            throw new Error(`La cantidad utilizada del ingrediente ${detalle.id_detalle_receta} no es válida.`);
         }
-
-        const cantidadNecesaria =
-            cantidadBase * factorProduccion;
-
-        if (
-            !Number.isFinite(cantidadNecesaria) ||
-            cantidadNecesaria <= 0
-        ) {
-            throw new Error(
-                `No fue posible calcular el consumo del ingrediente ${detalle.id_detalle_receta}.`
-            );
+        const cantidadNecesaria = cantidadBase * factorProduccion;
+        if (!Number.isFinite(cantidadNecesaria) || cantidadNecesaria <= 0) {
+            throw new Error(`No fue posible calcular el consumo del ingrediente ${detalle.id_detalle_receta}.`);
         }
-
         return {
             id_detalle_receta: detalle.id_detalle_receta,
             id_ma: detalle.id_ma || null,
@@ -58,255 +31,371 @@ function calcularConsumoReceta(
         };
     });
 }
-
-
 //Registra la primera producción de un producto elaborado que se acaba de insertar al sistema:
 //esto sucede debido a que un producto elaborado solo se inserta cuando ya ha sido producido por primera vez
-async function registrarPrimeraProduccion(
-    cliente,
-    idProducto,
-    detallesReceta,
-    cantidadProducir,
-    cantidadProducidaBase
-) {
+async function registrarPrimeraProduccion(cliente, idProducto, detallesReceta, cantidadProducir, cantidadProducidaBase) {
     const cantidad = Number(cantidadProducir);
     const base = Number(cantidadProducidaBase);
     const idProductoNumerico = Number(idProducto);
-
+    // =====================================================
+    // VALIDACIONES
+    // =====================================================
     if (!Number.isFinite(idProductoNumerico) || idProductoNumerico <= 0) {
-        throw new Error(
-            "El producto elaborado seleccionado no es válido."
-        );
+        throw new Error("El producto elaborado seleccionado no es válido.");
     }
-
     if (!Number.isFinite(cantidad) || cantidad <= 0) {
-        throw new Error(
-            "La cantidad inicial del producto elaborado debe ser mayor que 0."
-        );
+        throw new Error("La cantidad inicial del producto elaborado debe ser mayor que 0.");
     }
-
     if (!Number.isFinite(base) || base <= 0) {
-        throw new Error(
-            "La cantidad producida base de la receta no es válida."
-        );
+        throw new Error("La cantidad producida base de la receta no es válida.");
     }
 
-    const consumo = calcularConsumoReceta(
-        detallesReceta,
-        cantidad,
-        base
+    const resultadoProducto = await cliente.query(
+        `
+    SELECT nombre
+    FROM producto
+    WHERE id_producto = $1
+    `,
+        [idProductoNumerico]
     );
 
+    if (resultadoProducto.rowCount === 0) {
+        throw new Error(
+            "El producto elaborado no existe."
+        );
+    }
+
+    const nombreProducto =
+        resultadoProducto.rows[0].nombre;
+
+    // =====================================================
+    // CALCULAR CONSUMO DE LA RECETA
+    // =====================================================
+    const consumo = calcularConsumoReceta(detallesReceta, cantidad, base);
+    // =====================================================
+    // VALIDAR Y DESCONTAR INSUMOS
+    // =====================================================
     for (const ingrediente of consumo) {
-
-        //Materia prima
+        // =================================================
+        // MATERIA PRIMA
+        // =================================================
         if (ingrediente.id_ma !== null) {
-
             const resultadoMateriaPrima = await cliente.query(`
-                SELECT
-                    id_ma,
-                    nombre,
-                    stock_actual_i
-                FROM materia_prima_y_cd
-                WHERE id_ma = $1
-                FOR UPDATE;
-            `, [
-                Number(ingrediente.id_ma)
-            ]);
+                    SELECT
+                        id_ma,
+                        nombre,
+                        stock_actual_i,
+                        costo_total_ingrediente,
+                        unidad_por_paquete
 
+                    FROM materia_prima_y_cd
+
+                    WHERE id_ma = $1
+
+                    FOR UPDATE
+                    `,
+                [
+                    Number(ingrediente.id_ma)
+                ]);
             if (resultadoMateriaPrima.rowCount === 0) {
-                throw new Error(
-                    "Una de las materias primas de la receta no existe."
-                );
+                throw new Error("Una de las materias primas de la receta no existe.");
             }
-
-            const materiaPrima =
-                resultadoMateriaPrima.rows[0];
-
-            const stockActual =
-                Number(materiaPrima.stock_actual_i);
-
-            const cantidadNecesaria =
-                Number(ingrediente.cantidad_necesaria);
-
-            if (
-                !Number.isFinite(stockActual) ||
-                stockActual < 0
-            ) {
-                throw new Error(
-                    `El stock de "${materiaPrima.nombre}" no es válido.`
-                );
+            const materiaPrima = resultadoMateriaPrima.rows[0];
+            const stockActual = Number(materiaPrima.stock_actual_i);
+            const cantidadNecesaria = Number(ingrediente.cantidad_necesaria);
+            if (!Number.isFinite(stockActual) || stockActual < 0) {
+                throw new Error(`El stock de "${materiaPrima.nombre}" no es válido.`);
             }
-
             if (stockActual < cantidadNecesaria) {
-                throw new Error(
-                    `No hay suficiente "${materiaPrima.nombre}" para realizar la producción. ` +
-                    `Stock disponible: ${stockActual}. ` +
-                    `Cantidad necesaria: ${cantidadNecesaria}.`
-                );
+                throw new Error(`No hay suficiente "${materiaPrima.nombre}" para realizar la producción. ` + `Stock disponible: ${stockActual}. ` + `Cantidad necesaria: ${cantidadNecesaria}.`);
             }
-
+            // ---------------------------------------------
+            // Calcular costo unitario de la materia prima
+            // ---------------------------------------------
+            const costoTotalPaquete = Number(materiaPrima.costo_total_ingrediente || 0);
+            const unidadesPorPaquete = Number(materiaPrima.unidad_por_paquete || 1);
+            let costoUnitarioMP = 0;
+            if (Number.isFinite(costoTotalPaquete) && Number.isFinite(unidadesPorPaquete) && unidadesPorPaquete > 0) {
+                costoUnitarioMP = costoTotalPaquete / unidadesPorPaquete;
+            }
+            const costoTotalMP = cantidadNecesaria * costoUnitarioMP;
+            // ---------------------------------------------
+            // Descontar materia prima
+            // ---------------------------------------------
             const resultadoDescuento = await cliente.query(`
-                UPDATE materia_prima_y_cd
-                SET stock_actual_i = stock_actual_i - $1
-                WHERE id_ma = $2
-                  AND stock_actual_i >= $1
-                RETURNING stock_actual_i;
-            `, [
-                cantidadNecesaria,
-                Number(ingrediente.id_ma)
-            ]);
+                    UPDATE materia_prima_y_cd
 
+                    SET stock_actual_i =
+                        stock_actual_i - $1
+
+                    WHERE id_ma = $2
+
+                      AND stock_actual_i >= $1
+
+                    RETURNING stock_actual_i
+                    `,
+                [
+                    cantidadNecesaria,
+                    Number(ingrediente.id_ma)
+                ]);
             if (resultadoDescuento.rowCount === 0) {
-                throw new Error(
-                    `No fue posible descontar la materia prima "${materiaPrima.nombre}".`
-                );
+                throw new Error(`No fue posible descontar la materia prima "${materiaPrima.nombre}".`);
             }
+            // ---------------------------------------------
+            // Registrar movimiento de consumo de MP
+            // ---------------------------------------------
+            await cliente.query(`
+                INSERT INTO movimiento_materia_prima
+                (
+                    id_ma,
+                    fecha,
+                    anio,
+                    mes,
+                    tipo_movimiento,
+                    cantidad,
+                    costo_unitario,
+                    costo_total,
+                    motivo,
+                    observacion
+                )
+
+                VALUES
+                (
+                    $1,
+                    CURRENT_TIMESTAMP,
+
+                    EXTRACT(
+                        YEAR FROM CURRENT_TIMESTAMP
+                    )::integer,
+
+                    EXTRACT(
+                        MONTH FROM CURRENT_TIMESTAMP
+                    )::integer,
+
+                    'SALIDA',
+                    $2,
+                    $3,
+                    $4,
+                    'CONSUMO',
+                    $5
+                )
+                `,
+                [
+                    Number(ingrediente.id_ma),
+                    cantidadNecesaria,
+                    costoUnitarioMP,
+                    costoTotalMP, `Consumo para producir ${cantidad} unidades de "${nombreProducto}".`
+                ]);
         }
-
-        //Producto elaborado como insumo
+        // =================================================
+        // PRODUCTO ELABORADO COMO INSUMO
+        // =================================================
         else if (ingrediente.id_producto_insumo !== null) {
-
-            const resultadoProductoInsumo =
-                await cliente.query(`
+            const resultadoProductoInsumo = await cliente.query(`
                     SELECT
                         p.id_producto,
                         p.nombre,
                         p.tipo,
                         pe.stock_actual_pe
+
                     FROM producto p
+
                     INNER JOIN producto_elaborado pe
                         ON p.id_producto = pe.id_producto
+
                     WHERE p.id_producto = $1
-                    FOR UPDATE OF pe;
-                `, [
+
+                    FOR UPDATE OF pe
+                    `,
+                [
                     Number(ingrediente.id_producto_insumo)
                 ]);
-
             if (resultadoProductoInsumo.rowCount === 0) {
-                throw new Error(
-                    "Uno de los productos elaborados utilizados como insumo no existe."
-                );
+                throw new Error("Uno de los productos elaborados utilizados como insumo no existe.");
             }
-
-            const productoInsumo =
-                resultadoProductoInsumo.rows[0];
-
+            const productoInsumo = resultadoProductoInsumo.rows[0];
             if (productoInsumo.tipo !== "Elaborado") {
-                throw new Error(
-                    `El producto "${productoInsumo.nombre}" no puede utilizarse como insumo porque no es un producto elaborado.`
-                );
+                throw new Error(`El producto "${productoInsumo.nombre}" no puede utilizarse como insumo porque no es un producto elaborado.`);
             }
-
-            const stockActual =
-                Number(productoInsumo.stock_actual_pe);
-
-            const cantidadNecesaria =
-                Number(ingrediente.cantidad_necesaria);
-
-            if (
-                !Number.isFinite(stockActual) ||
-                stockActual < 0
-            ) {
-                throw new Error(
-                    `El stock del producto "${productoInsumo.nombre}" no es válido.`
-                );
+            const stockActual = Number(productoInsumo.stock_actual_pe);
+            const cantidadNecesaria = Number(ingrediente.cantidad_necesaria);
+            if (!Number.isFinite(stockActual) || stockActual < 0) {
+                throw new Error(`El stock del producto "${productoInsumo.nombre}" no es válido.`);
             }
-
             if (stockActual < cantidadNecesaria) {
-                throw new Error(
-                    `No hay suficiente "${productoInsumo.nombre}" para realizar la producción. ` +
-                    `Stock disponible: ${stockActual}. ` +
-                    `Cantidad necesaria: ${cantidadNecesaria}.`
-                );
+                throw new Error(`No hay suficiente "${productoInsumo.nombre}" para realizar la producción. ` + `Stock disponible: ${stockActual}. ` + `Cantidad necesaria: ${cantidadNecesaria}.`);
             }
+            // ---------------------------------------------
+            // Obtener costo del producto utilizado
+            // ---------------------------------------------
+            const resultadoCostoInsumo = await cliente.query(`
+                    SELECT
+                        costo_unitario_prod
 
-            const resultadoDescuento =
-                await cliente.query(`
+                    FROM v_productos_elaborados_costo_actual
+
+                    WHERE id_producto = $1
+                    `,
+                [
+                    Number(ingrediente.id_producto_insumo)
+                ]);
+            let costoUnitarioInsumo = 0;
+            if (resultadoCostoInsumo.rowCount > 0) {
+                costoUnitarioInsumo = Number(resultadoCostoInsumo.rows[0].costo_unitario_prod || 0);
+            }
+            const costoTotalInsumo = cantidadNecesaria * costoUnitarioInsumo;
+            // ---------------------------------------------
+            // Descontar producto elaborado utilizado
+            // ---------------------------------------------
+            const resultadoDescuento = await cliente.query(`
                     UPDATE producto_elaborado
-                    SET stock_actual_pe = stock_actual_pe - $1
+
+                    SET stock_actual_pe =
+                        stock_actual_pe - $1
+
                     WHERE id_producto = $2
+
                       AND stock_actual_pe >= $1
-                    RETURNING stock_actual_pe;
-                `, [
+
+                    RETURNING stock_actual_pe
+                    `,
+                [
                     cantidadNecesaria,
                     Number(ingrediente.id_producto_insumo)
                 ]);
-
             if (resultadoDescuento.rowCount === 0) {
-                throw new Error(
-                    `No fue posible descontar el producto elaborado "${productoInsumo.nombre}".`
-                );
+                throw new Error(`No fue posible descontar el producto elaborado "${productoInsumo.nombre}".`);
             }
+
+            // ---------------------------------------------
+            // Registrar movimiento del producto insumo
+            // ---------------------------------------------
+            await cliente.query(
+                `
+                INSERT INTO movimiento_producto
+                (
+                    id_producto,
+                    fecha,
+                    anio,
+                    mes,
+                    tipo_movimiento,
+                    cantidad,
+                    costo_unitario,
+                    costo_total,
+                    motivo,
+                    observacion
+                )
+
+                VALUES
+                (
+                    $1,
+                    CURRENT_TIMESTAMP,
+
+                    EXTRACT(
+                        YEAR FROM CURRENT_TIMESTAMP
+                    )::integer,
+
+                    EXTRACT(
+                        MONTH FROM CURRENT_TIMESTAMP
+                    )::integer,
+
+                    'SALIDA',
+                    $2,
+                    $3,
+                    $4,
+                    'CONSUMO',
+                    $5
+                )
+                `,
+                [
+                    Number(
+                        ingrediente.id_producto_insumo
+                    ),
+                    cantidadNecesaria,
+                    costoUnitarioInsumo,
+                    costoTotalInsumo,
+                    `Consumo como insumo para producir ${cantidad} unidades de "${nombreProducto}".`
+                ]
+            );
         }
     }
-
-    //Obtener costo unitario del producto
+    // =====================================================
+    // OBTENER COSTO UNITARIO DEL PRODUCTO PRODUCIDO
+    // =====================================================
     const resultadoCosto = await cliente.query(`
-        SELECT costo_unitario_prod
-        FROM v_productos_elaborados_costo_actual
-        WHERE id_producto = $1;
-    `, [
-        idProductoNumerico
-    ]);
+            SELECT
+                costo_unitario_prod
 
+            FROM v_productos_elaborados_costo_actual
+
+            WHERE id_producto = $1
+            `,
+        [
+            idProductoNumerico
+        ]);
     let costoUnitario = 0;
-
     if (resultadoCosto.rowCount > 0) {
-        costoUnitario =
-            Number(resultadoCosto.rows[0].costo_unitario_prod);
-
+        costoUnitario = Number(resultadoCosto.rows[0].costo_unitario_prod);
         if (!Number.isFinite(costoUnitario)) {
             costoUnitario = 0;
         }
     }
 
-
     const resultadoMovimiento = await cliente.query(`
-        INSERT INTO movimiento_producto (
-            id_producto,
-            fecha,
-            anio,
-            mes,
-            tipo_movimiento,
+            INSERT INTO movimiento_producto
+            (
+                id_producto,
+                fecha,
+                anio,
+                mes,
+                tipo_movimiento,
+                cantidad,
+                costo_unitario,
+                costo_total,
+                motivo,
+                observacion
+            )
+
+            VALUES
+            (
+                $1,
+                CURRENT_TIMESTAMP,
+
+                EXTRACT(
+                    YEAR FROM CURRENT_TIMESTAMP
+                )::integer,
+
+                EXTRACT(
+                    MONTH FROM CURRENT_TIMESTAMP
+                )::integer,
+
+                'ENTRADA',
+                $2,
+                $3,
+                $4,
+                'PRODUCCION',
+                $5
+            )
+
+            RETURNING *
+            `,
+        [
+            idProductoNumerico,
             cantidad,
-            costo_unitario,
-            costo_total,
-            motivo,
-            observacion
-        )
-        VALUES (
-            $1,
-            CURRENT_TIMESTAMP,
-            EXTRACT(YEAR FROM CURRENT_TIMESTAMP)::integer,
-            EXTRACT(MONTH FROM CURRENT_TIMESTAMP)::integer,
-            'ENTRADA',
-            $2,
-            $3,
-            $4,
-            'PRODUCCION',
-            $5
-        )
-        RETURNING *;
-    `, [
-        idProductoNumerico,
-        cantidad,
-        costoUnitario,
-        costoUnitario * cantidad,
-        "Producción inicial registrada junto con el producto."
-    ]);
-
-
+            costoUnitario,
+            costoUnitario * cantidad, "Producción inicial registrada junto con el producto."
+        ]);
+    // =====================================================
+    // RETORNAR RESULTADO
+    // =====================================================
     return {
         cantidadProducida: cantidad,
-        costoUnitario,
+        costoUnitario: costoUnitario,
         costoTotal: costoUnitario * cantidad,
-        consumo,
+        consumo: consumo,
         movimiento: resultadoMovimiento.rows[0]
     };
 }
-
-
 module.exports = {
     calcularConsumoReceta,
     registrarPrimeraProduccion
