@@ -85,12 +85,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             Seleccione una materia prima
         </option>
     `;
+
             materias.forEach((materia) => {
                 const opcion = document.createElement("option");
                 opcion.value = materia.id_ma;
                 opcion.textContent = materia.nombre;
                 select.appendChild(opcion);
             });
+
+            select.disabled = false;
         }
 
         function llenarSelectProductoElaborado(select, productos) {
