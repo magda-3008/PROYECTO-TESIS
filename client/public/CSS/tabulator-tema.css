@@ -377,17 +377,13 @@
         line-height: 1.2;
     }
 
-
-    /* NOMBRES DE PRODUCTOS E INSUMOS */
-
-    .columna-texto-ajustable {
-        white-space: normal !important;
-        overflow-wrap: break-word;
-        word-break: normal;
-        width: 180px !important;
-        line-height: 1.15;
+    .tabulator .tabulator-col[tabulator-field="nombre"],
+    .tabulator .tabulator-cell[tabulator-field="nombre"] {
+        width: 45% !important;        /* Cambia "nombre" por el 'field' de tu columna */
+        max-width: 45% !important;
+        min-width: 120px !important;  /* Evita que se encoja de más */
+        box-sizing: border-box;
     }
-
 
     /* BOTONES / ACCIONES */
 
