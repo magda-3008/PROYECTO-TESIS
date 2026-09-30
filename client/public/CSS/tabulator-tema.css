@@ -285,24 +285,262 @@
     background-color: #f8d7da !important;
 }
 
-/* Responsive de la tabla */
-@media (max-width: 576px) {
+/* =========================================
+        DISEÑO RESPONSIVE TABULATOR
+========================================= */
 
-    .tabulator-cell {
-        padding: 10px 8px !important;
-        font-size: 14px;
+/* -----------------------------------------
+   TABLET
+   577px - 991px
+----------------------------------------- */
+
+@media (min-width: 577px) and (max-width: 991px) {
+
+    .tabulator {
+        font-size: 16px;
     }
 
     .tabulator .tabulator-header .tabulator-col-content {
-        padding: 8px 6px;
+        padding: 8px 8px;
     }
 
     .tabulator .tabulator-header .tabulator-col-title {
-        font-size: 14px;
+        font-size: 15px;
+    }
+
+    .tabulator-cell {
+        padding: 12px 12px !important;
+        font-size: 15px;
     }
 
     .tabulator-row {
-        min-height: 50px;
+        min-height: 52px;
+    }
+
+    .columna-texto-ajustable {
+        white-space: normal !important;
+        overflow-wrap: break-word;
+        word-break: normal;
+        line-height: 1.2;
+    }
+
+}
+
+
+/* -----------------------------------------
+   CELULAR
+   Hasta 576px
+----------------------------------------- */
+
+@media (max-width: 576px) {
+
+    /* CONTENEDOR DE LA TABLA */
+
+    .tabulator {
+        width: 100%;
+        font-size: 14px;
+        border-radius: 16px;
+    }
+
+
+    /* ENCABEZADO */
+
+    .tabulator .tabulator-header {
+        min-height: 44px;
+    }
+
+    .tabulator .tabulator-header .tabulator-col {
+        min-height: 44px;
+    }
+
+    .tabulator .tabulator-header .tabulator-col-content {
+        padding: 7px 6px;
+    }
+
+    .tabulator .tabulator-header .tabulator-col-title {
+        font-size: 13px;
+        line-height: 1.15;
+    }
+
+
+    /* FILAS */
+
+    .tabulator-row {
+        min-height: 48px;
+    }
+
+
+    /* CELDAS */
+
+    .tabulator-cell {
+        padding: 9px 8px !important;
+        font-size: 14px;
+        line-height: 1.2;
+    }
+
+
+    /* NOMBRES DE PRODUCTOS E INSUMOS */
+
+    .columna-texto-ajustable {
+        white-space: normal !important;
+        overflow-wrap: break-word;
+        word-break: normal;
+        line-height: 1.15;
+    }
+
+
+    /* BOTONES / ACCIONES */
+
+    .tabulator-cell .btn {
+        min-width: 34px;
+        min-height: 34px;
+        padding: 5px 7px;
+    }
+
+    .bi-three-dots-vertical {
+        font-size: 21px;
+    }
+
+
+    /* MENÚ CONTEXTUAL */
+
+    .tabulator-menu {
+        border-radius: 12px;
+        max-width: calc(100vw - 30px);
+    }
+
+    .tabulator-menu-item {
+        padding: 11px 14px;
+        font-size: 15px;
+    }
+
+
+    /* PAGINACIÓN */
+
+    .tabulator-footer {
+        padding: 7px 5px;
+    }
+
+    .tabulator-page {
+        padding: 4px 8px;
+        margin: 0 2px;
+        font-size: 14px;
+    }
+
+
+    /* SCROLL HORIZONTAL */
+
+    .tabulator-tableHolder {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .tabulator-tableHolder::-webkit-scrollbar {
+        height: 7px;
+    }
+
+
+    /* INPUTS DE EDICIÓN */
+
+    .tabulator-editing input,
+    .tabulator-editing select {
+        padding: 7px;
+        font-size: 14px;
+    }
+
+
+    /* MENSAJE DE TABLA VACÍA */
+
+    .tabla-vacia {
+        padding: 45px 15px;
+    }
+
+    .tabla-vacia i {
+        font-size: 45px;
+    }
+
+    .tabla-vacia h4 {
+        font-size: 19px;
+    }
+
+    .tabla-vacia p {
+        font-size: 15px;
+    }
+
+
+    /* CARGANDO */
+
+    .tabla-cargando {
+        min-height: 280px;
+        font-size: 16px;
+    }
+
+
+    /* ERROR */
+
+    .tabla-error {
+        min-height: 280px;
+        padding: 20px;
+    }
+
+    .tabla-error i {
+        font-size: 50px;
+    }
+
+    .tabla-error h4 {
+        font-size: 19px;
+    }
+
+    .tabla-error p {
+        font-size: 15px;
+    }
+
+    .tabla-error .btn,
+    .tabla-error button,
+    .swal2-confirm {
+        font-size: 15px !important;
+        padding: 7px 22px !important;
+    }
+
+}
+
+
+/* -----------------------------------------
+   CELULARES MUY PEQUEÑOS
+   Hasta 400px
+----------------------------------------- */
+
+@media (max-width: 400px) {
+
+    .tabulator {
+        font-size: 13px;
+        border-radius: 14px;
+    }
+
+    .tabulator .tabulator-header .tabulator-col-content {
+        padding: 6px 5px;
+    }
+
+    .tabulator .tabulator-header .tabulator-col-title {
+        font-size: 12px;
+    }
+
+    .tabulator-cell {
+        padding: 8px 6px !important;
+        font-size: 13px;
+    }
+
+    .tabulator-row {
+        min-height: 46px;
+    }
+
+    .columna-texto-ajustable {
+        line-height: 1.1;
+    }
+
+    .tabulator-page {
+        padding: 3px 7px;
+        font-size: 13px;
     }
 
 }
