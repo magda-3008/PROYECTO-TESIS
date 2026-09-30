@@ -379,8 +379,8 @@
 
     .tabulator .tabulator-col[tabulator-field="nombre"],
     .tabulator .tabulator-cell[tabulator-field="nombre"] {
-        width: 5% !important;   
-        max-width: 5% !important;
+        width: 10% !important;   
+        max-width: 10% !important;
         box-sizing: border-box;
     }
 
