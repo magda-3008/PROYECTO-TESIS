@@ -152,7 +152,7 @@ router.post("/", async (req, res) => {
                 mes, "ENTRADA", "COMPRA",
                 stockInicialNormalizado,
                 costoUnitario,
-                costoTotal, "Primeras unidades insertadas del producto"
+                costoTotal, "Primeras unidades insertadas del insumo"
             ]);
         await client.query("COMMIT");
         res.status(201).json({

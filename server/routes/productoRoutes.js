@@ -221,22 +221,61 @@ router.post("/", upload.single("foto"), async (req, res) => {
             producto.foto_producto = urlData.publicUrl;
         }
         if (tipo === "Reventa") {
+            const cantidadInicial = Number(stock_inicial);
+            const costoCompra = Number(costo_compra);
+
             const resultadoReventa = await cliente.query(`
-                    INSERT INTO producto_reventa (
-                        id_producto,
-                        costo_compra,
-                        stock_actual_pr
-                    )
-                    VALUES ($1, $2, $3)
-                    RETURNING *;
-                    `,
-                [
-                    producto.id_producto,
-                    Number(costo_compra),
-                    Number(stock_inicial)
-                ]);
+        INSERT INTO producto_reventa (
+            id_producto,
+            costo_compra,
+            stock_actual_pr
+        )
+        VALUES ($1, $2, $3)
+        RETURNING *;
+    `, [
+                producto.id_producto,
+                costoCompra,
+                cantidadInicial
+            ]);
+
             const productoReventa = resultadoReventa.rows[0];
+
+            // Registrar la compra inicial como primer movimiento
+            await cliente.query(`
+                INSERT INTO movimiento_producto (
+                    id_producto,
+                    fecha,
+                    anio,
+                    mes,
+                    tipo_movimiento,
+                    cantidad,
+                    observacion,
+                    costo_unitario,
+                    costo_total,
+                    motivo
+                )
+                VALUES (
+                    $1,
+                    CURRENT_DATE,
+                    EXTRACT(YEAR FROM CURRENT_DATE),
+                    EXTRACT(MONTH FROM CURRENT_DATE),
+                    'Entrada',
+                    $2,
+                    $3,
+                    $4,
+                    $5,
+                    'COMPRA'
+                );
+            `, [
+                producto.id_producto,
+                cantidadInicial,
+                "Primeras unidades insertadas del producto",
+                costoCompra,
+                cantidadInicial * costoCompra
+            ]);
+
             await cliente.query("COMMIT");
+
             return res.status(201).json({
                 mensaje: "Producto de reventa creado correctamente.",
                 producto: {
