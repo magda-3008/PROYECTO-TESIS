@@ -225,14 +225,14 @@ router.post("/", upload.single("foto"), async (req, res) => {
             const costoCompra = Number(costo_compra);
 
             const resultadoReventa = await cliente.query(`
-        INSERT INTO producto_reventa (
-            id_producto,
-            costo_compra,
-            stock_actual_pr
-        )
-        VALUES ($1, $2, $3)
-        RETURNING *;
-    `, [
+                INSERT INTO producto_reventa (
+                    id_producto,
+                    costo_compra,
+                    stock_actual_pr
+                )
+                VALUES ($1, $2, $3)
+                RETURNING *;
+            `, [
                 producto.id_producto,
                 costoCompra,
                 cantidadInicial
@@ -259,7 +259,7 @@ router.post("/", upload.single("foto"), async (req, res) => {
                     CURRENT_DATE,
                     EXTRACT(YEAR FROM CURRENT_DATE),
                     EXTRACT(MONTH FROM CURRENT_DATE),
-                    'Entrada',
+                    'ENTRADA',
                     $2,
                     $3,
                     $4,
