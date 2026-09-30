@@ -25,8 +25,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         const unidadPorPaqueteMP = document.getElementById("unidadPorPaqueteMP");
         const stockInicialMP = document.getElementById("stockInicialMP");
         const stockMinimoMP = document.getElementById("stockMinimoMP");
-        // const imagenMP = document.getElementById("imagenMP");
-        // const vistaPreviaImagenMP = document.getElementById("vistaPreviaImagenMP");
         const btnGuardarMP = document.getElementById("guardarMP");
         const spinnerGuardarMP = document.getElementById("spinnerGuardarMP");
         const textoGuardarMP = document.getElementById("textoGuardarMP");
@@ -121,9 +119,25 @@ document.addEventListener("DOMContentLoaded", async () => {
                 stockInicialMP.classList.add("is-invalid");
                 formularioValido = false;
             }
-            if (!stockMinimoMP.value || Number(stockMinimoMP.value) < 0) {
-                stockMinimoMP.classList.add("is-invalid");
-                formularioValido = false;
+            let stockMinimoNormalizado = null;
+
+            if (stockMinimoMP.value.trim() !== "") {
+                try {
+                    stockMinimoNormalizado = convertirTextoANumero(
+                        stockMinimoMP.value.trim()
+                    );
+
+                    if (
+                        !Number.isFinite(stockMinimoNormalizado) ||
+                        stockMinimoNormalizado < 0
+                    ) {
+                        stockMinimoMP.classList.add("is-invalid");
+                        formularioValido = false;
+                    }
+                } catch (error) {
+                    stockMinimoMP.classList.add("is-invalid");
+                    formularioValido = false;
+                }
             }
             if (!formularioValido) {
                 Swal.fire({
@@ -146,7 +160,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 costo_total_ingrediente: Number(costoInsumo.value),
                 unidad_por_paquete: Number(unidadPorPaqueteMP.value),
                 stock_actual_i: Number(stockInicialMP.value),
-                stock_minimo: Number(stockMinimoMP.value),
+                stock_minimo: stockMinimoNormalizado,
                 unidad_existencia: unidadExistenciaMP.value
             };
 
