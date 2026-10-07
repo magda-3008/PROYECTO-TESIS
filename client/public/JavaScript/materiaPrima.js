@@ -85,11 +85,11 @@ const vistas = {
                 formatter: function () {
                     let acciones = `
                     <button class="btnAccion btnEntrada" title="Registrar entrada">
-                        <i class="bi bi-cart-plus"></i>
+                        <i class="fa-sharp fa-solid fa-cart-plus"></i>
                     </button>
 
                     <button class="btnAccion btnSalida" title="Registrar pérdida">
-                        <i class="bi bi-cart-dash"></i>
+                        <i class="fa-sharp fa-solid fa-cart-minus"></i>
                     </button>
 
                     <button class="btnAccion btnHistorial" title="Ver historial">

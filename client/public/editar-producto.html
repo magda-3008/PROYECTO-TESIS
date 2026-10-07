@@ -57,9 +57,7 @@
                     </div>
                   </div>
 
-                  <label
-                    for="editarFotoProducto"
-                    class="btn btn-outline-info rounded-pill w-100 mb-1 fw-semibold py-2">
+                  <label for="editarFotoProducto" class="btnVenta">
                     <i class="fa-solid fa-camera me-1"></i> Seleccionar foto
                   </label>
                   <input
@@ -180,6 +178,10 @@
 
       <!-- Pie con botones estilo Pa'TuBoca -->
       <div class="modal-botones">
+        <button type="button" class="btnCancelar" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+
         <button type="button" id="btnGuardarEdicionProducto" class="btnGuardar">
           <span
             class="spinner-border spinner-border-sm d-none"
@@ -187,10 +189,6 @@
             role="status"
             aria-hidden="true"></span>
           <span id="textoGuardarEdicionProducto"> Guardar cambios </span>
-        </button>
-
-        <button type="button" class="btnCancelar" data-bs-dismiss="modal">
-          Cancelar
         </button>
       </div>
     </div>
