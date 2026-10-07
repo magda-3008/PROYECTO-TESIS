@@ -187,11 +187,11 @@ const productosInventario = {
 };
 
 async function cargarVista() {
-  usuarioActual = await verificarSesionYRedirigir();
+  // usuarioActual = await verificarSesionYRedirigir();
 
-  if (!usuarioActual) {
-    return;
-  }
+  // if (!usuarioActual) {
+  //   return;
+  // }
 
   const endpoint = productosInventario.endpoint;
 

@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    const usuarioActual = await verificarSesionYRedirigir();
-    if (!usuarioActual) return;
+    // const usuarioActual = await verificarSesionYRedirigir();
+    // if (!usuarioActual) return;
     // Solo el Administrador puede acceder a los respaldos
     if (usuarioActual.rol !== "Administrador") {
         window.location.href = "principal.html";

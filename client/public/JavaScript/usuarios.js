@@ -95,20 +95,20 @@ const usuariosConfiguracion = {
 };
 async function cargarVista() {
     try {
-        usuarioActual = await verificarSesionYRedirigir();
-        if (!usuarioActual) {
-            return;
-        }
-        if (usuarioActual.rol !== "Administrador") {
-            await Swal.fire({
-                icon: "warning",
-                title: "Acceso denegado",
-                text: "No tiene permisos para acceder a la gestión de usuarios.",
-                confirmButtonText: "Aceptar"
-            });
-            window.location.href = "principal.html";
-            return;
-        }
+        // usuarioActual = await verificarSesionYRedirigir();
+        // if (!usuarioActual) {
+        //     return;
+        // }
+        // if (usuarioActual.rol !== "Administrador") {
+        //     await Swal.fire({
+        //         icon: "warning",
+        //         title: "Acceso denegado",
+        //         text: "No tiene permisos para acceder a la gestión de usuarios.",
+        //         confirmButtonText: "Aceptar"
+        //     });
+        //     window.location.href = "principal.html";
+        //     return;
+        // }
         await cargarUsuarios();
         inicializarEventosFiltros();
         inicializarBotonAgregarUsuario();
