@@ -1,11 +1,11 @@
 let usuarioActual = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
-    //usuarioActual = await //verificarSesionYRedirigir();
-    //
-    //    if (!usuarioActual) {
-    //        return;
-    //    }
+    usuarioActual = await verificarSesionYRedirigir();
+
+    if (!usuarioActual) {
+        return;
+    }
     cargarIngredientes();
     cargarRecetas();
     const inputBuscar = document.getElementById("buscar-receta");

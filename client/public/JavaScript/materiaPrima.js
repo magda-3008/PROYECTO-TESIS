@@ -273,9 +273,6 @@ function inicializarEventosFiltros(vista) {
     document
         .getElementById("filtroUnidadMedida")
         .addEventListener("change", aplicarFiltros);
-    // document
-    //     .getElementById("filtroTipoInsumo")
-    //     .addEventListener("change", aplicarFiltros);
     document
         .getElementById("filtroStock")
         .addEventListener("change", aplicarFiltros);

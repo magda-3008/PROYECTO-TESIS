@@ -161,11 +161,11 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
-        // const usuarioActual = await verificarSesionYRedirigir();
+        const usuarioActual = await verificarSesionYRedirigir();
 
-        // if (!usuarioActual) {
-        //   return;
-        // }
+        if (!usuarioActual) {
+          return;
+        }
 
         if (usuarioActual.rol !== "Administrador") {
           document.getElementById("tarjetaUsuarios")?.remove();
