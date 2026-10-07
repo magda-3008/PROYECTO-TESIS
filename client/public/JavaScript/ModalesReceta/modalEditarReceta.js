@@ -660,7 +660,8 @@ async function guardarCambiosReceta(evento) {
     } finally {
         boton.disabled = false;
         boton.innerHTML = `
-            <i class="bi bi-check-circle me-1"></i>
+            <i class="fa-solid fa-circle-check me-1"></i>
+            
             Guardar cambios
         `;
     }

@@ -76,7 +76,7 @@ const usuariosConfiguracion = {
         formatter: function () {
             return `            
                 <div class="acciones-tabla">
-                    <button class="btnAccion btnEditar" title="Editar usuario"> <i class="bi bi-pencil"></i> </button>
+                    <button class="btnAccion btnEditar" title="Editar usuario"> <i class="fa-sharp fa-solid fa-pencil"></i> </button>
                     <button class="btnAccion btnSalida" title="Eliminar usuario"><i class="fa-solid fa-trash"></i></button>
                 </div>
                 `;

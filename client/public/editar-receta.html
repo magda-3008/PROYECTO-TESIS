@@ -1,0 +1,170 @@
+<!-- Modal Editar Receta -->
+
+<div
+  class="modal fade"
+  id="modalEditarReceta"
+  tabindex="-1"
+  aria-labelledby="tituloModalEditarReceta"
+  aria-hidden="true">
+  <div
+    class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <!-- Encabezado -->
+
+      <div class="venta-header">
+        <h2>
+          <i class="fa-solid fa-utensils me-2"></i>
+          EDITAR RECETA
+        </h2>
+
+        <button
+          type="button"
+          class="cerrarModal"
+          data-bs-dismiss="modal"
+          aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Cuerpo -->
+
+      <div class="modal-body p-4">
+        <form id="formEditarReceta" novalidate>
+          <!-- =========================================
+                         INFORMACIÓN DE LA RECETA
+                         ========================================== -->
+
+          <div class="mb-4">
+            <h6 class="text-muted mb-3 fw-bold">
+              <i class="fa-solid fa-circle-info me-2 text-info"></i>
+              Información de la receta
+            </h6>
+
+            <div class="row g-3">
+              <!-- Nombre -->
+
+              <div class="col-md-8">
+                <div class="campo">
+                  <label for="nombreRecetaEditar"> Nombre de la receta </label>
+
+                  <input
+                    type="text"
+                    id="nombreRecetaEditar"
+                    name="nombreRecetaEditar"
+                    maxlength="100"
+                    autocomplete="off"
+                    placeholder="Ej. D'Frutta" />
+
+                  <div
+                    id="errorNombreRecetaEditar"
+                    class="text-danger small mt-1"></div>
+                </div>
+              </div>
+
+              <!-- Cantidad base -->
+
+              <div class="col-md-4">
+                <div class="campo">
+                  <label for="cantidadBaseEditar">
+                    Cantidad producida base
+                  </label>
+
+                  <input
+                    type="number"
+                    id="cantidadBaseEditar"
+                    name="cantidadBaseEditar"
+                    min="1"
+                    step="1"
+                    inputmode="numeric"
+                    placeholder="Ej. 10" />
+
+                  <div
+                    id="errorCantidadBaseEditar"
+                    class="text-danger small mt-1"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- =========================================
+                         INGREDIENTES Y MATERIALES
+                         ========================================== -->
+
+          <div class="mb-4">
+            <h6 class="text-muted mb-3 fw-bold">
+              <i class="fa-solid fa-basket-shopping me-2 text-info"></i>
+              Ingredientes y materiales
+            </h6>
+
+            <!-- Contenedor de ingredientes -->
+
+            <div id="contenedorIngredientesEditar"></div>
+
+            <div
+              id="errorIngredientesEditar"
+              class="text-danger small mt-1"></div>
+
+            <!-- Agregar ingrediente -->
+
+            <button
+              type="button"
+              class="btnAgregar"
+              id="btnAgregarIngredienteEditar">
+              <i class="fa-solid fa-plus me-1"></i>
+              Agregar ingrediente
+            </button>
+          </div>
+
+          <!-- =========================================
+                         MÉTODO DE PREPARACIÓN
+                         ========================================== -->
+
+          <div class="mb-2">
+            <h6 class="text-muted mb-3 fw-bold">
+              <i class="fa-solid fa-list-check me-2 text-info"></i>
+              Método de preparación
+            </h6>
+
+            <div class="campo">
+              <label for="descripcionRecetaEditar"> Descripción </label>
+
+              <textarea
+                id="descripcionRecetaEditar"
+                name="descripcionRecetaEditar"
+                rows="5"
+                placeholder="Describe el procedimiento de preparación...">
+              </textarea>
+
+              <div
+                id="errorDescripcionRecetaEditar"
+                class="text-danger small mt-1"></div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Botones -->
+
+      <div class="modal-botones">
+        <button
+          type="submit"
+          form="formEditarReceta"
+          class="btnGuardar"
+          id="btnGuardarCambiosReceta">
+          <span
+            class="spinner-border spinner-border-sm d-none"
+            id="spinnerGuardarReceta"
+            role="status"
+            aria-hidden="true">
+          </span>
+
+          <span id="textoGuardarReceta"> Guardar cambios </span>
+        </button>
+
+        <button type="button" class="btnCancelar" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
