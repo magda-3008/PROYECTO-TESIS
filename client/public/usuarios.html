@@ -27,6 +27,83 @@
   </head>
 
   <body>
+    <!--FONDO-->
+    <div class="Fondo"></div>
+
+    <!-- MENÚ LATERAL -->
+    <aside class="Menu-lateral" id="menuLateral">
+      <nav>
+        <div class="Seccion-menu">CONTROL DE INVENTARIOS</div>
+
+        <a href="productos.html" class="Item-menu activo">
+          <i class="fa-solid fa-box-open"></i>
+          <span>Productos</span>
+        </a>
+
+        <a href="materiaprima.html" class="Item-menu">
+          <i class="fa-solid fa-boxes-stacked"></i>
+          <span>Materia prima</span>
+        </a>
+
+        <a href="recetas.html" class="Item-menu">
+          <i class="fa-solid fa-book-open"></i>
+          <span>Recetas</span>
+        </a>
+
+        <hr />
+
+        <div class="Seccion-menu">TABLERO DE VENTAS</div>
+
+        <a href="ventas.html" class="Item-menu">
+          <i class="fa-solid fa-cash-register"></i>
+          <span>Ventas</span>
+        </a>
+
+        <!-- ADMINISTRACIÓN -->
+        <div id="menuAdministracion" style="display: none">
+          <hr />
+
+          <div class="Seccion-menu">ADMINISTRACIÓN</div>
+
+          <a href="usuarios.html" class="Item-menu">
+            <i class="fa-solid fa-users"></i>
+            <span>Usuarios</span>
+          </a>
+
+          <a href="respaldos.html" class="Item-menu">
+            <i class="fa-solid fa-database"></i>
+            <span>Respaldos</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <!--ENCABEZADO-->
+    <header class="Encabezado">
+      <!--Izquierda-->
+      <div class="Encabezado-izquierda">
+        <button class="btnMenu" id="btnMenu" aria-label="Abrir menú">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <div class="Marca">
+          <h1>| USUARIOS</h1>
+        </div>
+      </div>
+
+      <!--Derecha-->
+      <div class="Encabezado-derecha">
+        <button class="btnVenta" type="button">
+          <i class="fa-solid fa-plus"></i>
+          <span>Agregar venta</span>
+        </button>
+
+        <a href="" id="btnCerrarSesion">
+          <img src="Resources/Logo.png" alt="Logo" class="logoEmpresa" />
+        </a>
+      </div>
+    </header>
+
     <div class="container-fluid mt-3">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
@@ -75,6 +152,73 @@
 
     <!-- Sesión -->
     <script src="./JavaScript/utilities/sesion.js"></script>
+
+    <script>
+      /* ========= Menú lateral ========= */
+
+      const btnMenu = document.getElementById("btnMenu");
+      const menuLateral = document.getElementById("menuLateral");
+
+      btnMenu.addEventListener("click", () => {
+        menuLateral.classList.toggle("activo");
+        document.body.classList.toggle("menu-abierto");
+
+        setTimeout(() => {
+          if (typeof tabla !== "undefined") {
+            tabla.redraw(true);
+          }
+        }, 300);
+      });
+
+      /* ========= Menú de administración ========= */
+
+      async function configurarMenuAdministracion() {
+        const usuarioActual = await verificarSesionYRedirigir();
+
+        if (!usuarioActual) {
+          return;
+        }
+
+        const menuAdministracion =
+          document.getElementById("menuAdministracion");
+
+        if (!menuAdministracion) {
+          return;
+        }
+
+        if (usuarioActual.rol === "Administrador") {
+          menuAdministracion.style.display = "block";
+        }
+      }
+
+      configurarMenuAdministracion();
+
+      /* ========= Modal Agregar Venta ========= */
+
+      const modal = document.getElementById("modalVenta");
+      const btnVenta = document.querySelector(".btnVenta");
+      const cerrarModal = document.getElementById("cerrarModal");
+      const btnCancelar = document.getElementById("btnCancelar");
+
+      btnVenta.addEventListener("click", () => {
+        modal.classList.add("activo");
+      });
+
+      cerrarModal.addEventListener("click", () => {
+        modal.classList.remove("activo");
+      });
+
+      btnCancelar.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        document.querySelector(".buscarProducto").value = "";
+        document.querySelector(".formVenta").reset();
+
+        document.querySelectorAll(".campo input[readonly]").forEach((input) => {
+          input.value = "";
+        });
+      });
+    </script>
 
     <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
 

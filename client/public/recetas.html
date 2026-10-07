@@ -25,12 +25,12 @@
     <!--FONDO-->
     <div class="Fondo"></div>
 
-    <!--MENÚ LATERAL-->
+    <!-- MENÚ LATERAL -->
     <aside class="Menu-lateral" id="menuLateral">
       <nav>
         <div class="Seccion-menu">CONTROL DE INVENTARIOS</div>
 
-        <a href="productos.html" class="Item-menu">
+        <a href="productos.html" class="Item-menu activo">
           <i class="fa-solid fa-box-open"></i>
           <span>Productos</span>
         </a>
@@ -40,7 +40,7 @@
           <span>Materia prima</span>
         </a>
 
-        <a href="recetas.html" class="Item-menu activo">
+        <a href="recetas.html" class="Item-menu">
           <i class="fa-solid fa-book-open"></i>
           <span>Recetas</span>
         </a>
@@ -53,6 +53,23 @@
           <i class="fa-solid fa-cash-register"></i>
           <span>Ventas</span>
         </a>
+
+        <!-- ADMINISTRACIÓN -->
+        <div id="menuAdministracion" style="display: none">
+          <hr />
+
+          <div class="Seccion-menu">ADMINISTRACIÓN</div>
+
+          <a href="usuarios.html" class="Item-menu">
+            <i class="fa-solid fa-users"></i>
+            <span>Usuarios</span>
+          </a>
+
+          <a href="respaldos.html" class="Item-menu">
+            <i class="fa-solid fa-database"></i>
+            <span>Respaldos</span>
+          </a>
+        </div>
       </nav>
     </aside>
 
@@ -211,18 +228,50 @@
       </div>
     </div>
 
-    <!--JAVASCRIPT-->
+    <script src="./JavaScript/utilities/sesion.js"></script>
+
     <script>
       /* ========= Menú lateral ========= */
+
       const btnMenu = document.getElementById("btnMenu");
       const menuLateral = document.getElementById("menuLateral");
 
       btnMenu.addEventListener("click", () => {
         menuLateral.classList.toggle("activo");
         document.body.classList.toggle("menu-abierto");
+
+        setTimeout(() => {
+          if (typeof tabla !== "undefined") {
+            tabla.redraw(true);
+          }
+        }, 300);
       });
 
+      /* ========= Menú de administración ========= */
+
+      async function configurarMenuAdministracion() {
+        const usuarioActual = await verificarSesionYRedirigir();
+
+        if (!usuarioActual) {
+          return;
+        }
+
+        const menuAdministracion =
+          document.getElementById("menuAdministracion");
+
+        if (!menuAdministracion) {
+          return;
+        }
+
+        if (usuarioActual.rol === "Administrador") {
+          menuAdministracion.style.display = "block";
+        }
+      }
+
+      configurarMenuAdministracion();
+
       /* ========= Modal Agregar Venta ========= */
+
       const modal = document.getElementById("modalVenta");
       const btnVenta = document.querySelector(".btnVenta");
       const cerrarModal = document.getElementById("cerrarModal");
@@ -240,7 +289,6 @@
         event.preventDefault();
 
         document.querySelector(".buscarProducto").value = "";
-
         document.querySelector(".formVenta").reset();
 
         document.querySelectorAll(".campo input[readonly]").forEach((input) => {
@@ -250,7 +298,6 @@
     </script>
 
     <!--Scripts del proyecto-->
-    <script src="./JavaScript/utilities/sesion.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./JavaScript/utilities/formateoUnidad.js"></script>
     <script src="./JavaScript/utilities/formateoUnidadesPlural.js"></script>

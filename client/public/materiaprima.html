@@ -31,17 +31,17 @@
     <!--FONDO-->
     <div class="Fondo"></div>
 
-    <!--MENÚ LATERAL-->
+    <!-- MENÚ LATERAL -->
     <aside class="Menu-lateral" id="menuLateral">
       <nav>
         <div class="Seccion-menu">CONTROL DE INVENTARIOS</div>
 
-        <a href="productos.html" class="Item-menu">
+        <a href="productos.html" class="Item-menu activo">
           <i class="fa-solid fa-box-open"></i>
           <span>Productos</span>
         </a>
 
-        <a href="materiaprima.html" class="Item-menu activo">
+        <a href="materiaprima.html" class="Item-menu">
           <i class="fa-solid fa-boxes-stacked"></i>
           <span>Materia prima</span>
         </a>
@@ -59,6 +59,23 @@
           <i class="fa-solid fa-cash-register"></i>
           <span>Ventas</span>
         </a>
+
+        <!-- ADMINISTRACIÓN -->
+        <div id="menuAdministracion" style="display: none">
+          <hr />
+
+          <div class="Seccion-menu">ADMINISTRACIÓN</div>
+
+          <a href="usuarios.html" class="Item-menu">
+            <i class="fa-solid fa-users"></i>
+            <span>Usuarios</span>
+          </a>
+
+          <a href="respaldos.html" class="Item-menu">
+            <i class="fa-solid fa-database"></i>
+            <span>Respaldos</span>
+          </a>
+        </div>
       </nav>
     </aside>
 
@@ -490,11 +507,11 @@
     <!-- Modal editar materiaprima -->
     <div id="contenedorModalEditarMP"></div>
 
-    <!-- ========================================= -->
-    <!-- JAVASCRIPT -->
-    <!-- ========================================= -->
+    <script src="./JavaScript/utilities/sesion.js"></script>
+
     <script>
       /* ========= Menú lateral ========= */
+
       const btnMenu = document.getElementById("btnMenu");
       const menuLateral = document.getElementById("menuLateral");
 
@@ -508,28 +525,57 @@
           }
         }, 300);
       });
+
+      /* ========= Menú de administración ========= */
+
+      async function configurarMenuAdministracion() {
+        const usuarioActual = await verificarSesionYRedirigir();
+
+        if (!usuarioActual) {
+          return;
+        }
+
+        const menuAdministracion =
+          document.getElementById("menuAdministracion");
+
+        if (!menuAdministracion) {
+          return;
+        }
+
+        if (usuarioActual.rol === "Administrador") {
+          menuAdministracion.style.display = "block";
+        }
+      }
+
+      configurarMenuAdministracion();
+
       /* ========= Modal Agregar Venta ========= */
+
       const modal = document.getElementById("modalVenta");
       const btnVenta = document.querySelector(".btnVenta");
       const cerrarModal = document.getElementById("cerrarModal");
       const btnCancelar = document.getElementById("btnCancelar");
+
       btnVenta.addEventListener("click", () => {
         modal.classList.add("activo");
       });
+
       cerrarModal.addEventListener("click", () => {
         modal.classList.remove("activo");
       });
+
       btnCancelar.addEventListener("click", (event) => {
         event.preventDefault();
+
         document.querySelector(".buscarProducto").value = "";
         document.querySelector(".formVenta").reset();
+
         document.querySelectorAll(".campo input[readonly]").forEach((input) => {
           input.value = "";
         });
       });
     </script>
 
-    <script src="./JavaScript/utilities/sesion.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
