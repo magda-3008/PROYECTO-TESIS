@@ -5,6 +5,11 @@ const {
     verificarSesion,
     verificarAdministrador
 } = require("../middleware/autenticacion");
+
+const { Resend } = require("resend");
+
+const resend = new Resend(process.env.RESEND_API);
+
 router.get("/sesion", verificarSesion,
     (req, res) => {
         res.json({
@@ -86,9 +91,10 @@ router.get("/", verificarSesion, verificarAdministrador, async (req, res) => {
                 SELECT
                     id_usuario,
                     nombre_usuario,
-                    rol
+                    rol,
+                    correo
                 FROM usuarios
-                ORDER BY nombre_usuario ASC;
+                ORDER BY id_usuario DESC;
             `;
         const resultado = await pool.query(consulta);
         return res.json(resultado.rows);
@@ -102,12 +108,13 @@ router.get("/", verificarSesion, verificarAdministrador, async (req, res) => {
 router.post("/", verificarSesion, verificarAdministrador, async (req, res) => {
     const {
         nombre_usuario,
+        correo,
         contrasena,
         rol,
         contrasena_actual
     } = req.body;
     // Validar que se hayan enviado todos los datos necesarios
-    if (!nombre_usuario || !contrasena || !rol || !contrasena_actual) {
+    if (!nombre_usuario || !correo || !contrasena || !rol || !contrasena_actual) {
         return res.status(400).json({
             mensaje: "Todos los campos son obligatorios."
         });
@@ -137,6 +144,36 @@ router.post("/", verificarSesion, verificarAdministrador, async (req, res) => {
             mensaje: "El nombre de usuario no puede superar los 20 caracteres."
         });
     }
+
+    // Validar correo
+    if (typeof correo !== "string") {
+        return res.status(400).json({
+            mensaje: "El correo electrónico no es válido."
+        });
+    }
+
+    const correoUsuario = correo.trim().toLowerCase();
+
+    if (correoUsuario.length === 0) {
+        return res.status(400).json({
+            mensaje: "El correo electrónico es obligatorio."
+        });
+    }
+
+    if (correoUsuario.length > 254) {
+        return res.status(400).json({
+            mensaje: "El correo electrónico no puede superar los 254 caracteres."
+        });
+    }
+
+    const patronCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!patronCorreo.test(correoUsuario)) {
+        return res.status(400).json({
+            mensaje: "El formato del correo electrónico no es válido."
+        });
+    }
+
     // Validar rol
     if (!["Administrador", "Colaborador"].includes(rol)) {
         return res.status(400).json({
@@ -176,37 +213,49 @@ router.post("/", verificarSesion, verificarAdministrador, async (req, res) => {
         const consultaUsuarioExistente = `
             SELECT 1
             FROM usuarios
-            WHERE nombre_usuario = $1;
+            WHERE nombre_usuario = $1
+            OR correo = $2;
         `;
-        const resultadoUsuarioExistente = await pool.query(consultaUsuarioExistente,
-            [nombreUsuario]);
+
+        const resultadoUsuarioExistente = await pool.query(
+            consultaUsuarioExistente,
+            [nombreUsuario, correoUsuario]
+        );
+
         if (resultadoUsuarioExistente.rows.length > 0) {
             return res.status(409).json({
-                mensaje: "El nombre de usuario ya está en uso."
+                mensaje: "El nombre de usuario o correo electrónico ya está en uso."
             });
         }
         const consultaInsertar = `
             INSERT INTO usuarios (
                 nombre_usuario,
+                correo,
                 contrasena,
                 rol
             )
             VALUES (
                 $1,
-                crypt($2, gen_salt('bf')),
-                $3
+                $2,
+                crypt($3, gen_salt('bf')),
+                $4
             )
             RETURNING
                 id_usuario,
                 nombre_usuario,
+                correo,
                 rol;
         `;
-        const resultadoInsertar = await pool.query(consultaInsertar,
+
+        const resultadoInsertar = await pool.query(
+            consultaInsertar,
             [
                 nombreUsuario,
+                correoUsuario,
                 contrasena,
                 rol
-            ]);
+            ]
+        );
         return res.status(201).json({
             mensaje: "Usuario creado correctamente.",
             usuario: resultadoInsertar.rows[0]
@@ -214,7 +263,7 @@ router.post("/", verificarSesion, verificarAdministrador, async (req, res) => {
     } catch (error) {
         if (error.code === "23505") {
             return res.status(409).json({
-                mensaje: "El nombre de usuario ya está en uso."
+                mensaje: "El nombre de usuario o correo electrónico ya está en uso."
             });
         }
         console.error("Error al crear usuario:", error);
@@ -227,6 +276,7 @@ router.patch("/:id", verificarSesion, verificarAdministrador, async (req, res) =
     const idUsuario = Number(req.params.id);
     const {
         nombre_usuario,
+        correo,
         rol,
         contrasena,
         contrasena_actual
@@ -238,7 +288,12 @@ router.patch("/:id", verificarSesion, verificarAdministrador, async (req, res) =
         });
     }
     // Validar campos obligatorios
-    if (nombre_usuario === undefined || rol === undefined || contrasena_actual === undefined) {
+    if (
+        nombre_usuario === undefined ||
+        correo === undefined ||
+        rol === undefined ||
+        contrasena_actual === undefined
+    ) {
         return res.status(400).json({
             mensaje: "Faltan datos obligatorios para actualizar el usuario."
         });
@@ -318,21 +373,54 @@ router.patch("/:id", verificarSesion, verificarAdministrador, async (req, res) =
                 mensaje: "El usuario que desea editar no existe."
             });
         }
+        // Validar correo
+        if (typeof correo !== "string") {
+            return res.status(400).json({
+                mensaje: "El correo electrónico no es válido."
+            });
+        }
+
+        const correoUsuario = correo.trim().toLowerCase();
+
+        if (correoUsuario.length === 0) {
+            return res.status(400).json({
+                mensaje: "El correo electrónico es obligatorio."
+            });
+        }
+
+        if (correoUsuario.length > 254) {
+            return res.status(400).json({
+                mensaje: "El correo electrónico no puede superar los 254 caracteres."
+            });
+        }
+
+        const patronCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!patronCorreo.test(correoUsuario)) {
+            return res.status(400).json({
+                mensaje: "El formato del correo electrónico no es válido."
+            });
+        }
         const usuarioActual = resultadoUsuario.rows[0];
-        const consultaNombreExistente = `
-                SELECT id_usuario
-                FROM usuarios
-                WHERE nombre_usuario = $1
-                  AND id_usuario <> $2;
-            `;
-        const resultadoNombreExistente = await pool.query(consultaNombreExistente,
+        const consultaUsuarioExistente = `
+            SELECT id_usuario
+            FROM usuarios
+            WHERE (nombre_usuario = $1 OR correo = $2)
+            AND id_usuario <> $3;
+        `;
+
+        const resultadoUsuarioExistente = await pool.query(
+            consultaUsuarioExistente,
             [
                 nombreUsuario,
+                correoUsuario,
                 idUsuario
-            ]);
-        if (resultadoNombreExistente.rows.length > 0) {
+            ]
+        );
+
+        if (resultadoUsuarioExistente.rows.length > 0) {
             return res.status(409).json({
-                mensaje: "El nombre de usuario ya está en uso."
+                mensaje: "El nombre de usuario o correo electrónico ya está en uso."
             });
         }
         if (usuarioActual.rol === "Administrador" && rol === "Colaborador") {
@@ -353,37 +441,45 @@ router.patch("/:id", verificarSesion, verificarAdministrador, async (req, res) =
         let valoresActualizar;
         if (contrasena !== undefined) {
             consultaActualizar = `
-                    UPDATE usuarios
-                    SET
-                        nombre_usuario = $1,
-                        rol = $2,
-                        contrasena = crypt($3, gen_salt('bf'))
-                    WHERE id_usuario = $4
-                    RETURNING
-                        id_usuario,
-                        nombre_usuario,
-                        rol;
-                `;
+                UPDATE usuarios
+                SET
+                    nombre_usuario = $1,
+                    correo = $2,
+                    rol = $3,
+                    contrasena = crypt($4, gen_salt('bf'))
+                WHERE id_usuario = $5
+                RETURNING
+                    id_usuario,
+                    nombre_usuario,
+                    correo,
+                    rol;
+            `;
+
             valoresActualizar = [
                 nombreUsuario,
+                correoUsuario,
                 rol,
                 contrasena,
                 idUsuario
             ];
         } else {
             consultaActualizar = `
-                    UPDATE usuarios
-                    SET
-                        nombre_usuario = $1,
-                        rol = $2
-                    WHERE id_usuario = $3
-                    RETURNING
-                        id_usuario,
-                        nombre_usuario,
-                        rol;
-                `;
+                UPDATE usuarios
+                SET
+                    nombre_usuario = $1,
+                    correo = $2,
+                    rol = $3
+                WHERE id_usuario = $4
+                RETURNING
+                    id_usuario,
+                    nombre_usuario,
+                    correo,
+                    rol;
+            `;
+
             valoresActualizar = [
                 nombreUsuario,
+                correoUsuario,
                 rol,
                 idUsuario
             ];
@@ -402,7 +498,7 @@ router.patch("/:id", verificarSesion, verificarAdministrador, async (req, res) =
     } catch (error) {
         if (error.code === "23505") {
             return res.status(409).json({
-                mensaje: "El nombre de usuario ya está en uso."
+                mensaje: "El nombre de usuario o correo electrónico ya está en uso."
             });
         }
         console.error("Error al actualizar el usuario:", error);
@@ -509,4 +605,55 @@ router.delete("/:id", verificarSesion, verificarAdministrador, async (req, res) 
         });
     }
 });
+
+router.get("/prueba-correo", async (req, res) => {
+
+    try {
+
+        const { data, error } = await resend.emails.send({
+            from: "Pa'TuBoca <onboarding@resend.dev>",
+            to: ["magdaverocas@gmail.com"],
+            subject: "Prueba de correo - Pa'TuBoca",
+            html: `
+                <h2>Prueba de correo</h2>
+
+                <p>
+                    Este es un correo de prueba enviado
+                    desde el sistema Pa'TuBoca.
+                </p>
+
+                <p>
+                    Si recibiste este mensaje,
+                    la configuración de correo funciona correctamente.
+                </p>
+            `
+        });
+
+        if (error) {
+
+            console.error("Error de Resend:", error);
+
+            return res.status(500).json({
+                mensaje: "No se pudo enviar el correo."
+            });
+
+        }
+
+        return res.status(200).json({
+            mensaje: "Correo enviado correctamente.",
+            id: data.id
+        });
+
+    } catch (error) {
+
+        console.error("Error al enviar correo:", error);
+
+        return res.status(500).json({
+            mensaje: "Error interno al enviar el correo."
+        });
+
+    }
+
+});
+
 module.exports = router;
