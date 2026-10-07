@@ -6,7 +6,7 @@
 	--blanco: #ffffff;
 	--texto: #000000;
 	--borde: #1a81a0;
-	--fondo: rgba(162, 59, 59, 0.414);
+	--fondo: rgba(68, 59, 162, 0.414);
 	--sombra: 0 8px 18px rgba(156, 131, 131, 0.616);
 	--radio: 18px;
 	--transicion: .30s ease;
@@ -49,7 +49,7 @@ body {
 	position: fixed;
 	inset: 0;
 	z-index: -1;
-	background-color: #ee99a7;
+	background-color: #035f7af2;
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
@@ -65,7 +65,7 @@ body {
 	justify-content: space-between;
 	align-items: center;
 	padding: 16px 35px;
-	box-shadow: 0 3px 8px rgba(207, 11, 11, .12);;
+	box-shadow: 0 3px 8px rgba(36, 34, 34, 0.578);;
 	transition: var(--transicion);
 }
 
@@ -292,6 +292,7 @@ body {
 	height: 50px;
 	padding: 0 15px 0 48px;
 	border: 2px solid #1a81a0;
+	background: #d3eff88e;
 	border-radius: 16px;
 	outline: none;
 	font-size: 20px;
@@ -320,8 +321,8 @@ body {
 	width: 100%;
 	height: 48px;
 	padding: 0 15px;
-	border: 1px solid #d9d9d9;
-	background: #fff;
+	border: 1px solid #1a81a0;
+	background: #d3eff88e;
 	border-radius: 12px;
 	outline: none;
 	font-size: 17px;
@@ -450,7 +451,7 @@ body.menu-abierto .Encabezado {
 	display: flex;
 	align-items: center;
 	height: 52px;
-	background: #ffffff;
+	background: #d3eff88e;
 	border: 1px solid var(--borde);
 	border-radius: 16px;
 	box-shadow: 0 3px 8px rgba(0, 0, 0, .08);
@@ -532,7 +533,7 @@ body.menu-abierto .Encabezado {
 	padding: 0 42px 0 16px;
 	border: 1px solid var(--borde);
 	border-radius: 17px;
-	background: #fff;
+	background: #d3eff88e;
 	color: #000;
 	font-size: 20px;
 	cursor: pointer;
@@ -555,298 +556,371 @@ body.menu-abierto .Encabezado {
 	
 }
 
-.tarjeta-receta {
-    width: 100%; /* Ocupa el ancho disponible en la columna */
-    border-radius: 18px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: all .3s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
-    animation: aparecer .35s ease;
-}
-
-.tarjeta-receta:hover {
-	transform: translateY(-6px);
-	box-shadow: 0 10px 24px rgba(0, 0, 0, .15);
-}
-
+/*CONTENEDOR Y TARJETAS DE RECETAS*/
 .contenedor-recetas {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 25px;
     width: 100%;
-    transition: var(--transicion);
-}
-
-.imagen-receta {
-	height: 260px;
-	object-fit: cover;
-}
-
-.titulo-receta {
-	text-align: center;
-	font-weight: 700;
-}
-
-/*Modal de recetas*/
-#modalReceta .modal-content {
-	border: none;
-	border-radius: 20px;
-	overflow: hidden;
-	box-shadow: 0 15px 35px rgba(28, 66, 147, .25);
-}
-
-/*Cuerpo*/
-#modalReceta .modal-body {
-	padding: 30px;
-	background: #fff;
-}
-
-/*Encabezado*/
-#modalReceta .modal-header {
-	background: #befbfc;
-	padding: 22px 28px;
-	border-bottom: none;
-}
-
-#modalReceta .modal-title {
-	width: 100%;
-	text-align: center;
-	font-size: 2rem;
-	font-weight: 700;
-	color: #4a7f83;
-}
-
-/* Botón cerrar */
-#modalReceta .btn-close {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 18px 28px;
-	background: #befbfc;
-	border-bottom: 1px solid #91c5c6ad;
-}
-
-/*Imagen*/
-.imagen-modal {
-	width: 100%;
-	height: 320px;
-	object-fit: cover;
-	border-radius: 15px;
-	margin-bottom: 25px;
-}
-
-.info-receta {
-	background: #fff;
-	border-left: 6px solid #befbfc;
-	padding: 18px 20px;
-	border-radius: 10px;
-	margin-bottom: 20px;
-}
-
-#modalReceta hr {
-	margin: 25px 0;
-	border-color: #d7ecec;
-}
-
-/*Títulos*/
-#modalReceta h5 {
-	margin-top: 25px;
-	margin-bottom: 15px;
-	font-weight: bold;
-	color: #4a7f83;
-}
-
-/*Texto*/
-#modalReceta p {
-	color: #000;
-	line-height: 1.7;
-}
-
-/*Lista de ingredientes*/
-#listaIngredientes {
-	padding-left: 22px;
-}
-
-#listaIngredientes li {
-	margin-bottom: 10px;
-	color: #000;
-}
-
-#listaIngredientes strong {
-	color: #4a7f83;
-}
-
-.descripcion-receta {
-	text-align: justify;
-	line-height: 1.8;
+    transition: var(--transicion, all 0.3s ease);
 }
 
 .tarjeta-receta {
-	animation: aparecer .35s ease;
+    width: 100%;
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: aparecer 0.35s ease;
 }
 
-@media(max-width:768px) {
-	.busqueda-recetas {
-		flex-direction: column;
-		align-items: stretch;
-	}
-	.contenedor-busqueda {
-		width: 100%;
-		min-width: 100%;
-	}
-	.btnBuscar {
-		width: 100%;
-	}
-	.contenedor-filtro {
-		width: 100%;
-		justify-content: space-between;
-	}
-	.contenedor-filtro select {
-		width: 220px;
-	}
+.tarjeta-receta:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
 }
 
-@media (max-width: 768px) {
-    .busqueda-recetas-tarjeta {
-        padding: 20px 15px; 
-        margin: 20px 15px;
-        width: auto;
-    }
-    
-    .busqueda-recetas-tarjeta .busqueda-recetas {
-        flex-direction: column;
-        align-items: stretch;
-    }
+.imagen-receta {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
 }
 
-@media (min-width:901px) {
-	body.menu-abierto .Encabezado,
-	body.menu-abierto .Contenido {
-		margin-left: var(--menu);
-	}
+.titulo-receta {
+    text-align: center;
+    font-weight: 700;
+    padding: 10px 15px;
 }
 
-@media (max-width:900px) {
-	.Encabezado {
-		padding: 15px 20px;
-	}
-	.Contenido {
-		padding: 25px;
-	}
-	body.menu-abierto .Encabezado,
-	body.menu-abierto .Contenido {
-		margin-left: 0;
-	}
-	.Menu-lateral {
-		width: var(--menu);
-	}
+/*MODAL DE RECETAS (ESTRUCTURA GENERAL)*/
+#modalReceta .modal-content {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(28, 66, 147, 0.25);
 }
 
-@media (max-width:768px) {
-	.Encabezado {
-		flex-direction: column;
-		align-items: center;
-		gap: 18px;
-	}
-	.Encabezado-izquierda {
-		width: 100%;
-		justify-content: space-between;
-	}
-	.Encabezado-derecha {
-		width: 100%;
-		justify-content: center;
-		flex-wrap: wrap;
-	}
-	.Marca {
-		flex: 1;
-		text-align: center;
-	}
-	.Marca h1 {
-		font-size: 24px;
-	}
-	.Marca p {
-		margin-left: 0;
-		text-align: center;
-		font-size: 13px;
-	}
-	.btnVenta {
-		width: 100%;
-		justify-content: center;
-	}
-	.logoEmpresa {
-		width: 65px;
-		height: 65px;
-	}
-	.modal-contenido {
-		width: 95%;
-	}
-	.formVenta {
-		grid-template-columns: 1fr;
-		padding: 25px;
-	}
-	.modal-botones {
-		flex-direction: column;
-		align-items: center;
-	}
-	.btnCancelar,
-	.btnGuardar {
-		width: 100%;
-		max-width: 280px;
-	}
+#modalReceta .modal-header {
+    background: #befbfc;
+    padding: 22px 28px;
+    border-bottom: none;
 }
 
-@media (max-width:480px) {
-	.Contenido {
-		padding: 18px;
-	}
-	.Marca h1 {
-		font-size: 21px;
-	}
-	.Marca p {
-		font-size: 12px;
-	}
-	.campo-busqueda {
-		height: 48px;
-	}
-	.btnBuscar {
-		height: 48px;
-	}
+#modalReceta .modal-title {
+    width: 100%;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #4a7f83;
 }
 
+#modalReceta .modal-body {
+    padding: 30px;
+    background: #fff;
+}
+
+/*ELEMENTOS INTERNOS DEL MODAL*/
+.imagen-modal {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin-bottom: 25px;
+}
+
+.info-receta {
+    background: #fff;
+    border-left: 6px solid #befbfc;
+    padding: 18px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.info-receta strong {
+    color: #4a7f83 !important; 
+}
+
+#modalReceta hr {
+    margin: 25px 0;
+    border-color: #d7ecec;
+}
+
+#modalReceta h5 {
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #4a7f83;
+}
+
+#modalReceta p {
+    color: #000;
+    line-height: 1.7;
+}
+
+.descripcion-receta {
+    text-align: justify;
+    line-height: 1.8;
+}
+
+/*LISTA DE INGREDIENTES*/
+#listaIngredientes {
+    padding-left: 22px;
+    list-style-type: disc;
+}
+
+#listaIngredientes li {
+    margin-bottom: 10px;
+    color: #000;
+}
+
+#listaIngredientes li::marker {
+    color: #4a7f83;
+}
+
+#listaIngredientes strong {
+    color: #4a7f83;
+}
+
+/*CONFIGURACIÓN GENERAL Y TRANSICIONES*/
 html {
-	scroll-behavior: smooth;
+    scroll-behavior: smooth;
 }
+
 button,
 a,
 .Item-menu {
-	transition: var(--transicion);
-}
-button:active {
-	transform: scale(.97);
-}
-.logoEmpresa:active {
-	transform: scale(.95);
+    transition: var(--transicion);
 }
 
+button:active {
+    transform: scale(.97);
+}
+
+.logoEmpresa:active {
+    transform: scale(.95);
+}
+
+/*ANIMACIONES*/
 @keyframes mostrarModal {
-	from {
-		opacity: 0;
-		transform: translateY(-20px) scale(.98);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0) scale(1);
-	}
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 @keyframes aparecer {
-	from {
-		opacity: 0;
-		transform: translateY(15px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/*DISEÑO RESPONSIVE GLOBAL (ORDENADO POR TAMAÑO)*/
+
+/* PANTALLAS GRANDES Y MEDIANAS (Min 901px) */
+@media (min-width: 901px) {
+    body.menu-abierto .Encabezado,
+    body.menu-abierto .Contenido {
+        margin-left: var(--menu);
+    }
+}
+
+/* TABLETS Y PANTALLAS MEDIANAS (Max 1200px) */
+@media (max-width: 1200px) {
+    .busqueda-recetas-tarjeta {
+        width: 92% !important;
+        padding: 25px;
+    }
+}
+
+/* PANTALLAS HASTA 900px (Menú lateral adaptable y buscador en columna) */
+@media (max-width: 900px) {
+    .Encabezado {
+        padding: 15px 20px;
+    }
+
+    .Contenido {
+        padding: 25px;
+    }
+
+    body.menu-abierto .Encabezado,
+    body.menu-abierto .Contenido {
+        margin-left: 0;
+    }
+
+    .Menu-lateral {
+        width: var(--menu);
+    }
+
+    .busqueda-recetas {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+    
+    .contenedor-busqueda {
+        width: 100%;
+        min-width: 100%;
+    }
+    
+    .contenedor-filtro {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .contenedor-filtro select {
+        flex: 1;
+        max-width: none;
+    }
+}
+
+/* MÓVILES (Max 768px) */
+@media (max-width: 768px) {
+    .Encabezado {
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+    }
+
+    .Encabezado-izquierda {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .Encabezado-derecha {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .Marca {
+        flex: 1;
+        text-align: center;
+    }
+
+    .Marca h1 {
+        font-size: 24px;
+    }
+
+    .Marca p {
+        margin-left: 0;
+        text-align: center;
+        font-size: 13px;
+    }
+
+    .btnVenta {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .logoEmpresa {
+        width: 65px;
+        height: 65px;
+    }
+
+    .modal-contenido {
+        width: 95%;
+    }
+
+    .formVenta {
+        grid-template-columns: 1fr;
+        padding: 25px;
+    }
+
+    .modal-botones {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .btnCancelar,
+    .btnGuardar {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .busqueda-recetas-tarjeta {
+        width: 92% !important;
+        margin: 20px auto !important;
+        padding: 20px 15px !important;
+    }
+
+    .contenedor-busqueda {
+        width: 100% !important;
+        min-width: 100% !important;
+        flex-direction: column !important;
+        gap: 12px;
+    }
+
+    .campo-busqueda {
+        width: 100% !important;
+    }
+
+    .btnBuscar {
+        width: 100% !important;
+    }
+
+    .contenedor-filtro {
+        width: 100% !important;
+        justify-content: space-between !important;
+    }
+
+    .contenedor-filtro select {
+        flex: 1 !important;
+        width: auto !important;
+    }
+}
+
+/*SMARTPHONES PEQUEÑOS (Max 576px) */
+@media (max-width: 576px) {
+    .Contenido {
+        padding: 15px;
+    }
+
+    .busqueda-recetas-tarjeta {
+        margin: 15px auto;
+        padding: 15px;
+        border-radius: 14px;
+    }
+
+    .campo-busqueda input, 
+    .btnBuscar, 
+    .contenedor-filtro select {
+        font-size: 16px !important; /* Evita el zoom automático no deseado en iOS */
+        height: 46px;
+    }
+
+    .imagen-modal {
+        height: 220px;
+    }
+}
+
+/*DISPOSITIVOS MUY PEQUEÑOS (Max 480px) */
+@media (max-width: 480px) {
+    .Contenido {
+        padding: 18px;
+    }
+
+    .Marca h1 {
+        font-size: 21px;
+    }
+
+    .Marca p {
+        font-size: 12px;
+    }
+
+    .campo-busqueda {
+        height: 48px;
+    }
+
+    .btnBuscar {
+        height: 48px;
+    }
 }

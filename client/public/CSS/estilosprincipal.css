@@ -97,158 +97,176 @@ body {
 
 /*MODAL AGREGAR VENTA*/
 .modalVenta {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(0, 0, 0, .45);
-    opacity: 0;
-    visibility: hidden;
-    transition: .30s ease;
-    z-index: 2000;
+	position: fixed;
+	inset: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: rgba(0, 0, 0, .45);
+	opacity: 0;
+	visibility: hidden;
+	transition: .30s ease;
+	z-index: 2000;
 }
 
 .modalVenta.activo {
-    opacity: 1;
-    visibility: visible;
+	opacity: 1;
+	visibility: visible;
 }
 
 .modal-contenido {
-    width: 720px;
-    max-width: 95%;
-    background: #fff;
-    border-radius: 22px;
-    overflow: hidden;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, .20);
-    animation: mostrarModal .30s ease;
+	width: 720px;
+	max-width: 95%;
+	background: #fff;
+	border-radius: 22px;
+	overflow: hidden;
+	box-shadow: 0 15px 35px rgba(0, 0, 0, .20);
+	animation: mostrarModal .30s ease;
 }
 
 .cerrarModal {
-    width: 42px;
-    height: 42px;
-    border: none;
-    background: transparent;
-    color: #4a7f83;
-    font-size: 30px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: .25s;
+	width: 42px;
+	height: 42px;
+	border: none;
+	background: transparent;
+	color: #4a7f83;
+	font-size: 30px;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	transition: .25s;
 }
 
 .cerrarModal:hover {
-    background: #abdbdc;
-    border-radius: 50%;
+	background: #abdbdc;
+	border-radius: 50%;
 }
 
+/*Formulario*/
 .formVenta {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 22px;
-    padding: 25px 30px;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 22px;
+	padding: 25px 30px;
 }
 
+/*Encabezado*/
 .venta-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px 28px;
-    background: #befbfc;
-    border-bottom: 1px solid #91c5c6ad;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 18px 28px;
+	background: #befbfc;
+	border-bottom: 1px solid #91c5c6ad;
 }
 
 .venta-header h2 {
-    margin: 0;
-    font-size: 30px;
-    font-weight: 700;
-    color: #4a7f83;
+	margin: 0;
+	font-size: 30px;
+	font-weight: 700;
+	color: #4a7f83;
 }
 
+/*Buscador*/
 .grupoBusqueda {
-    position: relative;
-    margin: 25px 30px 10px;
+	position: relative;
+	margin: 25px 30px 10px;
 }
 
 .iconoBuscar {
-    position: absolute;
-    left: 18px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #667;
-    font-size: 20px;
+	position: absolute;
+	left: 18px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #667;
+	font-size: 20px;
 }
 
 .buscarProducto {
-    width: 100%;
-    height: 50px;
-    padding: 0 15px 0 48px;
-    border: 2px solid #1a81a0;
-    border-radius: 16px;
-    outline: none;
-    font-size: 20px;
+	width: 100%;
+	height: 50px;
+	padding: 0 15px 0 48px;
+	border: 2px solid #1a81a0;
+	background: #d3eff88e;
+	border-radius: 16px;
+	outline: none;
+	font-size: 20px;
+	border: 1px solid var(--borde);
+	border-radius: 16px;
 }
 
+.buscarProducto:focus {
+	border-color: #1a81a0;
+}
+
+/*Labels e inputs*/
 .campo {
-    display: flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 
 .campo label {
-    margin-bottom: 8px;
-    color: #4a7f83;
-    font-size: 17px;
+	margin-bottom: 8px;
+	color: #4a7f83;
+	font-size: 17px;
+	font-weight: normal;
 }
 
 .campo input {
-    width: 100%;
-    height: 48px;
-    padding: 0 15px;
-    border: 1px solid #d9d9d9;
-    background: #fff;
-    border-radius: 12px;
-    outline: none;
-    font-size: 17px;
+	width: 100%;
+	height: 48px;
+	padding: 0 15px;
+	border: 1px solid #1a81a0;
+	background: #d3eff88e;
+	border-radius: 12px;
+	outline: none;
+	font-size: 17px;
+	transition: .25s;
 }
 
+.campo input:focus {
+	box-shadow: none;
+}
+
+/*Botones*/
 .modal-botones {
-    display: flex;
-    justify-content: center;
-    gap: 22px;
-    padding: 0 30px 30px;
+	display: flex;
+	justify-content: center;
+	gap: 22px;
+	padding: 0 30px 30px;
 }
 
 .btnCancelar,
 .btnGuardar {
-    width: 160px;
-    height: 48px;
-    border: none;
-    border-radius: 12px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: .25s;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+	width: 160px;
+	height: 48px;
+	border: none;
+	border-radius: 12px;
+	font-size: 18px;
+	font-weight: normal;
+	cursor: pointer;
+	transition: .25s;
 }
 
 .btnCancelar {
-    background: #c94949;
+	background: #c94949;
+	color: #fff;
 }
 
 .btnCancelar:hover {
-    transform: scale(1.03);
+	background: #c94949;
+	transform: scale(1.03);
 }
 
 .btnGuardar {
-    background: #37b458;
+	background: #37b458;
+	color: #fff;
 }
 
 .btnGuardar:hover {
-    transform: scale(1.03);
+	background: #37b458;
+	transform: scale(1.03);
 }
 
 /* LOGO */
