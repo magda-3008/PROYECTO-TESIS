@@ -14,70 +14,25 @@
 /* Campos de entrada dentro de los modales */
 .campo select,
 .campo textarea {
-	width: 100%;
-	padding: 10px 15px;
-	border: 1px solid #d9d9d9;
-	border-radius: 12px;
-	outline: none;
-	font-size: 15px;
-	transition: .25s;
-}
-.campo select {
-	height: 48px;
-}
-.campo select:focus,
-.campo textarea:focus {
-	border-color: #61bcd7;
-	box-shadow: none;
-}
-
-/* =========================================
-   CAMPOS GENERALES DE LOS MODALES
-   ========================================= */
-
-.campo {
-    display: flex;
-    flex-direction: column;
-}
-
-.campo label {
-    margin-bottom: 6px;
-    color: #4a4a4a;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.campo input,
-.campo select,
-.campo textarea {
     width: 100%;
-    padding: 10px 14px;
-    border: 1px solid #d9d9d9;
+    padding: 0 15px;
+    border: 1px solid #1a81a0;
+    background: #d3eff88e;
     border-radius: 12px;
     outline: none;
-    font-size: 15px;
-    color: #444;
+    font-size: 17px;
     transition: .25s;
-    background-color: #fff;
 }
 
-.campo input,
 .campo select {
-    height: 46px;
+    height: 48px;
 }
 
-.campo textarea {
-    min-height: 80px;
-    resize: vertical;
-}
-
-.campo input:focus,
 .campo select:focus,
 .campo textarea:focus {
     border-color: #61bcd7;
-    box-shadow: 0 0 0 3px rgba(97, 188, 215, .15);
+    box-shadow: none;
 }
-
 /* =========================================================
    MODAL HISTORIAL
    ========================================================= */
