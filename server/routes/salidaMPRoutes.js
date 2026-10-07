@@ -5,6 +5,12 @@ const {
     convertirCantidadAUnidadMedida
 } = require("../utils/conversionCantidad-a-Unidades");
 
+const {
+    verificarSesion
+} = require("../middleware/autenticacion");
+
+router.use(verificarSesion);
+
 router.post("/", async (req, res) => {
     const client = await pool.connect();
 

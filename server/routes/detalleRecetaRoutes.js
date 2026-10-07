@@ -2,6 +2,12 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../config/db");
 
+const {
+    verificarSesion
+} = require("../middleware/autenticacion");
+
+router.use(verificarSesion);
+
 // Obtener los detalles de una receta por su ID
 router.get("/:id", async (req, res) => {
 
@@ -11,7 +17,7 @@ router.get("/:id", async (req, res) => {
 
         const resultado = await pool.query(
             `
-             SELECT
+            SELECT
                 r.id_receta,
                 r.nombre_receta,
                 r.cantidad_producida_base,
@@ -19,6 +25,8 @@ router.get("/:id", async (req, res) => {
                 r.descripcion,
 
                 dr.id_detalle_receta,
+                dr.id_ma,
+                dr.id_producto_insumo,
                 dr.cantidad_utilizada,
                 dr.cantidad_ingresada,
                 dr.unidad_ingresada,
@@ -65,6 +73,7 @@ router.get("/:id", async (req, res) => {
         res.status(500).json({
             mensaje: "Error al obtener los detalles de la receta"
         });
+
     }
 });
 

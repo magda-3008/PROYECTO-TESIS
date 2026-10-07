@@ -2,6 +2,12 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../config/db");
 
+const {
+    verificarSesion
+} = require("../middleware/autenticacion");
+
+router.use(verificarSesion);
+
 // Obtener períodos disponibles del historial de una materia prima
 router.get("/periodos/:id_ma", async (req, res) => {
     const { id_ma } = req.params;

@@ -1,7 +1,7 @@
 let tabla = null;
 let productoSeleccionado = null;
+let usuarioActual = null;
 
-// Configuración de vista (solo inventario)
 const productosInventario = {
   endpoint: "/api/productos",
   rowFormatter: function (row) {
@@ -14,7 +14,7 @@ const productosInventario = {
       "stock-normal",
       "stock-bajo",
       "stock-agotado",
-      "stock-no-controlado"
+      "stock-no-controlado",
     );
 
     if (data.stock_actual === null) {
@@ -52,24 +52,21 @@ const productosInventario = {
         if (valor === "Activo") {
           return `<span class="text-success fw-semibold">Activo</span>`;
         }
-
         if (valor === "Inactivo") {
           return `<span class="text-danger fw-semibold">Inactivo</span>`;
         }
-
         return valor;
       },
       cellClick: async function (e, cell) {
+        // El Colaborador solamente puede consultar el estado.
+        if (usuarioActual?.rol !== "Administrador") {
+          return;
+        }
         e.preventDefault();
         e.stopPropagation();
 
         const estadoActual = cell.getValue();
-
-        const nuevoEstado =
-          estadoActual === "Activo"
-            ? "Inactivo"
-            : "Activo";
-
+        const nuevoEstado = estadoActual === "Activo" ? "Inactivo" : "Activo";
         const producto = cell.getRow().getData();
 
         try {
@@ -77,51 +74,45 @@ const productosInventario = {
             `/api/productos/${producto.id_producto}`,
             {
               method: "PATCH",
+              credentials: "include",
               headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                estado: nuevoEstado
-              })
-            }
+                estado: nuevoEstado,
+              }),
+            },
           );
-
-          const datos = await respuesta.json();
-
           if (!respuesta.ok) {
-            throw new Error(
-              datos.error ||
-              "No se pudo actualizar el estado del producto."
+            await manejarErrorRespuesta(
+              respuesta,
+              "No se pudo actualizar el estado del producto.",
             );
+            return;
           }
+          const datos = await respuesta.json();
 
           // Actualizar el estado visual de la tabla
           cell.setValue(nuevoEstado);
 
-          // Avisar al resto de la aplicación que cambió
-          // el estado de un producto
+          // Avisar al resto de la aplicación que cambió el estado de un producto
           document.dispatchEvent(
             new CustomEvent("estadoProductoActualizado", {
               detail: {
                 id_producto: producto.id_producto,
-                estado: nuevoEstado
-              }
-            })
+                estado: nuevoEstado,
+              },
+            }),
           );
-
         } catch (error) {
-          console.error(
-            "Error al actualizar el estado del producto:",
-            error
-          );
-
+          console.error("Error al actualizar el estado del producto:", error);
           Swal.fire({
             icon: "error",
             title: "No se pudo actualizar",
-            text: error.message
+            text: error.message,
           });
         }
-      }
+      },
     },
     {
       title: "Existencia actual", field: "stock_actual", hozAlign: "center", minWidth: 80, headerWordWrap: true, headerTooltip: true,
@@ -143,19 +134,27 @@ const productosInventario = {
       headerSort: false,
       minWidth: 120,
       formatter: function () {
+        let acciones = `
+                    <button class="btnAccion btnEntrada" title="Registrar entrada"> <i class="bi bi-cart-plus"></i> </button>
+
+                    <button class="btnAccion btnSalida" title="Registrar salida"> <i class="bi bi-cart-dash"></i> </button>
+
+                    <button class="btnAccion btnHistorial" title="Ver historial"> <i class="bi bi-clock-history"></i> </button>
+
+                `;
+
+        // Solo el Administrador puede editar productos.
+        if (usuarioActual?.rol === "Administrador") {
+          acciones += `
+                    <button class="btnAccion btnEditar" title="Editar producto"> <i class="bi bi-pencil"></i> </button>
+                    `;
+        }
         return `
                     <div class="acciones-tabla">
-                        <button class="btnAccion btnEntrada" title="Registrar entrada"> <i class="bi bi-cart-plus"></i> </button>
-
-                        <button class="btnAccion btnSalida" title="Registrar salida"> <i class="bi bi-cart-dash"></i> </button>
-
-                        <button class="btnAccion btnHistorial" title="Ver historial"> <i class="bi bi-clock-history"></i> </button>
-
-                        <button class="btnAccion btnEditar" title="Editar producto"> <i class="bi bi-pencil"></i> </button>
+                        ${acciones}
                     </div>
                 `;
       },
-
       cellClick: function (e, cell) {
         const producto = cell.getRow().getData();
 
@@ -171,9 +170,15 @@ const productosInventario = {
 
         if (e.target.closest(".btnHistorial")) {
           abrirHistorial(producto);
+          return;
         }
 
         if (e.target.closest(".btnEditar")) {
+
+          // Segunda protección a nivel de interfaz.
+          if (usuarioActual?.rol !== "Administrador") {
+            return;
+          }
           abrirModalEditarProducto(producto, cell.getRow());
         }
       },
@@ -181,8 +186,13 @@ const productosInventario = {
   ],
 };
 
-// Cargar vista de Inventario
 async function cargarVista() {
+  usuarioActual = await verificarSesionYRedirigir();
+
+  if (!usuarioActual) {
+    return;
+  }
+
   const endpoint = productosInventario.endpoint;
 
   // Elimina la tabla anterior si existe
@@ -193,7 +203,6 @@ async function cargarVista() {
 
   crearFiltros();
 
-  // Mostrar indicador de carga
   document.getElementById("tablaProductos").innerHTML = `
         <div class="tabla-cargando">
             <div class="spinner-border text-info" role="status"></div>
@@ -204,17 +213,22 @@ async function cargarVista() {
   let datos = [];
 
   try {
-    const respuesta = await fetch(endpoint);
-
+    const respuesta = await fetch(endpoint, {
+      credentials: "include",
+    });
     if (!respuesta.ok) {
+      if (respuesta.status === 401 || respuesta.status === 403) {
+        await manejarErrorRespuesta(
+          respuesta,
+          "No se pudo acceder al inventario.",
+        );
+        return;
+      }
       throw new Error("No se pudieron obtener los datos.");
     }
-
     datos = await respuesta.json();
-
   } catch (error) {
     console.error(error);
-
     document.getElementById("tablaProductos").innerHTML = `
             <div class="tabla-error">
                 <i class="bi bi-exclamation-triangle-fill"></i>
@@ -226,7 +240,6 @@ async function cargarVista() {
                 </button>
             </div>
         `;
-
     return;
   }
 
@@ -240,7 +253,6 @@ async function cargarVista() {
     pagination: true,
     paginationSize: 30,
     rowFormatter: productosInventario.rowFormatter,
-
     rowHeader: {
       formatter: "rownum",
       width: 40,
@@ -251,11 +263,9 @@ async function cargarVista() {
     columns: productosInventario.columns,
     placeholder: "No se encontraron resultados",
   });
-
   inicializarEventosFiltros();
 }
 
-// Crear filtros de inventario
 function crearFiltros() {
   const panel = document.getElementById("panelFiltros");
 
@@ -287,60 +297,53 @@ function inicializarEventosFiltros() {
   document
     .getElementById("filtroEstado")
     .addEventListener("change", aplicarFiltros);
-
   document
     .getElementById("filtroStock")
     .addEventListener("change", aplicarFiltros);
 }
 
 function aplicarFiltros() {
+  if (!tabla) {
+    return;
+  }
   const texto = document.getElementById("buscar").value.toLowerCase();
-
   tabla.setFilter(function (data) {
     let coincide = true;
 
-    // Buscador general
     if (texto) {
       coincide = Object.values(data).some((valor) =>
-        String(valor).toLowerCase().includes(texto)
+        String(valor).toLowerCase().includes(texto),
       );
     }
 
     const estado = document.getElementById("filtroEstado")?.value ?? "";
     const stock = document.getElementById("filtroStock")?.value ?? "";
-
     if (coincide && estado) {
       coincide = data.estado === estado;
     }
 
     if (coincide) {
       switch (stock) {
-
         case "0":
           coincide =
-            data.stock_actual !== null &&
-            Number(data.stock_actual) <= 0;
+            data.stock_actual !== null && Number(data.stock_actual) <= 0;
           break;
-
         case "bajo":
           coincide =
             data.stock_actual !== null &&
             Number(data.stock_actual) > 0 &&
             Number(data.stock_actual) <= Number(data.stock_minimo_p);
           break;
-
         case "normal":
           coincide =
             data.stock_actual !== null &&
             Number(data.stock_actual) > Number(data.stock_minimo_p);
           break;
-
         case "no-controla":
           coincide = data.stock_actual === null;
           break;
       }
     }
-
     return coincide;
   });
 }
@@ -348,7 +351,6 @@ function aplicarFiltros() {
 const buscador = document.getElementById("buscar");
 buscador.addEventListener("input", aplicarFiltros);
 
-// Inicio
 document.addEventListener("DOMContentLoaded", () => {
   cargarVista();
 });

@@ -1,112 +1,76 @@
-document.addEventListener("DOMContentLoaded", () => {
+let usuarioActual = null;
 
+document.addEventListener("DOMContentLoaded", async () => {
+    usuarioActual = await verificarSesionYRedirigir();
+
+    if (!usuarioActual) {
+        return;
+    }
     cargarIngredientes();
     cargarRecetas();
-
     const inputBuscar = document.getElementById("buscar-receta");
     const selectIngrediente = document.getElementById("ingrediente");
-
     let temporizador;
-
     inputBuscar.addEventListener("input", (e) => {
-
         clearTimeout(temporizador);
-
         temporizador = setTimeout(() => {
-
             const nombre = e.target.value.trim();
             const ingrediente = selectIngrediente.value;
-
             cargarRecetas(ingrediente, nombre);
-
         }, 300);
-
     });
-
     selectIngrediente.addEventListener("change", (e) => {
-
         const ingrediente = e.target.value;
         const nombre = inputBuscar.value.trim();
-
         cargarRecetas(ingrediente, nombre);
-
     });
-
 });
-
 async function cargarIngredientes() {
     try {
-        const respuesta = await fetch("/api/materiaprima");
+        const respuesta = await fetch("/api/materiaprima", {
+            credentials: "include"
+        });
 
         if (!respuesta.ok) {
-            throw new Error("Error al obtener los ingredientes");
+            await manejarErrorRespuesta(
+                respuesta,
+                "Error al obtener los ingredientes."
+            );
+            return;
         }
-
         const ingredientes = await respuesta.json();
         const select = document.getElementById("ingrediente");
-
         select.innerHTML = '<option value="">Ingrediente</option>';
-
-        const ingredientesOcultos = [
-            "Vasos 4 oz",
-            "Pajillas",
-            "Leña",
-            "Cucharas",
-            "Palillos",
-            "Plato redondo",
-            "Bolsas para helados",
-            "Plato largo",
-            "Vasos 5 oz",
-            "Vasos 7 oz",
-            "Vasos 10 oz",
-            "Vasos 12 oz",
-            "Vasos 14 oz",
-            "Bolsas 2 libras"
-        ].map(nombre => nombre.toLowerCase());
-
+        const ingredientesOcultos = ["Vasos 4 oz", "Pajillas", "Leña", "Cucharas", "Palillos", "Plato redondo", "Bolsas para helados", "Plato largo", "Vasos 5 oz", "Vasos 7 oz", "Vasos 10 oz", "Vasos 12 oz", "Vasos 14 oz", "Bolsas 2 libras"].map(nombre => nombre.toLowerCase());
         ingredientes.forEach((ingrediente) => {
-
             if (ingredientesOcultos.includes(ingrediente.nombre.toLowerCase())) {
                 return;
             }
-
             const option = document.createElement("option");
-
             option.value = ingrediente.id_ma || ingrediente.id_producto_insumo || ingrediente.id;
             option.textContent = ingrediente.nombre;
-
             if (option.value && option.value !== "null") {
                 select.appendChild(option);
             }
         });
-
     } catch (error) {
         console.error(error);
     }
 }
-
 async function cargarRecetas(idIngrediente = "", nombre = "") {
-
     const contenedor = document.getElementById("contenedor-recetas");
-
     try {
-
         let url = "/api/recetas";
-
         const parametros = new URLSearchParams();
-
         if (idIngrediente) {
             parametros.append("ingrediente", idIngrediente);
         }
-
         if (nombre) {
             parametros.append("buscar", nombre);
         }
-
         if (parametros.toString()) {
             url += "?" + parametros.toString();
         }
-
         contenedor.innerHTML = `
             <div class="col-12 text-center py-5">
                 <div class="spinner-border text-info" role="status">
@@ -116,32 +80,28 @@ async function cargarRecetas(idIngrediente = "", nombre = "") {
                 <p class="mt-3 text-muted">Cargando recetas...</p>
             </div>
         `;
-
-        const respuesta = await fetch(url);
+        const respuesta = await fetch(url, {
+            credentials: "include"
+        });
 
         if (!respuesta.ok) {
-            throw new Error("Error al obtener las recetas");
+            await manejarErrorRespuesta(
+                respuesta,
+                "Error al obtener las recetas."
+            );
+            return;
         }
-
         const recetas = await respuesta.json();
-
         contenedor.innerHTML = "";
-
         // Si la API no devuelve ninguna receta con ese ingrediente
         if (recetas.length === 0) {
             contenedor.innerHTML = `<p class="text-muted text-center w-100 mt-4">No hay recetas que utilicen este ingrediente.</p>`;
             return;
         }
-
         recetas.forEach((receta) => {
-
-            const urlImagen = receta.imagen_url && receta.imagen_url !== "null"
-                ? receta.imagen_url
-                : "https://placehold.co/300x200?text=Sin+Imagen";
-
+            const urlImagen = receta.imagen_url && receta.imagen_url !== "null" ? receta.imagen_url : "https://placehold.co/300x200?text=Sin+Imagen";
             const columna = document.createElement("div");
             columna.className = "col-lg-4 col-md-6 d-flex justify-content-center";
-
             columna.innerHTML = `
             <div class="card tarjeta-receta">
                 <img src="${urlImagen}" class="card-img-top imagen-receta" alt="${receta.nombre_receta}">
@@ -150,17 +110,13 @@ async function cargarRecetas(idIngrediente = "", nombre = "") {
                 </div>
             </div>
         `;
-
             columna.querySelector(".tarjeta-receta").addEventListener("click", () => {
                 cargarDetalleReceta(receta.id_receta);
             });
-
             contenedor.appendChild(columna);
         });
-
     } catch (error) {
         console.error(error);
-
         contenedor.innerHTML = `
         <div class="col-12 text-center py-5">
             <h5>No fue posible cargar las recetas.</h5>
@@ -171,50 +127,83 @@ async function cargarRecetas(idIngrediente = "", nombre = "") {
     `;
     }
 }
-
 async function cargarDetalleReceta(idReceta) {
+
     try {
 
-        const modal = new bootstrap.Modal(document.getElementById("modalReceta"));
+        const modal = new bootstrap.Modal(
+            document.getElementById("modalReceta")
+        );
 
         document.getElementById("tituloModal").textContent = "Cargando...";
 
         document.getElementById("contenidoModal").innerHTML = `
-    <div class="text-center py-5">
-        <div class="spinner-border text-info" role="status">
-            <span class="visually-hidden">Cargando...</span>
-        </div>
-
-        <p class="mt-3 text-muted">Obteniendo receta...</p>
-    </div>
-`;
+            <div class="text-center py-5">
+                <div class="spinner-border text-info" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-3 text-muted">Obteniendo receta...</p>
+            </div>
+        `;
 
         modal.show();
 
-        const respuesta = await fetch(`/api/detalle_receta/${idReceta}`);
+        const respuesta = await fetch(
+            `/api/detalle_receta/${idReceta}`,
+            {
+                credentials: "include"
+            }
+        );
 
         if (!respuesta.ok) {
-            throw new Error("No se pudo obtener el detalle.");
+            await manejarErrorRespuesta(
+                respuesta,
+                "No se pudo obtener el detalle de la receta."
+            );
+            return;
         }
 
         const detalle = await respuesta.json();
         const receta = detalle[0];
 
-        const urlImagenModal = receta.imagen_url && receta.imagen_url !== "null"
-            ? receta.imagen_url
-            : "https://placehold.co/600x400?text=Sin+Imagen";
+        const urlImagenModal =
+            receta.imagen_url &&
+                receta.imagen_url !== "null"
+                ? receta.imagen_url
+                : "https://placehold.co/600x400?text=Sin+Imagen";
 
-        document.getElementById("tituloModal").textContent = receta.nombre_receta;
+        document.getElementById("tituloModal").textContent =
+            receta.nombre_receta;
 
-        const contenido = document.getElementById("contenidoModal");
+        const contenido =
+            document.getElementById("contenidoModal");
+
+        // El botón de editar solo se muestra al Administrador
+        const botonEditar =
+            usuarioActual?.rol === "Administrador"
+                ? `
+                    <div class="accion-receta">
+                        <button
+                            type="button"
+                            class="btnEditarReceta"
+                            id="btnEditarReceta">
+                            <i class="fa-solid fa-pen-to-square me-2"></i>
+                            Editar receta
+                        </button>
+                    </div>
+                `
+                : "";
 
         contenido.innerHTML = `
-            <img src="${urlImagenModal}" class="imagen-modal">
+            <img
+                src="${urlImagenModal}"
+                class="imagen-modal">
 
             <div class="info-receta">
                 <p>
                     <strong>Rendimiento:</strong>
-                    ${receta.cantidad_producida_base} ${receta.nombre_receta}
+                    ${receta.cantidad_producida_base}
+                    ${receta.nombre_receta}
                 </p>
             </div>
 
@@ -227,33 +216,77 @@ async function cargarDetalleReceta(idReceta) {
             <h5>Método de preparación</h5>
 
             <p class="descripcion-receta">
-                ${receta.descripcion}
+                ${receta.descripcion ||
+            "No se ha registrado un método de preparación."
+            }
             </p>
+
+            ${botonEditar}
         `;
 
-        const lista = document.getElementById("listaIngredientes");
+        const lista =
+            document.getElementById("listaIngredientes");
 
         detalle.forEach(item => {
-            // Pasamos el nombre del insumo también para evaluar excepciones como el "Chantilly"
-            const textoMedida = formatearUnidadHumana(item.cantidad_ingresada, item.unidad_ingresada, item.nombre_insumo);
+
+            // Pasamos el nombre del insumo también para evaluar
+            // excepciones como el "Chantilly"
+            const textoMedida = formatearUnidadHumana(
+                item.cantidad_ingresada,
+                item.unidad_ingresada,
+                item.nombre_insumo
+            );
 
             lista.innerHTML += `
                 <li>
-                    <strong>${item.nombre_insumo}</strong> 
+                    <strong>${item.nombre_insumo}</strong>
                     - ${textoMedida}
                 </li>
             `;
         });
 
+        // El botón solo existe cuando el usuario es Administrador
+        const btnEditarReceta =
+            document.getElementById("btnEditarReceta");
+
+        if (btnEditarReceta) {
+
+            btnEditarReceta.addEventListener("click", () => {
+
+                const modalDetalleElemento =
+                    document.getElementById("modalReceta");
+
+                const modalDetalle =
+                    bootstrap.Modal.getInstance(
+                        modalDetalleElemento
+                    );
+
+                modalDetalleElemento.addEventListener(
+                    "hidden.bs.modal",
+                    () => {
+                        abrirModalEditarReceta(idReceta);
+                    },
+                    {
+                        once: true
+                    }
+                );
+
+                modalDetalle?.hide();
+            });
+        }
 
     } catch (error) {
+
         console.error(error);
 
-        document.getElementById("tituloModal").textContent = "Error";
+        document.getElementById("tituloModal").textContent =
+            "Error";
 
         document.getElementById("contenidoModal").innerHTML = `
             <div class="text-center py-4">
-                <p>No se pudo cargar la información de la receta.</p>
+                <p>
+                    No se pudo cargar la información de la receta.
+                </p>
             </div>
         `;
     }

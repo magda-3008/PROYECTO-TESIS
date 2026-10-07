@@ -151,15 +151,22 @@ async function registrarEntrada() {
   try {
     const response = await fetch("/api/entrada", {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify(movimiento)
     });
-    const data = await response.json();
+
     if (!response.ok) {
-      throw new Error(data.error || data.mensaje || "Error al registrar la entrada.");
+      await manejarErrorRespuesta(
+        response,
+        "Error al registrar la entrada."
+      );
+      return;
     }
+
+    const data = await response.json();
     // ---------------- ACTUALIZAR STOCK ----------------
     const nuevoStock = data.nuevo_stock_actual !== undefined ? data.nuevo_stock_actual : Number(productoSeleccionado.stock_actual) + cantidad;
     productoSeleccionado.stock_actual = nuevoStock;

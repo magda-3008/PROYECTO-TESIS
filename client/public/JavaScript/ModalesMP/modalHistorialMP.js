@@ -6,9 +6,7 @@ function obtenerNombreMes(mes) {
     }
     return meses[numeroMes - 1];
 }
-/* =========================================================
-   FORMATEAR CANTIDAD DE MOVIMIENTO DE MATERIA PRIMA
-   ========================================================= */
+
 function formatearCantidadMovimientoMP(cantidad, materiaPrima) {
     const cantidadNumerica = Number(cantidad);
     if (!Number.isFinite(cantidadNumerica)) {
@@ -20,10 +18,8 @@ function formatearCantidadMovimientoMP(cantidad, materiaPrima) {
     if (!unidadMedida || !unidadExistencia || !Number.isFinite(contenidoPresentacion) || contenidoPresentacion <= 0) {
         return formatearUnidadHumana(cantidadNumerica, unidadMedida);
     }
-    /*
-     * Si ambas unidades son iguales,
-     * no necesitamos hacer conversión.
-     */
+
+    //Si ambas unidades son iguales, no se hace conversión
     if (unidadMedida.toLowerCase() === unidadExistencia.toLowerCase()) {
         return formatearUnidadHumana(cantidadNumerica, unidadMedida);
     }
@@ -39,16 +35,11 @@ function formatearCantidadMovimientoMP(cantidad, materiaPrima) {
         }
         return formatearUnidadHumana(cantidadNumerica, unidadMedida);
     }
-    /*
-     * La cantidad corresponde exactamente
-     * a presentaciones completas.
-     */
+
     if (sobrante === 0) {
         return formatearUnidadHumana(presentacionesCompletas, unidadExistencia);
     }
-    /*
-     * Presentaciones completas + sobrante.
-     */
+
     return (`${formatearUnidadHumana(
         presentacionesCompletas,
         unidadExistencia
@@ -57,18 +48,25 @@ function formatearCantidadMovimientoMP(cantidad, materiaPrima) {
         unidadMedida
     )}`);
 }
-/* =========================================================
-   CARGAR PERÍODOS
-   ========================================================= */
+
 async function cargarPeriodosHistorialMP(id_ma) {
     const select = document.getElementById("periodoHistorialMP");
     if (!select) return;
     select.innerHTML = "";
     try {
-        const respuesta = await fetch(`/api/historialMP/periodos/${id_ma}`);
+        const respuesta = await fetch(
+            `/api/historialMP/periodos/${id_ma}`,
+            {
+                credentials: "include"
+            }
+        );
+
         if (!respuesta.ok) {
-            const errorData = await respuesta.json();
-            throw new Error(errorData.mensaje || "No se pudieron obtener los períodos.");
+            await manejarErrorRespuesta(
+                respuesta,
+                "No se pudieron obtener los períodos."
+            );
+            return;
         }
         const periodos = await respuesta.json();
         if (!periodos || periodos.length === 0) {
@@ -89,10 +87,8 @@ async function cargarPeriodosHistorialMP(id_ma) {
             option.dataset.mes = periodo.mes;
             select.appendChild(option);
         });
-        /*
-         * El backend devuelve los períodos
-         * ordenados del más reciente al más antiguo.
-         */
+
+        //Se devuelven los periodos del mas reciente al mas antiguo
         select.selectedIndex = 0;
         select.disabled = false;
     } catch (error) {
@@ -105,9 +101,7 @@ async function cargarPeriodosHistorialMP(id_ma) {
         select.disabled = true;
     }
 }
-/* =========================================================
-   CARGAR MOVIMIENTOS
-   ========================================================= */
+
 async function cargarMovimientosHistorialMP(materiaPrima) {
     const periodoSelect = document.getElementById("periodoHistorialMP");
     const cargando = document.getElementById("cargandoHistorial");
@@ -138,10 +132,17 @@ async function cargarMovimientosHistorialMP(materiaPrima) {
     cargando.classList.remove("d-none");
     tbody.innerHTML = "";
     try {
-        const respuesta = await fetch(`/api/historialMP/${materiaPrima.id_ma}?anio=${anio}&mes=${mes}`);
+        const respuesta = await fetch(`/api/historialMP/${materiaPrima.id_ma}?anio=${anio}&mes=${mes}`,
+            {
+                credentials: "include"
+            }
+        );
         if (!respuesta.ok) {
-            const errorData = await respuesta.json();
-            throw new Error(errorData.mensaje || "Error al cargar el historial.");
+            await manejarErrorRespuesta(
+                respuesta,
+                "Error al cargar el historial."
+            );
+            return;
         }
         const movimientos = await respuesta.json();
         cargando.classList.add("d-none");
@@ -163,13 +164,8 @@ async function cargarMovimientosHistorialMP(materiaPrima) {
             `;
             return;
         }
-        /* =====================================================
-           GENERAR FILAS
-           ===================================================== */
+
         movimientos.forEach((mov) => {
-            /* -----------------------------------------------
-               FECHA
-               ----------------------------------------------- */
             let fecha = "Sin fecha";
             if (mov.fecha) {
                 const date = new Date(mov.fecha);
@@ -179,15 +175,11 @@ async function cargarMovimientosHistorialMP(materiaPrima) {
                     day: "numeric"
                 });
             }
-            /* -----------------------------------------------
-               DATOS NUMÉRICOS
-               ----------------------------------------------- */
+
             const cantidad = Number(mov.cantidad) || 0;
             const costoTotal = Number(mov.costo_total) || 0;
             const cantidadFormateada = formatearCantidadMovimientoMP(cantidad, materiaPrima);
-            /* -----------------------------------------------
-               TIPO / MOTIVO
-               ----------------------------------------------- */
+
             let motivoTexto = "";
             switch (mov.motivo) {
                 case "COMPRA":
@@ -217,9 +209,7 @@ async function cargarMovimientosHistorialMP(materiaPrima) {
             let tipoBadge = "";
             let cantidadMostrar = "";
             let montoTexto = "—";
-            /* =================================================
-               ENTRADA
-               ================================================= */
+
             if (mov.tipo_movimiento === "ENTRADA") {
                 tipoBadge = `
                     <span class="badge bg-success">
@@ -231,9 +221,7 @@ async function cargarMovimientosHistorialMP(materiaPrima) {
                         +${cantidadFormateada}
                     </span>
                 `;
-                /* ---------------------------------------------
-                   COMPRA
-                   --------------------------------------------- */
+
                 if (mov.motivo === "COMPRA") {
                     montoTexto = `
                         <div>
@@ -251,9 +239,7 @@ async function cargarMovimientosHistorialMP(materiaPrima) {
                         </div>
                     `;
                 }
-                /* ---------------------------------------------
-                   PRODUCCIÓN
-                   --------------------------------------------- */
+
                 else if (mov.motivo === "PRODUCCION") {
                     montoTexto = `
                         <div>
@@ -271,16 +257,12 @@ async function cargarMovimientosHistorialMP(materiaPrima) {
                         </div>
                     `;
                 }
-                /* ---------------------------------------------
-                   AJUSTE / OTRO
-                   --------------------------------------------- */
+
                 else {
                     montoTexto = "—";
                 }
             }
-            /* =================================================
-               SALIDA
-               ================================================= */
+
             else if (mov.tipo_movimiento === "SALIDA") {
                 tipoBadge = `
                     <span class="badge bg-danger">
@@ -292,9 +274,7 @@ async function cargarMovimientosHistorialMP(materiaPrima) {
                         -${cantidadFormateada}
                     </span>
                 `;
-                /* ---------------------------------------------
-                   PÉRDIDA
-                   --------------------------------------------- */
+
                 if (mov.motivo === "PERDIDA") {
                     montoTexto = `
                         <div>
@@ -314,9 +294,7 @@ async function cargarMovimientosHistorialMP(materiaPrima) {
                         </div>
                     `;
                 }
-                /* ---------------------------------------------
-                   CONSUMO
-                   --------------------------------------------- */
+
                 else if (mov.motivo === "CONSUMO") {
                     montoTexto = `
                         <div>
@@ -336,16 +314,12 @@ async function cargarMovimientosHistorialMP(materiaPrima) {
                         </div>
                     `;
                 }
-                /* ---------------------------------------------
-                   AJUSTE / OTRO
-                   --------------------------------------------- */
+
                 else {
                     montoTexto = "—";
                 }
             }
-            /* =================================================
-               TIPO DESCONOCIDO
-               ================================================= */
+
             else {
                 tipoBadge = `
                     <span class="badge bg-secondary">
@@ -360,9 +334,7 @@ async function cargarMovimientosHistorialMP(materiaPrima) {
                 cantidadMostrar = cantidadFormateada;
                 montoTexto = "—";
             }
-            /* =================================================
-               CREAR FILA
-               ================================================= */
+
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td>
@@ -409,19 +381,14 @@ async function cargarMovimientosHistorialMP(materiaPrima) {
         `;
     }
 }
-/* =========================================================
-   ABRIR HISTORIAL
-   ========================================================= */
+
 async function abrirHistorialMP(materiaPrima) {
     document.getElementById("nombreMateriaPrimaHistorial").textContent = materiaPrima.nombre;
-    document.getElementById("tipoMateriaPrimaHistorial").textContent = materiaPrima.tipo_insumo;
     document.getElementById("stockActualHistorial").textContent = formatearStockMateriaPrima(materiaPrima);
     const cargando = document.getElementById("cargandoHistorial");
     const tbody = document.getElementById("tablaMovimientos");
     const select = document.getElementById("periodoHistorialMP");
-    /* -----------------------------------------------
-       Estado inicial
-       ----------------------------------------------- */
+
     cargando.classList.remove("d-none");
     tbody.innerHTML = "";
     select.innerHTML = "";
@@ -463,24 +430,18 @@ async function abrirHistorialMP(materiaPrima) {
             </tr>
         `;
     }
-    /* -----------------------------------------------
-       Cambio de período
-       ----------------------------------------------- */
+
     select.onchange = async function () {
         if (!this.value) {
             return;
         }
         await cargarMovimientosHistorialMP(materiaPrima);
     };
-    /* -----------------------------------------------
-       Mostrar modal
-       ----------------------------------------------- */
+
     const modal = new bootstrap.Modal(document.getElementById("modalHistorialMP"));
     modal.show();
 }
-/* =========================================================
-   FORMATEAR PERÍODO
-   ========================================================= */
+
 function formatearPeriodo(anio, mes) {
     const nombresMeses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
     const numeroMes = Number(mes);

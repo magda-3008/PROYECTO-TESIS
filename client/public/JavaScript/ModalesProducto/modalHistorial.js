@@ -1,36 +1,35 @@
 async function abrirHistorial(producto) {
-  // --------------------------------------------------
-  // INFORMACIÓN DEL PRODUCTO
-  // --------------------------------------------------
   document.getElementById("nombreProductoHistorial").textContent = producto.nombre;
   document.getElementById("tipoProductoHistorial").textContent = producto.tipo;
   document.getElementById("stockActualHistorial").textContent = producto.stock_actual || 0;
-  // --------------------------------------------------
-  // ELEMENTOS DEL MODAL
-  // --------------------------------------------------
+
   const cargando = document.getElementById("cargandoHistorial");
   const tbody = document.getElementById("tablaMovimientos");
   const selectorPeriodo = document.getElementById("periodoHistorial");
-  // --------------------------------------------------
-  // PREPARAR MODAL
-  // --------------------------------------------------
+
   cargando.classList.remove("d-none");
   tbody.innerHTML = "";
   selectorPeriodo.innerHTML = "";
   selectorPeriodo.disabled = true;
   try {
-    // --------------------------------------------------
-    // OBTENER PERÍODOS DISPONIBLES
-    // --------------------------------------------------
-    const respuestaPeriodos = await fetch(`/api/historial/periodos/${producto.id_producto}`);
+
+    const respuestaPeriodos = await fetch(
+      `/api/historial/periodos/${producto.id_producto}`,
+      {
+        credentials: "include"
+      }
+    );
+
     if (!respuestaPeriodos.ok) {
-      const errorData = await respuestaPeriodos.json();
-      throw new Error(errorData.mensaje || "No se pudieron cargar los períodos.");
+      await manejarErrorRespuesta(
+        respuestaPeriodos,
+        "No se pudieron cargar los períodos."
+      );
+      return;
     }
+
     const periodos = await respuestaPeriodos.json();
-    // --------------------------------------------------
-    // NO HAY PERÍODOS
-    // --------------------------------------------------
+
     if (!periodos || periodos.length === 0) {
       selectorPeriodo.innerHTML = `
                 <option value="">
@@ -56,9 +55,7 @@ async function abrirHistorial(producto) {
                 </tr>
             `;
     } else {
-      // --------------------------------------------------
-      // LLENAR SELECTOR DE PERÍODOS
-      // --------------------------------------------------
+
       periodos.forEach((periodo) => {
         const option = document.createElement("option");
         option.value = `${periodo.anio}-${periodo.mes}`;
@@ -67,14 +64,11 @@ async function abrirHistorial(producto) {
         option.dataset.mes = periodo.mes;
         selectorPeriodo.appendChild(option);
       });
-      // El backend devuelve los períodos
-      // ordenados del más reciente al más antiguo.
-      // Por eso seleccionamos el primero.
+
+      //Devuelve los periodos del mas reciente al mas antiguo
       selectorPeriodo.selectedIndex = 0;
       selectorPeriodo.disabled = false;
-      // --------------------------------------------------
-      // CARGAR EL PERÍODO SELECCIONADO
-      // --------------------------------------------------
+
       await cargarMovimientosProducto(producto.id_producto, selectorPeriodo.value);
     }
   } catch (error) {
@@ -93,50 +87,48 @@ async function abrirHistorial(producto) {
             </tr>
         `;
   }
-  // --------------------------------------------------
-  // CAMBIO DE PERÍODO
-  // --------------------------------------------------
+
   selectorPeriodo.onchange = async function () {
     if (!this.value) {
       return;
     }
     await cargarMovimientosProducto(producto.id_producto, this.value);
   };
-  // --------------------------------------------------
-  // ABRIR MODAL
-  // --------------------------------------------------
+
   const modal = new bootstrap.Modal(document.getElementById("modalHistorial"));
   modal.show();
 }
-// ======================================================
-// CARGAR MOVIMIENTOS DEL PERÍODO
-// ======================================================
+
 async function cargarMovimientosProducto(idProducto, periodo) {
   const cargando = document.getElementById("cargandoHistorial");
   const tbody = document.getElementById("tablaMovimientos");
-  // --------------------------------------------------
-  // VALIDAR PERÍODO
-  // --------------------------------------------------
+
   if (!periodo) {
     return;
   }
   const partes = periodo.split("-");
   const anio = partes[0];
   const mes = partes[1];
-  // --------------------------------------------------
-  // MOSTRAR CARGANDO
-  // --------------------------------------------------
+
   cargando.classList.remove("d-none");
   tbody.innerHTML = "";
   try {
-    // --------------------------------------------------
-    // CONSULTAR MOVIMIENTOS
-    // --------------------------------------------------
-    const respuesta = await fetch(`/api/historial/${idProducto}?anio=${anio}&mes=${mes}`);
+
+    const respuesta = await fetch(
+      `/api/historial/${idProducto}?anio=${anio}&mes=${mes}`,
+      {
+        credentials: "include"
+      }
+    );
+
     if (!respuesta.ok) {
-      const errorData = await respuesta.json();
-      throw new Error(errorData.mensaje || "Error al cargar el historial.");
+      await manejarErrorRespuesta(
+        respuesta,
+        "Error al cargar el historial."
+      );
+      return;
     }
+
     const movimientos = await respuesta.json();
     cargando.classList.add("d-none");
     // --------------------------------------------------

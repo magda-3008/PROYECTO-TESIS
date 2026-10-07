@@ -17,20 +17,18 @@
   </head>
 
   <body>
-    
     <!-- Contenedor del video de fondo -->
     <div class="Fondo">
-        <video autoplay muted loop playsinline class="video-fondo">
-            <source src="Resources/Video 1.mp4" type="video/mp4">
-            Tu navegador no soporta videos de fondo.
-        </video>
-        <!-- Capa semitransparente opcional para que el texto resalte más -->
-        <div class="capa-overlay"></div>
+      <video autoplay muted loop playsinline class="video-fondo">
+        <source src="Resources/Video 1.mp4" type="video/mp4" />
+        Tu navegador no soporta videos de fondo.
+      </video>
+      <!-- Capa semitransparente opcional para que el texto resalte más -->
+      <div class="capa-overlay"></div>
     </div>
 
     <!--ENCABEZADO-->
     <header class="Encabezado">
-
       <!--Derecha-->
       <div class="Encabezado-derecha">
         <button class="btnVenta" type="button">
@@ -42,7 +40,6 @@
           <img src="Resources/Logo.png" alt="Logo" class="logoEmpresa" />
         </a>
       </div>
-
     </header>
 
     <!--Contenido que esta bajo el header color rosa -->
@@ -51,8 +48,8 @@
 
       <!-- Apartado de gestión -->
       <section>
-        
         <div class="contenedor">
+          <!-- Tarjeta Productos -->
           <!-- Tarjeta Productos -->
           <a href="productos.html" class="card">
             <div class="icono"><i class="fa-solid fa-box-open"></i></div>
@@ -78,14 +75,28 @@
             <div class="icono"><i class="fa-solid fa-cash-register"></i></div>
             <span>VENTAS</span><i class="fa-solid fa-chevron-right flecha"></i>
           </a>
-        </div>
 
+          <a href="usuarios.html" class="card" id="tarjetaUsuarios">
+            <div class="icono">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <span>USUARIOS</span>
+            <i class="fa-solid fa-chevron-right flecha"></i>
+          </a>
+
+          <a href="respaldos.html" class="card" id="tarjetaRespaldos">
+            <div class="icono">
+              <i class="fa-solid fa-database"></i>
+            </div>
+            <span>RESPALDOS</span>
+            <i class="fa-solid fa-chevron-right flecha"></i>
+          </a>
+        </div>
       </section>
     </main>
 
     <!--MODAL AGREGAR VENTA-->
     <div class="modalVenta" id="modalVenta">
-
       <div class="modal-contenido">
         <!--Encabezado-->
         <div class="venta-header">
@@ -111,7 +122,7 @@
           <div class="campo">
             <label>NOMBRE</label>
 
-            <input type="text"/>
+            <input type="text" />
           </div>
 
           <div class="campo">
@@ -123,13 +134,13 @@
           <div class="campo">
             <label>PRECIO</label>
 
-            <input type="text"/>
+            <input type="text" />
           </div>
 
           <div class="campo">
             <label>TOTAL</label>
 
-            <input type="text"/>
+            <input type="text" />
           </div>
         </form>
 
@@ -139,37 +150,86 @@
             <i class="fa-solid fa-xmark"></i> Cancelar
           </button>
 
-          <button type="submit" class="btnGuardar"><i class="fa-solid fa-check"></i> Guardar</button>
+          <button type="submit" class="btnGuardar">
+            <i class="fa-solid fa-check"></i> Guardar
+          </button>
         </div>
       </div>
     </div>
 
+    <script src="./JavaScript/utilities/sesion.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-      
-      /* ========= Modal Agregar Venta ========= */
-      const modal = document.getElementById("modalVenta");
-      const btnVenta = document.querySelector(".btnVenta");
-      const cerrarModal = document.getElementById("cerrarModal");
-      const btnCancelar = document.getElementById("btnCancelar");
+      document.addEventListener("DOMContentLoaded", async () => {
+        const usuarioActual = await verificarSesionYRedirigir();
 
-      btnVenta.addEventListener("click", () => {
-        modal.classList.add("activo");
-      });
+        if (!usuarioActual) {
+          return;
+        }
 
-      cerrarModal.addEventListener("click", () => {
-        modal.classList.remove("activo");
-      });
+        if (usuarioActual.rol !== "Administrador") {
+          document.getElementById("tarjetaUsuarios")?.remove();
 
-      btnCancelar.addEventListener("click", (event) => {
-        event.preventDefault();
+          document.getElementById("tarjetaRespaldos")?.remove();
+        }
 
-        document.querySelector(".buscarProducto").value = "";
+        const btnCerrarSesion = document.getElementById("btnCerrarSesion");
 
-        document.querySelector(".formVenta").reset();
+        if (btnCerrarSesion) {
+          btnCerrarSesion.addEventListener("click", (event) => {
+            event.preventDefault();
 
-        document.querySelectorAll(".campo input[readonly]").forEach((input) => {
-          input.value = "";
-        });
+            cerrarSesion();
+          });
+        }
+
+        // ==========================================
+        // MODAL AGREGAR VENTA
+        // ==========================================
+
+        const modal = document.getElementById("modalVenta");
+
+        const btnVenta = document.querySelector(".btnVenta");
+
+        const cerrarModal = document.getElementById("cerrarModal");
+
+        const btnCancelar = document.getElementById("btnCancelar");
+
+        if (btnVenta && modal) {
+          btnVenta.addEventListener("click", () => {
+            modal.classList.add("activo");
+          });
+        }
+
+        if (cerrarModal && modal) {
+          cerrarModal.addEventListener("click", () => {
+            modal.classList.remove("activo");
+          });
+        }
+
+        if (btnCancelar) {
+          btnCancelar.addEventListener("click", (event) => {
+            event.preventDefault();
+
+            const buscarProducto = document.querySelector(".buscarProducto");
+
+            const formVenta = document.querySelector(".formVenta");
+
+            if (buscarProducto) {
+              buscarProducto.value = "";
+            }
+
+            if (formVenta) {
+              formVenta.reset();
+            }
+
+            document
+              .querySelectorAll(".campo input[readonly]")
+              .forEach((input) => {
+                input.value = "";
+              });
+          });
+        }
       });
     </script>
   </body>

@@ -7,7 +7,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
     try {
-        const respuesta = await fetch("editar-materiaprima.html");
+        const respuesta = await fetch(
+            "editar-materiaprima.html",
+            {
+                credentials: "include"
+            }
+        );
         if (!respuesta.ok) {
             throw new Error(`No se pudo cargar el modal (${respuesta.status})`);
         }
@@ -215,16 +220,21 @@ document.addEventListener("DOMContentLoaded", async () => {
             try {
                 const respuesta = await fetch(`/api/materiaprima/${materiaPrimaEnEdicion.id_ma}`, {
                     method: "PATCH",
+                    credentials: "include",
                     headers: {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify(datos)
                 });
-                const resultado = await respuesta.json();
-                console.log("Respuesta del servidor:", resultado);
                 if (!respuesta.ok) {
-                    throw new Error(resultado.error || "No se pudo actualizar la materia prima.");
+                    await manejarErrorRespuesta(
+                        respuesta,
+                        "No se pudo actualizar la materia prima."
+                    );
+                    return;
                 }
+
+                const resultado = await respuesta.json();
                 await Swal.fire({
                     icon: "success",
                     title: "Materia prima actualizada",
@@ -232,10 +242,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     confirmButtonText: "Aceptar"
                 });
                 modalEditarMP.hide();
-                /*
-                 * Actualizar directamente la fila
-                 * de Tabulator.
-                 */
+
                 if (filaMateriaPrimaEnEdicion) {
                     filaMateriaPrimaEnEdicion.update(resultado.materiaPrima);
                 }

@@ -6,6 +6,11 @@
 
     <title>♥Pa'tuboca Delicias y más♥</title>
     <link rel="stylesheet" href="./CSS/estilosreceta.css" />
+    <link rel="stylesheet" href="./CSS/estilosmodales.css" />
+    <!-- Bootstrap icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
@@ -124,9 +129,21 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="venta-header">
-            <h2 class="modal-title titulo-modal" id="tituloModal" style="margin: 0; font-size: 30px; font-weight: 700; color: #4a7f83;"></h2>
-            <button type="button" class="cerrarModal" data-bs-dismiss="modal" aria-label="Cerrar">
-            <i class="fa-solid fa-xmark"></i>
+            <h2
+              class="modal-title titulo-modal"
+              id="tituloModal"
+              style="
+                margin: 0;
+                font-size: 30px;
+                font-weight: 700;
+                color: #4a7f83;
+              "></h2>
+            <button
+              type="button"
+              class="cerrarModal"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar">
+              <i class="fa-solid fa-xmark"></i>
             </button>
           </div>
 
@@ -236,8 +253,11 @@
     </script>
 
     <!--Scripts del proyecto-->
+    <script src="./JavaScript/utilities/sesion.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./JavaScript/utilities/formateoUnidad.js"></script>
     <script src="./JavaScript/utilities/formateoUnidadesPlural.js"></script>
+    <script src="./JavaScript/ModalesReceta/modalEditarReceta.js"></script>
     <script src="./JavaScript/recetas.js"></script>
 
     <!--Bootstrap-->

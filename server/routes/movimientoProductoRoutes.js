@@ -4,9 +4,14 @@ const pool = require("../config/db");
 const {
   calcularConsumoReceta
 } = require("../utils/produccion");
-// =========================================================
-// RUTA PARA REGISTRAR MOVIMIENTOS DE PRODUCTOS
-// =========================================================
+
+const {
+  verificarSesion
+} = require("../middleware/autenticacion");
+
+router.use(verificarSesion);
+
+//Registrar movimientos de productos
 router.post("/", async (req, res) => {
   const client = await pool.connect();
   try {
@@ -18,9 +23,7 @@ router.post("/", async (req, res) => {
       cantidad,
       observacion
     } = req.body;
-    // =====================================================
-    // VALIDACIONES GENERALES
-    // =====================================================
+
     if (!id_producto || !tipo_movimiento || !motivo || cantidad === undefined) {
       throw new Error("Datos incompletos.");
     }
@@ -28,26 +31,20 @@ router.post("/", async (req, res) => {
     if (!Number.isFinite(cantidadNum) || cantidadNum <= 0) {
       throw new Error("La cantidad debe ser mayor a 0.");
     }
-    // Actualmente este endpoint registra ENTRADAS.
+
     if (tipo_movimiento !== "ENTRADA") {
       throw new Error("Este endpoint solo permite registrar movimientos de entrada.");
     }
-    // =====================================================
-    // MOTIVOS PERMITIDOS
-    // =====================================================
+
     const motivosPermitidos = ["COMPRA", "PRODUCCION", "AJUSTE", "OTRO"];
     if (!motivosPermitidos.includes(motivo)) {
       throw new Error("El motivo de entrada no es válido.");
     }
-    // =====================================================
-    // FECHA DEL MOVIMIENTO
-    // =====================================================
+
     const ahora = new Date();
     const anio = ahora.getFullYear();
     const mes = ahora.getMonth() + 1;
-    // =====================================================
-    // OBTENER PRODUCTO
-    // =====================================================
+
     const resProducto = await client.query(`
     SELECT
         p.id_producto,
@@ -68,35 +65,25 @@ router.post("/", async (req, res) => {
       throw new Error("Producto no encontrado.");
     }
     const producto = resProducto.rows[0];
-    // =====================================================
-    // VALIDAR COMPATIBILIDAD DEL MOTIVO
-    // =====================================================
+
     if (motivo === "COMPRA" && producto.tipo !== "Reventa") {
       throw new Error("El motivo COMPRA solo puede registrarse para productos de tipo Reventa.");
     }
     if (motivo === "PRODUCCION" && producto.tipo !== "Elaborado") {
       throw new Error("El motivo PRODUCCION solo puede registrarse para productos de tipo Elaborado.");
     }
-    // =====================================================
-    // VARIABLES DEL PRODUCTO PRINCIPAL
-    // =====================================================
+
     let stockActual;
     let costoUnitario;
-    // =====================================================
-    // PRODUCTO DE REVENTA
-    // =====================================================
+
     if (producto.tipo === "Reventa") {
       stockActual = Number(producto.stock_actual_pr || 0);
       costoUnitario = Number(producto.costo_compra || 0);
     }
-    // =====================================================
-    // PRODUCTO ELABORADO
-    // =====================================================
+
     else if (producto.tipo === "Elaborado") {
       stockActual = Number(producto.stock_actual_pe || 0);
-      // -------------------------------------------------
-      // OBTENER COSTO ACTUAL DEL PRODUCTO ELABORADO
-      // -------------------------------------------------
+
       const resCosto = await client.query(`
                 SELECT
                     costo_unitario_prod
@@ -107,13 +94,9 @@ router.post("/", async (req, res) => {
                 `,
         [id_producto]);
       costoUnitario = resCosto.rows.length > 0 ? Number(resCosto.rows[0].costo_unitario_prod || 0) : 0;
-      // =================================================
-      // PRODUCCIÓN DE PRODUCTO ELABORADO
-      // =================================================
+
       if (motivo === "PRODUCCION") {
-        // =============================================
-        // OBTENER RECETA
-        // =============================================
+
         const resReceta = await client.query(`
                     SELECT
                         id_receta,
@@ -130,9 +113,7 @@ router.post("/", async (req, res) => {
           throw new Error("El producto elaborado no tiene una receta registrada.");
         }
         const receta = resReceta.rows[0];
-        // =============================================
-        // OBTENER DETALLES DE RECETA
-        // =============================================
+
         const resDetalles = await client.query(`
                     SELECT
                         id_detalle_receta,
@@ -153,29 +134,19 @@ router.post("/", async (req, res) => {
         if (resDetalles.rows.length === 0) {
           throw new Error("La receta no tiene ingredientes registrados.");
         }
-        // =============================================
-        // CALCULAR CONSUMOS
-        // =============================================
+
         const consumos = calcularConsumoReceta(resDetalles.rows, cantidadNum, receta.cantidad_producida_base);
-        // =================================================
-        // PRIMERA FASE:
-        // VALIDAR TODO EL STOCK ANTES DE DESCONTAR
-        // =================================================
+
+        //Validar todo el stock antes de descontar
         for (const consumo of consumos) {
-          // =============================================
-          // MATERIA PRIMA
-          // =============================================
           if (consumo.id_ma) {
             const resMateriaPrima = await client.query(`
                                 SELECT
                                     id_ma,
                                     nombre,
                                     stock_actual_i
-
                                 FROM materia_prima_y_cd
-
                                 WHERE id_ma = $1
-
                                 FOR UPDATE
                                 `,
               [consumo.id_ma]);
@@ -192,9 +163,7 @@ router.post("/", async (req, res) => {
               throw new Error(`No hay suficiente "${materiaPrima.nombre}". ` + `Disponible: ${stockMP}, ` + `necesario: ${cantidadNecesaria}.`);
             }
           }
-          // =============================================
-          // PRODUCTO ELABORADO COMO INSUMO
-          // =============================================
+          //producto elaborado como insumo
           else if (consumo.id_producto_insumo) {
             const resProductoInsumo = await client.query(`
                                 SELECT
@@ -232,19 +201,14 @@ router.post("/", async (req, res) => {
             }
           }
         }
-        // =================================================
-        // SEGUNDA FASE:
-        // DESCONTAR Y REGISTRAR CONSUMOS
-        // =================================================
+
+        //Descontar y registrar consumos
         for (const consumo of consumos) {
           const cantidadNecesaria = Number(consumo.cantidad_necesaria);
-          // =================================================
-          // CONSUMO DE MATERIA PRIMA
-          // =================================================
+
           if (consumo.id_ma) {
-            // ---------------------------------------------
-            // Obtener datos de costo de la materia prima
-            // ---------------------------------------------
+
+            //Obtener datos del costo de materia prima
             const resMateriaPrima = await client.query(`
                                 SELECT
                                     id_ma,
@@ -264,9 +228,7 @@ router.post("/", async (req, res) => {
               throw new Error(`La materia prima con ID ${consumo.id_ma} no existe.`);
             }
             const materiaPrima = resMateriaPrima.rows[0];
-            // ---------------------------------------------
-            // Calcular costo unitario de la MP
-            // ---------------------------------------------
+
             const costoTotalPaquete = Number(materiaPrima.costo_total_ingrediente || 0);
             const unidadesPorPaquete = Number(materiaPrima.unidad_por_paquete || 1);
             let costoUnitarioMP = 0;
@@ -274,9 +236,7 @@ router.post("/", async (req, res) => {
               costoUnitarioMP = costoTotalPaquete / unidadesPorPaquete;
             }
             const costoTotalMP = cantidadNecesaria * costoUnitarioMP;
-            // ---------------------------------------------
-            // Descontar stock
-            // ---------------------------------------------
+
             const resultadoDescuento = await client.query(`
                                 UPDATE materia_prima_y_cd
 
@@ -296,9 +256,7 @@ router.post("/", async (req, res) => {
             if (resultadoDescuento.rowCount === 0) {
               throw new Error(`No fue posible descontar la materia prima "${materiaPrima.nombre}".`);
             }
-            // ---------------------------------------------
-            // Registrar movimiento de consumo de MP
-            // ---------------------------------------------
+
             await client.query(`
                             INSERT INTO movimiento_materia_prima
                             (
@@ -342,13 +300,10 @@ router.post("/", async (req, res) => {
               ]);
             console.log(`Descontada materia prima ID ${consumo.id_ma}: ${cantidadNecesaria}`);
           }
-          // =================================================
-          // CONSUMO DE PRODUCTO ELABORADO
-          // =================================================
+
+          //Consumo de producto elaborado
           else if (consumo.id_producto_insumo) {
-            // ---------------------------------------------
-            // Obtener producto insumo y su costo
-            // ---------------------------------------------
+
             const resProductoInsumo = await client.query(`
                                 SELECT
                                     p.id_producto,
@@ -372,9 +327,7 @@ router.post("/", async (req, res) => {
               throw new Error(`El producto utilizado como insumo ` + `con ID ${consumo.id_producto_insumo} no existe.`);
             }
             const productoInsumo = resProductoInsumo.rows[0];
-            // ---------------------------------------------
-            // Obtener costo del producto insumo
-            // ---------------------------------------------
+
             const resCostoInsumo = await client.query(`
                                 SELECT
                                     costo_unitario_prod
@@ -391,9 +344,7 @@ router.post("/", async (req, res) => {
               costoUnitarioInsumo = Number(resCostoInsumo.rows[0].costo_unitario_prod || 0);
             }
             const costoTotalInsumo = cantidadNecesaria * costoUnitarioInsumo;
-            // ---------------------------------------------
-            // Descontar stock del producto insumo
-            // ---------------------------------------------
+
             const resultadoDescuento = await client.query(`
                                 UPDATE producto_elaborado
 
@@ -413,9 +364,7 @@ router.post("/", async (req, res) => {
             if (resultadoDescuento.rowCount === 0) {
               throw new Error(`No fue posible descontar el producto elaborado "${productoInsumo.nombre}".`);
             }
-            // ---------------------------------------------
-            // Registrar movimiento del producto insumo
-            // ---------------------------------------------
+
             await client.query(`
                             INSERT INTO movimiento_producto
                             (
@@ -462,15 +411,11 @@ router.post("/", async (req, res) => {
         }
       }
     }
-    // =====================================================
-    // VALIDAR TIPO DE PRODUCTO
-    // =====================================================
+
     else {
       throw new Error("El producto tiene un tipo no válido.");
     }
-    // =====================================================
-    // ACTUALIZAR STOCK DEL PRODUCTO PRINCIPAL
-    // =====================================================
+
     const nuevoStock = stockActual + cantidadNum;
     if (producto.tipo === "Reventa") {
       await client.query(`
@@ -497,13 +442,9 @@ router.post("/", async (req, res) => {
           id_producto
         ]);
     }
-    // =====================================================
-    // CALCULAR COSTO TOTAL DEL MOVIMIENTO PRINCIPAL
-    // =====================================================
+
     const costoTotal = cantidadNum * costoUnitario;
-    // =====================================================
-    // REGISTRAR MOVIMIENTO DEL PRODUCTO PRINCIPAL
-    // =====================================================
+
     await client.query(`
             INSERT INTO movimiento_producto
             (
@@ -542,13 +483,9 @@ router.post("/", async (req, res) => {
         costoUnitario,
         costoTotal
       ]);
-    // =====================================================
-    // CONFIRMAR TRANSACCIÓN
-    // =====================================================
+
     await client.query("COMMIT");
-    // =====================================================
-    // RESPUESTA
-    // =====================================================
+
     res.json({
       mensaje: "Entrada registrada correctamente.",
       nuevo_stock_actual: nuevoStock

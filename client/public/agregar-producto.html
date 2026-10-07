@@ -266,7 +266,7 @@
                 <h6 class="mb-0 fw-bold text-dark">Ingredientes</h6>
                 <button
                   type="button"
-                  class="btn btn-sm btn-outline-info rounded-pill px-3 fw-semibold"
+                  class="btnAgregar"
                   id="agregarIngrediente">
                   <i class="fa-solid fa-plus me-1"></i> Agregar ingrediente
                 </button>
@@ -325,14 +325,13 @@
                     </div>
                   </div>
 
-                  <!-- Eliminar -->
-                  <div class="col-md-1 text-center">
+                  <div class="col-md-1">
                     <button
                       type="button"
-                      class="btn btn-outline-danger btnEliminarIngrediente w-100"
+                      class="btn btn-danger w-100 btnEliminarIngrediente"
                       title="Eliminar ingrediente"
                       style="height: 48px; border-radius: 12px">
-                      <i class="fa-solid fa-trash"></i>
+                      <i class="bi bi-trash"></i>
                     </button>
                   </div>
                 </div>
@@ -352,7 +351,7 @@
 
       <!-- Pie con botones centrados -->
       <div class="modal-botones">
-          <button type="button" class="btnCancelar" data-bs-dismiss="modal">
+        <button type="button" class="btnCancelar" data-bs-dismiss="modal">
           <i class="fa-solid fa-xmark"></i>Cancelar
         </button>
 
@@ -362,12 +361,10 @@
             id="spinnerGuardarProducto"
             role="status"
             aria-hidden="true"></span>
-          <span id="textoGuardarProducto"><i class="fa-solid fa-check"></i>  Guardar </span>
+          <span id="textoGuardarProducto"
+            ><i class="fa-solid fa-check"></i> Guardar
+          </span>
         </button>
-
-        </div>
-      </div>
-    </div>
       </div>
     </div>
   </div>

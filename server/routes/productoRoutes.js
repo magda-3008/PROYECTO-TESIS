@@ -13,6 +13,13 @@ const {
 const upload = multer({
     storage: multer.memoryStorage()
 });
+const {
+    verificarSesion,
+    verificarAdministrador
+} = require("../middleware/autenticacion");
+
+router.use(verificarSesion);
+
 router.get("/", async (req, res) => {
     try {
         const resultado = await pool.query(`
@@ -457,8 +464,9 @@ router.post("/", upload.single("foto"), async (req, res) => {
         cliente.release();
     }
 });
+
 // Actualizar parcialmente un producto
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", verificarAdministrador, async (req, res) => {
     const {
         id
     } = req.params;
@@ -552,7 +560,8 @@ router.patch("/:id", async (req, res) => {
         client.release();
     }
 });
-router.patch("/:id/foto", upload.single("foto"), async (req, res) => {
+
+router.patch("/:id/foto", verificarAdministrador, upload.single("foto"), async (req, res) => {
     const {
         id
     } = req.params;

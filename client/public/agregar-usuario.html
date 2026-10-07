@@ -1,0 +1,117 @@
+<div
+  class="modal fade"
+  id="modalAgregarUsuario"
+  tabindex="-1"
+  aria-labelledby="modalAgregarUsuarioLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <!-- Encabezado -->
+      <div class="venta-header">
+        <h2 class="titulo-modal" id="modalAgregarUsuarioLabel">
+          <i class="fa-solid fa-user-plus me-2"></i>
+          AGREGAR USUARIO
+        </h2>
+
+        <button
+          type="button"
+          class="cerrarModal"
+          data-bs-dismiss="modal"
+          aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Formulario -->
+      <form class="formVenta" id="formAgregarUsuario" novalidate>
+        <!-- Nombre de usuario -->
+        <div class="campo">
+          <label for="nombreUsuarioAgregar"> Nombre de usuario </label>
+
+          <input
+            type="text"
+            id="nombreUsuarioAgregar"
+            name="nombreUsuario"
+            maxlength="20"
+            autocomplete="username"
+            placeholder="Ingrese el nombre de usuario" />
+
+          <small class="error-msg" id="errorNombreUsuarioAgregar"> </small>
+        </div>
+
+        <!-- Rol -->
+        <div class="campo">
+          <label for="rolUsuarioAgregar"> Rol </label>
+
+          <select id="rolUsuarioAgregar" name="rolUsuario">
+            <option value="" selected disabled>Seleccione un rol</option>
+
+            <option value="Administrador">Administrador</option>
+
+            <option value="Colaborador">Colaborador</option>
+          </select>
+
+          <small class="error-msg" id="errorRolUsuarioAgregar"> </small>
+        </div>
+
+        <!-- Contraseña -->
+        <div class="campo">
+          <label for="contrasenaUsuarioAgregar"> Contraseña </label>
+          <div class="password-container">
+            <input
+              type="password"
+              id="contrasenaUsuarioAgregar"
+              name="contrasenaUsuario"
+              autocomplete="new-password"
+              placeholder="Ingrese la contraseña" />
+            <button
+              type="button"
+              class="btnMostrarContrasena"
+              id="btnMostrarContrasenaAgregar"
+              aria-label="Mostrar contraseña">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+          <small class="text-muted" id="ayudaContrasenaUsuarioAgregar"> </small>
+          <small class="error-msg" id="errorContrasenaUsuarioAgregar"> </small>
+        </div>
+        <!-- Confirmar contraseña -->
+        <div class="campo">
+          <label for="confirmarContrasenaAgregar"> Confirmar contraseña </label>
+          <div class="password-container">
+            <input
+              type="password"
+              id="confirmarContrasenaAgregar"
+              name="confirmarContrasena"
+              autocomplete="new-password"
+              placeholder="Repita la contraseña" />
+            <button
+              type="button"
+              class="btnMostrarContrasena"
+              id="btnMostrarConfirmarContrasenaAgregar"
+              aria-label="Mostrar contraseña">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+          <small class="error-msg" id="errorConfirmarContrasenaAgregar">
+          </small>
+        </div>
+
+        <!-- Error general -->
+        <small class="error-msg error-general" id="errorGeneralUsuarioAgregar">
+        </small>
+      </form>
+
+      <!-- Botones -->
+      <div class="modal-botones">
+        <button type="button" class="btnGuardar" id="btnGuardarUsuarioAgregar">
+          Guardar
+        </button>
+
+        <button type="button" class="btnCancelar" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

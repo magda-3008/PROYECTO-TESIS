@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Respaldos - Pa'TuBoca</title>
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+
+    <!-- Fuente -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet" />
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="./CSS/estilosusuarios.css" />
+  </head>
+
+  <body>
+    <main class="contenedor-principal">
+      <!-- Encabezado -->
+      <header class="encabezado-pagina">
+        <div class="encabezado-titulo">
+          <a
+            href="principal.html"
+            class="btn-regresar"
+            title="Regresar al menú principal">
+            <i class="fa-solid fa-arrow-left"></i>
+          </a>
+
+          <div>
+            <h1>Respaldos</h1>
+            <p class="subtitulo-pagina">
+              Generación de copias de seguridad de la información
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <!-- Contenido -->
+      <section class="contenedor-respaldo">
+        <div class="tarjeta-respaldo">
+          <div class="icono-respaldo">
+            <i class="fa-solid fa-database"></i>
+          </div>
+
+          <div class="contenido-respaldo">
+            <h2>Generar respaldo de la base de datos</h2>
+
+            <p>
+              Permite generar una copia de seguridad de la información
+              almacenada actualmente en el sistema.
+            </p>
+
+            <p class="texto-secundario">
+              El respaldo se descargará como un archivo que podrá ser utilizado
+              posteriormente para recuperar la información de la base de datos.
+            </p>
+
+            <button type="button" id="btnGenerarRespaldo" class="btn-principal">
+              <i class="fa-solid fa-download"></i>
+              Generar respaldo
+            </button>
+
+            <div
+              id="mensajeRespaldo"
+              class="mensaje-respaldo"
+              aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Sesión -->
+    <script src="./JavaScript/utilities/sesion.js"></script>
+
+    <!-- Reautenticación -->
+    <script src="./JavaScript/ModalesUsuario/reautenticarUsuario.js"></script>
+
+    <!-- Respaldos -->
+    <script src="./JavaScript/respaldos.js"></script>
+  </body>
+</html>

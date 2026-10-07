@@ -44,7 +44,6 @@ function abrirModalEntradaMP(materiaprima) {
     document.getElementById("cantidadEntradaMP").value = "";
     document.getElementById("observacionEntradaMP").value = "";
     document.getElementById("nombreMateriaPrimaEntrada").textContent = materiaprima.nombre || "-";
-    document.getElementById("tipoMateriaPrimaEntrada").textContent = materiaprima.tipo_insumo || "-";
     document.getElementById("stockActualMPEntrada").textContent = formatearStockMateriaPrima(materiaprima);
     cargarMotivosEntradaMP();
     const modal = new bootstrap.Modal(document.getElementById("modalEntradaMP"));
@@ -93,6 +92,7 @@ async function registrarEntradaMP() {
     try {
         const respuesta = await fetch("/api/entradaMP", {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -104,10 +104,16 @@ async function registrarEntradaMP() {
                 observacion: observacion || null
             })
         });
-        const datos = await respuesta.json();
+
         if (!respuesta.ok) {
-            throw new Error(datos.mensaje || datos.error || "No se pudo registrar la entrada.");
+            await manejarErrorRespuesta(
+                respuesta,
+                "No se pudo registrar la entrada."
+            );
+            return;
         }
+
+        const datos = await respuesta.json();
         // ---------------- ACTUALIZAR STOCK ----------------
         MPSeleccionada.stock_actual_i =
             datos.nuevoStock;

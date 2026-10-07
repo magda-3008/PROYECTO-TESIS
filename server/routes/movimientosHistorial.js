@@ -1,6 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../config/db");
+const {
+	verificarSesion
+} = require("../middleware/autenticacion");
+
+router.use(verificarSesion);
 
 // Obtener períodos disponibles del historial de un producto
 router.get("/periodos/:id_producto", async (req, res) => {

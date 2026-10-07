@@ -1,6 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../config/db");
+
+const {
+	verificarSesion
+} = require("../middleware/autenticacion");
+
+router.use(verificarSesion);
+
 router.post("/", async (req, res) => {
 	const client = await pool.connect();
 	try {
@@ -12,9 +19,7 @@ router.post("/", async (req, res) => {
 			cantidad,
 			observacion
 		} = req.body;
-		// --------------------------------------------------
-		// 1. VALIDACIONES BÁSICAS
-		// --------------------------------------------------
+
 		if (!id_producto || !tipo_movimiento || !motivo || cantidad === undefined) {
 			throw new Error("Datos incompletos.");
 		}
@@ -22,28 +27,20 @@ router.post("/", async (req, res) => {
 		if (isNaN(cantidadNum) || cantidadNum <= 0) {
 			throw new Error("La cantidad debe ser mayor a 0.");
 		}
-		// --------------------------------------------------
-		// 2. ESTA RUTA SOLAMENTE REGISTRA SALIDAS MANUALES
-		// --------------------------------------------------
+
 		if (tipo_movimiento !== "SALIDA") {
 			throw new Error("Este endpoint solo permite registrar movimientos de salida.");
 		}
-		// Venta NO se permite desde este endpoint.
-		// Las ventas serán registradas posteriormente
-		// desde el módulo de ventas.
+
 		const motivosPermitidos = ["PERDIDA", "AJUSTE", "OTRO"];
 		if (!motivosPermitidos.includes(motivo)) {
 			throw new Error("El motivo de salida no es válido.");
 		}
-		// --------------------------------------------------
-		// 3. FECHA ACTUAL
-		// --------------------------------------------------
+
 		const ahora = new Date();
 		const anio = ahora.getFullYear();
 		const mes = ahora.getMonth() + 1;
-		// --------------------------------------------------
-		// 4. OBTENER Y BLOQUEAR EL PRODUCTO
-		// --------------------------------------------------
+
 		const resProducto = await client.query(`
             SELECT
                 p.id_producto,
@@ -73,9 +70,7 @@ router.post("/", async (req, res) => {
 			throw new Error("Producto no encontrado.");
 		}
 		const producto = resProducto.rows[0];
-		// --------------------------------------------------
-		// 5. OBTENER STOCK Y COSTO ACTUAL
-		// --------------------------------------------------
+
 		let stockActual;
 		let costoUnitario;
 		if (producto.tipo === "Reventa") {
@@ -93,19 +88,13 @@ router.post("/", async (req, res) => {
 		} else {
 			throw new Error("El producto tiene un tipo no válido.");
 		}
-		// --------------------------------------------------
-		// 6. VALIDAR STOCK DISPONIBLE
-		// --------------------------------------------------
+
 		if (cantidadNum > stockActual) {
 			throw new Error(`Stock insuficiente. Disponible: ${stockActual}`);
 		}
-		// --------------------------------------------------
-		// 7. CALCULAR NUEVO STOCK
-		// --------------------------------------------------
+
 		const nuevoStock = stockActual - cantidadNum;
-		// --------------------------------------------------
-		// 8. ACTUALIZAR STOCK
-		// --------------------------------------------------
+
 		if (producto.tipo === "Reventa") {
 			await client.query(`
                 UPDATE producto_reventa
@@ -131,13 +120,9 @@ router.post("/", async (req, res) => {
 					id_producto
 				]);
 		}
-		// --------------------------------------------------
-		// 9. CALCULAR COSTO DEL MOVIMIENTO
-		// --------------------------------------------------
+
 		const costoTotal = cantidadNum * costoUnitario;
-		// --------------------------------------------------
-		// 10. REGISTRAR MOVIMIENTO
-		// --------------------------------------------------
+
 		await client.query(`
             INSERT INTO movimiento_producto (
                 id_producto,
@@ -174,9 +159,7 @@ router.post("/", async (req, res) => {
 				costoUnitario,
 				costoTotal
 			]);
-		// --------------------------------------------------
-		// 11. CONFIRMAR TRANSACCIÓN
-		// --------------------------------------------------
+
 		await client.query("COMMIT");
 		res.json({
 			mensaje: "Salida registrada correctamente.",

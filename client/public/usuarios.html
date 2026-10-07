@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Usuarios</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link
+      href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator.min.css"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="./CSS/estilosusuarios.css" />
+    <link rel="stylesheet" href="./CSS/tabulator-tema.css" />
+    <link rel="stylesheet" href="./CSS/estilosmodales.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap"
+      rel="stylesheet" />
+  </head>
+
+  <body>
+    <div class="container-fluid mt-3">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h1>Gestión de usuarios</h1>
+          <p class="text-muted mb-0">
+            Administra los usuarios y sus roles de acceso al sistema.
+          </p>
+        </div>
+        <div>
+          <button class="btnAgregarUsuario" id="btnAgregarUsuario">
+            <i class="fa-solid fa-plus"></i>
+            <span>Agregar usuario</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <input
+          class="form-control"
+          id="buscar"
+          placeholder="Buscar usuario..." />
+      </div>
+
+      <!-- FILTROS -->
+      <div id="panelFiltros" class="panel-filtros">
+        <h3>Filtrar por:</h3>
+
+        <div class="row g-2">
+          <div class="col-md-3">
+            <select id="filtroRol" class="form-select">
+              <option value="">Todos los roles</option>
+              <option value="Administrador">Administrador</option>
+              <option value="Colaborador">Colaborador</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <br />
+      <!-- TABLA -->
+      <div id="tablaUsuarios"></div>
+    </div>
+
+    <div id="contenedorModalAgregarUsuario"></div>
+    <div id="contenedorModalEditarUsuario"></div>
+
+    <!-- Sesión -->
+    <script src="./JavaScript/utilities/sesion.js"></script>
+
+    <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- JavaScript de usuarios -->
+    <script src="./JavaScript/ModalesUsuario/reautenticarUsuario.js"></script>
+    <script src="./JavaScript/ModalesUsuario/modalAgregarUsuario.js"></script>
+    <script src="./JavaScript/ModalesUsuario/modalEditarUsuario.js"></script>
+    <script src="./JavaScript/usuarios.js"></script>
+  </body>
+</html>

@@ -3,9 +3,16 @@ let filaProductoEnEdicion = null;
 let fotoNueva = null;
 async function cargarModalEditarProducto() {
     try {
-        const respuesta = await fetch("editar-producto.html");
+        const respuesta = await fetch("editar-producto.html", {
+            credentials: "include"
+        });
+
         if (!respuesta.ok) {
-            throw new Error("No se pudo cargar el modal de editar producto.");
+            await manejarErrorRespuesta(
+                respuesta,
+                "No se pudo cargar el modal de editar producto."
+            );
+            return;
         }
         const html = await respuesta.text();
         const contenedor = document.getElementById("contenedorModalEditarProducto");
@@ -205,30 +212,50 @@ async function guardarCambiosProducto() {
         cambios.costo = costo;
     }
     try {
-        const respuesta = await fetch(`/api/productos/${productoEnEdicion.id_producto}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(cambios)
-        });
-        const data = await respuesta.json();
+        const respuesta = await fetch(
+            `/api/productos/${productoEnEdicion.id_producto}`,
+            {
+                method: "PATCH",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(cambios)
+            }
+        );
+
         if (!respuesta.ok) {
-            throw new Error(data.error || "No se pudieron actualizar los datos del producto.");
+            await manejarErrorRespuesta(
+                respuesta,
+                "No se pudieron actualizar los datos del producto."
+            );
+            return;
         }
+
+        const data = await respuesta.json();
         // Producto actualizado por el primer PATCH
         let productoActualizado = data.producto;
         if (fotoNueva) {
             const datosFoto = new FormData();
             datosFoto.append("foto", fotoNueva);
-            const respuestaFoto = await fetch(`/api/productos/${productoEnEdicion.id_producto}/foto`, {
-                method: "PATCH",
-                body: datosFoto
-            });
-            const dataFoto = await respuestaFoto.json();
+            const respuestaFoto = await fetch(
+                `/api/productos/${productoEnEdicion.id_producto}/foto`,
+                {
+                    method: "PATCH",
+                    credentials: "include",
+                    body: datosFoto
+                }
+            );
+
             if (!respuestaFoto.ok) {
-                throw new Error(dataFoto.error || "Los datos se actualizaron, pero no se pudo actualizar la foto.");
+                await manejarErrorRespuesta(
+                    respuestaFoto,
+                    "Los datos se actualizaron, pero no se pudo actualizar la foto."
+                );
+                return;
             }
+
+            const dataFoto = await respuestaFoto.json();
             productoActualizado = {
                 ...productoActualizado,
                 ...dataFoto.producto

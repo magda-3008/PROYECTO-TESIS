@@ -538,3 +538,28 @@
     }
 
 }
+
+/* =========================================
+   TABLA DE USUARIOS
+========================================= */
+
+.badge-rol {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.badge-rol.administrador {
+    background: #d9f5ff;
+    color: #1a81a0;
+}
+
+.badge-rol.colaborador {
+    background: #e9e9e9;
+    color: #555;
+}

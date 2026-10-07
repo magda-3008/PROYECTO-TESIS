@@ -5,12 +5,15 @@ const cors = require("cors");
 const path = require("path");
 const pool = require("./config/db");
 const supabase = require("./config/supabase");
+const session = require("express-session");
+const pgSession = require("connect-pg-simple")(session);
 
 //Rutas del sistema
 const productoRoutes = require("./routes/productoRoutes");
 const recetaRoutes = require("./routes/recetasRoutes");
 const detalleRecetaRoutes = require("./routes/detalleRecetaRoutes");
 const materiaPrimaRoutes = require("./routes/materiaPrimaRoutes");
+const logUserRoutes = require("./routes/logUserRoutes");
 const usuarioRoutes = require("./routes/usuariosRoutes");
 const movimientoProductoRoutes = require("./routes/movimientoProductoRoutes");
 const salidaProductoRoutes = require("./routes/salidaProductoRoutes");
@@ -18,10 +21,29 @@ const movimientoHistorial = require("./routes/movimientosHistorial");
 const movimientoHistorialMPRoutes = require("./routes/movimientosHistorialMP");
 const movimientoMPRoutes = require("./routes/movimientoMPRoutes");
 const salidaMPRoutes = require("./routes/salidaMPRoutes");
+const respaldoRoutes = require("./routes/respaldoRoutes");
 
 const app = express();
+app.set("trust proxy", 1);
 app.use(cors());
 app.use(express.json());
+
+app.use(
+	session({
+		store: new pgSession({
+			pool: pool
+		}),
+		secret: process.env.SESION_CLAVE,
+		resave: false,
+		saveUninitialized: false,
+		cookie: {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === "production",
+			sameSite: "lax"
+		}
+	})
+);
+
 // Servir los archivos del frontend
 app.use(express.static(path.join(__dirname, "../client/public")));
 // Página principal
@@ -34,6 +56,7 @@ app.use("/api/productos", productoRoutes);
 app.use("/api/recetas", recetaRoutes);
 app.use("/api/detalle_receta", detalleRecetaRoutes);
 app.use("/api/materiaprima", materiaPrimaRoutes);
+app.use("/api/loguser", logUserRoutes);
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/entrada", movimientoProductoRoutes);
 app.use("/api/salida", salidaProductoRoutes);
@@ -41,6 +64,7 @@ app.use("/api/historial", movimientoHistorial);
 app.use("/api/historialMP", movimientoHistorialMPRoutes);
 app.use("/api/entradaMP", movimientoMPRoutes);
 app.use("/api/salidaMP", salidaMPRoutes);
+app.use("/api/respaldo", respaldoRoutes);
 
 app.get("/api/test-supabase", async (req, res) => {
 	try {

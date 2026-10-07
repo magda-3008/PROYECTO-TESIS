@@ -10,8 +10,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
     try {
-        const respuesta = await fetch("agregar-materiaprima.html");
+        const respuesta = await fetch("agregar-materiaprima.html", {
+            credentials: "include"
+        });
         if (!respuesta.ok) {
+            if (respuesta.status === 401 || respuesta.status === 403) {
+                await manejarErrorRespuesta(respuesta, "No se pudo cargar el formulario.");
+                return;
+            }
             throw new Error(`No se pudo cargar el modal (${respuesta.status})`);
         }
         const html = await respuesta.text();
@@ -43,8 +49,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         const modalAgregarMP = new bootstrap.Modal(modalElemento);
         async function cargarUnidades() {
             try {
-                const respuesta = await fetch("/api/materiaprima");
+                const respuesta = await fetch("/api/materiaprima", {
+                    credentials: "include"
+                });
                 if (!respuesta.ok) {
+                    if (respuesta.status === 401 || respuesta.status === 403) {
+                        await manejarErrorRespuesta(respuesta, "No se pudieron cargar las unidades.");
+                        return;
+                    }
                     throw new Error("No se pudieron cargar las unidades.");
                 }
                 const materias = await respuesta.json();
@@ -85,7 +97,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 });
             }
         }
-
         btnAgregarMP.addEventListener("click", async () => {
             await cargarUnidades();
             modalAgregarMP.show();
@@ -120,17 +131,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 formularioValido = false;
             }
             let stockMinimoNormalizado = null;
-
             if (stockMinimoMP.value.trim() !== "") {
-
-                stockMinimoNormalizado = parsearCantidad(
-                    stockMinimoMP.value.trim()
-                );
-
-                if (
-                    !Number.isFinite(stockMinimoNormalizado) ||
-                    stockMinimoNormalizado < 0
-                ) {
+                stockMinimoNormalizado = parsearCantidad(stockMinimoMP.value.trim());
+                if (!Number.isFinite(stockMinimoNormalizado) || stockMinimoNormalizado < 0) {
                     stockMinimoMP.classList.add("is-invalid");
                     formularioValido = false;
                 }
@@ -159,25 +162,21 @@ document.addEventListener("DOMContentLoaded", async () => {
                 stock_minimo: stockMinimoNormalizado,
                 unidad_existencia: unidadExistenciaMP.value
             };
-
             try {
-                const respuesta = await fetch(
-                    "/api/materiaprima",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(datosMP)
-                    }
-                );
+                const respuesta = await fetch("/api/materiaprima", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(datosMP)
+                });
+                if (!respuesta.ok) {
+                    await manejarErrorRespuesta(respuesta, "No se pudo crear la materia prima.");
+                    return;
+                }
                 const resultado = await respuesta.json();
                 console.log("Respuesta del servidor:", resultado);
-
-                if (!respuesta.ok) {
-                    throw new Error(resultado.error || "No se pudo crear la materia prima.");
-                }
-
                 await Swal.fire({
                     icon: "success",
                     title: "Materia prima agregada",
@@ -224,7 +223,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 formularioMP.querySelectorAll(".is-invalid").forEach(campo => {
                     campo.classList.remove("is-invalid");
                 });
-                // Restaurar botón
                 btnGuardarMP.disabled = false;
                 if (spinnerGuardarMP) {
                     spinnerGuardarMP.classList.add("d-none");

@@ -10,9 +10,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
     try {
-        const respuesta = await fetch("agregar-producto.html");
+        const respuesta = await fetch("agregar-producto.html", {
+            credentials: "include"
+        });
+
         if (!respuesta.ok) {
-            throw new Error(`No se pudo cargar agregar-producto.html (${respuesta.status})`);
+            await manejarErrorRespuesta(
+                respuesta,
+                "No se pudo cargar el formulario para agregar el producto."
+            );
+            return;
         }
         const html = await respuesta.text();
         contenedor.innerHTML = html;
@@ -59,10 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     estado
                 } = event.detail;
 
-                // Si el producto pasó a inactivo,
-                // quitarlo de los productos disponibles
                 if (estado === "Inactivo") {
-
                     productosElaborados =
                         productosElaborados.filter(
                             (producto) =>
@@ -71,9 +75,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 }
 
-                // Si volvió a activo, se carga la lista para incorporarlo
                 else if (estado === "Activo") {
-
                     cargarProductosElaborados();
                 }
             }
@@ -85,7 +87,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             Seleccione una materia prima
         </option>
     `;
-
             materias.forEach((materia) => {
                 const opcion = document.createElement("option");
                 opcion.value = materia.id_ma;
@@ -159,12 +160,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 opcion.textContent = "Unidad";
                 selectUnidad.appendChild(opcion);
                 selectUnidad.value = "unidad";
-                // Ahora sí queda habilitado
                 selectUnidad.disabled = false;
                 return;
             }
 
-            //Materia prima
             if (tipo !== "materia_prima") {
                 return;
             }
@@ -234,9 +233,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         async function cargarMateriasPrimas() {
             try {
-                const respuesta = await fetch("/api/materiaprima");
+                const respuesta = await fetch("/api/materiaprima", {
+                    credentials: "include"
+                });
+
                 if (!respuesta.ok) {
-                    throw new Error("No se pudieron cargar las materias primas.");
+                    await manejarErrorRespuesta(
+                        respuesta,
+                        "No se pudieron cargar las materias primas."
+                    );
+                    return;
                 }
                 materiasPrimas = await respuesta.json();
                 // Llenar las filas existentes
@@ -259,12 +265,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         async function cargarProductosElaborados() {
             try {
-                const respuesta = await fetch("/api/productos");
+                const respuesta = await fetch("/api/productos", {
+                    credentials: "include"
+                });
 
                 if (!respuesta.ok) {
-                    throw new Error("No se pudieron cargar los productos.");
+                    await manejarErrorRespuesta(
+                        respuesta,
+                        "No se pudieron cargar los productos."
+                    );
+                    return;
                 }
-
                 const productos = await respuesta.json();
 
                 // Solo productos elaborados activos
@@ -355,7 +366,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 class="btn btn-danger w-100 btnEliminarIngrediente"
                 title="Eliminar ingrediente"
                 style="height: 48px; border-radius: 12px;">
-                <i class="fa-solid fa-trash"></i>
+                <i class="bi bi-trash"></i>
             </button>
         </div>
 
@@ -657,17 +668,24 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (imagenProducto && imagenProducto.files.length > 0) {
                     formData.append("foto", imagenProducto.files[0]);
                 }
-                console.log("Enviando producto...");
                 try {
                     const respuesta = await fetch("/api/productos", {
                         method: "POST",
+                        credentials: "include",
                         body: formData
                     });
-                    const resultado = await respuesta.json();
-                    console.log("Respuesta del servidor:", resultado);
+
                     if (!respuesta.ok) {
-                        throw new Error(resultado.error || "No se pudo crear el producto.");
+                        await manejarErrorRespuesta(
+                            respuesta,
+                            "No se pudo crear el producto."
+                        );
+                        return;
                     }
+
+                    const resultado = await respuesta.json();
+
+                    console.log("Respuesta del servidor:", resultado);
                     const tipoTexto = tipoProducto.value === "Reventa" ? "reventa" : "elaborado";
                     await Swal.fire({
                         icon: "success",

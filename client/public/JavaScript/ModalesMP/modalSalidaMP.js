@@ -7,7 +7,6 @@ function abrirModalSalidaMP(materiaprima) {
     document.getElementById("observacionSalidaMP").value = "";
     // Mostrar información
     document.getElementById("nombreMateriaPrimaSalida").textContent = materiaprima.nombre || "-";
-    document.getElementById("tipoMateriaPrimaSalida").textContent = materiaprima.tipo_insumo || "-";
     document.getElementById("stockActualMPSalida").textContent = formatearStockMateriaPrima(materiaprima);
     const modal = new bootstrap.Modal(document.getElementById("modalSalidaMP"));
     modal.show();
@@ -55,6 +54,7 @@ async function registrarSalidaMP() {
     try {
         const respuesta = await fetch("/api/salidaMP", {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -66,11 +66,16 @@ async function registrarSalidaMP() {
                 observacion: observacion || null
             })
         });
-        const datos = await respuesta.json();
 
         if (!respuesta.ok) {
-            throw new Error(datos.mensaje || datos.error || "No se pudo registrar la salida.");
+            await manejarErrorRespuesta(
+                respuesta,
+                "No se pudo registrar la salida."
+            );
+            return;
         }
+
+        const datos = await respuesta.json();
         // ---------------- ACTUALIZAR STOCK ----------------
         MPSeleccionada.stock_actual_i =
             datos.nuevoStock;
