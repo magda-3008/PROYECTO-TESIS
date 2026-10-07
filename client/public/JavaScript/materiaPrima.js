@@ -93,14 +93,14 @@ const vistas = {
                     </button>
 
                     <button class="btnAccion btnHistorial" title="Ver historial">
-                        <i class="bi bi-clock-history"></i>
+                        <i class="fa-solid fa-clock"></i>
                     </button>
                 `;
 
                     if (usuarioActual?.rol === "Administrador") {
                         acciones += `
                         <button class="btnAccion btnEditar" title="Editar insumo">
-                            <i class="bi bi-pencil"></i>
+                            <i class="fa-sharp fa-solid fa-pencil"></i>
                         </button>
                     `;
                     }

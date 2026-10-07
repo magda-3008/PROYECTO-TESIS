@@ -139,14 +139,14 @@ const productosInventario = {
 
                     <button class="btnAccion btnSalida" title="Registrar salida"> <i class="fa-sharp fa-solid fa-cart-minus"></i> </button>
 
-                    <button class="btnAccion btnHistorial" title="Ver historial"> <i class="bi bi-clock-history"></i> </button>
+                    <button class="btnAccion btnHistorial" title="Ver historial"> <i class="fa-solid fa-clock"></i> </button>
 
                 `;
 
         // Solo el Administrador puede editar productos.
         if (usuarioActual?.rol === "Administrador") {
           acciones += `
-                    <button class="btnAccion btnEditar" title="Editar producto"> <i class="bi bi-pencil"></i> </button>
+                    <button class="btnAccion btnEditar" title="Editar producto"> <i class="fa-sharp fa-solid fa-pencil"></i> </button>
                     `;
         }
         return `
