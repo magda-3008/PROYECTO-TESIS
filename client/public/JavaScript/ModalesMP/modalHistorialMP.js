@@ -115,9 +115,7 @@ async function cargarMovimientosHistorialMP(materiaPrima) {
                     colspan="5"
                     class="text-center text-muted py-4"
                 >
-                    <i
-                        class="bi bi-clock-history fs-4 d-block mb-2"
-                    ></i>
+                    <i class="fa-solid fa-clock-rotate-left"></i>
 
                     No hay movimientos registrados
                     para este período.
@@ -153,9 +151,7 @@ async function cargarMovimientosHistorialMP(materiaPrima) {
                         colspan="5"
                         class="text-center text-muted py-4"
                     >
-                        <i
-                            class="bi bi-clock-history fs-4 d-block mb-2"
-                        ></i>
+                        <i class="fa-solid fa-clock-rotate-left"></i>
 
                         No hay movimientos registrados
                         para este período.
@@ -405,9 +401,7 @@ async function abrirHistorialMP(materiaPrima) {
                         colspan="5"
                         class="text-center text-muted py-4"
                     >
-                        <i
-                            class="bi bi-clock-history fs-4 d-block mb-2"
-                        ></i>
+                        <i class="fa-solid fa-clock-rotate-left"></i>
 
                         No hay movimientos registrados
                         para esta materia prima.

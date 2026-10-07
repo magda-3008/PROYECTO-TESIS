@@ -77,7 +77,7 @@ const usuariosConfiguracion = {
             return `            
                 <div class="acciones-tabla">
                     <button class="btnAccion btnEditar" title="Editar usuario"> <i class="bi bi-pencil"></i> </button>
-                    <button class="btnAccion btnSalida" title="Eliminar usuario"><i class="bi bi-trash"></i></button>
+                    <button class="btnAccion btnSalida" title="Eliminar usuario"><i class="fa-solid fa-trash"></i></button>
                 </div>
                 `;
         },

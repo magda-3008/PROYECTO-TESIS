@@ -246,7 +246,7 @@ function agregarFilaIngredienteEditar(ingredienteExistente = null) {
                 title="Eliminar ingrediente"
                 aria-label="Eliminar ingrediente">
 
-                <i class="bi bi-trash"></i>
+                <i class="fa-solid fa-trash"></i>
 
             </button>
 

@@ -89,7 +89,7 @@ const vistas = {
                     </button>
 
                     <button class="btnAccion btnSalida" title="Registrar pérdida">
-                        <i class="fa-sharp fa-solid fa-cart-minus"></i>
+                        <i class="fa-solid fa-cart-minus"></i>
                     </button>
 
                     <button class="btnAccion btnHistorial" title="Ver historial">
@@ -197,7 +197,7 @@ async function cargarVista(vista) {
 
         document.getElementById("tablaMateriaP").innerHTML = `
             <div class="tabla-error">
-                <i class="bi bi-exclamation-triangle-fill"></i>
+                <i class="fa-solid fa-triangle-exclamation"></i>
                 <h4>Error al cargar la información</h4>
                 <p>Verifica tu conexión o inténtalo nuevamente.</p>
                 <button class="btn btn-primary mt-3" onclick="cargarVista('${vista}')">

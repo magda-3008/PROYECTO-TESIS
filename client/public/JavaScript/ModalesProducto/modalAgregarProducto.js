@@ -366,7 +366,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 class="btn btn-danger w-100 btnEliminarIngrediente"
                 title="Eliminar ingrediente"
                 style="height: 48px; border-radius: 12px;">
-                <i class="bi bi-trash"></i>
+                <i class="fa-solid fa-trash"></i>
             </button>
         </div>
 

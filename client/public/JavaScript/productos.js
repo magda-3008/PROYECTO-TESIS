@@ -137,7 +137,7 @@ const productosInventario = {
         let acciones = `
                     <button class="btnAccion btnEntrada" title="Registrar entrada"> <i class="fa-sharp fa-solid fa-cart-plus"></i> </button>
 
-                    <button class="btnAccion btnSalida" title="Registrar salida"> <i class="fa-sharp fa-solid fa-cart-minus"></i> </button>
+                    <button class="btnAccion btnSalida" title="Registrar salida"> <i class="fa-solid fa-cart-minus"></i> </button>
 
                     <button class="btnAccion btnHistorial" title="Ver historial"> <i class="fa-solid fa-clock"></i> </button>
 
@@ -231,7 +231,7 @@ async function cargarVista() {
     console.error(error);
     document.getElementById("tablaProductos").innerHTML = `
             <div class="tabla-error">
-                <i class="bi bi-exclamation-triangle-fill"></i>
+                <i class="fa-solid fa-triangle-exclamation"></i>
                 <h4>Error al cargar la información</h4>
                 <p>Verifica tu conexión o inténtalo nuevamente.</p>
                 <button class="btn btn-primary mt-3"
