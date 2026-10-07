@@ -11,7 +11,7 @@
       <!-- Encabezado -->
       <div class="venta-header">
         <h2>
-          <i class="fa-solid fa-box-open me-2"></i>
+          <i class="fa-solid fa-boxes-stacked"></i></i>
           AGREGAR MATERIA PRIMA / INSUMO
         </h2>
 
@@ -201,6 +201,10 @@
       </div>
 
       <div class="modal-botones">
+        <button type="button" class="btnCancelar" data-bs-dismiss="modal">
+          <i class="fa-solid fa-xmark"></i>Cancelar
+        </button>
+
         <button type="button" id="guardarMP" class="btnGuardar">
           <span
             class="spinner-border spinner-border-sm d-none"
@@ -209,12 +213,10 @@
             aria-hidden="true">
           </span>
 
-          <span id="textoGuardarMP"> Guardar </span>
+          <span id="textoGuardarMP"> <i class="fa-solid fa-check"></i> Guardar </span>
         </button>
 
-        <button type="button" class="btnCancelar" data-bs-dismiss="modal">
-          Cancelar
-        </button>
+
       </div>
     </div>
   </div>

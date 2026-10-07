@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Productos</title>
+    <title>♥Pa'tuboca Delicias y más♥</title>
     <!-- Bootstrap CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
@@ -31,59 +31,70 @@
   </head>
 
   <body>
-    <!-- Fondo -->
+    <!--FONDO-->
     <div class="Fondo"></div>
-    <!-- Menú lateral -->
+
+    <!--MENÚ LATERAL-->
     <aside class="Menu-lateral" id="menuLateral">
       <nav>
-        <div class="Seccion-menu">CONTROL</div>
+        <div class="Seccion-menu">CONTROL DE INVENTARIOS</div>
+
         <a href="productos.html" class="Item-menu activo">
           <i class="fa-solid fa-box-open"></i>
           <span>Productos</span>
         </a>
-        <a href="#" class="Item-menu">
-          <i class="fa-solid fa-carrot"></i>
+
+        <a href="materiaprima.html" class="Item-menu">
+          <i class="fa-solid fa-boxes-stacked"></i>
           <span>Materia prima</span>
         </a>
+
         <a href="recetas.html" class="Item-menu">
           <i class="fa-solid fa-book-open"></i>
           <span>Recetas</span>
         </a>
+
         <hr />
+
         <div class="Seccion-menu">TABLERO DE VENTAS</div>
+
         <a href="ventas.html" class="Item-menu">
           <i class="fa-solid fa-cash-register"></i>
           <span>Ventas</span>
         </a>
       </nav>
     </aside>
-    <!-- ENCABEZADO -->
+
+    <!--ENCABEZADO-->
     <header class="Encabezado">
-      <!-- Izquierda -->
+      <!--Izquierda-->
       <div class="Encabezado-izquierda">
         <button class="btnMenu" id="btnMenu" aria-label="Abrir menú">
           <i class="fa-solid fa-bars"></i>
         </button>
+
         <div class="Marca">
-          <h1>Pa'TuBoca | Productos</h1>
-          <p>Delicias y más</p>
+          <h1>| PRODUCTOS</h1>
         </div>
       </div>
-      <!-- Derecha -->
+
+      <!--Derecha-->
       <div class="Encabezado-derecha">
         <button class="btnVenta" type="button">
           <i class="fa-solid fa-plus"></i>
-          <span>Añadir venta</span>
+          <span>Agregar venta</span>
         </button>
-        <a href="./principal.html" id="btnCerrarSesion">
+
+        <a href="" id="btnCerrarSesion">
           <img src="Resources/Logo.png" alt="Logo" class="logoEmpresa" />
         </a>
       </div>
     </header>
+
     <div class="container-fluid mt-3">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-          <h1>Inventario de productos</h1>
+          <h1>INVENTARIO DE PRODUCTOS</h1>
           <p class="text-muted mb-0">
             Consulta y administra las existencias diarias de los productos.
           </p>
@@ -388,6 +399,7 @@
               </table>
             </div>
           </div>
+
           <!-- Pie con botón único unificado -->
           <div class="modal-botones">
             <button type="button" class="btnCancelar" data-bs-dismiss="modal">
@@ -397,59 +409,76 @@
         </div>
       </div>
     </div>
-    <!-- ========================================= -->
-    <!-- MODAL AGREGAR VENTA -->
-    <!-- ========================================= -->
+    
+     <!--MODAL AGREGAR VENTA-->
     <div class="modalVenta" id="modalVenta">
       <div class="modal-contenido">
-        <!-- Encabezado -->
+        <!--Encabezado-->
         <div class="venta-header">
-          <h2>🛒 AGREGAR VENTA</h2>
+          <h2><i class="fa-solid fa-cash-register"></i> AGREGAR VENTA</h2>
+
           <button type="button" class="cerrarModal" id="cerrarModal">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
-        <!-- Buscar producto -->
+
+        <!--Buscar producto-->
         <div class="grupoBusqueda">
           <i class="fa-solid fa-magnifying-glass iconoBuscar"></i>
+
           <input
             type="text"
             class="buscarProducto"
             placeholder="Buscar producto..." />
         </div>
-        <!-- Formulario -->
+
+        <!--Formulario-->
         <form class="formVenta">
           <div class="campo">
-            <label>Nombre</label>
-            <input type="text" readonly />
+            <label>NOMBRE</label>
+
+            <input type="text" />
           </div>
+
           <div class="campo">
-            <label>Cantidad</label>
+            <label>CANTIDAD</label>
+
             <input type="number" min="1" />
           </div>
+
           <div class="campo">
-            <label>Precio</label>
-            <input type="text" readonly />
+            <label>PRECIO</label>
+
+            <input type="text" />
           </div>
+
           <div class="campo">
-            <label>Total</label>
-            <input type="text" readonly />
+            <label>TOTAL</label>
+
+            <input type="text" />
           </div>
         </form>
-        <!-- Botones -->
+
+        <!--Botones-->
         <div class="modal-botones">
           <button type="button" class="btnCancelar" id="btnCancelar">
-            Cancelar
+            <i class="fa-solid fa-xmark"></i> Cancelar
           </button>
-          <button type="submit" class="btnGuardar">Guardar</button>
+
+          <button type="submit" class="btnGuardar">
+            <i class="fa-solid fa-check"></i> Guardar
+          </button>
+
         </div>
       </div>
     </div>
+
     <!-- Modal agregar producto -->
     <div id="contenedorModalAgregarProducto"></div>
 
     <!-- Modal editar producto -->
     <div id="contenedorModalEditarProducto"></div>
+
     <!-- ========================================= -->
     <!-- JAVASCRIPT -->
     <!-- ========================================= -->
@@ -488,6 +517,7 @@
         });
       });
     </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
