@@ -1,0 +1,124 @@
+<div
+  class="modal fade"
+  id="modalEditarUsuario"
+  tabindex="-1"
+  aria-labelledby="modalEditarUsuarioLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <!-- Encabezado -->
+      <div class="venta-header">
+        <h2 class="titulo-modal" id="modalEditarUsuarioLabel">
+          <i class="fa-solid fa-user-pen me-2"></i>
+          EDITAR USUARIO
+        </h2>
+
+        <button
+          type="button"
+          class="cerrarModal"
+          data-bs-dismiss="modal"
+          aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Formulario -->
+      <form class="formVenta" id="formEditarUsuario" novalidate>
+        <!-- Nombre de usuario -->
+        <div class="campo">
+          <label for="nombreUsuarioEditar"> Nombre de usuario </label>
+
+          <input
+            type="text"
+            id="nombreUsuarioEditar"
+            name="nombreUsuario"
+            maxlength="20"
+            autocomplete="username"
+            placeholder="Ingrese el nombre de usuario" />
+
+          <small class="error-msg" id="errorNombreUsuarioEditar"> </small>
+        </div>
+
+        <!-- Rol -->
+        <div class="campo">
+          <label for="rolUsuarioEditar"> Rol </label>
+
+          <select id="rolUsuarioEditar" name="rolUsuario">
+            <option value="" disabled>Seleccione un rol</option>
+          </select>
+
+          <small class="error-msg" id="errorRolUsuarioEditar"> </small>
+        </div>
+
+        <!-- Nueva contraseña -->
+        <div class="campo">
+          <label for="contrasenaUsuarioEditar"> Nueva contraseña </label>
+
+          <div class="password-container">
+            <input
+              type="password"
+              id="contrasenaUsuarioEditar"
+              name="contrasenaUsuario"
+              autocomplete="new-password"
+              placeholder="Ingrese la nueva contraseña" />
+
+            <button
+              type="button"
+              class="btnMostrarContrasena"
+              id="btnMostrarContrasenaEditar"
+              aria-label="Mostrar contraseña">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+
+          <small class="text-muted" id="ayudaContrasenaUsuarioEditar">
+            Deje este campo vacío si no desea cambiar la contraseña.
+          </small>
+
+          <small class="error-msg" id="errorContrasenaUsuarioEditar"> </small>
+        </div>
+
+        <!-- Confirmar nueva contraseña -->
+        <div class="campo">
+          <label for="confirmarContrasenaEditar">
+            Confirmar nueva contraseña
+          </label>
+
+          <div class="password-container">
+            <input
+              type="password"
+              id="confirmarContrasenaEditar"
+              name="confirmarContrasena"
+              autocomplete="new-password"
+              placeholder="Repita la nueva contraseña" />
+
+            <button
+              type="button"
+              class="btnMostrarContrasena"
+              id="btnMostrarConfirmarContrasenaEditar"
+              aria-label="Mostrar contraseña">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+
+          <small class="error-msg" id="errorConfirmarContrasenaEditar"> </small>
+        </div>
+
+        <!-- Error general -->
+        <small class="error-msg error-general" id="errorGeneralUsuarioEditar">
+        </small>
+      </form>
+
+      <!-- Botones -->
+      <div class="modal-botones">
+        <button type="button" class="btnGuardar" id="btnGuardarUsuarioEditar">
+          Guardar cambios
+        </button>
+
+        <button type="button" class="btnCancelar" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -33,13 +33,13 @@ const icono = togglePassword.querySelector("i");
 togglePassword.addEventListener("click", () => {
     if (password.type === "password") {
         password.type = "text";
-        icono.classList.remove("bi-eye");
-        icono.classList.add("bi-eye-slash");
+        icono.classList.remove("fa-eye");
+        icono.classList.add("fa-eye-slash");
         togglePassword.setAttribute("aria-label", "Ocultar contraseña");
     } else {
         password.type = "password";
-        icono.classList.remove("bi-eye-slash");
-        icono.classList.add("bi-eye");
+        icono.classList.remove("fa-eye-slash");
+        icono.classList.add("fa-eye");
         togglePassword.setAttribute("aria-label", "Mostrar contraseña");
     }
 });
