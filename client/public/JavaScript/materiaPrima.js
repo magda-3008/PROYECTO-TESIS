@@ -1,209 +1,168 @@
-let tabla = null;
-let productoSeleccionado = null;
+function cargarUnidadesMateriaPrima(datos) {
+    const select =
+        document.getElementById("filtroUnidadMedida");
+    if (!select) return;
+
+    // Limpiar las opciones existentes
+    select.innerHTML = `
+        <option value="">Unidad de medida</option>
+    `;
+
+    // Obtener unidades únicas
+    const unidades = [
+        ...new Set(
+            datos
+                .map(item => item.unidad_medida)
+                .filter(unidad => unidad)
+        )
+    ];
+    // Ordenar alfabéticamente
+    unidades.sort((a, b) =>
+        a.localeCompare(b)
+    );
+    // Crear opciones
+    unidades.forEach(unidad => {
+        const option =
+            document.createElement("option");
+        option.value = unidad;
+        option.textContent = unidad;
+        select.appendChild(option);
+
+    });
+}
+
+let tablaMD = null;
+let ingredienteSeleccionado = null;
 let usuarioActual = null;
 
-const productosInventario = {
-    endpoint: "/api/productos",
-    rowFormatter: function (row) {
+// configuración de vistas
+const vistas = {
+    inventarioMD: {
+        endpoint: "/api/materiaprima",
+        rowFormatter: function (row) {
 
-        const data = row.getData();
+            const data = row.getData();
 
-        const elemento = row.getElement();
+            const stockActual = Number(data.stock_actual_i);
+            const stockMinimo = Number(data.stock_minimo);
 
-        elemento.classList.remove(
-            "stock-normal",
-            "stock-bajo",
-            "stock-agotado",
-            "stock-no-controlado",
-        );
+            const elemento = row.getElement();
 
-        if (data.stock_actual === null) {
-            elemento.classList.add("stock-no-controlado");
-            return;
-        }
+            elemento.classList.remove(
+                "stock-normal",
+                "stock-bajo",
+                "stock-agotado"
+            );
 
-        const stockActual = Number(data.stock_actual);
-        const stockMinimo = Number(data.stock_minimo_p);
+            if (stockActual <= 0) {
 
-        if (stockActual <= 0) {
-            elemento.classList.add("stock-agotado");
+                elemento.classList.add("stock-agotado");
 
-        } else if (stockActual <= stockMinimo) {
-            elemento.classList.add("stock-bajo");
+            } else if (stockActual <= stockMinimo) {
 
-        } else {
-            elemento.classList.add("stock-normal");
-        }
-    },
-    columns: [
-        { title: "Nombre del producto", field: "nombre", frozen: true, width: 160, cssClass: "columna-texto-ajustable", headerWordWrap: true, headerTooltip: true },
-        { title: "Tipo", field: "tipo", hozAlign: "center", minWidth: 80 },
-        { title: "Precio de venta", field: "precio_venta", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
-        { title: "Costo de compra/producción", field: "costo", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
-        {
-            title: "Estado",
-            field: "estado",
-            hozAlign: "center",
-            minWidth: 80,
+                elemento.classList.add("stock-bajo");
 
-            formatter: function (cell) {
-                const valor = cell.getValue();
+            } else {
 
-                if (valor === "Activo") {
-                    return `<span class="text-success fw-semibold">Activo</span>`;
-                }
-                if (valor === "Inactivo") {
-                    return `<span class="text-danger fw-semibold">Inactivo</span>`;
-                }
-                return valor;
-            },
-            cellClick: async function (e, cell) {
-                // El Colaborador solamente puede consultar el estado.
-                if (usuarioActual?.rol !== "Administrador") {
-                    return;
-                }
-                e.preventDefault();
-                e.stopPropagation();
-
-                const estadoActual = cell.getValue();
-                const nuevoEstado = estadoActual === "Activo" ? "Inactivo" : "Activo";
-                const producto = cell.getRow().getData();
-
-                try {
-                    const respuesta = await fetch(
-                        `/api/productos/${producto.id_producto}`,
-                        {
-                            method: "PATCH",
-                            credentials: "include",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({
-                                estado: nuevoEstado,
-                            }),
-                        },
-                    );
-                    if (!respuesta.ok) {
-                        await manejarErrorRespuesta(
-                            respuesta,
-                            "No se pudo actualizar el estado del producto.",
-                        );
-                        return;
-                    }
-                    const datos = await respuesta.json();
-
-                    // Actualizar el estado visual de la tabla
-                    cell.setValue(nuevoEstado);
-
-                    // Avisar al resto de la aplicación que cambió el estado de un producto
-                    document.dispatchEvent(
-                        new CustomEvent("estadoProductoActualizado", {
-                            detail: {
-                                id_producto: producto.id_producto,
-                                estado: nuevoEstado,
-                            },
-                        }),
-                    );
-                } catch (error) {
-                    console.error("Error al actualizar el estado del producto:", error);
-                    Swal.fire({
-                        icon: "error",
-                        title: "No se pudo actualizar",
-                        text: error.message,
-                    });
-                }
-            },
+                elemento.classList.add("stock-normal");
+            }
         },
-        {
-            title: "Existencia actual", field: "stock_actual", hozAlign: "center", minWidth: 80, headerWordWrap: true, headerTooltip: true,
-            formatter: function (cell) {
-                const valor = cell.getValue();
+        columns: [
+            { title: "Insumo", field: "nombre", frozen: true, width: 160, cssClass: "columna-texto-ajustable", headerWordWrap: true, headerTooltip: true },
+            { title: "Costo de insumo", field: "costo_total_ingrediente", formatter: formatoMoneda, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
+            { title: "Unidad de medida", field: "unidad_medida", hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
+            { title: "Cantidad por presentación", field: "unidad_por_paquete", variableHeight: true, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
+            {
+                title: "Existencia actual", field: "stock_actual_i", hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true,
+                formatter: function (cell) {
+                    const data = cell.getRow().getData();
 
-                if (valor === null) {
-                    return "—";
+                    return formatearStockMateriaPrima(data);
                 }
-
-                const stock = Number(valor);
-
-                return Number.isNaN(stock) ? 0 : Math.floor(stock);
             },
-        },
-        {
-            title: "Acciones",
-            hozAlign: "center",
-            headerSort: false,
-            minWidth: 120,
-            formatter: function () {
-                let acciones = `
-                    <button class="btnAccion btnEntrada" title="Registrar entrada"> <i class="bi bi-cart-plus"></i> </button>
+            {
+                title: "Acciones", hozAlign: "center", headerSort: false, minWidth: 120,
+                formatter: function () {
+                    let acciones = `
+                    <button class="btnAccion btnEntrada" title="Registrar entrada">
+                        <i class="bi bi-cart-plus"></i>
+                    </button>
 
-                    <button class="btnAccion btnSalida" title="Registrar salida"> <i class="bi bi-cart-dash"></i> </button>
+                    <button class="btnAccion btnSalida" title="Registrar pérdida">
+                        <i class="bi bi-cart-dash"></i>
+                    </button>
 
-                    <button class="btnAccion btnHistorial" title="Ver historial"> <i class="bi bi-clock-history"></i> </button>
-
+                    <button class="btnAccion btnHistorial" title="Ver historial">
+                        <i class="bi bi-clock-history"></i>
+                    </button>
                 `;
 
-                // Solo el Administrador puede editar productos.
-                if (usuarioActual?.rol === "Administrador") {
-                    acciones += `
-                    <button class="btnAccion btnEditar" title="Editar producto"> <i class="bi bi-pencil"></i> </button>
+                    if (usuarioActual?.rol === "Administrador") {
+                        acciones += `
+                        <button class="btnAccion btnEditar" title="Editar insumo">
+                            <i class="bi bi-pencil"></i>
+                        </button>
                     `;
-                }
-                return `
+                    }
+
+                    return `
                     <div class="acciones-tabla">
                         ${acciones}
                     </div>
                 `;
-            },
-            cellClick: function (e, cell) {
-                const producto = cell.getRow().getData();
+                },
 
-                if (e.target.closest(".btnSalida")) {
-                    abrirModalSalida(producto);
-                    return;
-                }
+                cellClick: function (e, cell) {
+                    const ingrediente = cell.getRow().getData();
 
-                if (e.target.closest(".btnEntrada")) {
-                    abrirModalEntrada(producto);
-                    return;
-                }
-
-                if (e.target.closest(".btnHistorial")) {
-                    abrirHistorial(producto);
-                    return;
-                }
-
-                if (e.target.closest(".btnEditar")) {
-
-                    // Segunda protección a nivel de interfaz.
-                    if (usuarioActual?.rol !== "Administrador") {
+                    if (e.target.closest(".btnSalida")) {
+                        abrirModalSalidaMP(ingrediente);
                         return;
                     }
-                    abrirModalEditarProducto(producto, cell.getRow());
-                }
+
+                    if (e.target.closest(".btnEntrada")) {
+                        abrirModalEntradaMP(ingrediente);
+                        return;
+                    }
+
+                    if (e.target.closest(".btnHistorial")) {
+                        abrirHistorialMP(ingrediente);
+                    }
+
+                    if (e.target.closest(".btnEditar")) {
+                        if (usuarioActual?.rol !== "Administrador") {
+                            return;
+                        }
+
+                        abrirModalEditarMP(ingrediente, cell.getRow());
+                    }
+                },
             },
-        },
-    ],
+        ],
+    }
 };
 
-async function cargarVista() {
-    //usuarioActual = await //verificarSesionYRedirigir();
-    //
-    //    if (!usuarioActual) {
-    //        return;
-    //    }
+// cargar vista
+async function cargarVista(vista) {
+    usuarioActual = await verificarSesionYRedirigir();
 
-    const endpoint = productosInventario.endpoint;
-
-    // Elimina la tabla anterior si existe
-    if (tabla) {
-        tabla.destroy();
-        tabla = null;
+    if (!usuarioActual) {
+        return;
     }
 
-    crearFiltros();
+    const configuracion = vistas[vista];
+    const endpoint = configuracion.endpoint;
 
-    document.getElementById("tablaProductos").innerHTML = `
+    // Elimina la tabla anterior
+    if (tablaMD) {
+        tablaMD.destroy();
+        tablaMD = null;
+    }
+
+    crearFiltros(vista);
+
+    // Mostrar indicador de carga
+    document.getElementById("tablaMateriaP").innerHTML = `
         <div class="tabla-cargando">
             <div class="spinner-border text-info" role="status"></div>
             <p>Cargando información...</p>
@@ -216,43 +175,51 @@ async function cargarVista() {
         const respuesta = await fetch(endpoint, {
             credentials: "include",
         });
+
         if (!respuesta.ok) {
             if (respuesta.status === 401 || respuesta.status === 403) {
                 await manejarErrorRespuesta(
                     respuesta,
-                    "No se pudo acceder al inventario.",
+                    "No se pudo acceder al inventario de materias primas."
                 );
                 return;
             }
+
             throw new Error("No se pudieron obtener los datos.");
         }
+
         datos = await respuesta.json();
+
+        cargarUnidadesMateriaPrima(datos);
+
     } catch (error) {
         console.error(error);
-        document.getElementById("tablaProductos").innerHTML = `
+
+        document.getElementById("tablaMateriaP").innerHTML = `
             <div class="tabla-error">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 <h4>Error al cargar la información</h4>
                 <p>Verifica tu conexión o inténtalo nuevamente.</p>
-                <button class="btn btn-primary mt-3"
-                    onclick="cargarVista()">
+                <button class="btn btn-primary mt-3" onclick="cargarVista('${vista}')">
                     Reintentar
                 </button>
             </div>
         `;
+
         return;
     }
 
-    tabla = new Tabulator("#tablaProductos", {
+    tablaMD = new Tabulator("#tablaMateriaP", {
         data: datos,
         tooltipGenerationMode: "hover",
         tooltips: true,
-        index: "id_producto",
+        index: "id_ma",
         layout: "fitColumns",
         columnHeaderVertAlign: "middle",
         pagination: true,
         paginationSize: 30,
-        rowFormatter: productosInventario.rowFormatter,
+        rowFormatter: configuracion.rowFormatter,
+
         rowHeader: {
             formatter: "rownum",
             width: 40,
@@ -260,97 +227,129 @@ async function cargarVista() {
             headerSort: false,
             frozen: true,
         },
-        columns: productosInventario.columns,
+
+        columns: configuracion.columns,
         placeholder: "No se encontraron resultados",
     });
-    inicializarEventosFiltros();
+
+    inicializarEventosFiltros(vista);
 }
 
-function crearFiltros() {
+function crearFiltros(vista) {
     const panel = document.getElementById("panelFiltros");
 
-    panel.innerHTML = `
+    switch (vista) {
+        case "inventarioMD":
+            panel.innerHTML = `
         <h3>Filtrar por:</h3>
-        <div class="row g-2">
-            <div class="col-md-3">
-                <select id="filtroEstado" class="form-select">
-                    <option value="">Todos los estados</option>
-                    <option value="Activo">Activo</option>
-                    <option value="Inactivo">Inactivo</option>
-                </select>
-            </div>
 
-            <div class="col-md-3">
-                <select id="filtroStock" class="form-select">
-                    <option value="">Todas las existencias</option>
-                    <option value="0">Sin stock</option>
-                    <option value="bajo">Stock bajo</option>
-                    <option value="normal">Con stock</option>
-                    <option value="no-controla">No controla stock</option>
-                </select>
-            </div>
+        <div class="row g-2">
+
+          <div class="col-md-3">
+            <select id="filtroUnidadMedida" class="form-select">
+              <option value="">Unidad de medida</option>
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <select id="filtroStock" class="form-select">
+              <option value="">Todas las existencias</option>
+              <option value="0">Sin stock</option>
+              <option value="bajo">Stock bajo</option>
+              <option value="normal">Con stock</option>
+            </select>
+          </div>
+
         </div>
-    `;
+      `;
+            break;
+    }
 }
 
-function inicializarEventosFiltros() {
+function inicializarEventosFiltros(vista) {
     document
-        .getElementById("filtroEstado")
+        .getElementById("buscar")
+        .addEventListener("input", aplicarFiltros);
+    document
+        .getElementById("filtroUnidadMedida")
         .addEventListener("change", aplicarFiltros);
+    // document
+    //     .getElementById("filtroTipoInsumo")
+    //     .addEventListener("change", aplicarFiltros);
     document
         .getElementById("filtroStock")
         .addEventListener("change", aplicarFiltros);
 }
 
 function aplicarFiltros() {
-    if (!tabla) {
+    if (!tablaMD) {
         return;
     }
-    const texto = document.getElementById("buscar").value.toLowerCase();
-    tabla.setFilter(function (data) {
+
+    const texto = document
+        .getElementById("buscar")
+        .value
+        .toLowerCase()
+        .trim();
+
+    const unidad =
+        document.getElementById("filtroUnidadMedida")?.value ?? "";
+
+    const stock =
+        document.getElementById("filtroStock")?.value ?? "";
+
+
+    tablaMD.setFilter(function (data) {
+
         let coincide = true;
 
+        //Buscador por nombre
         if (texto) {
-            coincide = Object.values(data).some((valor) =>
-                String(valor).toLowerCase().includes(texto),
-            );
+            coincide = String(data.nombre || "")
+                .toLowerCase()
+                .includes(texto);
+
         }
 
-        const estado = document.getElementById("filtroEstado")?.value ?? "";
-        const stock = document.getElementById("filtroStock")?.value ?? "";
-        if (coincide && estado) {
-            coincide = data.estado === estado;
+        //Unidad de edida
+        if (coincide && unidad) {
+            coincide =
+                data.unidad_medida === unidad;
+
         }
 
-        if (coincide) {
+        //Stock
+        if (coincide && stock) {
+            const stockActual =
+                Number(data.stock_actual_i) || 0;
+
+            const stockMinimo =
+                Number(data.stock_minimo) || 1;
+
             switch (stock) {
                 case "0":
                     coincide =
-                        data.stock_actual !== null && Number(data.stock_actual) <= 0;
+                        stockActual === 0;
                     break;
+
                 case "bajo":
                     coincide =
-                        data.stock_actual !== null &&
-                        Number(data.stock_actual) > 0 &&
-                        Number(data.stock_actual) <= Number(data.stock_minimo_p);
+                        stockActual > 0 &&
+                        stockActual <= stockMinimo;
                     break;
+
                 case "normal":
                     coincide =
-                        data.stock_actual !== null &&
-                        Number(data.stock_actual) > Number(data.stock_minimo_p);
-                    break;
-                case "no-controla":
-                    coincide = data.stock_actual === null;
+                        stockActual > stockMinimo;
+
                     break;
             }
         }
         return coincide;
+
     });
 }
 
-const buscador = document.getElementById("buscar");
-buscador.addEventListener("input", aplicarFiltros);
-
-document.addEventListener("DOMContentLoaded", () => {
-    cargarVista();
+document.addEventListener("DOMContentLoaded", async () => {
+    cargarVista("inventarioMD");
 });
