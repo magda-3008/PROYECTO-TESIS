@@ -34,7 +34,7 @@
     <!--FONDO-->
     <div class="Fondo"></div>
 
-    <!--MENÚ LATERAL-->
+    <!-- MENÚ LATERAL -->
     <aside class="Menu-lateral" id="menuLateral">
       <nav>
         <div class="Seccion-menu">CONTROL DE INVENTARIOS</div>
@@ -62,6 +62,23 @@
           <i class="fa-solid fa-cash-register"></i>
           <span>Ventas</span>
         </a>
+
+        <!-- ADMINISTRACIÓN -->
+        <div id="menuAdministracion" style="display: none">
+          <hr />
+
+          <div class="Seccion-menu">ADMINISTRACIÓN</div>
+
+          <a href="usuarios.html" class="Item-menu">
+            <i class="fa-solid fa-users"></i>
+            <span>Usuarios</span>
+          </a>
+
+          <a href="respaldos.html" class="Item-menu">
+            <i class="fa-solid fa-database"></i>
+            <span>Respaldos</span>
+          </a>
+        </div>
       </nav>
     </aside>
 
@@ -478,11 +495,9 @@
     <!-- Modal editar producto -->
     <div id="contenedorModalEditarProducto"></div>
 
-    <!-- ========================================= -->
-    <!-- JAVASCRIPT -->
-    <!-- ========================================= -->
     <script>
       /* ========= Menú lateral ========= */
+
       const btnMenu = document.getElementById("btnMenu");
       const menuLateral = document.getElementById("menuLateral");
 
@@ -496,21 +511,51 @@
           }
         }, 300);
       });
+
+      /* ========= Menú de administración ========= */
+
+      async function configurarMenuAdministracion() {
+        const usuarioActual = await verificarSesionYRedirigir();
+
+        if (!usuarioActual) {
+          return;
+        }
+
+        const menuAdministracion =
+          document.getElementById("menuAdministracion");
+
+        if (!menuAdministracion) {
+          return;
+        }
+
+        if (usuarioActual.rol === "Administrador") {
+          menuAdministracion.style.display = "block";
+        }
+      }
+
+      configurarMenuAdministracion();
+
       /* ========= Modal Agregar Venta ========= */
+
       const modal = document.getElementById("modalVenta");
       const btnVenta = document.querySelector(".btnVenta");
       const cerrarModal = document.getElementById("cerrarModal");
       const btnCancelar = document.getElementById("btnCancelar");
+
       btnVenta.addEventListener("click", () => {
         modal.classList.add("activo");
       });
+
       cerrarModal.addEventListener("click", () => {
         modal.classList.remove("activo");
       });
+
       btnCancelar.addEventListener("click", (event) => {
         event.preventDefault();
+
         document.querySelector(".buscarProducto").value = "";
         document.querySelector(".formVenta").reset();
+
         document.querySelectorAll(".campo input[readonly]").forEach((input) => {
           input.value = "";
         });
