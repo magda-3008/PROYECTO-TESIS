@@ -135,9 +135,9 @@ const productosInventario = {
       minWidth: 120,
       formatter: function () {
         let acciones = `
-                    <button class="btnAccion btnEntrada" title="Registrar entrada"> <i class="fa-sharp fa-solid fa-cart-plus"></i> </button>
+                    <button class="btnAccion btnEntrada" title="Registrar entrada"> <i class="fa-solid fa-circle-arrow-up"></i> </button>
 
-                    <button class="btnAccion btnSalida" title="Registrar salida"> <i class="fa-solid fa-cart-minus"></i> </button>
+                    <button class="btnAccion btnSalida" title="Registrar salida"> <i class="fa-solid fa-circle-arrow-down"></i> </button>
 
                     <button class="btnAccion btnHistorial" title="Ver historial"> <i class="fa-solid fa-clock"></i> </button>
 
