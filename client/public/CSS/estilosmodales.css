@@ -30,6 +30,54 @@
 	border-color: #61bcd7;
 	box-shadow: none;
 }
+
+/* =========================================
+   CAMPOS GENERALES DE LOS MODALES
+   ========================================= */
+
+.campo {
+    display: flex;
+    flex-direction: column;
+}
+
+.campo label {
+    margin-bottom: 6px;
+    color: #4a4a4a;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #d9d9d9;
+    border-radius: 12px;
+    outline: none;
+    font-size: 15px;
+    color: #444;
+    transition: .25s;
+    background-color: #fff;
+}
+
+.campo input,
+.campo select {
+    height: 46px;
+}
+
+.campo textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+    border-color: #61bcd7;
+    box-shadow: 0 0 0 3px rgba(97, 188, 215, .15);
+}
+
 /* =========================================================
    MODAL HISTORIAL
    ========================================================= */
