@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../config/db");
+const crypto = require("crypto");
 const {
     verificarSesion,
     verificarAdministrador
@@ -82,6 +83,165 @@ router.post("/login", async (req, res) => {
         console.error("Error en la base de datos:", error);
         return res.status(500).json({
             mensaje: "Error interno del servidor"
+        });
+    }
+});
+
+router.post("/recuperar", async (req, res) => {
+
+    const { correo } = req.body;
+
+    // Validación básica
+    if (typeof correo !== "string") {
+        return res.status(400).json({
+            mensaje: "Debe proporcionar un correo electrónico válido."
+        });
+    }
+
+    const correoNormalizado = correo.trim().toLowerCase();
+
+    if (
+        !correoNormalizado ||
+        correoNormalizado.length > 254 ||
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoNormalizado)
+    ) {
+        return res.status(400).json({
+            mensaje: "Debe proporcionar un correo electrónico válido."
+        });
+    }
+
+    try {
+
+        // Buscar el usuario mediante su correo
+        const resultado = await pool.query(
+            `
+            SELECT id_usuario, correo
+            FROM usuarios
+            WHERE correo = $1
+            `,
+            [correoNormalizado]
+        );
+
+        if (resultado.rows.length === 0) {
+            return res.status(200).json({
+                mensaje:
+                    "Si el correo está registrado, recibirá un enlace para restablecer su contraseña."
+            });
+        }
+
+        const usuario = resultado.rows[0];
+
+        // Generar token aleatorio seguro
+        const token = crypto.randomBytes(32).toString("hex");
+
+        // El token será válido durante 30 minutos
+        const expiracion = new Date(
+            Date.now() + 30 * 60 * 1000
+        );
+
+        // Guardar token y fecha de expiración
+        await pool.query(
+            `
+            UPDATE usuarios
+            SET
+                token_recuperacion = $1,
+                expiracion_token = $2
+            WHERE id_usuario = $3
+            `,
+            [token, expiracion, usuario.id_usuario]
+        );
+
+        // Construir enlace de recuperación
+        const urlSistema = process.env.URL_SISTEMA.replace(/\/$/, "");
+
+        const enlace = `${urlSistema}/restablecer-contrasena.html?token=${encodeURIComponent(token)}`;
+
+        // Enviar correo
+        const { data, error } = await resend.emails.send({
+            from: "Pa'TuBoca <onboarding@resend.dev>",
+            to: [usuario.correo],
+            subject: "Restablecimiento de contraseña - Pa'TuBoca",
+            html: `
+                <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+                    <h2>Restablecimiento de contraseña</h2>
+
+                    <p>
+                        Recibimos una solicitud para restablecer la contraseña
+                        de tu cuenta en Pa'TuBoca.
+                    </p>
+
+                    <p>
+                        Haz clic en el siguiente botón para establecer una
+                        nueva contraseña:
+                    </p>
+
+                    <p>
+                        <a
+                            href="${enlace}"
+                            style="
+                                display: inline-block;
+                                padding: 12px 20px;
+                                background-color: #1a81a0;
+                                color: white;
+                                text-decoration: none;
+                                border-radius: 6px;
+                            "
+                        >
+                            Restablecer contraseña
+                        </a>
+                    </p>
+
+                    <p>
+                        Este enlace será válido durante <strong>30 minutos</strong>.
+                    </p>
+
+                    <p>
+                        Si no solicitaste restablecer tu contraseña,
+                        puedes ignorar este correo.
+                    </p>
+                </div>
+            `
+        });
+
+        if (error) {
+
+            console.error("Error de Resend:", error);
+
+            // Si el correo no pudo enviarse, invalidamos el token
+            await pool.query(
+                `
+                UPDATE usuarios
+                SET
+                    token_recuperacion = NULL,
+                    expiracion_token = NULL
+                WHERE id_usuario = $1
+                `,
+                [usuario.id_usuario]
+            );
+
+            return res.status(200).json({
+                mensaje:
+                    "Si el correo está registrado, recibirá un enlace para restablecer su contraseña."
+            });
+        }
+
+        console.log("Correo de recuperación enviado:", data.id);
+
+        return res.status(200).json({
+            mensaje:
+                "Si el correo está registrado, recibirá un enlace para restablecer su contraseña."
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Error en la recuperación de contraseña:",
+            error
+        );
+
+        return res.status(500).json({
+            mensaje:
+                "No se pudo procesar la solicitud. Intente nuevamente."
         });
     }
 });
