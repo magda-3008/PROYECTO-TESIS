@@ -171,49 +171,48 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
         } = await Swal.fire({
             title: "Nueva contraseña",
             html: `
-        <div class="password-container">
+    <div class="password-container password-recuperacion">
 
-            <input
-                type="password"
-                id="nuevaContrasena"
-                class="swal2-input"
-                placeholder="Nueva contraseña"
-                autocomplete="new-password"
-            >
+        <input
+            type="password"
+            id="nuevaContrasena"
+            class="swal2-input"
+            placeholder="Nueva contraseña"
+            autocomplete="new-password"
+        >
 
-                <button
-                    type="button"
-                    id="toggleNuevaContrasena"
-                    class="btn-ojo"
-                    aria-label="Mostrar contraseña"
-                >
-                    <i class="fa-solid fa-eye"></i>
-                </button>
+        <button
+            type="button"
+            id="toggleNuevaContrasena"
+            class="btn-ojo"
+            aria-label="Mostrar contraseña"
+        >
+            <i class="fa-solid fa-eye"></i>
+        </button>
 
-        </div>
+    </div>
 
+    <div class="password-container password-recuperacion">
 
-        <div class="password-container">
+        <input
+            type="password"
+            id="confirmarContrasena"
+            class="swal2-input"
+            placeholder="Confirmar contraseña"
+            autocomplete="new-password"
+        >
 
-            <input
-                type="password"
-                id="confirmarContrasena"
-                class="swal2-input"
-                placeholder="Confirmar contraseña"
-                autocomplete="new-password"
-            >
+        <button
+            type="button"
+            id="toggleConfirmarContrasena"
+            class="btn-ojo"
+            aria-label="Mostrar contraseña"
+        >
+            <i class="fa-solid fa-eye"></i>
+        </button>
 
-                <button
-                    type="button"
-                    id="toggleConfirmarContrasena"
-                    class="btn-ojo"
-                    aria-label="Mostrar contraseña"
-                >
-                    <i class="fa-solid fa-eye"></i>
-                </button>
-
-        </div>
-        `,
+    </div>
+`,
             focusConfirm: false,
             showCancelButton: true,
             reverseButtons: true,

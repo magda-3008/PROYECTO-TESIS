@@ -194,3 +194,18 @@ display: inline-block;
     text-decoration: underline;
     cursor: pointer;
 }
+
+/* ==========================================
+   CAMPOS DE CONTRASEÑA - RECUPERACIÓN
+   ========================================== */
+
+.password-recuperacion {
+    width: 250px;
+    margin: 0 auto 10px;
+}
+
+.password-recuperacion .swal2-input {
+    width: 100%;
+    margin: 0;
+    padding-right: 45px;
+}
