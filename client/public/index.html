@@ -41,6 +41,7 @@
 
         <div class="Titulo-caja">
           <label for="password">CONTRASEÑA</label>
+
           <div class="password-container">
             <input
               type="password"
@@ -60,12 +61,19 @@
 
         <p id="mensajeLogin" class="mensaje-login"></p>
 
-        <!-- Botón de inicio de sesión -->
         <div class="Redondo">
           <button type="submit" class="btn-login">Iniciar sesión</button>
         </div>
       </form>
+
+      <div class="recuperacion-login">
+        <button type="button" id="btnRecuperarContrasena">
+          ¿Olvidaste tu contraseña?
+        </button>
+      </div>
     </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="./JavaScript/login.js"></script>
   </body>
