@@ -18,11 +18,6 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
         });
         const resultado = await respuesta.json();
         if (respuesta.ok) {
-            /*
-             * Si el backend devuelve una clave de recuperación,
-             * significa que es la primera vez que este Administrador
-             * inicia sesión y todavía no tenía una clave.
-             */
             if (resultado.clave_recuperacion) {
                 await Swal.fire({
                     icon: "success",
@@ -80,35 +75,32 @@ togglePassword.addEventListener("click", () => {
    RECUPERACIÓN DE CONTRASEÑA
    ========================================================= */
 document.getElementById("btnRecuperarContrasena").addEventListener("click", async () => {
-    /* =====================================================
-       PASO 1
-       Verificar usuario + clave de recuperación
-       ===================================================== */
+
     const {
         value: datos
     } = await Swal.fire({
         title: "Recuperar contraseña",
         html: `
-                <input
-                    type="text"
-                    id="nombreUsuarioRecuperacion"
-                    class="swal2-input"
-                    placeholder="Nombre de usuario"
-                    autocomplete="username"
-                >
+    < input
+        type = "text"
+        id = "nombreUsuarioRecuperacion"
+        class="swal2-input"
+        placeholder = "Nombre de usuario"
+        autocomplete = "username"
+    >
 
-                <input
-                    type="text"
-                    id="claveRecuperacion"
-                    class="swal2-input"
-                    placeholder="Clave de recuperación"
-                    autocomplete="off"
-                >
-            `,
+    <input
+        type="text"
+        id="claveRecuperacion"
+        class="swal2-input"
+        placeholder="Clave de recuperación"
+        autocomplete="off"
+    >
+        `,
         focusConfirm: false,
-        confirmButtonText: "Continuar",
         showCancelButton: true,
         cancelButtonText: "Cancelar",
+        confirmButtonText: "Continuar",
         allowOutsideClick: false,
         preConfirm: () => {
             const nombreUsuario = document.getElementById("nombreUsuarioRecuperacion").value.trim();
@@ -123,16 +115,11 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
             };
         }
     });
-    /*
-     * Si el usuario presionó "Cancelar",
-     * no continuamos con el proceso.
-     */
+
     if (!datos) {
         return;
     }
-    /* =====================================================
-       ENVIAR DATOS AL SERVIDOR
-       ===================================================== */
+
     try {
         const respuesta = await fetch("/api/loguser/recuperacion/verificar", {
             method: "POST",
@@ -143,9 +130,7 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
             body: JSON.stringify(datos)
         });
         const resultado = await respuesta.json();
-        /* =================================================
-           CLAVE INCORRECTA
-           ================================================= */
+
         if (!respuesta.ok) {
             await Swal.fire({
                 icon: "error",
@@ -155,36 +140,100 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
             });
             return;
         }
-        /* =================================================
-           PASO 2
-           ESTABLECER NUEVA CONTRASEÑA
-           ================================================= */
+
         const {
             value: contrasena
         } = await Swal.fire({
             title: "Nueva contraseña",
             html: `
-                    <input
-                        type="password"
-                        id="nuevaContrasena"
-                        class="swal2-input"
-                        placeholder="Nueva contraseña"
-                        autocomplete="new-password"
-                    >
+        <div class="password-container">
 
-                    <input
-                        type="password"
-                        id="confirmarContrasena"
-                        class="swal2-input"
-                        placeholder="Confirmar contraseña"
-                        autocomplete="new-password"
-                    >
-                `,
+            <input
+                type="password"
+                id="nuevaContrasena"
+                class="swal2-input"
+                placeholder="Nueva contraseña"
+                autocomplete="new-password"
+            >
+
+                <button
+                    type="button"
+                    id="toggleNuevaContrasena"
+                    class="btn-ojo"
+                    aria-label="Mostrar contraseña"
+                >
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+
+        </div>
+
+
+        <div class="password-container">
+
+            <input
+                type="password"
+                id="confirmarContrasena"
+                class="swal2-input"
+                placeholder="Confirmar contraseña"
+                autocomplete="new-password"
+            >
+
+                <button
+                    type="button"
+                    id="toggleConfirmarContrasena"
+                    class="btn-ojo"
+                    aria-label="Mostrar contraseña"
+                >
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+
+        </div>
+        `,
             focusConfirm: false,
-            confirmButtonText: "Cambiar contraseña",
             showCancelButton: true,
             cancelButtonText: "Cancelar",
+            confirmButtonText: "Cambiar contraseña",
             allowOutsideClick: false,
+
+            didOpen: () => {
+                const nuevaContrasena = document.getElementById("nuevaContrasena");
+                const toggleNuevaContrasena = document.getElementById("toggleNuevaContrasena");
+                const iconoNueva = toggleNuevaContrasena.querySelector("i");
+                const confirmarContrasena = document.getElementById("confirmarContrasena");
+                const toggleConfirmarContrasena = document.getElementById("toggleConfirmarContrasena");
+                const iconoConfirmar = toggleConfirmarContrasena.querySelector("i");
+
+                toggleNuevaContrasena.addEventListener("click",
+                    () => {
+                        if (nuevaContrasena.type === "password") {
+                            nuevaContrasena.type = "text";
+                            iconoNueva.classList.remove("fa-eye");
+                            iconoNueva.classList.add("fa-eye-slash");
+                            toggleNuevaContrasena.setAttribute("aria-label", "Ocultar contraseña");
+                        } else {
+                            nuevaContrasena.type = "password";
+                            iconoNueva.classList.remove("fa-eye-slash");
+                            iconoNueva.classList.add("fa-eye");
+                            toggleNuevaContrasena.setAttribute("aria-label", "Mostrar contraseña");
+                        }
+                    });
+
+                toggleConfirmarContrasena.addEventListener("click",
+                    () => {
+                        if (confirmarContrasena.type === "password") {
+                            confirmarContrasena.type = "text";
+                            iconoConfirmar.classList.remove("fa-eye");
+                            iconoConfirmar.classList.add("fa-eye-slash");
+                            toggleConfirmarContrasena.setAttribute("aria-label", "Ocultar contraseña");
+                        } else {
+                            confirmarContrasena.type = "password";
+                            iconoConfirmar.classList.remove("fa-eye-slash");
+                            iconoConfirmar.classList.add("fa-eye");
+                            toggleConfirmarContrasena.setAttribute("aria-label", "Mostrar contraseña");
+                        }
+                    });
+            },
+
             preConfirm: () => {
                 const nuevaContrasena = document.getElementById("nuevaContrasena").value;
                 const confirmarContrasena = document.getElementById("confirmarContrasena").value;
@@ -199,16 +248,11 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
                 return nuevaContrasena;
             }
         });
-        /*
-         * Si el usuario cancela el cambio de contraseña,
-         * terminamos el proceso.
-         */
+
         if (!contrasena) {
             return;
         }
-        /* =================================================
-           CAMBIAR CONTRASEÑA
-           ================================================= */
+
         const respuestaRestablecer = await fetch("/api/loguser/recuperacion/restablecer", {
             method: "POST",
             credentials: "include",
@@ -220,9 +264,7 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
             })
         });
         const resultadoRestablecer = await respuestaRestablecer.json();
-        /* =================================================
-           ERROR AL CAMBIAR CONTRASEÑA
-           ================================================= */
+
         if (!respuestaRestablecer.ok) {
             await Swal.fire({
                 icon: "error",
@@ -232,40 +274,35 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
             });
             return;
         }
-        /* =================================================
-           PASO 3
-           MOSTRAR NUEVA CLAVE DE RECUPERACIÓN
-           ================================================= */
+
         await Swal.fire({
             icon: "success",
             title: "Contraseña actualizada",
             html: `
-                    <p>
-                        Tu contraseña se cambió correctamente.
-                    </p>
+        <p>
+            Tu contraseña se cambió correctamente.
+        </p>
 
-                    <p class="mb-2">
-                        Tu nueva clave de recuperación es:
-                    </p>
+        <p class="mb-2">
+            Tu nueva clave de recuperación es:
+        </p>
 
-                    <div class="alert alert-warning">
-                        <strong>
-                            ${resultadoRestablecer.clave_recuperacion}
-                        </strong>
-                    </div>
+        <div class="alert alert-warning">
+            <strong>
+                ${resultadoRestablecer.clave_recuperacion}
+            </strong>
+        </div>
 
-                    <p class="text-muted small mb-0">
-                        Guárdala en un lugar seguro.
-                        Esta clave se mostrará solamente una vez.
-                    </p>
-                `,
+        <p class="text-muted small mb-0">
+            Guárdala en un lugar seguro.
+            Esta clave se mostrará solamente una vez.
+        </p>
+        `,
             confirmButtonText: "Continuar",
             allowOutsideClick: false,
             allowEscapeKey: false
         });
-        /* =================================================
-           VOLVER AL LOGIN
-           ================================================= */
+
         window.location.href = "index.html";
     } catch (error) {
         console.error("Error durante la recuperación:", error);

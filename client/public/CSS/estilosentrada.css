@@ -185,3 +185,12 @@ display: inline-block;
 		font-size: 15px;
 	}
 }
+
+#btnRecuperarContrasena {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #1a81a0;
+    text-decoration: underline;
+    cursor: pointer;
+}
