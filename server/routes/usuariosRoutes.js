@@ -778,13 +778,13 @@ router.get("/prueba-brevo", async (req, res) => {
                 method: "POST",
                 headers: {
                     "accept": "application/json",
-                    "api-key": process.env.BREVO_API_KEY,
+                    "api-key": process.env.PATUBOCA_EMAIL,
                     "content-type": "application/json"
                 },
                 body: JSON.stringify({
                     sender: {
                         name: "Pa'TuBoca",
-                        email: process.env.PATUBOCA_EMAIL
+                        email: process.env.BREVO_EMAIL_REMITENTE
                     },
                     to: [
                         {
