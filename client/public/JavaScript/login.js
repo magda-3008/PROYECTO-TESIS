@@ -79,36 +79,61 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
     const {
         value: datos
     } = await Swal.fire({
-        title: "Recuperar contraseña",
-        html: `
-    < input
-        type = "text"
-        id = "nombreUsuarioRecuperacion"
-        class="swal2-input"
-        placeholder = "Nombre de usuario"
-        autocomplete = "username"
-    >
 
-    <input
-        type="text"
-        id="claveRecuperacion"
-        class="swal2-input"
-        placeholder="Clave de recuperación"
-        autocomplete="off"
-    >
-        `,
+        title: "Recuperar contraseña",
+
+        html: `
+        <input
+            type="text"
+            id="nombreUsuarioRecuperacion"
+            class="swal2-input"
+            placeholder="Nombre de usuario"
+            autocomplete="username"
+        >
+
+        <input
+            type="text"
+            id="claveRecuperacion"
+            class="swal2-input"
+            placeholder="Clave de recuperación"
+            autocomplete="off"
+        >
+    `,
+
         focusConfirm: false,
+
+        confirmButtonText: "Continuar",
+
         showCancelButton: true,
         cancelButtonText: "Cancelar",
-        confirmButtonText: "Continuar",
+
+        reverseButtons: true,
+
         allowOutsideClick: false,
+
         preConfirm: () => {
-            const nombreUsuario = document.getElementById("nombreUsuarioRecuperacion").value.trim();
-            const claveRecuperacion = document.getElementById("claveRecuperacion").value.trim();
+
+            const nombreUsuario =
+                document
+                    .getElementById("nombreUsuarioRecuperacion")
+                    .value
+                    .trim();
+
+            const claveRecuperacion =
+                document
+                    .getElementById("claveRecuperacion")
+                    .value
+                    .trim();
+
             if (!nombreUsuario || !claveRecuperacion) {
-                Swal.showValidationMessage("Debe ingresar el nombre de usuario y la clave de recuperación.");
+
+                Swal.showValidationMessage(
+                    "Debe ingresar el nombre de usuario y la clave de recuperación."
+                );
+
                 return false;
             }
+
             return {
                 nombre_usuario: nombreUsuario,
                 clave_recuperacion: claveRecuperacion
@@ -191,6 +216,7 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
         `,
             focusConfirm: false,
             showCancelButton: true,
+            reverseButtons: true,
             cancelButtonText: "Cancelar",
             confirmButtonText: "Cambiar contraseña",
             allowOutsideClick: false,
