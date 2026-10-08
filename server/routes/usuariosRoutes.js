@@ -87,166 +87,166 @@ router.post("/login", async (req, res) => {
     }
 });
 
-router.post("/recuperar", async (req, res) => {
+// router.post("/recuperar", async (req, res) => {
 
-    const { correo } = req.body;
+//     const { correo } = req.body;
 
-    // Validar que se haya enviado un correo
-    if (typeof correo !== "string") {
-        return res.status(400).json({
-            mensaje: "Debe proporcionar un correo electrónico válido."
-        });
-    }
+//     // Validar que se haya enviado un correo
+//     if (typeof correo !== "string") {
+//         return res.status(400).json({
+//             mensaje: "Debe proporcionar un correo electrónico válido."
+//         });
+//     }
 
-    const correoNormalizado = correo.trim().toLowerCase();
+//     const correoNormalizado = correo.trim().toLowerCase();
 
-    // Validar formato y longitud del correo
-    if (
-        !correoNormalizado ||
-        correoNormalizado.length > 254 ||
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoNormalizado)
-    ) {
-        return res.status(400).json({
-            mensaje: "Debe proporcionar un correo electrónico válido."
-        });
-    }
+//     // Validar formato y longitud del correo
+//     if (
+//         !correoNormalizado ||
+//         correoNormalizado.length > 254 ||
+//         !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoNormalizado)
+//     ) {
+//         return res.status(400).json({
+//             mensaje: "Debe proporcionar un correo electrónico válido."
+//         });
+//     }
 
-    try {
+//     try {
 
-        // Buscar el usuario por su correo
-        const resultado = await pool.query(
-            `
-            SELECT id_usuario, correo
-            FROM usuarios
-            WHERE correo = $1
-            `,
-            [correoNormalizado]
-        );
+//         // Buscar el usuario por su correo
+//         const resultado = await pool.query(
+//             `
+//             SELECT id_usuario, correo
+//             FROM usuarios
+//             WHERE correo = $1
+//             `,
+//             [correoNormalizado]
+//         );
 
-        if (resultado.rows.length === 0) {
-            return res.status(200).json({
-                mensaje:
-                    "Si el correo está registrado, recibirá un código de recuperación."
-            });
-        }
+//         if (resultado.rows.length === 0) {
+//             return res.status(200).json({
+//                 mensaje:
+//                     "Si el correo está registrado, recibirá un código de recuperación."
+//             });
+//         }
 
-        const usuario = resultado.rows[0];
+//         const usuario = resultado.rows[0];
 
-        const codigo = crypto.randomInt(10000, 100000).toString();
+//         const codigo = crypto.randomInt(10000, 100000).toString();
 
-        // El código será válido durante 30 minutos
-        const expiracion = new Date(
-            Date.now() + 30 * 60 * 1000
-        );
+//         // El código será válido durante 30 minutos
+//         const expiracion = new Date(
+//             Date.now() + 30 * 60 * 1000
+//         );
 
-        // Guardar código y fecha de expiración
-        await pool.query(
-            `
-            UPDATE usuarios
-            SET
-                token_recuperacion = $1,
-                expiracion_token = $2
-            WHERE id_usuario = $3
-            `,
-            [codigo, expiracion, usuario.id_usuario]
-        );
+//         // Guardar código y fecha de expiración
+//         await pool.query(
+//             `
+//             UPDATE usuarios
+//             SET
+//                 token_recuperacion = $1,
+//                 expiracion_token = $2
+//             WHERE id_usuario = $3
+//             `,
+//             [codigo, expiracion, usuario.id_usuario]
+//         );
 
-        // Enviar código mediante Resend
-        const { data, error } = await resend.emails.send({
-            from: "Pa'TuBoca <onboarding@resend.dev>",
-            to: [usuario.correo],
-            subject: "Código de recuperación - Pa'TuBoca",
-            html: `
-                <div style="
-                    font-family: Arial, sans-serif;
-                    line-height: 1.6;
-                    max-width: 600px;
-                    margin: 0 auto;
-                ">
+//         // Enviar código mediante Resend
+//         const { data, error } = await resend.emails.send({
+//             from: "Pa'TuBoca <onboarding@resend.dev>",
+//             to: [usuario.correo],
+//             subject: "Código de recuperación - Pa'TuBoca",
+//             html: `
+//                 <div style="
+//                     font-family: Arial, sans-serif;
+//                     line-height: 1.6;
+//                     max-width: 600px;
+//                     margin: 0 auto;
+//                 ">
 
-                    <h2>Recuperación de contraseña</h2>
+//                     <h2>Recuperación de contraseña</h2>
 
-                    <p>
-                        Recibimos una solicitud para restablecer la contraseña
-                        de tu cuenta en Pa'TuBoca.
-                    </p>
+//                     <p>
+//                         Recibimos una solicitud para restablecer la contraseña
+//                         de tu cuenta en Pa'TuBoca.
+//                     </p>
 
-                    <p>
-                        Tu código de recuperación es:
-                    </p>
+//                     <p>
+//                         Tu código de recuperación es:
+//                     </p>
 
-                    <div style="
-                        font-size: 32px;
-                        font-weight: bold;
-                        letter-spacing: 8px;
-                        text-align: center;
-                        margin: 25px 0;
-                    ">
-                        ${codigo}
-                    </div>
+//                     <div style="
+//                         font-size: 32px;
+//                         font-weight: bold;
+//                         letter-spacing: 8px;
+//                         text-align: center;
+//                         margin: 25px 0;
+//                     ">
+//                         ${codigo}
+//                     </div>
 
-                    <p>
-                        Ingresa este código en el formulario de recuperación
-                        de contraseña del sistema.
-                    </p>
+//                     <p>
+//                         Ingresa este código en el formulario de recuperación
+//                         de contraseña del sistema.
+//                     </p>
 
-                    <p>
-                        El código será válido durante
-                        <strong>30 minutos</strong>.
-                    </p>
+//                     <p>
+//                         El código será válido durante
+//                         <strong>30 minutos</strong>.
+//                     </p>
 
-                    <p>
-                        Si no solicitaste restablecer tu contraseña,
-                        puedes ignorar este correo.
-                    </p>
+//                     <p>
+//                         Si no solicitaste restablecer tu contraseña,
+//                         puedes ignorar este correo.
+//                     </p>
 
-                </div>
-            `
-        });
+//                 </div>
+//             `
+//         });
 
-        // Si Resend devuelve un error
-        if (error) {
+//         // Si Resend devuelve un error
+//         if (error) {
 
-            console.error("Error de Resend:", error);
+//             console.error("Error de Resend:", error);
 
-            // Invalidar el código que ya no pudo enviarse
-            await pool.query(
-                `
-                UPDATE usuarios
-                SET
-                    token_recuperacion = NULL,
-                    expiracion_token = NULL
-                WHERE id_usuario = $1
-                `,
-                [usuario.id_usuario]
-            );
+//             // Invalidar el código que ya no pudo enviarse
+//             await pool.query(
+//                 `
+//                 UPDATE usuarios
+//                 SET
+//                     token_recuperacion = NULL,
+//                     expiracion_token = NULL
+//                 WHERE id_usuario = $1
+//                 `,
+//                 [usuario.id_usuario]
+//             );
 
-            return res.status(200).json({
-                mensaje:
-                    "Si el correo está registrado, recibirá un código de recuperación."
-            });
-        }
+//             return res.status(200).json({
+//                 mensaje:
+//                     "Si el correo está registrado, recibirá un código de recuperación."
+//             });
+//         }
 
-        console.log("Correo de recuperación enviado:", data.id);
+//         console.log("Correo de recuperación enviado:", data.id);
 
-        return res.status(200).json({
-            mensaje:
-                "Si el correo está registrado, recibirá un código de recuperación."
-        });
+//         return res.status(200).json({
+//             mensaje:
+//                 "Si el correo está registrado, recibirá un código de recuperación."
+//         });
 
-    } catch (error) {
+//     } catch (error) {
 
-        console.error(
-            "Error en la recuperación de contraseña:",
-            error
-        );
+//         console.error(
+//             "Error en la recuperación de contraseña:",
+//             error
+//         );
 
-        return res.status(500).json({
-            mensaje:
-                "No se pudo procesar la solicitud. Intente nuevamente."
-        });
-    }
-});
+//         return res.status(500).json({
+//             mensaje:
+//                 "No se pudo procesar la solicitud. Intente nuevamente."
+//         });
+//     }
+// });
 
 router.get("/", verificarSesion, verificarAdministrador, async (req, res) => {
     try {
@@ -769,54 +769,72 @@ router.delete("/:id", verificarSesion, verificarAdministrador, async (req, res) 
     }
 });
 
-router.get("/prueba-correo", async (req, res) => {
-
+router.get("/prueba-brevo", async (req, res) => {
     try {
 
-        const { data, error } = await resend.emails.send({
-            from: "Pa'TuBoca <onboarding@resend.dev>",
-            to: ["magdaverocas@gmail.com"],
-            subject: "Prueba de correo - Pa'TuBoca",
-            html: `
-                <h2>Prueba de correo</h2>
+        const respuesta = await fetch(
+            "https://api.brevo.com/v3/smtp/email",
+            {
+                method: "POST",
+                headers: {
+                    "accept": "application/json",
+                    "api-key": process.env.BREVO_API_KEY,
+                    "content-type": "application/json"
+                },
+                body: JSON.stringify({
+                    sender: {
+                        name: "Pa'TuBoca",
+                        email: process.env.PATUBOCA_EMAIL
+                    },
+                    to: [
+                        {
+                            email: "loquitanecia@gmail.com"
+                        }
+                    ],
+                    subject: "Prueba de correo - Pa'TuBoca",
+                    htmlContent: `
+                        <h2>Prueba de correo</h2>
 
-                <p>
-                    Este es un correo de prueba enviado
-                    desde el sistema Pa'TuBoca.
-                </p>
+                        <p>
+                            Este correo fue enviado desde Pa'TuBoca
+                            utilizando Brevo.
+                        </p>
 
-                <p>
-                    Si recibiste este mensaje,
-                    la configuración de correo funciona correctamente.
-                </p>
-            `
-        });
+                        <p>
+                            Si recibiste este mensaje, la configuración
+                            de correo funciona correctamente. :D
+                        </p>
+                    `
+                })
+            }
+        );
 
-        if (error) {
+        const resultado = await respuesta.json();
 
-            console.error("Error de Resend:", error);
+        if (!respuesta.ok) {
+            console.error("Error de Brevo:", resultado);
 
             return res.status(500).json({
-                mensaje: "No se pudo enviar el correo."
+                mensaje: "Brevo rechazó el envío.",
+                error: resultado
             });
-
         }
+
+        console.log("Correo enviado por Brevo:", resultado);
 
         return res.status(200).json({
             mensaje: "Correo enviado correctamente.",
-            id: data.id
+            resultado
         });
 
     } catch (error) {
 
-        console.error("Error al enviar correo:", error);
+        console.error("Error al conectar con Brevo:", error);
 
         return res.status(500).json({
-            mensaje: "Error interno al enviar el correo."
+            mensaje: "No se pudo enviar el correo."
         });
-
     }
-
 });
 
 module.exports = router;
