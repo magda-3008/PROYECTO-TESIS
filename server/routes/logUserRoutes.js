@@ -1,279 +1,320 @@
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const nombre_usuario = document.getElementById("username").value;
-    const contrasena = document.getElementById("password").value;
-    const mensajeLogin = document.getElementById("mensajeLogin");
-    mensajeLogin.textContent = "";
-    try {
-        const respuesta = await fetch("/api/loguser/login", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                nombre_usuario,
-                contrasena
-            })
+const express = require("express");
+const router = express.Router();
+const pool = require("../config/db");
+const crypto = require("crypto");
+
+const {
+    verificarSesion
+} = require("../middleware/autenticacion");
+router.get("/sesion", verificarSesion,
+    (req, res) => {
+        res.json({
+            autenticado: true,
+            usuario: req.session.usuario
         });
-        const resultado = await respuesta.json();
-        if (respuesta.ok) {
-            /*
-             * Si el backend devuelve una clave de recuperación,
-             * significa que es la primera vez que este Administrador
-             * inicia sesión y todavía no tenía una clave.
-             */
-            if (resultado.clave_recuperacion) {
-                await Swal.fire({
-                    icon: "success",
-                    title: "Clave de recuperación",
-                    html: `
-                        <p>
-                            Esta es tu clave de recuperación.
-                            <strong>Guárdala en un lugar seguro.</strong>
-                        </p>
+    });
+function generarClaveRecuperacion() {
+    const valor = crypto.randomBytes(12).toString("hex").toUpperCase();
 
-                        <div class="alert alert-warning mt-3 mb-0">
-                            <strong>
-                                ${resultado.clave_recuperacion}
-                            </strong>
-                        </div>
+    return {
+        valor,
+        mostrada: valor.match(/.{1,6}/g).join("-")
+    };
+}
 
-                        <p class="mt-3 mb-0 text-muted small">
-                            Esta clave se mostrará solamente una vez.
-                        </p>
-                    `,
-                    confirmButtonText: "He guardado mi clave",
-                    allowOutsideClick: false,
-                    allowEscapeKey: false
+router.post("/logout", verificarSesion,
+    (req, res) => {
+        req.session.destroy((error) => {
+            if (error) {
+                console.error("Error al cerrar la sesión:", error);
+                return res.status(500).json({
+                    mensaje: "No se pudo cerrar la sesión."
                 });
             }
-            window.location.href = resultado.redirigir || "principal.html";
-        } else {
-            mensajeLogin.textContent = resultado.mensaje;
-        }
-    } catch (error) {
-        console.error("Hubo un error en la petición:", error);
-        mensajeLogin.textContent = "No se pudo conectar con el servidor.";
-    }
-});
-/* =========================================================
-   MOSTRAR / OCULTAR CONTRASEÑA
-   ========================================================= */
-const password = document.getElementById("password");
-const togglePassword = document.getElementById("togglePassword");
-const icono = togglePassword.querySelector("i");
-togglePassword.addEventListener("click", () => {
-    if (password.type === "password") {
-        password.type = "text";
-        icono.classList.remove("fa-eye");
-        icono.classList.add("fa-eye-slash");
-        togglePassword.setAttribute("aria-label", "Ocultar contraseña");
-    } else {
-        password.type = "password";
-        icono.classList.remove("fa-eye-slash");
-        icono.classList.add("fa-eye");
-        togglePassword.setAttribute("aria-label", "Mostrar contraseña");
-    }
-});
-/* =========================================================
-   RECUPERACIÓN DE CONTRASEÑA
-   ========================================================= */
-document.getElementById("btnRecuperarContrasena").addEventListener("click", async () => {
-    /* =====================================================
-       PASO 1
-       Verificar usuario + clave de recuperación
-       ===================================================== */
-    const {
-        value: datos
-    } = await Swal.fire({
-        title: "Recuperar contraseña",
-        html: `
-                <input
-                    type="text"
-                    id="nombreUsuarioRecuperacion"
-                    class="swal2-input"
-                    placeholder="Nombre de usuario"
-                    autocomplete="username"
-                >
-
-                <input
-                    type="text"
-                    id="claveRecuperacion"
-                    class="swal2-input"
-                    placeholder="Clave de recuperación"
-                    autocomplete="off"
-                >
-            `,
-        focusConfirm: false,
-        confirmButtonText: "Continuar",
-        showCancelButton: true,
-        cancelButtonText: "Cancelar",
-        allowOutsideClick: false,
-        preConfirm: () => {
-            const nombreUsuario = document.getElementById("nombreUsuarioRecuperacion").value.trim();
-            const claveRecuperacion = document.getElementById("claveRecuperacion").value.trim();
-            if (!nombreUsuario || !claveRecuperacion) {
-                Swal.showValidationMessage("Debe ingresar el nombre de usuario y la clave de recuperación.");
-                return false;
-            }
-            return {
-                nombre_usuario: nombreUsuario,
-                clave_recuperacion: claveRecuperacion
-            };
-        }
+            res.clearCookie("connect.sid", {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax"
+            });
+            return res.json({
+                mensaje: "Sesión cerrada correctamente."
+            });
+        });
     });
-    /*
-     * Si el usuario presionó "Cancelar",
-     * no continuamos con el proceso.
-     */
-    if (!datos) {
-        return;
-    }
-    /* =====================================================
-       ENVIAR DATOS AL SERVIDOR
-       ===================================================== */
+router.post("/login", async (req, res) => {
+    const {
+        nombre_usuario,
+        contrasena
+    } = req.body;
     try {
-        const respuesta = await fetch("/api/loguser/recuperacion/verificar", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(datos)
-        });
-        const resultado = await respuesta.json();
-        /* =================================================
-           CLAVE INCORRECTA
-           ================================================= */
-        if (!respuesta.ok) {
-            await Swal.fire({
-                icon: "error",
-                title: "No se pudo verificar",
-                text: resultado.mensaje,
-                confirmButtonText: "Aceptar"
+        const consulta = `
+                SELECT
+                    id_usuario,
+                    nombre_usuario,
+                    rol,
+                    clave_recuperacion
+                FROM usuarios
+                WHERE nombre_usuario = $1
+                AND contrasena = crypt($2, contrasena);
+            `;
+        const valores = [
+            nombre_usuario,
+            contrasena
+        ];
+        const resultado = await pool.query(consulta, valores);
+        // Credenciales incorrectas
+        if (resultado.rows.length === 0) {
+            return res.status(401).json({
+                mensaje: "Usuario o contraseña incorrectos"
             });
-            return;
         }
-        /* =================================================
-           PASO 2
-           ESTABLECER NUEVA CONTRASEÑA
-           ================================================= */
-        const {
-            value: contrasena
-        } = await Swal.fire({
-            title: "Nueva contraseña",
-            html: `
-                    <input
-                        type="password"
-                        id="nuevaContrasena"
-                        class="swal2-input"
-                        placeholder="Nueva contraseña"
-                        autocomplete="new-password"
-                    >
+        const usuario = resultado.rows[0];
 
-                    <input
-                        type="password"
-                        id="confirmarContrasena"
-                        class="swal2-input"
-                        placeholder="Confirmar contraseña"
-                        autocomplete="new-password"
-                    >
-                `,
-            focusConfirm: false,
-            confirmButtonText: "Cambiar contraseña",
-            showCancelButton: true,
-            cancelButtonText: "Cancelar",
-            allowOutsideClick: false,
-            preConfirm: () => {
-                const nuevaContrasena = document.getElementById("nuevaContrasena").value;
-                const confirmarContrasena = document.getElementById("confirmarContrasena").value;
-                if (!nuevaContrasena || !confirmarContrasena) {
-                    Swal.showValidationMessage("Debe completar ambos campos.");
-                    return false;
-                }
-                if (nuevaContrasena !== confirmarContrasena) {
-                    Swal.showValidationMessage("Las contraseñas no coinciden.");
-                    return false;
-                }
-                return nuevaContrasena;
-            }
-        });
-        /*
-         * Si el usuario cancela el cambio de contraseña,
-         * terminamos el proceso.
-         */
-        if (!contrasena) {
-            return;
+        let claveRecuperacion = null;
+
+        if (
+            usuario.rol === "Administrador" &&
+            usuario.clave_recuperacion === null
+        ) {
+            const nuevaClave = generarClaveRecuperacion();
+
+            const consultaClave = `
+                UPDATE usuarios
+                SET clave_recuperacion = crypt($1, gen_salt('bf'))
+                WHERE id_usuario = $2;
+            `;
+
+            await pool.query(
+                consultaClave,
+                [
+                    nuevaClave.valor,
+                    usuario.id_usuario
+                ]
+            );
+
+            claveRecuperacion = nuevaClave.mostrada;
         }
-        /* =================================================
-           CAMBIAR CONTRASEÑA
-           ================================================= */
-        const respuestaRestablecer = await fetch("/api/loguser/recuperacion/restablecer", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json"
+
+        req.session.usuario = {
+            id: usuario.id_usuario,
+            nombre: usuario.nombre_usuario,
+            rol: usuario.rol
+        };
+        return res.json({
+            mensaje: "¡Inicio de sesión exitoso!",
+            usuario: {
+                id: usuario.id_usuario,
+                nombre: usuario.nombre_usuario,
+                rol: usuario.rol
             },
-            body: JSON.stringify({
-                contrasena
-            })
+            redirigir: "principal.html",
+            clave_recuperacion: claveRecuperacion
         });
-        const resultadoRestablecer = await respuestaRestablecer.json();
-        /* =================================================
-           ERROR AL CAMBIAR CONTRASEÑA
-           ================================================= */
-        if (!respuestaRestablecer.ok) {
-            await Swal.fire({
-                icon: "error",
-                title: "No se pudo cambiar la contraseña",
-                text: resultadoRestablecer.mensaje,
-                confirmButtonText: "Aceptar"
-            });
-            return;
-        }
-        /* =================================================
-           PASO 3
-           MOSTRAR NUEVA CLAVE DE RECUPERACIÓN
-           ================================================= */
-        await Swal.fire({
-            icon: "success",
-            title: "Contraseña actualizada",
-            html: `
-                    <p>
-                        Tu contraseña se cambió correctamente.
-                    </p>
-
-                    <p class="mb-2">
-                        Tu nueva clave de recuperación es:
-                    </p>
-
-                    <div class="alert alert-warning">
-                        <strong>
-                            ${resultadoRestablecer.clave_recuperacion}
-                        </strong>
-                    </div>
-
-                    <p class="text-muted small mb-0">
-                        Guárdala en un lugar seguro.
-                        Esta clave se mostrará solamente una vez.
-                    </p>
-                `,
-            confirmButtonText: "Continuar",
-            allowOutsideClick: false,
-            allowEscapeKey: false
-        });
-        /* =================================================
-           VOLVER AL LOGIN
-           ================================================= */
-        window.location.href = "index.html";
     } catch (error) {
-        console.error("Error durante la recuperación:", error);
-        await Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "No se pudo conectar con el servidor.",
-            confirmButtonText: "Aceptar"
+        console.error("Error en la base de datos:", error);
+        return res.status(500).json({
+            mensaje: "Error interno del servidor"
         });
     }
 });
+
+router.post("/recuperacion/verificar", async (req, res) => {
+    const {
+        nombre_usuario,
+        clave_recuperacion
+    } = req.body;
+
+    if (
+        typeof nombre_usuario !== "string" ||
+        typeof clave_recuperacion !== "string"
+    ) {
+        return res.status(400).json({
+            mensaje: "Debe ingresar el nombre de usuario y la clave de recuperación."
+        });
+    }
+
+    const nombreUsuario = nombre_usuario.trim();
+    const claveLimpia = clave_recuperacion
+        .replace(/-/g, "")
+        .replace(/\s/g, "")
+        .toUpperCase();
+
+    if (nombreUsuario.length === 0 || claveLimpia.length === 0) {
+        return res.status(400).json({
+            mensaje: "Debe ingresar el nombre de usuario y la clave de recuperación."
+        });
+    }
+
+    try {
+        const consulta = `
+            SELECT
+                id_usuario,
+                nombre_usuario,
+                rol
+            FROM usuarios
+            WHERE nombre_usuario = $1
+              AND rol = 'Administrador'
+              AND clave_recuperacion IS NOT NULL
+              AND clave_recuperacion = crypt($2, clave_recuperacion);
+        `;
+
+        const resultado = await pool.query(
+            consulta,
+            [
+                nombreUsuario,
+                claveLimpia
+            ]
+        );
+
+        if (resultado.rows.length === 0) {
+            return res.status(401).json({
+                mensaje: "Nombre de usuario o clave de recuperación incorrectos."
+            });
+        }
+
+        const usuario = resultado.rows[0];
+
+        /*
+         * Regeneramos la sesión para evitar reutilizar
+         * una sesión anterior durante el proceso de recuperación.
+         */
+        req.session.regenerate((error) => {
+            if (error) {
+                console.error("Error al regenerar la sesión:", error);
+
+                return res.status(500).json({
+                    mensaje: "No se pudo iniciar el proceso de recuperación."
+                });
+            }
+
+            req.session.recuperacion = {
+                idUsuario: usuario.id_usuario,
+                expira: Date.now() + (10 * 60 * 1000)
+            };
+
+            req.session.save((errorGuardar) => {
+                if (errorGuardar) {
+                    console.error(
+                        "Error al guardar la sesión de recuperación:",
+                        errorGuardar
+                    );
+
+                    return res.status(500).json({
+                        mensaje: "No se pudo iniciar el proceso de recuperación."
+                    });
+                }
+
+                return res.status(200).json({
+                    mensaje: "Clave de recuperación válida."
+                });
+            });
+        });
+
+    } catch (error) {
+        console.error("Error al verificar la clave de recuperación:", error);
+
+        return res.status(500).json({
+            mensaje: "No se pudo verificar la clave de recuperación."
+        });
+    }
+});
+
+router.post("/recuperacion/restablecer", async (req, res) => {
+    const {
+        contrasena
+    } = req.body;
+
+    if (typeof contrasena !== "string" || contrasena.length === 0) {
+        return res.status(400).json({
+            mensaje: "La nueva contraseña es obligatoria."
+        });
+    }
+
+    if (
+        !req.session.recuperacion ||
+        !req.session.recuperacion.idUsuario ||
+        !req.session.recuperacion.expira
+    ) {
+        return res.status(401).json({
+            mensaje: "El proceso de recuperación no es válido o ha expirado."
+        });
+    }
+
+    if (Date.now() > req.session.recuperacion.expira) {
+        delete req.session.recuperacion;
+
+        return res.status(401).json({
+            mensaje: "El proceso de recuperación ha expirado."
+        });
+    }
+
+    const idUsuario = req.session.recuperacion.idUsuario;
+
+    try {
+        const nuevaClave = generarClaveRecuperacion();
+
+        const consulta = `
+            UPDATE usuarios
+            SET
+                contrasena = crypt($1, gen_salt('bf')),
+                clave_recuperacion = crypt($2, gen_salt('bf'))
+            WHERE id_usuario = $3
+              AND rol = 'Administrador'
+            RETURNING
+                id_usuario,
+                nombre_usuario,
+                rol;
+        `;
+
+        const resultado = await pool.query(
+            consulta,
+            [
+                contrasena,
+                nuevaClave.valor,
+                idUsuario
+            ]
+        );
+
+        if (resultado.rows.length === 0) {
+            return res.status(404).json({
+                mensaje: "No se pudo restablecer la contraseña."
+            });
+        }
+
+        /*
+         * El proceso de recuperación ya fue utilizado.
+         * Eliminamos la autorización temporal.
+         */
+        delete req.session.recuperacion;
+
+        req.session.save((errorGuardar) => {
+            if (errorGuardar) {
+                console.error(
+                    "Error al guardar la sesión después de recuperar:",
+                    errorGuardar
+                );
+
+                return res.status(500).json({
+                    mensaje: "La contraseña fue actualizada, pero ocurrió un error al finalizar el proceso."
+                });
+            }
+
+            return res.status(200).json({
+                mensaje: "Contraseña restablecida correctamente.",
+                clave_recuperacion: nuevaClave.mostrada
+            });
+        });
+
+    } catch (error) {
+        console.error(
+            "Error al restablecer la contraseña:",
+            error
+        );
+
+        return res.status(500).json({
+            mensaje: "No se pudo restablecer la contraseña."
+        });
+    }
+});
+
+module.exports = router;
