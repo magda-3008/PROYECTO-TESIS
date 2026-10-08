@@ -91,7 +91,7 @@ router.post("/recuperar", async (req, res) => {
 
     const { correo } = req.body;
 
-    // Validación básica
+    // Validar que se haya enviado un correo
     if (typeof correo !== "string") {
         return res.status(400).json({
             mensaje: "Debe proporcionar un correo electrónico válido."
@@ -100,6 +100,7 @@ router.post("/recuperar", async (req, res) => {
 
     const correoNormalizado = correo.trim().toLowerCase();
 
+    // Validar formato y longitud del correo
     if (
         !correoNormalizado ||
         correoNormalizado.length > 254 ||
@@ -112,7 +113,7 @@ router.post("/recuperar", async (req, res) => {
 
     try {
 
-        // Buscar el usuario mediante su correo
+        // Buscar el usuario por su correo
         const resultado = await pool.query(
             `
             SELECT id_usuario, correo
@@ -125,21 +126,20 @@ router.post("/recuperar", async (req, res) => {
         if (resultado.rows.length === 0) {
             return res.status(200).json({
                 mensaje:
-                    "Si el correo está registrado, recibirá un enlace para restablecer su contraseña."
+                    "Si el correo está registrado, recibirá un código de recuperación."
             });
         }
 
         const usuario = resultado.rows[0];
 
-        // Generar token aleatorio seguro
-        const token = crypto.randomBytes(32).toString("hex");
+        const codigo = crypto.randomInt(10000, 100000).toString();
 
-        // El token será válido durante 30 minutos
+        // El código será válido durante 30 minutos
         const expiracion = new Date(
             Date.now() + 30 * 60 * 1000
         );
 
-        // Guardar token y fecha de expiración
+        // Guardar código y fecha de expiración
         await pool.query(
             `
             UPDATE usuarios
@@ -148,22 +148,23 @@ router.post("/recuperar", async (req, res) => {
                 expiracion_token = $2
             WHERE id_usuario = $3
             `,
-            [token, expiracion, usuario.id_usuario]
+            [codigo, expiracion, usuario.id_usuario]
         );
 
-        // Construir enlace de recuperación
-        const urlSistema = process.env.URL_SISTEMA.replace(/\/$/, "");
-
-        const enlace = `${urlSistema}/restablecer-contrasena.html?token=${encodeURIComponent(token)}`;
-
-        // Enviar correo
+        // Enviar código mediante Resend
         const { data, error } = await resend.emails.send({
             from: "Pa'TuBoca <onboarding@resend.dev>",
             to: [usuario.correo],
-            subject: "Restablecimiento de contraseña - Pa'TuBoca",
+            subject: "Código de recuperación - Pa'TuBoca",
             html: `
-                <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-                    <h2>Restablecimiento de contraseña</h2>
+                <div style="
+                    font-family: Arial, sans-serif;
+                    line-height: 1.6;
+                    max-width: 600px;
+                    margin: 0 auto;
+                ">
+
+                    <h2>Recuperación de contraseña</h2>
 
                     <p>
                         Recibimos una solicitud para restablecer la contraseña
@@ -171,43 +172,44 @@ router.post("/recuperar", async (req, res) => {
                     </p>
 
                     <p>
-                        Haz clic en el siguiente botón para establecer una
-                        nueva contraseña:
+                        Tu código de recuperación es:
+                    </p>
+
+                    <div style="
+                        font-size: 32px;
+                        font-weight: bold;
+                        letter-spacing: 8px;
+                        text-align: center;
+                        margin: 25px 0;
+                    ">
+                        ${codigo}
+                    </div>
+
+                    <p>
+                        Ingresa este código en el formulario de recuperación
+                        de contraseña del sistema.
                     </p>
 
                     <p>
-                        <a
-                            href="${enlace}"
-                            style="
-                                display: inline-block;
-                                padding: 12px 20px;
-                                background-color: #1a81a0;
-                                color: white;
-                                text-decoration: none;
-                                border-radius: 6px;
-                            "
-                        >
-                            Restablecer contraseña
-                        </a>
-                    </p>
-
-                    <p>
-                        Este enlace será válido durante <strong>30 minutos</strong>.
+                        El código será válido durante
+                        <strong>30 minutos</strong>.
                     </p>
 
                     <p>
                         Si no solicitaste restablecer tu contraseña,
                         puedes ignorar este correo.
                     </p>
+
                 </div>
             `
         });
 
+        // Si Resend devuelve un error
         if (error) {
 
             console.error("Error de Resend:", error);
 
-            // Si el correo no pudo enviarse, invalidamos el token
+            // Invalidar el código que ya no pudo enviarse
             await pool.query(
                 `
                 UPDATE usuarios
@@ -221,7 +223,7 @@ router.post("/recuperar", async (req, res) => {
 
             return res.status(200).json({
                 mensaje:
-                    "Si el correo está registrado, recibirá un enlace para restablecer su contraseña."
+                    "Si el correo está registrado, recibirá un código de recuperación."
             });
         }
 
@@ -229,7 +231,7 @@ router.post("/recuperar", async (req, res) => {
 
         return res.status(200).json({
             mensaje:
-                "Si el correo está registrado, recibirá un enlace para restablecer su contraseña."
+                "Si el correo está registrado, recibirá un código de recuperación."
         });
 
     } catch (error) {
@@ -245,6 +247,7 @@ router.post("/recuperar", async (req, res) => {
         });
     }
 });
+
 router.get("/", verificarSesion, verificarAdministrador, async (req, res) => {
     try {
         const consulta = `
