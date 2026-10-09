@@ -11,7 +11,7 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background: url('../Resources/Fondo\ 1.png') no-repeat center center;
+	background: url('../Resources/fondo-patuboca.jpeg') no-repeat center center;
 	background-size: cover;
 	padding: 20px;
 }
