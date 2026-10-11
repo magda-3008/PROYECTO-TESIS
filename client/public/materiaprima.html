@@ -95,7 +95,7 @@
 
       <!--Derecha-->
       <div class="Encabezado-derecha">
-        <button class="btnVenta" type="button">
+        <button class="btnVenta" type="button" id="btnVenta">
           <i class="fa-solid fa-plus"></i>
           <span>Agregar venta</span>
         </button>
@@ -545,6 +545,8 @@
 
         if (usuarioActual.rol === "Administrador") {
           menuAdministracion.style.display = "block";
+        } else {
+          document.getElementById("btnVenta")?.remove();
         }
       }
 

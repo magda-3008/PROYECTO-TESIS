@@ -32,7 +32,7 @@
     <header class="Encabezado">
       <!--Derecha-->
       <div class="Encabezado-derecha">
-        <button class="btnVenta" type="button">
+        <button class="btnVenta" type="button" id="btnVenta">
           <i class="fa-solid fa-plus"></i>
           <span>Agregar venta</span>
         </button>
@@ -50,7 +50,6 @@
       <!-- Apartado de gestión -->
       <section>
         <div class="contenedor">
-          <!-- Tarjeta Productos -->
           <!-- Tarjeta Productos -->
           <a href="productos.html" class="card">
             <div class="icono"><i class="fa-solid fa-box-open"></i></div>
@@ -170,8 +169,8 @@
 
         if (usuarioActual.rol !== "Administrador") {
           document.getElementById("tarjetaUsuarios")?.remove();
-
           document.getElementById("tarjetaRespaldos")?.remove();
+          document.getElementById("btnVenta")?.remove();
         }
 
         const btnCerrarSesion = document.getElementById("btnCerrarSesion");
