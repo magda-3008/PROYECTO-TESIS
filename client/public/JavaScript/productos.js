@@ -125,7 +125,11 @@ const productosInventario = {
 
         const stock = Number(valor);
 
-        return Number.isNaN(stock) ? 0 : Math.floor(stock);
+        if (Number.isNaN(stock)) {
+          return "0 unidades";
+        }
+
+        return `${Math.floor(stock)} ${Math.floor(stock) === 1 ? "unidad" : "unidades"}`;
       },
     },
     {
