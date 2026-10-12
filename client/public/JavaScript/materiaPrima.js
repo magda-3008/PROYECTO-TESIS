@@ -241,7 +241,7 @@ function crearFiltros(vista) {
     switch (vista) {
         case "inventarioMD":
             panel.innerHTML = `
-        <h3>Filtrar por:</h3>
+        <h3 style="color: #4a7f83; font-size: 20px; font-weight: 700;">FILTRAR POR</h3>
 
         <div class="row g-2">
 
