@@ -204,6 +204,15 @@ function aplicarFiltros() {
     });
 }
 async function abrirModalEditarUsuario(usuario) {
+    if (usuarioActual && usuario.id_usuario === usuarioActual.id) {
+        await Swal.fire({
+            icon: "warning",
+            title: "No puede editar su cuenta",
+            text: "No puede editar el usuario con el que tiene iniciada la sesión.",
+            confirmButtonText: "Aceptar"
+        });
+        return;
+    }
     const contenedor = document.getElementById("contenedorModalEditarUsuario");
     if (!contenedor) {
         console.error("No se encontró el contenedor #contenedorModalEditarUsuario");
