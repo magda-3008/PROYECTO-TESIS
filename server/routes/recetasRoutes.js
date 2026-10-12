@@ -33,6 +33,8 @@ router.get("/", async (req, res) => {
                 ON dr.id_receta = r.id_receta
             LEFT JOIN producto p
                 ON p.id_producto = r.id_producto
+				
+			ORDER BY r.nombre_receta
         `;
 		let condiciones = [];
 		let parametros = [];
