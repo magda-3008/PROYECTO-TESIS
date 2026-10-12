@@ -1,5 +1,5 @@
 :root {
-    --header: #befbfc;
+    --header: #91c5c6;
     --principal: #1a81a0;
     --principalHover: #1a81a0;
     --titulo: #4a7f83;
@@ -297,7 +297,7 @@ main {
 .saludo {
     margin-top: 20px;
     margin-bottom: 45px;
-    color: #fff;
+    color: #4a7f83;
     font-size: 30px;
     font-weight: 700;
     text-align: center;
@@ -315,8 +315,8 @@ main {
 .card {
     width: 250px;
     height: 85px;
-    background: var(--principal);
-    color: #fff;
+    background: #ffffffc3;
+    color: #4a7f83;
     text-decoration: none;
     border-radius: 16px;
     padding: 0 18px;
@@ -328,7 +328,7 @@ main {
 }
 
 .card:hover {
-    background: var(--principalHover);
+    background: #ffffffc3;
     transform: translateY(-5px);
 }
 
@@ -339,8 +339,8 @@ main {
     align-items: center;
     width: 45px;
     height: 45px;
-    background: #fff;
-    color: var(--principal);
+    background: #4a7f83d3;
+    color: #fff;
     border-radius: 50%;
     font-size: 20px;
     flex-shrink: 0;
