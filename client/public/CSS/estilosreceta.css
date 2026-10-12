@@ -39,10 +39,6 @@ span {
 	font-family: 'Baloo 2', cursive !important;
 }
 
-html {
-    scroll-behavior: smooth;
-    scrollbar-gutter: stable;
-}
 
 body {
 	background: var(--fondo);
