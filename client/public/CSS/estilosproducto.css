@@ -666,7 +666,8 @@ select.form-select {
 }
 
 /* TABLA */
-#tablaProductos {
+#tablaProductos,
+#tablaMateriaP {
     width: 100% !important;     
     max-width: 100% !important;
     margin: 20px 0 0 0 !important;
