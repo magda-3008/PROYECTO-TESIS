@@ -8,38 +8,88 @@
     <title>Pa'tuboca - Ventas</title>
 
     <link rel="stylesheet" href="./CSS/estilosagregarventas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      zxxz
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap"
+      rel="stylesheet" />
   </head>
 
   <body>
-    <div class="app-container">
-      <header class="header">
-        <!-- BOTÓN MENÚ -->
+    <aside class="Menu-lateral" id="menuLateral">
+      <nav>
+        <div class="Seccion-menu">CONTROL DE INVENTARIOS</div>
 
-        <button class="btn-menu" id="btnMenu" aria-label="Abrir menú">
-          ☰
-        </button>
-        <div class="header-title">Ventas</div>
-        <div class="Contenedor-logo">
-          <img
-            src="Resources/Logo.png"
-            alt="Logo de Pa'tuboca"
-            class="logo-img" />
+        <a href="productos.html" class="Item-menu">
+          <i class="fa-solid fa-box-open"></i>
+          <span>Productos</span>
+        </a>
+
+        <a href="materiaprima.html" class="Item-menu">
+          <i class="fa-solid fa-boxes-stacked"></i>
+          <span>Materia prima</span>
+        </a>
+
+        <a href="recetas.html" class="Item-menu">
+          <i class="fa-solid fa-book-open"></i>
+          <span>Recetas</span>
+        </a>
+
+        <hr />
+
+        <div class="Seccion-menu">TABLERO DE VENTAS</div>
+
+        <a href="ventas.html" class="Item-menu">
+          <i class="fa-solid fa-cash-register"></i>
+          <span>Ventas</span>
+        </a>
+
+        <!-- ADMINISTRACIÓN -->
+        <div id="menuAdministracion" style="display: none">
+          <hr />
+
+          <div class="Seccion-menu">ADMINISTRACIÓN</div>
+
+          <a href="usuarios.html" class="Item-menu">
+            <i class="fa-solid fa-users"></i>
+            <span>Usuarios</span>
+          </a>
+
+          <a href="respaldos.html" class="Item-menu">
+            <i class="fa-solid fa-database"></i>
+            <span>Respaldos</span>
+          </a>
         </div>
-      </header>
+      </nav>
+    </aside>
 
-      <div class="menu-dropdown" id="menuDropdown">
-        <button>🏠 Inicio</button>
+    <!--ENCABEZADO-->
+    <header class="Encabezado">
+      <!--Izquierda-->
+      <div class="Encabezado-izquierda">
+        <button class="btnMenu" id="btnMenu" aria-label="Abrir menú">
+          <i class="fa-solid fa-bars"></i>
+        </button>
 
-        <button>🛒 Ventas</button>
-
-        <button>📦 Productos</button>
-
-        <button>📊 Reportes</button>
+        <div class="Marca">
+          <h1>| AGREGAR VENTA</h1>
+        </div>
       </div>
 
-      <main class="main">
-        <!-- TÍTULO -->
+      <!--Derecha-->
+      <div class="Encabezado-derecha">
+        <a href="" id="btnCerrarSesion">
+          <img src="Resources/Logo.png" alt="Logo" class="logoEmpresa" />
+        </a>
+      </div>
+    </header>
 
+    <div class="app-container">
+      <main class="main">
         <div class="page-header">
           <h1>Nueva Venta</h1>
 
@@ -173,6 +223,74 @@
     </div>
 
     <!-- JAVASCRIPT -->
+    <script>
+      /* ========= Menú lateral ========= */
+
+      const btnMenu = document.getElementById("btnMenu");
+      const menuLateral = document.getElementById("menuLateral");
+
+      btnMenu.addEventListener("click", () => {
+        menuLateral.classList.toggle("activo");
+        document.body.classList.toggle("menu-abierto");
+
+        setTimeout(() => {
+          if (typeof tabla !== "undefined") {
+            tabla.redraw(true);
+          }
+        }, 300);
+      });
+
+      /* ========= Menú de administración ========= */
+
+      async function configurarMenuAdministracion() {
+        const usuarioActual = await verificarSesionYRedirigir();
+
+        if (!usuarioActual) {
+          return;
+        }
+
+        const menuAdministracion =
+          document.getElementById("menuAdministracion");
+
+        if (!menuAdministracion) {
+          return;
+        }
+
+        if (usuarioActual.rol === "Administrador") {
+          menuAdministracion.style.display = "block";
+        } else {
+          document.getElementById("btnVenta")?.remove();
+        }
+      }
+
+      configurarMenuAdministracion();
+
+      /* ========= Modal Agregar Venta ========= */
+
+      const modal = document.getElementById("modalVenta");
+      const btnVenta = document.querySelector(".btnVenta");
+      const cerrarModal = document.getElementById("cerrarModal");
+      const btnCancelar = document.getElementById("btnCancelar");
+
+      btnVenta.addEventListener("click", () => {
+        modal.classList.add("activo");
+      });
+
+      cerrarModal.addEventListener("click", () => {
+        modal.classList.remove("activo");
+      });
+
+      btnCancelar.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        document.querySelector(".buscarProducto").value = "";
+        document.querySelector(".formVenta").reset();
+
+        document.querySelectorAll(".campo input[readonly]").forEach((input) => {
+          input.value = "";
+        });
+      });
+    </script>
 
     <script src="./JavaScript/agregarVentas.js"></script>
   </body>
