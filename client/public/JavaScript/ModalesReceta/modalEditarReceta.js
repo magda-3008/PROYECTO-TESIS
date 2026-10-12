@@ -339,62 +339,112 @@ function cargarUnidadesFilaEditar(fila, ingredienteExistente = null) {
     const selectInsumo = fila.querySelector(".insumo-editar");
     const selectUnidad = fila.querySelector(".unidad-insumo-editar");
     const inputCantidad = fila.querySelector(".cantidad-insumo-editar");
-    selectUnidad.innerHTML = `
-        <option value="">
-            Seleccione
-        </option>
-    `;
+
+    selectUnidad.innerHTML = `<option value="">Seleccione</option>`;
     selectUnidad.disabled = true;
+
     const tipo = selectTipo.value;
     const idInsumo = Number(selectInsumo.value);
+
     if (!idInsumo) {
         return;
     }
 
+    // Producto elaborado utilizado como insumo
     if (tipo === "producto") {
         const opcion = document.createElement("option");
+
         opcion.value = "unidad";
         opcion.textContent = "Unidad";
+
         selectUnidad.appendChild(opcion);
+
         selectUnidad.value = "unidad";
         selectUnidad.disabled = false;
+
         if (ingredienteExistente) {
-            inputCantidad.value = ingredienteExistente.cantidad_ingresada || "";
+            const cantidad = Number(
+                ingredienteExistente.cantidad_ingresada
+            );
+
+            inputCantidad.value = Number.isFinite(cantidad)
+                ? formatearUnidadHumana(cantidad, "unidad")
+                : "";
         }
+
         return;
     }
 
     if (tipo !== "materia_prima") {
         return;
     }
-    const materiaPrima = materiasPrimasEditar.find(materia => Number(materia.id_ma) === idInsumo);
+
+    const materiaPrima = materiasPrimasEditar.find(
+        materia => Number(materia.id_ma) === idInsumo
+    );
+
     if (!materiaPrima) {
         return;
     }
+
     const unidades = obtenerUnidadesDisponiblesEditar(materiaPrima);
+
     unidades.forEach(unidad => {
         const opcion = document.createElement("option");
+
+        // IMPORTANTE:
+        // El value permanece normalizado para enviarlo al backend.
         opcion.value = unidad.valor;
-        opcion.textContent = unidad.texto;
+
+        // Solo se modifica lo que ve el usuario.
+        opcion.textContent = capitalizarUnidadEditar(unidad.texto);
+
         selectUnidad.appendChild(opcion);
     });
+
     selectUnidad.disabled = false;
 
     if (ingredienteExistente) {
-        inputCantidad.value = ingredienteExistente.cantidad_ingresada || "";
-        const unidadOriginal = ingredienteExistente.unidad_ingresada;
-        if (unidadOriginal) {
+        const cantidad = Number(
+            ingredienteExistente.cantidad_ingresada
+        );
 
-            const opcion = [...selectUnidad.options].find(option => option.value.toLowerCase() === String(unidadOriginal).trim().toLowerCase());
+        const unidadOriginal = ingredienteExistente.unidad_ingresada;
+
+        // Mostrar la cantidad en lenguaje humano.
+        if (Number.isFinite(cantidad) && unidadOriginal) {
+            inputCantidad.value = formatearUnidadHumana(
+                cantidad,
+                unidadOriginal
+            );
+        } else {
+            inputCantidad.value = "";
+        }
+
+        // Recuperar la unidad original.
+        if (unidadOriginal) {
+            const opcion = [...selectUnidad.options].find(
+                option =>
+                    option.value.toLowerCase() ===
+                    String(unidadOriginal).trim().toLowerCase()
+            );
+
             if (opcion) {
                 selectUnidad.value = opcion.value;
             } else {
-
-                // Si por alguna razón la unidad histórica ya no aparece en las conversiones actuales, se agrega para no perder información al editar
+                // Conservamos unidades históricas que ya no estén
+                // configuradas actualmente.
                 const opcionHistorica = document.createElement("option");
-                opcionHistorica.value = String(unidadOriginal).trim().toLowerCase();
-                opcionHistorica.textContent = unidadOriginal;
+
+                opcionHistorica.value = String(unidadOriginal)
+                    .trim()
+                    .toLowerCase();
+
+                opcionHistorica.textContent =
+                    capitalizarUnidadEditar(unidadOriginal);
+
                 selectUnidad.appendChild(opcionHistorica);
+
                 selectUnidad.value = opcionHistorica.value;
             }
         }
@@ -464,6 +514,15 @@ function validarFormularioEditar() {
         }
         if (!cantidad) {
             errores.push("Ingrese una cantidad.");
+        } else {
+            const cantidadNormalizada = parsearCantidad(cantidad);
+
+            if (
+                !Number.isFinite(cantidadNormalizada) ||
+                cantidadNormalizada <= 0
+            ) {
+                errores.push("Ingrese una cantidad válida mayor que cero.");
+            }
         }
         if (!unidad) {
             errores.push("Seleccione una unidad.");
