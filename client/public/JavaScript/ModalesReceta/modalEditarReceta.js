@@ -2,9 +2,7 @@ let recetaEnEdicion = null;
 let materiasPrimasEditar = [];
 let productosElaboradosEditar = [];
 let modalEditarReceta = null;
-/* =========================================================
-   CARGAR MODAL
-   ========================================================= */
+
 async function cargarModalEditarReceta() {
     try {
         // Evitar cargar el HTML más de una vez
@@ -25,9 +23,7 @@ async function cargarModalEditarReceta() {
         throw error;
     }
 }
-/* =========================================================
-   INICIALIZAR MODAL
-   ========================================================= */
+
 function inicializarModalEditarReceta() {
     const formulario = document.getElementById("formEditarReceta");
     const btnAgregar = document.getElementById("btnAgregarIngredienteEditar");
@@ -45,9 +41,7 @@ function inicializarModalEditarReceta() {
         elementoModal.addEventListener("hidden.bs.modal", limpiarModalEditarReceta);
     }
 }
-/* =========================================================
-   ABRIR MODAL
-   ========================================================= */
+
 async function abrirModalEditarReceta(idReceta) {
     try {
         await cargarModalEditarReceta();
@@ -59,22 +53,14 @@ async function abrirModalEditarReceta(idReceta) {
         if (!Array.isArray(detalle) || detalle.length === 0) {
             throw new Error("La receta no contiene información.");
         }
-        /*
-         * Guardamos la receta completa en memoria.
-         *
-         * No usamos un input hidden para el ID.
-         */
+
         recetaEnEdicion = {
             id_receta: Number(idReceta),
             datos: detalle
         };
-        /*
-         * Cargar las listas necesarias.
-         */
+
         await cargarDatosParaEdicion();
-        /*
-         * Llenar formulario.
-         */
+
         llenarFormularioReceta(detalle);
         const elementoModal = document.getElementById("modalEditarReceta");
         modalEditarReceta = bootstrap.Modal.getOrCreateInstance(elementoModal);
@@ -88,9 +74,7 @@ async function abrirModalEditarReceta(idReceta) {
         });
     }
 }
-/* =========================================================
-   CARGAR DATOS PARA EDICIÓN
-   ========================================================= */
+
 async function cargarDatosParaEdicion() {
     const [
         respuestaMP,
@@ -110,9 +94,7 @@ async function cargarDatosParaEdicion() {
     materiasPrimasEditar = Array.isArray(materiasPrimas) ? materiasPrimas : [];
     productosElaboradosEditar = Array.isArray(productos) ? productos.filter(producto => producto.tipo === "Elaborado") : [];
 }
-/* =========================================================
-   LLENAR FORMULARIO
-   ========================================================= */
+
 function llenarFormularioReceta(detalle) {
     const receta = detalle[0];
     document.getElementById("nombreRecetaEditar").value = receta.nombre_receta || "";
@@ -125,21 +107,16 @@ function llenarFormularioReceta(detalle) {
     });
     limpiarErroresEditar();
 }
-/* =========================================================
-   CREAR FILA DE INGREDIENTE
-   ========================================================= */
+
 function agregarFilaIngredienteEditar(ingredienteExistente = null) {
     const contenedor = document.getElementById("contenedorIngredientesEditar");
     const fila = document.createElement("div");
-    fila.className = "row g-2 align-items-end ingrediente-row mb-2";
+    fila.className = "row g-2 align-items-end ingrediente-row ingrediente-editar mb-2";
     fila.innerHTML = `
 
         <!-- Tipo de insumo -->
-
         <div class="col-md-3">
-
             <div class="campo">
-
                 <label>
                     Tipo de insumo
                 </label>
@@ -157,18 +134,13 @@ function agregarFilaIngredienteEditar(ingredienteExistente = null) {
                     <option value="producto">
                         Producto elaborado
                     </option>
-
                 </select>
-
             </div>
-
         </div>
 
 
         <!-- Insumo -->
-
         <div class="col-md-4">
-
             <div class="campo">
 
                 <label>
@@ -184,39 +156,28 @@ function agregarFilaIngredienteEditar(ingredienteExistente = null) {
                     </option>
 
                 </select>
-
             </div>
-
         </div>
 
 
         <!-- Cantidad -->
-
         <div class="col-md-2">
-
             <div class="campo">
-
                 <label>
                     Cantidad
                 </label>
-
                 <input
                     type="text"
                     class="cantidad-insumo-editar"
                     inputmode="text"
                     placeholder="Cantidad">
-
             </div>
-
         </div>
-
 
         <!-- Unidad -->
 
         <div class="col-md-2">
-
             <div class="campo">
-
                 <label>
                     Unidad
                 </label>
@@ -224,22 +185,16 @@ function agregarFilaIngredienteEditar(ingredienteExistente = null) {
                 <select
                     class="unidad-insumo-editar"
                     disabled>
-
                     <option value="">
                         Seleccione
                     </option>
-
                 </select>
-
             </div>
-
         </div>
-
 
         <!-- Eliminar -->
 
         <div class="col-md-1">
-
             <button
                 type="button"
                 class="btn btn-outline-danger btnEliminarIngredienteEditar w-100"
@@ -249,16 +204,11 @@ function agregarFilaIngredienteEditar(ingredienteExistente = null) {
                 <i class="fa-solid fa-trash"></i>
 
             </button>
-
         </div>
 
-
         <!-- Error -->
-
         <div class="col-12">
-
             <div class="error-msg error-fila-ingrediente"></div>
-
         </div>
 
     `;
@@ -285,9 +235,7 @@ function agregarFilaIngredienteEditar(ingredienteExistente = null) {
         cargarInsumosFilaEditar(fila, tipo, ingredienteExistente);
     }
 }
-/* =========================================================
-   OBTENER TIPO
-   ========================================================= */
+
 function obtenerTipoIngrediente(ingrediente) {
     if (ingrediente.id_ma !== null && ingrediente.id_ma !== undefined) {
         return "materia_prima";
@@ -297,9 +245,7 @@ function obtenerTipoIngrediente(ingrediente) {
     }
     return "";
 }
-/* =========================================================
-   CARGAR INSUMOS
-   ========================================================= */
+
 function cargarInsumosFilaEditar(fila, tipo, ingredienteExistente = null) {
     const selectInsumo = fila.querySelector(".insumo-editar");
     const selectUnidad = fila.querySelector(".unidad-insumo-editar");
@@ -315,9 +261,7 @@ function cargarInsumosFilaEditar(fila, tipo, ingredienteExistente = null) {
     `;
     selectInsumo.disabled = true;
     selectUnidad.disabled = true;
-    /* -----------------------------------------------------
-       Materia prima
-       ----------------------------------------------------- */
+
     if (tipo === "materia_prima") {
         materiasPrimasEditar.forEach(materia => {
             const opcion = document.createElement("option");
@@ -327,15 +271,10 @@ function cargarInsumosFilaEditar(fila, tipo, ingredienteExistente = null) {
         });
         selectInsumo.disabled = false;
     }
-    /* -----------------------------------------------------
-       Producto elaborado
-       ----------------------------------------------------- */
+
     if (tipo === "producto") {
         productosElaboradosEditar.forEach(producto => {
-            /*
-             * No permitir que el producto utilice
-             * su propia receta como ingrediente.
-             */
+
             if (recetaEnEdicion && Number(producto.id_producto) === Number(recetaEnEdicion.datos[0].id_producto)) {
                 return;
             }
@@ -346,9 +285,7 @@ function cargarInsumosFilaEditar(fila, tipo, ingredienteExistente = null) {
         });
         selectInsumo.disabled = false;
     }
-    /* -----------------------------------------------------
-       Restaurar ingrediente existente
-       ----------------------------------------------------- */
+
     if (ingredienteExistente) {
         if (tipo === "materia_prima" && ingredienteExistente.id_ma !== null) {
             selectInsumo.value = ingredienteExistente.id_ma;
@@ -359,9 +296,7 @@ function cargarInsumosFilaEditar(fila, tipo, ingredienteExistente = null) {
         cargarUnidadesFilaEditar(fila, ingredienteExistente);
     }
 }
-/* =========================================================
-   OBTENER UNIDADES DISPONIBLES
-   ========================================================= */
+
 function obtenerUnidadesDisponiblesEditar(materiaPrima) {
     const unidades = [];
     const agregarUnidad = (valor, texto) => {
@@ -378,17 +313,11 @@ function obtenerUnidadesDisponiblesEditar(materiaPrima) {
             texto: texto || capitalizarUnidadEditar(valor)
         });
     };
-    /*
-     * Unidad base de inventario.
-     */
+
     agregarUnidad(materiaPrima.unidad_medida, materiaPrima.unidad_medida);
-    /*
-     * Unidad de existencia/compra.
-     */
+
     agregarUnidad(materiaPrima.unidad_existencia, materiaPrima.unidad_existencia);
-    /*
-     * Unidades configuradas en conversion_unidad.
-     */
+
     if (Array.isArray(materiaPrima.conversiones)) {
         materiaPrima.conversiones.forEach(conversion => {
             agregarUnidad(conversion.unidad_ingresada, conversion.unidad_ingresada);
@@ -396,9 +325,7 @@ function obtenerUnidadesDisponiblesEditar(materiaPrima) {
     }
     return unidades;
 }
-/* =========================================================
-   CAPITALIZAR UNIDAD
-   ========================================================= */
+
 function capitalizarUnidadEditar(valor) {
     const texto = String(valor).trim();
     if (!texto) {
@@ -406,9 +333,7 @@ function capitalizarUnidadEditar(valor) {
     }
     return (texto.charAt(0).toUpperCase() + texto.slice(1));
 }
-/* =========================================================
-   CARGAR UNIDADES DE UNA FILA
-   ========================================================= */
+
 function cargarUnidadesFilaEditar(fila, ingredienteExistente = null) {
     const selectTipo = fila.querySelector(".tipo-insumo-editar");
     const selectInsumo = fila.querySelector(".insumo-editar");
@@ -425,9 +350,7 @@ function cargarUnidadesFilaEditar(fila, ingredienteExistente = null) {
     if (!idInsumo) {
         return;
     }
-    /* -----------------------------------------------------
-       Producto elaborado
-       ----------------------------------------------------- */
+
     if (tipo === "producto") {
         const opcion = document.createElement("option");
         opcion.value = "unidad";
@@ -440,9 +363,7 @@ function cargarUnidadesFilaEditar(fila, ingredienteExistente = null) {
         }
         return;
     }
-    /* -----------------------------------------------------
-       Materia prima
-       ----------------------------------------------------- */
+
     if (tipo !== "materia_prima") {
         return;
     }
@@ -458,26 +379,18 @@ function cargarUnidadesFilaEditar(fila, ingredienteExistente = null) {
         selectUnidad.appendChild(opcion);
     });
     selectUnidad.disabled = false;
-    /*
-     * Restaurar valores originales.
-     */
+
     if (ingredienteExistente) {
         inputCantidad.value = ingredienteExistente.cantidad_ingresada || "";
         const unidadOriginal = ingredienteExistente.unidad_ingresada;
         if (unidadOriginal) {
-            /*
-             * Buscar ignorando mayúsculas/minúsculas.
-             */
+
             const opcion = [...selectUnidad.options].find(option => option.value.toLowerCase() === String(unidadOriginal).trim().toLowerCase());
             if (opcion) {
                 selectUnidad.value = opcion.value;
             } else {
-                /*
-                 * Si por alguna razón la unidad
-                 * histórica ya no aparece en las
-                 * conversiones actuales, la agregamos
-                 * para no perder información al editar.
-                 */
+
+                // Si por alguna razón la unidad histórica ya no aparece en las conversiones actuales, se agrega para no perder información al editar
                 const opcionHistorica = document.createElement("option");
                 opcionHistorica.value = String(unidadOriginal).trim().toLowerCase();
                 opcionHistorica.textContent = unidadOriginal;
@@ -487,9 +400,7 @@ function cargarUnidadesFilaEditar(fila, ingredienteExistente = null) {
         }
     }
 }
-/* =========================================================
-   OBTENER INGREDIENTES DEL FORMULARIO
-   ========================================================= */
+
 function obtenerIngredientesEditar() {
     const filas = document.querySelectorAll("#contenedorIngredientesEditar .ingrediente-editar");
     const ingredientes = [];
@@ -511,17 +422,13 @@ function obtenerIngredientesEditar() {
     });
     return ingredientes;
 }
-/* =========================================================
-   VALIDAR FORMULARIO
-   ========================================================= */
+
 function validarFormularioEditar() {
     limpiarErroresEditar();
     let valido = true;
     const nombre = document.getElementById("nombreRecetaEditar").value.trim();
     const cantidadBase = document.getElementById("cantidadBaseEditar").value.trim();
-    /* -----------------------------------------------------
-       Nombre
-       ----------------------------------------------------- */
+
     if (!nombre) {
         mostrarErrorEditar("errorNombreRecetaEditar", "El nombre de la receta es obligatorio.");
         valido = false;
@@ -530,17 +437,13 @@ function validarFormularioEditar() {
         mostrarErrorEditar("errorNombreRecetaEditar", "El nombre no puede superar los 100 caracteres.");
         valido = false;
     }
-    /* -----------------------------------------------------
-       Cantidad base
-       ----------------------------------------------------- */
+
     const numeroBase = Number(cantidadBase);
     if (!cantidadBase || !Number.isInteger(numeroBase) || numeroBase <= 0) {
         mostrarErrorEditar("errorCantidadBaseEditar", "Debe ingresar un número entero mayor que cero.");
         valido = false;
     }
-    /* -----------------------------------------------------
-       Ingredientes
-       ----------------------------------------------------- */
+
     const filas = document.querySelectorAll("#contenedorIngredientesEditar .ingrediente-editar");
     if (filas.length === 0) {
         mostrarErrorEditar("errorIngredientesEditar", "Debe existir al menos un ingrediente.");
@@ -576,9 +479,7 @@ function validarFormularioEditar() {
     }
     return valido;
 }
-/* =========================================================
-   GUARDAR CAMBIOS
-   ========================================================= */
+
 async function guardarCambiosReceta(evento) {
     evento.preventDefault();
     if (!validarFormularioEditar()) {
@@ -622,26 +523,15 @@ async function guardarCambiosReceta(evento) {
         if (!respuesta.ok) {
             throw new Error(resultado.mensaje || "No fue posible actualizar la receta.");
         }
-        /*
-         * Guardamos el ID antes de limpiar el estado.
-         */
+
         const idRecetaActualizada = recetaEnEdicion.id_receta;
-        /*
-         * Cerrar editor.
-         */
+
         if (modalEditarReceta) {
             modalEditarReceta.hide();
         }
-        /*
-         * Actualizar la lista de tarjetas.
-         */
+
         await cargarRecetas();
-        /*
-         * Actualizar el modal de detalle.
-         *
-         * Si el modal de detalle sigue abierto,
-         * esta función lo vuelve a cargar.
-         */
+
         await cargarDetalleReceta(idRecetaActualizada);
         await Swal.fire({
             icon: "success",
