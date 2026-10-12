@@ -368,7 +368,7 @@ function cargarUnidadesFilaEditar(fila, ingredienteExistente = null) {
             );
 
             inputCantidad.value = Number.isFinite(cantidad)
-                ? formatearUnidadHumana(cantidad, "unidad")
+                ? formatearUnidadHumana(cantidad)
                 : "";
         }
 
@@ -411,12 +411,9 @@ function cargarUnidadesFilaEditar(fila, ingredienteExistente = null) {
 
         const unidadOriginal = ingredienteExistente.unidad_ingresada;
 
-        // Mostrar la cantidad en lenguaje humano.
-        if (Number.isFinite(cantidad) && unidadOriginal) {
-            inputCantidad.value = formatearUnidadHumana(
-                cantidad,
-                unidadOriginal
-            );
+        // Mostrar únicamente la cantidad en lenguaje humano.
+        if (Number.isFinite(cantidad)) {
+            inputCantidad.value = formatearUnidadHumana(cantidad);
         } else {
             inputCantidad.value = "";
         }
@@ -432,8 +429,6 @@ function cargarUnidadesFilaEditar(fila, ingredienteExistente = null) {
             if (opcion) {
                 selectUnidad.value = opcion.value;
             } else {
-                // Conservamos unidades históricas que ya no estén
-                // configuradas actualmente.
                 const opcionHistorica = document.createElement("option");
 
                 opcionHistorica.value = String(unidadOriginal)
