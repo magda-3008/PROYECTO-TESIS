@@ -22,6 +22,7 @@ const movimientoHistorialMPRoutes = require("./routes/movimientosHistorialMP");
 const movimientoMPRoutes = require("./routes/movimientoMPRoutes");
 const salidaMPRoutes = require("./routes/salidaMPRoutes");
 const respaldoRoutes = require("./routes/respaldoRoutes");
+const ventaRoutes = require("./routes/ventaRoutes");
 
 const app = express();
 app.set("trust proxy", 1);
@@ -65,6 +66,7 @@ app.use("/api/historialMP", movimientoHistorialMPRoutes);
 app.use("/api/entradaMP", movimientoMPRoutes);
 app.use("/api/salidaMP", salidaMPRoutes);
 app.use("/api/respaldo", respaldoRoutes);
+app.use("/api/ventas", ventaRoutes)
 
 app.get("/api/test-supabase", async (req, res) => {
 	try {

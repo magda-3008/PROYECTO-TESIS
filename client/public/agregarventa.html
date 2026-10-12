@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Pa'tuboca - Ventas</title>
+
+    <link rel="stylesheet" href="./CSS/estilosagregarventas.css" />
+  </head>
+
+  <body>
+    <div class="app-container">
+      <header class="header">
+        <!-- BOTÓN MENÚ -->
+
+        <button class="btn-menu" id="btnMenu" aria-label="Abrir menú">
+          ☰
+        </button>
+        <div class="header-title">Ventas</div>
+        <div class="Contenedor-logo">
+          <img
+            src="Resources/Logo.png"
+            alt="Logo de Pa'tuboca"
+            class="logo-img" />
+        </div>
+      </header>
+
+      <div class="menu-dropdown" id="menuDropdown">
+        <button>🏠 Inicio</button>
+
+        <button>🛒 Ventas</button>
+
+        <button>📦 Productos</button>
+
+        <button>📊 Reportes</button>
+      </div>
+
+      <main class="main">
+        <!-- TÍTULO -->
+
+        <div class="page-header">
+          <h1>Nueva Venta</h1>
+
+          <p>Selecciona los productos y agrega al carrito</p>
+        </div>
+
+        <!-- =================================
+                 CONTENEDOR DE VENTA
+            ================================== -->
+
+        <div class="venta-container">
+          <!-- =================================
+                     PRODUCTOS
+                ================================== -->
+
+          <section class="productos-section">
+            <!-- CATEGORÍAS -->
+
+            <div class="categorias">
+              <button class="categoria active" data-category="Todos">
+                Todos
+              </button>
+
+              <button class="categoria" data-category="Dulces">Dulces</button>
+
+              <button class="categoria" data-category="Bebidas">Bebidas</button>
+
+              <button class="categoria" data-category="Postres">Postres</button>
+            </div>
+
+            <!-- BUSCADOR -->
+
+            <div class="buscador-container">
+              <input
+                type="text"
+                id="buscador"
+                class="buscador"
+                placeholder="Buscar producto..." />
+
+              <button class="btn-filtrar" id="btnFiltrar">☷ Filtrar</button>
+            </div>
+
+            <!-- GRID DE PRODUCTOS -->
+
+            <div class="productos-grid" id="productosGrid"></div>
+          </section>
+
+          <!-- =================================
+                     CARRITO
+                ================================== -->
+
+          <section class="carrito-section">
+            <!-- HEADER CARRITO -->
+
+            <div class="carrito-header">
+              <h2>🛒 Carrito de Venta</h2>
+
+              <button class="btn-vaciar" id="btnVaciar">
+                🗑 Vaciar carrito
+              </button>
+            </div>
+
+            <!-- COLUMNAS -->
+
+            <div class="carrito-columnas">
+              <span> Producto </span>
+
+              <span> Precio </span>
+
+              <span> Cant. </span>
+
+              <span> Subtotal </span>
+            </div>
+
+            <!-- PRODUCTOS DEL CARRITO -->
+
+            <div class="carrito-items" id="carritoItems">
+              <div class="carrito-vacio">
+                <p>El carrito está vacío</p>
+
+                <small> Agrega productos para comenzar una venta </small>
+              </div>
+            </div>
+
+            <!-- =================================
+                         RESUMEN
+                    ================================== -->
+
+            <div class="resumen">
+              <!-- SUBTOTAL -->
+
+              <div class="resumen-linea">
+                <span> Subtotal </span>
+
+                <strong id="subtotal"> C$ 0.00 </strong>
+              </div>
+
+              <!-- DESCUENTO -->
+
+              <div class="resumen-linea descuento">
+                <span> Descuento </span>
+
+                <input type="number" id="descuento" value="0" min="0" />
+
+                <strong id="descuentoMonto"> C$ 0.00 </strong>
+              </div>
+
+              <!-- TOTAL -->
+
+              <div class="resumen-total">
+                <span> Total </span>
+
+                <strong id="total"> C$ 0.00 </strong>
+              </div>
+            </div>
+
+            <div class="botones-venta">
+              <button class="btn-cancelar" id="btnCancelar">✕ Cancelar</button>
+
+              <button class="btn-guardar" id="btnGuardar">
+                💾 Guardar Venta
+              </button>
+
+              <button class="btn-finalizar" id="btnFinalizar">
+                ✓ Finalizar Venta
+              </button>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!-- JAVASCRIPT -->
+
+    <script src="./JavaScript/agregarventas.js"></script>
+  </body>
+</html>

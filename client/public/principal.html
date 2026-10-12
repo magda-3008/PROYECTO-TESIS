@@ -95,68 +95,6 @@
       </section>
     </main>
 
-    <!--MODAL AGREGAR VENTA-->
-    <div class="modalVenta" id="modalVenta">
-      <div class="modal-contenido">
-        <!--Encabezado-->
-        <div class="venta-header">
-          <h2><i class="fa-solid fa-cash-register"></i> AGREGAR VENTA</h2>
-
-          <button type="button" class="cerrarModal" id="cerrarModal">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
-
-        <!--Buscar producto-->
-        <div class="grupoBusqueda">
-          <i class="fa-solid fa-magnifying-glass iconoBuscar"></i>
-
-          <input
-            type="text"
-            class="buscarProducto"
-            placeholder="Buscar producto..." />
-        </div>
-
-        <!--Formulario-->
-        <form class="formVenta">
-          <div class="campo">
-            <label>NOMBRE</label>
-
-            <input type="text" />
-          </div>
-
-          <div class="campo">
-            <label>CANTIDAD</label>
-
-            <input type="number" min="1" />
-          </div>
-
-          <div class="campo">
-            <label>PRECIO</label>
-
-            <input type="text" />
-          </div>
-
-          <div class="campo">
-            <label>TOTAL</label>
-
-            <input type="text" />
-          </div>
-        </form>
-
-        <!--Botones-->
-        <div class="modal-botones">
-          <button type="button" class="btnCancelar" id="btnCancelar">
-            <i class="fa-solid fa-xmark"></i> Cancelar
-          </button>
-
-          <button type="submit" class="btnGuardar">
-            <i class="fa-solid fa-check"></i> Guardar
-          </button>
-        </div>
-      </div>
-    </div>
-
     <script src="./JavaScript/utilities/sesion.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
@@ -180,54 +118,6 @@
             event.preventDefault();
 
             cerrarSesion();
-          });
-        }
-
-        // ==========================================
-        // MODAL AGREGAR VENTA
-        // ==========================================
-
-        const modal = document.getElementById("modalVenta");
-
-        const btnVenta = document.querySelector(".btnVenta");
-
-        const cerrarModal = document.getElementById("cerrarModal");
-
-        const btnCancelar = document.getElementById("btnCancelar");
-
-        if (btnVenta && modal) {
-          btnVenta.addEventListener("click", () => {
-            modal.classList.add("activo");
-          });
-        }
-
-        if (cerrarModal && modal) {
-          cerrarModal.addEventListener("click", () => {
-            modal.classList.remove("activo");
-          });
-        }
-
-        if (btnCancelar) {
-          btnCancelar.addEventListener("click", (event) => {
-            event.preventDefault();
-
-            const buscarProducto = document.querySelector(".buscarProducto");
-
-            const formVenta = document.querySelector(".formVenta");
-
-            if (buscarProducto) {
-              buscarProducto.value = "";
-            }
-
-            if (formVenta) {
-              formVenta.reset();
-            }
-
-            document
-              .querySelectorAll(".campo input[readonly]")
-              .forEach((input) => {
-                input.value = "";
-              });
           });
         }
       });
