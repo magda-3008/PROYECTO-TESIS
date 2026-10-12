@@ -40,10 +40,9 @@ function formatearUnidadHumana(cantidad, unidad) {
     const unidadFormateada = pluralizarUnidad(unidad, num);
 
     const fracciones = {
-        0.25: "¼",
-        0.5: "½",
-        0.75: "¾"
-
+        0.25: "1/4",
+        0.5: "1/2",
+        0.75: "3/4"
     };
 
     // Cantidades enteras
@@ -59,4 +58,3 @@ function formatearUnidadHumana(cantidad, unidad) {
     // Otros decimales
     return `${num} ${unidadFormateada}`;
 }
-
