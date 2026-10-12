@@ -195,6 +195,7 @@ body {
     font-weight: normal;
     cursor: pointer;
     transition: .25s;
+    text-decoration: none;
 }
 
 .btnVenta:hover {
