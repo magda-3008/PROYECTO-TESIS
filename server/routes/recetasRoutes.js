@@ -33,8 +33,6 @@ router.get("/", async (req, res) => {
                 ON dr.id_receta = r.id_receta
             LEFT JOIN producto p
                 ON p.id_producto = r.id_producto
-				
-			ORDER BY r.nombre_receta
         `;
 		let condiciones = [];
 		let parametros = [];
@@ -54,7 +52,7 @@ router.get("/", async (req, res) => {
             `;
 		}
 		consultaSQL += `
-            ORDER BY r.id_receta;
+            ORDER BY r.nombre_receta;
         `;
 		const resultado = await pool.query(consultaSQL, parametros);
 		res.json(resultado.rows);
