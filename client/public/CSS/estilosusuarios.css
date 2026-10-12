@@ -959,3 +959,7 @@ button:active {
     display: block !important;
     box-sizing: border-box !important;
 }
+
+body.modal-open {
+    padding-right: 0 !important;
+}

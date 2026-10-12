@@ -929,3 +929,7 @@ button:active {
         height: 48px;
     }
 }
+
+body.modal-open {
+    padding-right: 0 !important;
+}

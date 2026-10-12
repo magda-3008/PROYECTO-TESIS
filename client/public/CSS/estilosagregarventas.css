@@ -957,3 +957,7 @@ body {
 	display: flex;
 	align-items: center;
 }
+
+body.modal-open {
+    padding-right: 0 !important;
+}
