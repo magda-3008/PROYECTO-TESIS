@@ -948,3 +948,13 @@ button:active {
   background: #306474;
   transform: scale(1.08);
 }
+
+#tablaUsuarios {
+    width: 100% !important;     
+    max-width: 100% !important;
+    margin: 20px 0 0 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    display: block !important;
+    box-sizing: border-box !important;
+}
