@@ -39,6 +39,7 @@ span {
 	font-family: 'Baloo 2', cursive !important;
 }
 
+
 body {
 	background: var(--fondo);
 	color: var(--texto);
@@ -957,4 +958,8 @@ button:active {
     box-shadow: none !important;
     display: block !important;
     box-sizing: border-box !important;
+}
+
+body.modal-open {
+    padding-right: 0 !important;
 }

@@ -39,6 +39,7 @@ span {
 	font-family: 'Baloo 2', cursive !important;
 }
 
+
 body {
 	background: var(--fondo);
 	color: var(--texto);
@@ -1007,10 +1008,6 @@ body.menu-abierto .Encabezado {
 	align-items: center;
 }
 
-
-/* =========================================
-   BARRA DE NAVEGACIÓN SUPERIOR (EN EL HEADER)
-========================================= */
 .nav-superior {
     display: flex;
     align-items: center;
@@ -1085,4 +1082,6 @@ body.menu-abierto .Encabezado {
     border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: 20px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+body.modal-open {
+    padding-right: 0 !important;
 }
