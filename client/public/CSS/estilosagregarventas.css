@@ -754,8 +754,7 @@ body {
 	margin-top: 18px;
 }
 .btn-cancelar,
-.btn-guardar,
-.btn-finalizar {
+.btn-guardar {
 	height: 40px;
 	border-radius: 7px;
 	font-size: 15px;
@@ -775,28 +774,17 @@ body {
 	background: #c94949;
 	transform: scale(1.03);
 }
+
 /* =========================================
    GUARDAR
 ========================================= */
 .btn-guardar {
-	border: none;
-	background: #1a81a0;
-	color: #ffffff;
-}
-.btn-guardar:hover {
-	background: #1a81a0;
-	transform: scale(1.03);
-}
-/* =========================================
-   FINALIZAR
-========================================= */
-.btn-finalizar {
 	grid-column: 1 / -1;
 	border: none;
 	background: #2fb34a;
 	color: #ffffff;
 }
-.btn-finalizar:hover {
+.btn-guardar:hover {
 	background: #2fb34a;
 	transform: scale(1.03);
 }
@@ -1121,7 +1109,7 @@ body.menu-abierto .Encabezado {
 	.botones-venta {
 		grid-template-columns: 1fr;
 	}
-	.btn-finalizar {
+	.btn-guardar {
 		grid-column: auto;
 	}
 	.carrito-item {
