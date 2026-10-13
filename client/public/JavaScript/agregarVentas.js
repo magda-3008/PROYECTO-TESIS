@@ -64,8 +64,6 @@ async function cargarProductos() {
         contenedor.innerHTML = `
             <p class="mensaje-error">
                 No se pudieron cargar los productos.
-                Comprueba que el servidor esté funcionando
-                en el puerto 3000.
             </p>
         `;
     }
@@ -195,8 +193,7 @@ function agregarAlCarrito(id) {
         Swal.fire({
             icon: "warning",
             title: "Stock insuficiente",
-            text: "No hay suficiente existencia para agregar otra unidad.",
-            confirmButtonColor: "#1a81a0"
+            text: "No hay suficiente existencia para agregar otra unidad."
         });
 
         return;
@@ -234,8 +231,7 @@ function cambiarCantidad(id, cambio) {
             Swal.fire({
                 icon: "warning",
                 title: "Stock insuficiente",
-                text: "La cantidad supera el stock disponible.",
-                confirmButtonColor: "#1a81a0"
+                text: "La cantidad supera el stock disponible."
             });
 
             return;
@@ -391,9 +387,7 @@ function configurarEventos() {
                 text: "¿Deseas vaciar el carrito?",
                 showCancelButton: true,
                 confirmButtonText: "Sí, vaciar",
-                cancelButtonText: "Cancelar",
-                confirmButtonColor: "#1a81a0",
-                cancelButtonColor: "#6c757d"
+                cancelButtonText: "Cancelar"
             });
 
             if (resultado.isConfirmed) {
@@ -421,9 +415,7 @@ function configurarEventos() {
                 text: "¿Deseas cancelar esta venta y vaciar el carrito?",
                 showCancelButton: true,
                 confirmButtonText: "Sí, cancelar",
-                cancelButtonText: "No, continuar",
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#6c757d"
+                cancelButtonText: "No, continuar"
             });
 
             if (resultado.isConfirmed) {
@@ -456,8 +448,7 @@ async function avisarGuardadoPendiente() {
         await Swal.fire({
             icon: "warning",
             title: "Carrito vacío",
-            text: "Agrega al menos un producto antes de finalizar la venta.",
-            confirmButtonColor: "#1a81a0"
+            text: "Agrega al menos un producto antes de finalizar la venta."
         });
 
         return;
@@ -471,10 +462,7 @@ async function avisarGuardadoPendiente() {
         title: "¿Confirmar venta?",
         text: `¿Confirmas la venta por ${formatoMoneda(totales.total)}?`,
         showCancelButton: true,
-        confirmButtonText: "Sí, finalizar venta",
-        cancelButtonText: "Cancelar",
-        confirmButtonColor: "#1a81a0",
-        cancelButtonColor: "#6c757d"
+        confirmButtonText: "Sí, finalizar venta"
     });
 
     if (!confirmacion.isConfirmed) {
@@ -512,8 +500,7 @@ async function avisarGuardadoPendiente() {
             html: `
                 Número de venta: <strong>${resultado.venta.id_venta}</strong><br>
                 Total: <strong>${formatoMoneda(resultado.venta.total)}</strong>
-            `,
-            confirmButtonColor: "#1a81a0"
+            `
         });
 
         carrito = [];
@@ -530,8 +517,7 @@ async function avisarGuardadoPendiente() {
         await Swal.fire({
             icon: "error",
             title: "Error",
-            text: error.message || "No se pudo conectar con el servidor.",
-            confirmButtonColor: "#1a81a0"
+            text: error.message || "No se pudo conectar con el servidor."
         });
 
     } finally {

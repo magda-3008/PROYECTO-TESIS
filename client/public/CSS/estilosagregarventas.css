@@ -517,15 +517,15 @@ body {
    ITEM INDIVIDUAL DEL CARRITO
 ========================================= */
 .carrito-item {
-	min-height: 58px;
+	min-height: 62px;
 	display: grid;
 	grid-template-columns:
 		minmax(100px, 1fr) 70px 85px 80px 30px;
 	align-items: center;
 	gap: 6px;
-	padding: 9px 0;
+	padding: 10px 0;
 	border-top: 1px solid #eeeeee;
-	font-size: 13px;
+	font-size: 15px;
 }
 /* =========================================
    PRODUCTO DEL CARRITO
@@ -539,7 +539,7 @@ body {
 	display: block;
 	min-width: 0;
 	color: #333333;
-	font-size: 13px;
+	font-size: 15px;
 	font-weight: 600;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -559,7 +559,7 @@ body {
 ========================================= */
 .carrito-item > span {
 	color: #555555;
-	font-size: 12px;
+	font-size: 14px;
 	text-align: center;
 	white-space: nowrap;
 }
@@ -598,7 +598,7 @@ body {
 	min-width: 20px;
 	text-align: center;
 	color: #333333;
-	font-size: 13px;
+	font-size: 15px;
 	font-weight: 600;
 }
 .carrito-cantidad button {
@@ -628,7 +628,7 @@ body {
 ========================================= */
 .carrito-item > strong {
 	color: #1a81a0;
-	font-size: 13px;
+	font-size: 15px;
 	text-align: right;
 	white-space: nowrap;
 }
