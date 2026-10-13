@@ -207,7 +207,7 @@ body {
 	border-radius: 7px;
 	background: transparent;
 	color: #555555;
-	font-size: 13px;
+	font-size: 16px;
 	cursor: pointer;
 	transition: .2s;
 }
@@ -779,7 +779,6 @@ body {
    GUARDAR
 ========================================= */
 .btn-guardar {
-	grid-column: 1 / -1;
 	border: none;
 	background: #2fb34a;
 	color: #ffffff;

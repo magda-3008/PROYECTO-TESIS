@@ -63,9 +63,7 @@ async function cargarProductos() {
 
         contenedor.innerHTML = `
             <p class="mensaje-error">
-                No se pudieron cargar los productos.
-                Comprueba que el servidor esté funcionando
-                en el puerto 3000.
+                No se pudieron cargar los productos
             </p>
         `;
     }
@@ -191,7 +189,11 @@ function agregarAlCarrito(id) {
 
     if (stock !== null &&
         (existente?.cantidad || 0) >= stock) {
-        alert("No hay suficiente existencia para agregar otra unidad.");
+        Swal.fire({
+            icon: "warning",
+            title: "Stock insuficiente",
+            text: "No hay suficiente existencia para agregar otra unidad."
+        });
         return;
     }
 
@@ -223,7 +225,11 @@ function cambiarCantidad(id, cambio) {
         );
     } else {
         if (stock !== null && nuevaCantidad > stock) {
-            alert("La cantidad supera el stock disponible.");
+            Swal.fire({
+                icon: "warning",
+                title: "Stock insuficiente",
+                text: "La cantidad supera el stock disponible."
+            });
             return;
         }
 
@@ -406,7 +412,11 @@ function configurarEventos() {
 
 async function avisarGuardadoPendiente() {
     if (carrito.length === 0) {
-        alert("Agrega al menos un producto antes de finalizar la venta.");
+        Swal.fire({
+            icon: "warning",
+            title: "Carrito vacío",
+            text: "Agrega al menos un producto antes de finalizar la venta."
+        });
         return;
     }
 
@@ -456,7 +466,12 @@ async function avisarGuardadoPendiente() {
 
     } catch (error) {
         console.error("Error al finalizar la venta:", error);
-        alert(error.message || "No se pudo conectar con el servidor.");
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error.message || "No se pudo conectar con el servidor.",
+            confirmButtonColor: "#1a81a0"
+        });
     } finally {
         if (boton) boton.disabled = false;
     }
