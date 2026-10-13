@@ -12,6 +12,9 @@
 	--transicion: .30s ease;
 	--menu: 220px;
 }
+/* =========================================
+   GENERAL
+========================================= */
 * {
 	margin: 0;
 	padding: 0;
@@ -174,7 +177,8 @@ body {
 ========================================= */
 .venta-container {
 	display: grid;
-	grid-template-columns: minmax(550px, 1fr) 430px;
+	grid-template-columns:
+		minmax(550px, 1fr) 430px;
 	gap: 18px;
 	align-items: start;
 }
@@ -258,29 +262,34 @@ body {
 	transform: scale(1.03);
 }
 /* =========================================
-   GRID DE PRODUCTOS
+   GRID PRODUCTOS
 ========================================= */
 .productos-grid {
 	display: grid;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
+	grid-template-columns:
+		repeat(3, minmax(0, 1fr));
 	gap: 18px;
 	align-items: stretch;
 }
 /* =========================================
    TARJETA DE PRODUCTO
 ========================================= */
+.producto,
 .producto-card {
 	min-width: 0;
 	height: 100%;
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
+	padding: 0;
 	background: #ffffff;
 	border: 1px solid #dce5e7;
 	border-radius: 12px;
-	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+	box-shadow:
+		0 3px 10px rgba(0, 0, 0, 0.06);
 	transition: .25s ease;
 }
+.producto:hover,
 .producto-card:hover {
 	border-color: #1a81a0;
 	box-shadow:
@@ -288,7 +297,7 @@ body {
 	transform: translateY(-3px);
 }
 /* =========================================
-   IMAGEN
+   IMAGEN DEL PRODUCTO
 ========================================= */
 .producto-imagen {
 	width: 100%;
@@ -306,10 +315,14 @@ body {
 	display: block;
 	width: 100%;
 	height: 100%;
+	max-width: 100%;
+	max-height: 100%;
 	object-fit: contain;
 	object-position: center;
 }
-/* SIN FOTOGRAFÍA */
+/* =========================================
+   SIN FOTOGRAFÍA
+========================================= */
 .producto-sin-foto {
 	width: 100%;
 	height: 100%;
@@ -320,7 +333,7 @@ body {
 	font-size: 14px;
 }
 /* =========================================
-   INFORMACIÓN
+   INFORMACIÓN DEL PRODUCTO
 ========================================= */
 .producto-info {
 	flex: 1;
@@ -329,8 +342,8 @@ body {
 	flex-direction: column;
 	padding: 12px 14px 14px;
 }
-/* NOMBRE */
-.producto-info h3 {
+.producto-info h3,
+.producto h3 {
 	margin: 0 0 5px;
 	color: #333333;
 	font-size: 16px;
@@ -340,14 +353,18 @@ body {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
-/* PRECIO */
+/* =========================================
+   PRECIO DEL PRODUCTO
+========================================= */
 .producto-precio {
 	margin: 0 0 6px;
 	color: #1a81a0;
 	font-size: 17px;
 	font-weight: 700;
 }
-/* STOCK */
+/* =========================================
+   STOCK DEL PRODUCTO
+========================================= */
 .producto-info small {
 	display: block;
 	margin-bottom: 12px;
@@ -356,8 +373,9 @@ body {
 	line-height: 1.2;
 }
 /* =========================================
-   BOTÓN AGREGAR
+   BOTÓN AGREGAR AL CARRITO
 ========================================= */
+.btn-agregar,
 .btn-agregar-producto {
 	width: 100%;
 	height: 40px;
@@ -373,12 +391,14 @@ body {
 	cursor: pointer;
 	transition: .2s ease;
 }
+.btn-agregar:hover,
 .btn-agregar-producto:hover {
 	background: #1a81a0;
 	transform: scale(1.02);
 	box-shadow:
 		0 4px 10px rgba(26, 129, 160, 0.20);
 }
+.btn-agregar:active,
 .btn-agregar-producto:active {
 	transform: scale(.98);
 }
@@ -394,6 +414,26 @@ body {
 	opacity: .85;
 }
 /* =========================================
+   MENSAJES DE PRODUCTOS
+========================================= */
+#productosGrid > p {
+	grid-column: 1 / -1;
+	min-height: 120px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	text-align: center;
+	color: #6d7c7f;
+	font-size: 15px;
+}
+#productosGrid > .mensaje-error {
+	color: #c03939;
+	background: #fff5f5;
+	border: 1px solid #efcaca;
+	border-radius: 10px;
+}
+/* =========================================
    CARRITO
 ========================================= */
 .carrito-section {
@@ -403,7 +443,7 @@ body {
 	border-radius: 12px;
 }
 /* =========================================
-   HEADER CARRITO
+   HEADER DEL CARRITO
 ========================================= */
 .carrito-header {
 	display: flex;
@@ -417,7 +457,7 @@ body {
 	color: #4a7f83;
 }
 /* =========================================
-   VACIAR
+   BOTÓN VACIAR
 ========================================= */
 .btn-vaciar {
 	padding: 7px 9px;
@@ -433,7 +473,7 @@ body {
 	transform: scale(1.03);
 }
 /* =========================================
-   COLUMNAS
+   COLUMNAS DEL CARRITO
 ========================================= */
 .carrito-columnas {
 	display: grid;
@@ -447,7 +487,7 @@ body {
 	border-bottom: 2px solid #1a81a0;
 }
 /* =========================================
-   ITEMS
+   ITEMS DEL CARRITO
 ========================================= */
 .carrito-items {
 	width: 100%;
@@ -474,26 +514,36 @@ body {
 	font-size: 13px;
 }
 /* =========================================
-   ITEM CARRITO
+   ITEM INDIVIDUAL DEL CARRITO
 ========================================= */
 .carrito-item {
+	min-height: 58px;
 	display: grid;
 	grid-template-columns:
-		minmax(0, 1.6fr) minmax(65px, 0.8fr) minmax(70px, 0.9fr) minmax(95px, 1fr);
+		minmax(100px, 1fr) 70px 85px 80px 30px;
 	align-items: center;
-	gap: 8px;
-	padding: 12px 6px;
-	border-bottom: 1px solid #eee;
+	gap: 6px;
+	padding: 9px 0;
+	border-top: 1px solid #eeeeee;
+	font-size: 13px;
 }
+/* =========================================
+   PRODUCTO DEL CARRITO
+========================================= */
 .carrito-producto {
+	min-width: 0;
 	display: flex;
 	align-items: center;
-	gap: 8px;
-	min-width: 0;
 }
 .carrito-producto strong {
+	display: block;
+	min-width: 0;
+	color: #333333;
 	font-size: 13px;
-	overflow-wrap: anywhere;
+	font-weight: 600;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 .carrito-producto-icon {
 	flex-shrink: 0;
@@ -504,22 +554,14 @@ body {
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
-.carrito-miniatura {
-	width: 48px;
-	height: 48px;
-	flex-shrink: 0;
-	object-fit: contain;
-	object-position: center;
-	border-radius: 8px;
-	background: #fff8fc;
-	padding: 3px;
-	box-sizing: border-box;
-}
-.carrito-miniatura.sin-imagen {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 22px;
+/* =========================================
+   PRECIO UNITARIO DEL CARRITO
+========================================= */
+.carrito-item > span {
+	color: #555555;
+	font-size: 12px;
+	text-align: center;
+	white-space: nowrap;
 }
 /* =========================================
    CANTIDAD
@@ -543,35 +585,55 @@ body {
 	border-color: #806bd0;
 	color: #6044c6;
 }
+/* =========================================
+   CONTROLES + Y -
+========================================= */
 .carrito-cantidad {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 7px;
+	gap: 5px;
+}
+.carrito-cantidad span {
+	min-width: 20px;
+	text-align: center;
+	color: #333333;
+	font-size: 13px;
+	font-weight: 600;
 }
 .carrito-cantidad button {
-	width: 26px;
-	height: 26px;
-	border: none;
-	border-radius: 6px;
-	cursor: pointer;
-}
-/* =========================================
-   SUBTOTAL CARRITO
-========================================= */
-.carrito-subtotal {
+	width: 24px;
+	height: 24px;
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	gap: 6px;
-	min-width: 0;
+	justify-content: center;
+	padding: 0;
+	border: 1px solid #cbdfe2;
+	border-radius: 5px;
+	background: #ffffff;
+	color: #1a81a0;
+	font-size: 16px;
+	line-height: 1;
+	cursor: pointer;
+	transition: .2s ease;
 }
-.carrito-subtotal strong {
-	font-size: 12px;
-	overflow-wrap: anywhere;
+.carrito-cantidad button:hover {
+	background: #1a81a0;
+	border-color: #1a81a0;
+	color: #ffffff;
+	transform: scale(1.05);
 }
 /* =========================================
-   ELIMINAR
+   SUBTOTAL DE CADA PRODUCTO
+========================================= */
+.carrito-item > strong {
+	color: #1a81a0;
+	font-size: 13px;
+	text-align: right;
+	white-space: nowrap;
+}
+/* =========================================
+   BOTÓN ELIMINAR DEL CARRITO
 ========================================= */
 .btn-eliminar {
 	border: none;
@@ -580,19 +642,43 @@ body {
 	font-size: 14px;
 	cursor: pointer;
 }
-.btn-eliminar-item {
-	width: 30px;
-	height: 30px;
-	flex-shrink: 0;
+.carrito-item > button {
+	width: 27px;
+	height: 27px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
 	border: none;
-	border-radius: 7px;
-	background: #ffe8ed;
-	color: #c62845;
-	cursor: pointer;
+	border-radius: 6px;
+	background: transparent;
+	color: #d04c4c;
 	font-size: 15px;
+	cursor: pointer;
+	transition: .2s ease;
 }
-.btn-eliminar-item:hover {
-	background: #ffcdd7;
+.carrito-item > button:hover {
+	background: #ffe8e8;
+	color: #c03939;
+	transform: scale(1.08);
+}
+/* =========================================
+   LÍNEAS DEL CARRITO
+========================================= */
+.carrito hr,
+.carrito-seccion hr {
+	border: none;
+	border-top: 1px solid #1a81a0;
+	margin: 15px 0;
+}
+.tabla-carrito thead th,
+.carrito-encabezado-tabla {
+	border-bottom: 2px solid #1a81a0;
+}
+.tabla-carrito tbody,
+.carrito-cuerpo,
+.carrito-productos {
+	border-bottom: 2px solid #1a81a0;
 }
 /* =========================================
    RESUMEN
@@ -634,14 +720,22 @@ body {
 	border-color: #1a81a0;
 }
 /* =========================================
-   TOTAL
+   TOTALES
 ========================================= */
+.carrito-resumen,
+.carrito-totales {
+	border-top: 1px solid #1a81a0;
+}
+.total-fila,
+.resumen-total {
+	border-top: 1px solid #1a81a0 !important;
+	padding-top: 10px;
+}
 .resumen-total {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	padding-top: 12px;
-	border-top: 1px solid #1a81a0;
 	font-size: 17px;
 	font-weight: 700;
 }
@@ -707,7 +801,7 @@ body {
 	transform: scale(1.03);
 }
 /* =========================================
-   ENCABEZADO
+   HEADER DEL SISTEMA
 ========================================= */
 .Encabezado {
 	position: sticky;
@@ -718,12 +812,10 @@ body {
 	justify-content: space-between;
 	align-items: center;
 	padding: 16px 35px;
-	box-shadow: 0 3px 8px rgba(36, 34, 34, 0.578);
+	box-shadow:
+		0 3px 8px rgba(36, 34, 34, 0.578);
 	transition: var(--transicion);
 }
-/* =========================================
-   HEADER CON MENÚ ABIERTO
-========================================= */
 body.menu-abierto .Encabezado {
 	margin-left: var(--menu);
 	width: calc(90% - var(--menu));
@@ -767,7 +859,8 @@ body.menu-abierto .Encabezado {
 	width: var(--menu);
 	height: 100vh;
 	background: #91c5c6;
-	box-shadow: 3px 0 10px rgba(0, 0, 0, .12);
+	box-shadow:
+		3px 0 10px rgba(0, 0, 0, .12);
 	transition: var(--transicion);
 	z-index: 1000;
 }
@@ -811,7 +904,8 @@ body.menu-abierto .Encabezado {
 .Menu-lateral hr {
 	margin: 18px 20px;
 	border: none;
-	border-top: 1px solid rgba(230, 223, 223, 0.3);
+	border-top:
+		1px solid rgba(230, 223, 223, 0.3);
 }
 /* =========================================
    MARCA
@@ -829,7 +923,7 @@ body.menu-abierto .Encabezado {
 	color: #4a7f83;
 }
 /* =========================================
-   BOTÓN AÑADIR VENTA
+   BOTÓN VENTA
 ========================================= */
 .btnVenta {
 	display: flex;
@@ -853,7 +947,7 @@ body.menu-abierto .Encabezado {
 	transform: scale(1.03);
 }
 /* =========================================
-   LOGO
+   LOGO EMPRESA
 ========================================= */
 .logoEmpresa {
 	width: 90px;
@@ -913,7 +1007,8 @@ body.menu-abierto .Encabezado {
 	background: #82aeaf;
 	color: #4a7f83;
 	transform: translateY(-2px);
-	box-shadow: 0 4px 10px rgba(32, 150, 186, 0.25);
+	box-shadow:
+		0 4px 10px rgba(32, 150, 186, 0.25);
 }
 .nav-admin {
 	display: flex;
@@ -921,7 +1016,7 @@ body.menu-abierto .Encabezado {
 	gap: 12px;
 }
 /* =========================================
-   APP CONTAINER
+   CONTENEDOR PRINCIPAL
 ========================================= */
 .app-container {
 	width: 95%;
@@ -934,7 +1029,8 @@ body.menu-abierto .Encabezado {
 	border: 1px solid rgba(255, 255, 255, 0.6);
 	border-radius: 20px;
 	overflow: hidden;
-	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+	box-shadow:
+		0 8px 32px rgba(0, 0, 0, 0.08);
 }
 /* =========================================
    RESPONSIVE
@@ -947,12 +1043,14 @@ body.menu-abierto .Encabezado {
 		grid-template-columns: 1fr;
 	}
 	.productos-grid {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+		grid-template-columns:
+			repeat(3, minmax(0, 1fr));
 	}
 }
 @media (max-width: 900px) {
 	.productos-grid {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
+		grid-template-columns:
+			repeat(2, minmax(0, 1fr));
 	}
 }
 @media (max-width: 750px) {
@@ -966,19 +1064,40 @@ body.menu-abierto .Encabezado {
 		padding: 0 20px;
 	}
 	.productos-grid {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
+		grid-template-columns:
+			repeat(2, minmax(0, 1fr));
 	}
 }
 @media (max-width: 600px) {
+	.productos-grid {
+		gap: 12px;
+	}
+	.producto-imagen {
+		height: 145px;
+	}
+	.producto-info {
+		padding: 10px;
+	}
+	.producto-info h3 {
+		font-size: 14px;
+	}
+	.producto-precio {
+		font-size: 15px;
+	}
+	.btn-agregar-producto {
+		font-size: 14px;
+	}
 	.carrito-item {
-		grid-template-columns: minmax(0, 1fr) auto;
-		row-gap: 10px;
+		grid-template-columns:
+			minmax(100px, 1fr) 65px 75px 70px 28px;
+		gap: 4px;
 	}
-	.carrito-producto {
-		grid-column: 1 / -1;
+	.carrito-cantidad {
+		gap: 3px;
 	}
-	.carrito-subtotal {
-		justify-content: flex-end;
+	.carrito-cantidad button {
+		width: 22px;
+		height: 22px;
 	}
 }
 @media (max-width: 520px) {
@@ -1005,7 +1124,29 @@ body.menu-abierto .Encabezado {
 	.btn-finalizar {
 		grid-column: auto;
 	}
+	.carrito-item {
+		grid-template-columns:
+			minmax(0, 1fr) auto;
+		row-gap: 8px;
+	}
+	.carrito-producto {
+		grid-column: 1 / -1;
+	}
+	.carrito-item > span {
+		text-align: left;
+	}
+	.carrito-subtotal {
+		justify-content: flex-end;
+	}
 }
+/* =========================================
+   MODALES
+========================================= */
 body.modal-open {
 	padding-right: 0 !important;
+}
+
+.modal-body .text-muted {
+    color: #667 !important;
+    font-size: 14px !important;
 }
