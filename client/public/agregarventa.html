@@ -5,7 +5,8 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Pa'tuboca - Ventas</title>
+    <title>♥Pa'tuboca Delicias y más♥</title>
+    <link rel="icon" href="./Resources/Logo.png" type="image/png" />
 
     <link rel="stylesheet" href="./CSS/estilosagregarventas.css" />
     <link
@@ -20,67 +21,50 @@
   </head>
 
   <body>
-    <aside class="Menu-lateral" id="menuLateral">
-      <nav>
-        <div class="Seccion-menu">CONTROL DE INVENTARIOS</div>
+    <body>
+    <!-- FONDO -->
+    <div class="Fondo"></div>
 
-        <a href="productos.html" class="Item-menu">
-          <i class="fa-solid fa-box-open"></i>
-          <span>Productos</span>
+    <!-- ENCABEZADO CON BARRA DE NAVEGACIÓN SUPERIOR -->
+    <header class="Encabezado">
+      <!-- Izquierda vacía o flexible -->
+      <div class="Encabezado-izquierda">
+        <!-- Espacio libre ya que retiramos el texto -->
+      </div>
+
+      <!-- Centro: Barra de navegación más ancha y espaciosa -->
+      <nav class="nav-superior">
+        <span class="nav-seccion"></span>
+        <a href="productos.html" class="Item-nav">
+          <i class="fa-solid fa-box-open"></i> Productos
         </a>
-
-        <a href="materiaprima.html" class="Item-menu">
-          <i class="fa-solid fa-boxes-stacked"></i>
-          <span>Materia prima</span>
+        <a href="materiaprima.html" class="Item-nav">
+          <i class="fa-solid fa-boxes-stacked"></i> Materia prima
         </a>
-
-        <a href="recetas.html" class="Item-menu">
-          <i class="fa-solid fa-book-open"></i>
-          <span>Recetas</span>
+        <a href="recetas.html" class="Item-nav">
+          <i class="fa-solid fa-book-open"></i> Recetas
         </a>
-
-        <hr />
-
-        <div class="Seccion-menu">TABLERO DE VENTAS</div>
-
-        <a href="ventas.html" class="Item-menu">
-          <i class="fa-solid fa-cash-register"></i>
-          <span>Ventas</span>
+        <a href="ventas.html" class="Item-nav">
+          <i class="fa-solid fa-cash-register"></i> Ventas
         </a>
+         <a href="agregarventa.html" class="Item-nav activo">
+          <i class="fa-solid fa-plus"></i> Agregar venta
+        </a>
+        
 
-        <!-- ADMINISTRACIÓN -->
-        <div id="menuAdministracion" style="display: none">
-          <hr />
-
-          <div class="Seccion-menu">ADMINISTRACIÓN</div>
-
-          <a href="usuarios.html" class="Item-menu">
-            <i class="fa-solid fa-users"></i>
-            <span>Usuarios</span>
+        <!-- ADMINISTRACIÓN (Opcional según rol) -->
+        <div id="menuAdministracion" class="nav-admin" style="display: none;">
+          <span class="nav-separador">|</span>
+          <a href="usuarios.html" class="Item-nav">
+            <i class="fa-solid fa-users"></i> Usuarios
           </a>
-
-          <a href="respaldos.html" class="Item-menu">
-            <i class="fa-solid fa-database"></i>
-            <span>Respaldos</span>
+          <a href="respaldos.html" class="Item-nav">
+            <i class="fa-solid fa-database"></i> Respaldos
           </a>
         </div>
       </nav>
-    </aside>
 
-    <!--ENCABEZADO-->
-    <header class="Encabezado">
-      <!--Izquierda-->
-      <div class="Encabezado-izquierda">
-        <button class="btnMenu" id="btnMenu" aria-label="Abrir menú">
-          <i class="fa-solid fa-bars"></i>
-        </button>
-
-        <div class="Marca">
-          <h1>| AGREGAR VENTA</h1>
-        </div>
-      </div>
-
-      <!--Derecha-->
+      <!-- Derecha: Logo de la empresa -->
       <div class="Encabezado-derecha">
         <a href="" id="btnCerrarSesion">
           <img src="Resources/Logo.png" alt="Logo" class="logoEmpresa" />
@@ -91,7 +75,7 @@
     <div class="app-container">
       <main class="main">
         <div class="page-header">
-          <h1>Nueva Venta</h1>
+          <h1>NUEVA VENTA</h1>
 
           <p>Selecciona los productos y agrega al carrito</p>
         </div>
@@ -110,14 +94,14 @@
 
             <div class="categorias">
               <button class="categoria active" data-category="Todos">
-                Todos
+                TODOS
               </button>
 
-              <button class="categoria" data-category="Dulces">Dulces</button>
+              <button class="categoria" data-category="Dulces">DULCES</button>
 
-              <button class="categoria" data-category="Bebidas">Bebidas</button>
+              <button class="categoria" data-category="Bebidas">BEBIDAS</button>
 
-              <button class="categoria" data-category="Postres">Postres</button>
+              <button class="categoria" data-category="Postres">POSTRES</button>
             </div>
 
             <!-- BUSCADOR -->
@@ -129,7 +113,7 @@
                 class="buscador"
                 placeholder="Buscar producto..." />
 
-              <button class="btn-filtrar" id="btnFiltrar">☷ Filtrar</button>
+              <button class="btn-filtrar" id="btnFiltrar">☷ FILTRAR</button>
             </div>
 
             <!-- GRID DE PRODUCTOS -->
@@ -145,7 +129,7 @@
             <!-- HEADER CARRITO -->
 
             <div class="carrito-header">
-              <h2>🛒 Carrito de Venta</h2>
+              <h2>🛒 CARRITO DE VENTAS</h2>
 
               <button class="btn-vaciar" id="btnVaciar">
                 🗑 Vaciar carrito
@@ -224,22 +208,8 @@
 
     <!-- JAVASCRIPT -->
     <script>
-      /* ========= Menú lateral ========= */
 
-      const btnMenu = document.getElementById("btnMenu");
-      const menuLateral = document.getElementById("menuLateral");
-
-      btnMenu.addEventListener("click", () => {
-        menuLateral.classList.toggle("activo");
-        document.body.classList.toggle("menu-abierto");
-
-        setTimeout(() => {
-          if (typeof tabla !== "undefined") {
-            tabla.redraw(true);
-          }
-        }, 300);
-      });
-
+    
       /* ========= Menú de administración ========= */
 
       async function configurarMenuAdministracion() {
@@ -265,31 +235,6 @@
 
       configurarMenuAdministracion();
 
-      /* ========= Modal Agregar Venta ========= */
-
-      const modal = document.getElementById("modalVenta");
-      const btnVenta = document.querySelector(".btnVenta");
-      const cerrarModal = document.getElementById("cerrarModal");
-      const btnCancelar = document.getElementById("btnCancelar");
-
-      btnVenta.addEventListener("click", () => {
-        modal.classList.add("activo");
-      });
-
-      cerrarModal.addEventListener("click", () => {
-        modal.classList.remove("activo");
-      });
-
-      btnCancelar.addEventListener("click", (event) => {
-        event.preventDefault();
-
-        document.querySelector(".buscarProducto").value = "";
-        document.querySelector(".formVenta").reset();
-
-        document.querySelectorAll(".campo input[readonly]").forEach((input) => {
-          input.value = "";
-        });
-      });
     </script>
 
     <script src="./JavaScript/agregarVentas.js"></script>
