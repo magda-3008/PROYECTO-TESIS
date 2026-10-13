@@ -63,7 +63,9 @@ async function cargarProductos() {
 
         contenedor.innerHTML = `
             <p class="mensaje-error">
-                No se pudieron cargar los productos
+                No se pudieron cargar los productos.
+                Comprueba que el servidor esté funcionando
+                en el puerto 3000.
             </p>
         `;
     }
@@ -189,11 +191,14 @@ function agregarAlCarrito(id) {
 
     if (stock !== null &&
         (existente?.cantidad || 0) >= stock) {
+
         Swal.fire({
             icon: "warning",
             title: "Stock insuficiente",
-            text: "No hay suficiente existencia para agregar otra unidad."
+            text: "No hay suficiente existencia para agregar otra unidad.",
+            confirmButtonColor: "#1a81a0"
         });
+
         return;
     }
 
@@ -225,11 +230,14 @@ function cambiarCantidad(id, cambio) {
         );
     } else {
         if (stock !== null && nuevaCantidad > stock) {
+
             Swal.fire({
                 icon: "warning",
                 title: "Stock insuficiente",
-                text: "La cantidad supera el stock disponible."
+                text: "La cantidad supera el stock disponible.",
+                confirmButtonColor: "#1a81a0"
             });
+
             return;
         }
 
@@ -374,20 +382,53 @@ function configurarEventos() {
         ?.addEventListener("input", calcularTotales);
 
     document.getElementById("btnVaciar")
-        ?.addEventListener("click", () => {
+        ?.addEventListener("click", async () => {
             if (carrito.length === 0) return;
 
-            if (confirm("¿Deseas vaciar el carrito?")) {
+            const resultado = await Swal.fire({
+                icon: "question",
+                title: "¿Vaciar carrito?",
+                text: "¿Deseas vaciar el carrito?",
+                showCancelButton: true,
+                confirmButtonText: "Sí, vaciar",
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#1a81a0",
+                cancelButtonColor: "#6c757d"
+            });
+
+            if (resultado.isConfirmed) {
                 carrito = [];
                 mostrarCarrito();
             }
         });
 
     document.getElementById("btnCancelar")
-        ?.addEventListener("click", () => {
-            if (carrito.length === 0 ||
-                confirm("¿Deseas cancelar esta venta y vaciar el carrito?")) {
+        ?.addEventListener("click", async () => {
+            if (carrito.length === 0) {
                 carrito = [];
+
+                const descuento = document.getElementById("descuento");
+
+                if (descuento) descuento.value = 0;
+
+                mostrarCarrito();
+                return;
+            }
+
+            const resultado = await Swal.fire({
+                icon: "warning",
+                title: "¿Cancelar venta?",
+                text: "¿Deseas cancelar esta venta y vaciar el carrito?",
+                showCancelButton: true,
+                confirmButtonText: "Sí, cancelar",
+                cancelButtonText: "No, continuar",
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#6c757d"
+            });
+
+            if (resultado.isConfirmed) {
+                carrito = [];
+
                 const descuento = document.getElementById("descuento");
 
                 if (descuento) descuento.value = 0;
@@ -409,21 +450,34 @@ function configurarEventos() {
         });
 }
 
-
 async function avisarGuardadoPendiente() {
     if (carrito.length === 0) {
-        Swal.fire({
+
+        await Swal.fire({
             icon: "warning",
             title: "Carrito vacío",
-            text: "Agrega al menos un producto antes de finalizar la venta."
+            text: "Agrega al menos un producto antes de finalizar la venta.",
+            confirmButtonColor: "#1a81a0"
         });
+
         return;
     }
 
     const boton = document.getElementById("btnFinalizar");
     const totales = calcularTotales();
 
-    if (!confirm(`¿Confirmas la venta por ${formatoMoneda(totales.total)}?`)) {
+    const confirmacion = await Swal.fire({
+        icon: "question",
+        title: "¿Confirmar venta?",
+        text: `¿Confirmas la venta por ${formatoMoneda(totales.total)}?`,
+        showCancelButton: true,
+        confirmButtonText: "Sí, finalizar venta",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#1a81a0",
+        cancelButtonColor: "#6c757d"
+    });
+
+    if (!confirmacion.isConfirmed) {
         return;
     }
 
@@ -447,14 +501,20 @@ async function avisarGuardadoPendiente() {
         const resultado = await respuesta.json();
 
         if (!respuesta.ok) {
-            throw new Error(resultado.mensaje || "No se pudo registrar la venta.");
+            throw new Error(
+                resultado.mensaje || "No se pudo registrar la venta."
+            );
         }
 
-        alert(
-            `¡Venta registrada correctamente!\n` +
-            `Número de venta: ${resultado.venta.id_venta}\n` +
-            `Total: ${formatoMoneda(resultado.venta.total)}`
-        );
+        await Swal.fire({
+            icon: "success",
+            title: "¡Venta registrada correctamente!",
+            html: `
+                Número de venta: <strong>${resultado.venta.id_venta}</strong><br>
+                Total: <strong>${formatoMoneda(resultado.venta.total)}</strong>
+            `,
+            confirmButtonColor: "#1a81a0"
+        });
 
         carrito = [];
 
@@ -466,17 +526,18 @@ async function avisarGuardadoPendiente() {
 
     } catch (error) {
         console.error("Error al finalizar la venta:", error);
-        Swal.fire({
+
+        await Swal.fire({
             icon: "error",
             title: "Error",
             text: error.message || "No se pudo conectar con el servidor.",
             confirmButtonColor: "#1a81a0"
         });
+
     } finally {
         if (boton) boton.disabled = false;
     }
 }
-
 
 document.addEventListener("DOMContentLoaded", () => {
     configurarEventos();
