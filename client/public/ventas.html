@@ -1,11 +1,208 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+
+    <title>Reportes de ventas | Pa'TuBoca</title>
+
+    <link rel="stylesheet" href="./CSS/estilosventas.css" />
+
+    <!-- Tabulator -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/tabulator-tables@6.3.1/dist/css/tabulator.min.css" />
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Tabulator -->
+    <script src="https://unpkg.com/tabulator-tables@6.3.1/dist/js/tabulator.min.js"></script>
   </head>
+
   <body>
-    <h2>Hola</h2>
+    <header class="topbar">
+      <button class="menu-button" aria-label="Abrir menú" type="button">
+        ☰
+      </button>
+
+      <nav class="nav">
+        <a href="#">▣ Productos</a>
+
+        <a href="#">♟ Materia prima</a>
+
+        <a href="#">▤ Recetas</a>
+
+        <a href="#">▦ Ventas</a>
+
+        <a href="#" class="active"> ＋ Reportes </a>
+      </nav>
+
+      <div class="logo">
+        <span>Pa'TuBoca</span>
+        <small>Delicias y más</small>
+      </div>
+    </header>
+
+    <main class="container">
+      <!-- ENCABEZADO -->
+      <section class="page-heading">
+        <div class="heading-title">
+          <div class="title-icon">▥</div>
+
+          <div>
+            <h1>Reportes de ventas</h1>
+
+            <p>Consulta las ventas y el rendimiento de tu negocio.</p>
+          </div>
+        </div>
+
+        <div class="date-filters">
+          <div>
+            <label for="date-from"> Desde </label>
+
+            <input type="date" id="date-from" />
+          </div>
+
+          <div>
+            <label for="date-to"> Hasta </label>
+
+            <input type="date" id="date-to" />
+          </div>
+
+          <button class="btn btn-primary" id="apply-filters" type="button">
+            Actualizar
+          </button>
+        </div>
+
+        <button class="btn btn-pdf" id="save-pdf" type="button">
+          ▤ Guardar reporte en PDF
+        </button>
+      </section>
+
+      <!-- TARJETAS DE RESUMEN -->
+      <section class="summary-grid">
+        <!-- TOTAL VENDIDO -->
+        <article class="summary-card">
+          <div class="summary-icon">C$</div>
+
+          <div>
+            <p class="summary-label">Total vendido</p>
+
+            <h2 id="kpi-total">C$ 0.00</h2>
+          </div>
+        </article>
+
+        <!-- CANTIDAD DE VENTAS -->
+        <article class="summary-card">
+          <div class="summary-icon">▤</div>
+
+          <div>
+            <p class="summary-label">Número total de ventas</p>
+
+            <h2 id="kpi-count">0</h2>
+          </div>
+        </article>
+
+        <!-- DESCUENTOS -->
+        <article class="summary-card">
+          <div class="summary-icon">%</div>
+
+          <div>
+            <p class="summary-label">Descuentos aplicados</p>
+
+            <h2 id="kpi-discounts">C$ 0.00</h2>
+          </div>
+        </article>
+
+        <!-- PRODUCTO MÁS VENDIDO -->
+        <article class="summary-card best-product">
+          <div class="best-heading">
+            <h2>🏆 Producto más vendido</h2>
+
+            <span class="share">
+              <span id="best-share"> 0% </span>
+
+              <small> del total </small>
+            </span>
+          </div>
+
+          <div class="best-product-body">
+            <img id="best-image" src="" alt="Producto más vendido" hidden />
+
+            <div>
+              <h3 id="best-name">Sin datos</h3>
+
+              <p>
+                Cantidad vendida:
+                <strong id="best-quantity"> 0 </strong>
+              </p>
+
+              <p>
+                Total generado:
+                <strong id="best-total"> C$ 0.00 </strong>
+              </p>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- TABLA Y GRÁFICOS -->
+      <section class="dashboard-grid">
+        <!-- TABLA DIARIA -->
+        <article class="panel sales-panel">
+          <div class="panel-heading">
+            <h2>▦ Ventas diarias</h2>
+
+            <span class="muted"> Detalle por fecha </span>
+          </div>
+
+          <div id="sales-table"></div>
+        </article>
+
+        <div class="right-column">
+          <!-- GRÁFICO SEMANAL -->
+          <article class="panel chart-panel">
+            <div class="panel-heading">
+              <h2>◕ Ventas semanales</h2>
+
+              <span class="muted"> Distribución por día </span>
+            </div>
+
+            <div class="weekly-layout">
+              <div class="pie-chart-wrap">
+                <canvas id="weeklyChart"> </canvas>
+              </div>
+
+              <div id="weekly-legend" class="weekly-legend"></div>
+            </div>
+          </article>
+
+          <!-- GRÁFICO MENSUAL -->
+          <article class="panel chart-panel">
+            <div class="panel-heading">
+              <h2>▥ Ventas mensuales</h2>
+
+              <span class="muted"> Comparación por mes </span>
+            </div>
+
+            <div class="monthly-chart-wrap">
+              <canvas id="monthlyChart"> </canvas>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <footer>
+        Pa'TuBoca Delicias y más
+
+        <span> · Reporte generado el </span>
+
+        <span id="generated-date"></span>
+      </footer>
+    </main>
+
+    <!-- JavaScript del reporte -->
+    <script src="./JavaScript/ventas.js"></script>
   </body>
 </html>
