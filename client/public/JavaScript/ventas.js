@@ -479,13 +479,23 @@ function crearGraficoSemanal(datos) {
     datos.forEach(item => {
         if (!item.fecha) return;
 
-        const fecha = new Date(item.fecha);
+        const coincidencia = String(item.fecha).match(
+            /^(\d{4})-(\d{2})-(\d{2})/
+        );
 
-        if (Number.isNaN(fecha.getTime())) {
+        if (!coincidencia) {
             return;
         }
 
-        const numeroDia = fecha.getDay();
+        const anio = Number(coincidencia[1]);
+        const mes = Number(coincidencia[2]);
+        const dia = Number(coincidencia[3]);
+
+        const numeroDia = new Date(
+            anio,
+            mes - 1,
+            dia
+        ).getDay();
 
         const nombreDia =
             numeroDia === 0
@@ -580,57 +590,87 @@ function crearGraficoSemanal(datos) {
 // ============================================================
 function crearGraficoMensual(datos) {
     const canvas = document.getElementById("monthlyChart");
+
     if (!canvas) {
         console.error("No se encontró #monthlyChart.");
         return;
     }
+
     const etiquetas = datos.map(item => {
-        const fecha = new Date(item.mes);
-        if (Number.isNaN(fecha.getTime())) {
-            return item.mes;
+        if (!item.mes) {
+            return "Sin fecha";
         }
+
+        const coincidencia = String(item.mes).match(
+            /^(\d{4})-(\d{2})-(\d{2})/
+        );
+
+        if (!coincidencia) {
+            return String(item.mes);
+        }
+
+        const anio = Number(coincidencia[1]);
+        const mes = Number(coincidencia[2]);
+
+        const fecha = new Date(anio, mes - 1, 1);
+
         return fecha.toLocaleDateString("es-NI", {
-            month: "short",
+            month: "long",
             year: "numeric"
         });
     });
-    const valores = datos.map(item => Number(item.total_ventas) || 0);
+
+    const valores = datos.map(
+        item => Number(item.total_ventas) || 0
+    );
+
     if (graficoMensual) {
         graficoMensual.destroy();
         graficoMensual = null;
     }
+
     graficoMensual = new Chart(canvas, {
         type: "bar",
+
         data: {
             labels: etiquetas,
-            datasets: [{
-                label: "Ventas",
-                data: valores,
-                borderWidth: 1
-            }]
+
+            datasets: [
+                {
+                    label: "Ventas",
+                    data: valores,
+                    borderWidth: 1
+                }
+            ]
         },
+
         options: {
             responsive: true,
             maintainAspectRatio: false,
+
             scales: {
                 y: {
                     beginAtZero: true,
+
                     ticks: {
-                        callback: function (valor) {
-                            return (MONEDA + " " + Number(valor).toLocaleString("es-NI"));
-                        }
+                        callback: valor =>
+                            MONEDA +
+                            " " +
+                            Number(valor).toLocaleString("es-NI")
                     }
                 }
             },
+
             plugins: {
                 legend: {
                     display: false
                 },
+
                 tooltip: {
                     callbacks: {
-                        label: function (context) {
-                            return ("Ventas: " + formatearMoneda(context.raw));
-                        }
+                        label: context =>
+                            "Ventas: " +
+                            formatearMoneda(context.raw)
                     }
                 }
             }
