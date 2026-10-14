@@ -402,11 +402,6 @@ router.get("/mensuales", async (req, res) => {
     }
 });
 
-
-// ============================================================
-// PRODUCTO MÁS VENDIDO DEL RANGO
-// ============================================================
-
 router.get("/producto-mas-vendido", async (req, res) => {
     try {
         const { desde, hasta } = req.query;
@@ -425,28 +420,30 @@ router.get("/producto-mas-vendido", async (req, res) => {
 
         const resultado = await pool.query(
             `
-            SELECT
-                p.id_producto,
-                p.nombre,
-                SUM(dv.cantidad_vendida) AS cantidad_vendida,
-                COALESCE(
-                    SUM(dv.subtotal),
-                    0
-                ) AS total_vendido
-            FROM detalle_venta dv
-            INNER JOIN venta v
-                ON v.id_venta = dv.id_venta
-            INNER JOIN producto p
-                ON p.id_producto = dv.id_producto
-            WHERE v.fecha BETWEEN $1 AND $2
-            GROUP BY
-                p.id_producto,
-                p.nombre
-            ORDER BY
-                cantidad_vendida DESC,
-                total_vendido DESC
-            LIMIT 1;
-            `,
+                SELECT
+                    p.id_producto,
+                    p.nombre,
+                    p.foto_producto,
+                    SUM(dv.cantidad_vendida) AS cantidad_vendida,
+                    COALESCE(
+                        SUM(dv.subtotal),
+                        0
+                    ) AS total_vendido
+                FROM detalle_venta dv
+                INNER JOIN venta v
+                    ON v.id_venta = dv.id_venta
+                INNER JOIN producto p
+                    ON p.id_producto = dv.id_producto
+                WHERE v.fecha BETWEEN $1 AND $2
+                GROUP BY
+                    p.id_producto,
+                    p.nombre,
+                    p.foto_producto
+                ORDER BY
+                    cantidad_vendida DESC,
+                    total_vendido DESC
+                LIMIT 1;
+                `,
             [desde, hasta]
         );
 

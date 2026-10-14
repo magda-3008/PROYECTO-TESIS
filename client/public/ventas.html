@@ -77,23 +77,14 @@
       </div>
     </header>
 
-    <!-- ============================================
-         CONTENIDO PRINCIPAL
-    ============================================= -->
-
     <div class="container-fluid mt-3">
       <main class="container">
-        <!-- ========================================
-             ENCABEZADO
-        ========================================= -->
-
         <section class="page-heading">
           <div class="heading-title">
-            <div class="title-icon">▥</div>
+            <div class="title-icon"><i class="fa-solid fa-list"></i></div>
 
             <div>
               <h1>Reportes de ventas</h1>
-
               <p>Consulta las ventas y el rendimiento de tu negocio.</p>
             </div>
           </div>
@@ -118,22 +109,12 @@
             </button>
           </div>
 
-          <!-- PDF -->
-
           <button class="btn btn-pdf" id="save-pdf" type="button">
-            ▤ Guardar reporte en PDF
+            <i class="fa-solid fa-file-pdf"></i> Guardar reporte en PDF
           </button>
         </section>
 
-        <!-- ========================================
-             MENSAJE
-        ========================================= -->
-
         <div id="mensaje" class="mensaje"></div>
-
-        <!-- ========================================
-             TARJETAS DE RESUMEN
-        ========================================= -->
 
         <section class="summary-grid">
           <!-- TOTAL VENDIDO -->
@@ -151,7 +132,9 @@
           <!-- CANTIDAD DE VENTAS -->
 
           <article class="summary-card">
-            <div class="summary-icon">▤</div>
+            <div class="summary-icon">
+              <i class="fa-solid fa-sack-dollar"></i>
+            </div>
 
             <div>
               <p class="summary-label">Número total de ventas</p>
@@ -176,7 +159,7 @@
 
           <article class="summary-card best-product">
             <div class="best-heading">
-              <h2>🏆 Producto más vendido</h2>
+              <h2><i class="fa-solid fa-trophy"></i> Producto más vendido</h2>
 
               <span class="share">
                 <span id="best-share"> 0% </span>
@@ -207,18 +190,10 @@
           </article>
         </section>
 
-        <!-- ========================================
-             TABLA Y GRÁFICOS
-        ========================================= -->
-
         <section class="dashboard-grid">
-          <!-- ====================================
-                 TABLA DE VENTAS
-            ===================================== -->
-
           <article class="panel sales-panel">
             <div class="panel-heading">
-              <h2>▦ Ventas diarias</h2>
+              <h2><i class="fa-solid fa-cash-register"></i> Ventas diarias</h2>
 
               <span class="muted"> Detalle por fecha </span>
             </div>
@@ -226,18 +201,12 @@
             <div id="tablaVentas"></div>
           </article>
 
-          <!-- ====================================
-                 COLUMNA DERECHA
-            ===================================== -->
-
           <div class="right-column">
-            <!-- =================================
-                     GRÁFICO SEMANAL
-                ================================== -->
-
             <article class="panel chart-panel">
               <div class="panel-heading">
-                <h2>◕ Ventas por día de la semana</h2>
+                <h2>
+                  <i class="fa-solid fa-arrow-trend-up"></i> Ventas semanales
+                </h2>
 
                 <span class="muted"> Distribución por día </span>
               </div>
@@ -251,13 +220,11 @@
               </div>
             </article>
 
-            <!-- =================================
-                     GRÁFICO MENSUAL
-                ================================== -->
-
             <article class="panel chart-panel">
               <div class="panel-heading">
-                <h2>▥ Ventas mensuales</h2>
+                <h2>
+                  <i class="fa-solid fa-arrow-trend-up"></i> Ventas mensuales
+                </h2>
 
                 <span class="muted"> Comparación por mes </span>
               </div>
@@ -269,10 +236,6 @@
           </div>
         </section>
 
-        <!-- ========================================
-             PIE
-        ========================================= -->
-
         <footer>
           Pa'TuBoca Delicias y más
 
@@ -283,10 +246,8 @@
       </main>
     </div>
 
-    <!-- ============================================
-         JAVASCRIPT
-    ============================================= -->
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
     <script src="./JavaScript/ventas.js"></script>
   </body>

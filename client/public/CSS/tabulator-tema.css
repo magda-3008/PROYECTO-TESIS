@@ -1,713 +1,678 @@
 /*TEMA PERSONALIZADO TABULATOR*/
 /* Contenedor principal */
-.tabulator{
-    background: #fff;
-    border: none;
-    border-radius: var(--radio);
-    box-shadow: var(--sombra);
-    overflow: hidden;
-    font-size: 18px;
-    font-family: 'Baloo 2', cursive;
+.tabulator {
+	background: #fff;
+	border: none;
+	border-radius: var(--radio);
+	box-shadow: var(--sombra);
+	overflow: hidden;
+	font-size: 18px;
+	font-family: 'Baloo 2', cursive;
 }
-
 /*ENCABEZADO*/
-.tabulator .tabulator-header{
-    background: #1a81a0;
-    border-bottom: none;
+.tabulator .tabulator-header {
+	background: #1a81a0;
+	border-bottom: none;
 }
-
-.tabulator .tabulator-header .tabulator-col{
-    background: #1a81a0;
-    color: white;
-    border-right: none;
-    border-bottom: none;
-    min-height: 50px;
+.tabulator .tabulator-header .tabulator-col {
+	background: #1a81a0;
+	color: white;
+	border-right: none;
+	border-bottom: none;
+	min-height: 50px;
 }
-
-.tabulator .tabulator-header .tabulator-col:last-child{
-    border-right: none;
+.tabulator .tabulator-header .tabulator-col:last-child {
+	border-right: none;
 }
-
-.tabulator .tabulator-header .tabulator-col-content{
-    padding: 10px 12px;
+.tabulator .tabulator-header .tabulator-col-content {
+	padding: 10px 12px;
 }
-
-.tabulator .tabulator-header .tabulator-col-title{
-    font-size: 17px;
-    font-weight: 700;
+.tabulator .tabulator-header .tabulator-col-title {
+	font-size: 17px;
+	font-weight: 700;
 }
-
-.tabulator-col-title{
-    white-space: normal !important;
-    text-align: center;
-    line-height: 1.1;
+.tabulator-col-title {
+	white-space: normal !important;
+	text-align: center;
+	line-height: 1.1;
 }
-
 /*FILAS*/
-.tabulator-row{
-    background: white;
-    min-height: 60px;
+.tabulator-row {
+	background: white;
+	min-height: 60px;
 }
-
-.tabulator-row:nth-child(even){
-    background: white;
+.tabulator-row:nth-child(even) {
+	background: white;
 }
-
-.tabulator-row:hover{
-    background: #eefcff;
+.tabulator-row:hover {
+	background: #eefcff;
 }
-
-.tabulator-row.tabulator-selected{
-    background: #d9f5ff;
+.tabulator-row.tabulator-selected {
+	background: #d9f5ff;
 }
-
 /*CELDAS*/
-.tabulator-cell{
-    padding: 18px 20px !important;
-    border-right: none !important;
-    border-bottom: 1px solid rgba(28,66,147,.20) !important;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
+.tabulator-cell {
+	padding: 18px 20px !important;
+	border-right: none !important;
+	border-bottom: 1px solid rgba(28, 66, 147, .20) !important;
+	font-size: 16px;
+	display: flex;
+	align-items: center;
 }
-
 /*HEADER DE NUMERACIÓN*/
 .tabulator-row-header,
-.tabulator-row-header-holder{
-
-    background: #1a81a0;
-    color: black;
+.tabulator-row-header-holder {
+	background: #1a81a0;
+	color: black;
 }
-
-.tabulator-row-header .tabulator-cell{
-    justify-content: center;
-    font-weight: bold;
+.tabulator-row-header .tabulator-cell {
+	justify-content: center;
+	font-weight: bold;
 }
-
 /*PAGINACIÓN*/
-.tabulator-footer{
-    background: white;
-    border-top: 1px solid rgba(28,66,147,.15);
-    padding: 8px;
+.tabulator-footer {
+	background: white;
+	border-top: 1px solid rgba(28, 66, 147, .15);
+	padding: 8px;
 }
-
-.tabulator-page{
-    border-radius: 8px;
-    padding: 4px 10px;
-    margin: 0 3px;
-    transition: .2s;
+.tabulator-page {
+	border-radius: 8px;
+	padding: 4px 10px;
+	margin: 0 3px;
+	transition: .2s;
 }
-
-.tabulator-page:hover{
-    background: #befbfc;
+.tabulator-page:hover {
+	background: #befbfc;
 }
-
-.tabulator-page.active{
-    background: #1a81a0;
-    color: white;
+.tabulator-page.active {
+	background: #1a81a0;
+	color: white;
 }
-
 /*MENÚ CONTEXTUAL*/
-.tabulator-menu{
-    border: none;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 8px 18px rgba(0,0,0,.18);
+.tabulator-menu {
+	border: none;
+	border-radius: 12px;
+	overflow: hidden;
+	box-shadow: 0 8px 18px rgba(0, 0, 0, .18);
 }
-
-.tabulator-menu-item{
-    padding: 12px 16px;
-    font-size: 16px;
-    transition: .2s;
+.tabulator-menu-item {
+	padding: 12px 16px;
+	font-size: 16px;
+	transition: .2s;
 }
-
-.tabulator-menu-item:hover{
-    background: #befbfc;
+.tabulator-menu-item:hover {
+	background: #befbfc;
 }
-
 /*ICONO DE ACCIONES*/
-.bi-three-dots-vertical{
-    font-size: 22px;
-    color: #1a81a0;
-    cursor: pointer;
-    transition: .2s;
+.bi-three-dots-vertical {
+	font-size: 22px;
+	color: #1a81a0;
+	cursor: pointer;
+	transition: .2s;
 }
-
-.bi-three-dots-vertical:hover{
-    color: #0e617a;
-    transform: scale(1.2);
+.bi-three-dots-vertical:hover {
+	color: #0e617a;
+	transform: scale(1.2);
 }
-
 /*SCROLLBAR*/
-.tabulator-tableHolder::-webkit-scrollbar{
-    height: 10px;
-    width: 10px;
+.tabulator-tableHolder::-webkit-scrollbar {
+	height: 10px;
+	width: 10px;
 }
-
-.tabulator-tableHolder::-webkit-scrollbar-thumb{
-    background: #b9dbe6;
-    border-radius: 10px;
+.tabulator-tableHolder::-webkit-scrollbar-thumb {
+	background: #b9dbe6;
+	border-radius: 10px;
 }
-
-.tabulator-tableHolder::-webkit-scrollbar-thumb:hover{
-    background: #87bfd2;
+.tabulator-tableHolder::-webkit-scrollbar-thumb:hover {
+	background: #87bfd2;
 }
-
 /*INPUTS DE EDICIÓN*/
-.tabulator-editing{
-    padding: 0 !important;
+.tabulator-editing {
+	padding: 0 !important;
 }
-
 .tabulator-editing input,
-.tabulator-editing select{
-    border: 2px solid #1a81a0;
-    outline: none;
-    width: 100%;
-    height: 100%;
-    padding: 10px;
+.tabulator-editing select {
+	border: 2px solid #1a81a0;
+	outline: none;
+	width: 100%;
+	height: 100%;
+	padding: 10px;
 }
-
 /*ORDENAMIENTO COLUMNAS*/
-.tabulator-arrow{
-    border-top-color: white !important;
+.tabulator-arrow {
+	border-top-color: white !important;
 }
-
-.tabulator-col.tabulator-sortable:hover{
-    background: #156b84;
+.tabulator-col.tabulator-sortable:hover {
+	background: #156b84;
 }
-
-.container-fluid{
-    padding-left: 40px;
-    padding-right: 40px;
+.container-fluid {
+	padding-left: 40px;
+	padding-right: 40px;
 }
-
 /*CARGANDO TABLA*/
-.tabla-cargando{
-    min-height:350px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    gap:15px;
-    color:#1a81a0;
-    font-size:18px;
+.tabla-cargando {
+	min-height: 350px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 15px;
+	color: #1a81a0;
+	font-size: 18px;
 }
-
-.tabla-cargando .spinner-border{
-    width:3rem;
-    height:3rem;
+.tabla-cargando .spinner-border {
+	width: 3rem;
+	height: 3rem;
 }
-
-
 /*TABLA VACÍA*/
-.tabla-vacia{
-    padding:60px 20px;
-    text-align:center;
-    color:#667;
+.tabla-vacia {
+	padding: 60px 20px;
+	text-align: center;
+	color: #667;
 }
-
-.tabla-vacia i{
-    font-size:55px;
-    color:#1a81a0;
+.tabla-vacia i {
+	font-size: 55px;
+	color: #1a81a0;
 }
-
-.tabla-vacia h4{
-    margin-top:15px;
-    font-size:22px;
+.tabla-vacia h4 {
+	margin-top: 15px;
+	font-size: 22px;
 }
-
-.tabla-vacia p{
-    margin-top:8px;
-    font-size:17px;
+.tabla-vacia p {
+	margin-top: 8px;
+	font-size: 17px;
 }
-
 /*ERROR AL CARGAR*/
-.tabla-error{
-    min-height:350px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    gap:10px;
-    color:#161616;
+.tabla-error {
+	min-height: 350px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	gap: 10px;
+	color: #161616;
 }
-
-.tabla-error i{
-    font-size:60px;
+.tabla-error i {
+	font-size: 60px;
 }
-
-.tabla-error h4{
-    margin:0;
+.tabla-error h4 {
+	margin: 0;
 }
-
-.tabla-error p{
-    color:#667;
+.tabla-error p {
+	color: #667;
 }
-
 .tabla-error .btn,
 .tabla-error button,
 .swal2-confirm {
-    background-color: #6c5ce7 !important; 
-    border-color: #6c5ce7 !important;
-    color: #fff !important;
-    border-radius: 12px !important;
-    font-family: 'Baloo 2', cursive !important;
-    font-size: 16px !important;
-    padding: 8px 30px !important;
-    box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.2) !important; 
-    transition: .25s !important;
+	background-color: #6c5ce7 !important;
+	border-color: #6c5ce7 !important;
+	color: #fff !important;
+	border-radius: 12px !important;
+	font-family: 'Baloo 2', cursive !important;
+	font-size: 16px !important;
+	padding: 8px 30px !important;
+	box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.2) !important;
+	transition: .25s !important;
 }
-
 .tabla-error .btn:hover,
 .tabla-error button:hover,
 .swal2-confirm:hover {
-    background-color: #5b4bc4 !important;
-    border-color: #5b4bc4 !important;
+	background-color: #5b4bc4 !important;
+	border-color: #5b4bc4 !important;
 }
-
 /* =========================================
         ESTADO DEL STOCK
 ========================================= */
-
 /* Stock normal */
 .tabulator-row.stock-normal .tabulator-cell {
-    background-color: white !important;
+	background-color: white !important;
 }
-
 /* Stock bajo */
 .tabulator-row.stock-bajo .tabulator-cell {
-    background-color: #fff3cd !important;
+	background-color: #fff3cd !important;
 }
-
 /* Stock agotado */
 .tabulator-row.stock-agotado .tabulator-cell {
-    background-color: #f8d7da !important;
+	background-color: #f8d7da !important;
 }
-
 /* =========================================
         DISEÑO RESPONSIVE TABULATOR
 ========================================= */
-
 /* -----------------------------------------
    TABLET
    577px - 991px
 ----------------------------------------- */
-
 @media (min-width: 577px) and (max-width: 991px) {
-
-    .tabulator {
-        font-size: 16px;
-    }
-
-    .tabulator .tabulator-header .tabulator-col-content {
-        padding: 8px 8px;
-    }
-
-    .tabulator .tabulator-header .tabulator-col-title {
-        font-size: 15px;
-    }
-
-    .tabulator-cell {
-        padding: 12px 12px !important;
-        font-size: 15px;
-    }
-
-    .tabulator-row {
-        min-height: 52px;
-    }
-
-    .columna-texto-ajustable {
-        white-space: normal !important;
-        overflow-wrap: break-word;
-        word-break: normal;
-        line-height: 1.2;
-    }
-
+	.tabulator {
+		font-size: 16px;
+	}
+	.tabulator .tabulator-header .tabulator-col-content {
+		padding: 8px 8px;
+	}
+	.tabulator .tabulator-header .tabulator-col-title {
+		font-size: 15px;
+	}
+	.tabulator-cell {
+		padding: 12px 12px !important;
+		font-size: 15px;
+	}
+	.tabulator-row {
+		min-height: 52px;
+	}
+	.columna-texto-ajustable {
+		white-space: normal !important;
+		overflow-wrap: break-word;
+		word-break: normal;
+		line-height: 1.2;
+	}
 }
-
-
 /* -----------------------------------------
    CELULAR
    Hasta 576px
 ----------------------------------------- */
-
 @media (max-width: 576px) {
-
-    /* CONTENEDOR DE LA TABLA */
-
-    .tabulator {
-        width: 100%;
-        font-size: 14px;
-        border-radius: 16px;
-    }
-
-    /* ENCABEZADO */
-
-    .tabulator .tabulator-header {
-        min-height: 44px;
-    }
-
-    .tabulator .tabulator-header .tabulator-col {
-        min-height: 44px;
-    }
-
-    .tabulator .tabulator-header .tabulator-col-content {
-        padding: 7px 6px;
-    }
-
-    .tabulator .tabulator-header .tabulator-col-title {
-        font-size: 13px;
-        line-height: 1.15;
-    }
-
-
-    /* FILAS */
-
-    .tabulator-row {
-        min-height: 48px;
-    }
-
-
-    /* CELDAS */
-
-    .tabulator-cell {
-        padding: 9px 8px !important;
-        font-size: 14px;
-        line-height: 1.2;
-    }
-
-    .tabulator .tabulator-col[tabulator-field="nombre"],
-    .tabulator .tabulator-cell[tabulator-field="nombre"] {
-        width: 10% !important;   
-        max-width: 10% !important;
-        box-sizing: border-box;
-    }
-
-    /* BOTONES / ACCIONES */
-
-    .tabulator-cell .btn {
-        min-width: 34px;
-        min-height: 34px;
-        padding: 5px 7px;
-    }
-
-    .bi-three-dots-vertical {
-        font-size: 21px;
-    }
-
-
-    /* MENÚ CONTEXTUAL */
-
-    .tabulator-menu {
-        border-radius: 12px;
-        max-width: calc(100vw - 30px);
-    }
-
-    .tabulator-menu-item {
-        padding: 11px 14px;
-        font-size: 15px;
-    }
-
-
-    /* PAGINACIÓN */
-
-    .tabulator-footer {
-        padding: 7px 5px;
-    }
-
-    .tabulator-page {
-        padding: 4px 8px;
-        margin: 0 2px;
-        font-size: 14px;
-    }
-
-
-    /* SCROLL HORIZONTAL */
-
-    .tabulator-tableHolder {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .tabulator-tableHolder::-webkit-scrollbar {
-        height: 7px;
-    }
-
-
-    /* INPUTS DE EDICIÓN */
-
-    .tabulator-editing input,
-    .tabulator-editing select {
-        padding: 7px;
-        font-size: 14px;
-    }
-
-
-    /* MENSAJE DE TABLA VACÍA */
-
-    .tabla-vacia {
-        padding: 45px 15px;
-    }
-
-    .tabla-vacia i {
-        font-size: 45px;
-    }
-
-    .tabla-vacia h4 {
-        font-size: 19px;
-    }
-
-    .tabla-vacia p {
-        font-size: 15px;
-    }
-
-
-    /* CARGANDO */
-
-    .tabla-cargando {
-        min-height: 280px;
-        font-size: 16px;
-    }
-
-
-    /* ERROR */
-
-    .tabla-error {
-        min-height: 280px;
-        padding: 20px;
-    }
-
-    .tabla-error i {
-        font-size: 50px;
-    }
-
-    .tabla-error h4 {
-        font-size: 19px;
-    }
-
-    .tabla-error p {
-        font-size: 15px;
-    }
-
-    .tabla-error .btn,
-    .tabla-error button,
-    .swal2-confirm {
-        font-size: 15px !important;
-        padding: 7px 22px !important;
-    }
-
+	/* CONTENEDOR DE LA TABLA */
+	.tabulator {
+		width: 100%;
+		font-size: 14px;
+		border-radius: 16px;
+	}
+	/* ENCABEZADO */
+	.tabulator .tabulator-header {
+		min-height: 44px;
+	}
+	.tabulator .tabulator-header .tabulator-col {
+		min-height: 44px;
+	}
+	.tabulator .tabulator-header .tabulator-col-content {
+		padding: 7px 6px;
+	}
+	.tabulator .tabulator-header .tabulator-col-title {
+		font-size: 13px;
+		line-height: 1.15;
+	}
+	/* FILAS */
+	.tabulator-row {
+		min-height: 48px;
+	}
+	/* CELDAS */
+	.tabulator-cell {
+		padding: 9px 8px !important;
+		font-size: 14px;
+		line-height: 1.2;
+	}
+	.tabulator .tabulator-col[tabulator-field="nombre"],
+	.tabulator .tabulator-cell[tabulator-field="nombre"] {
+		width: 10% !important;
+		max-width: 10% !important;
+		box-sizing: border-box;
+	}
+	/* BOTONES / ACCIONES */
+	.tabulator-cell .btn {
+		min-width: 34px;
+		min-height: 34px;
+		padding: 5px 7px;
+	}
+	.bi-three-dots-vertical {
+		font-size: 21px;
+	}
+	/* MENÚ CONTEXTUAL */
+	.tabulator-menu {
+		border-radius: 12px;
+		max-width: calc(100vw - 30px);
+	}
+	.tabulator-menu-item {
+		padding: 11px 14px;
+		font-size: 15px;
+	}
+	/* PAGINACIÓN */
+	.tabulator-footer {
+		padding: 7px 5px;
+	}
+	.tabulator-page {
+		padding: 4px 8px;
+		margin: 0 2px;
+		font-size: 14px;
+	}
+	/* SCROLL HORIZONTAL */
+	.tabulator-tableHolder {
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+	.tabulator-tableHolder::-webkit-scrollbar {
+		height: 7px;
+	}
+	/* INPUTS DE EDICIÓN */
+	.tabulator-editing input,
+	.tabulator-editing select {
+		padding: 7px;
+		font-size: 14px;
+	}
+	/* MENSAJE DE TABLA VACÍA */
+	.tabla-vacia {
+		padding: 45px 15px;
+	}
+	.tabla-vacia i {
+		font-size: 45px;
+	}
+	.tabla-vacia h4 {
+		font-size: 19px;
+	}
+	.tabla-vacia p {
+		font-size: 15px;
+	}
+	/* CARGANDO */
+	.tabla-cargando {
+		min-height: 280px;
+		font-size: 16px;
+	}
+	/* ERROR */
+	.tabla-error {
+		min-height: 280px;
+		padding: 20px;
+	}
+	.tabla-error i {
+		font-size: 50px;
+	}
+	.tabla-error h4 {
+		font-size: 19px;
+	}
+	.tabla-error p {
+		font-size: 15px;
+	}
+	.tabla-error .btn,
+	.tabla-error button,
+	.swal2-confirm {
+		font-size: 15px !important;
+		padding: 7px 22px !important;
+	}
 }
-
-
 /* -----------------------------------------
    CELULARES MUY PEQUEÑOS
    Hasta 400px
 ----------------------------------------- */
 @media (max-width: 400px) {
-
-    .tabulator {
-        font-size: 13px;
-        border-radius: 14px;
-    }
-
-    .tabulator .tabulator-header .tabulator-col-content {
-        padding: 6px 5px;
-    }
-
-    .tabulator .tabulator-header .tabulator-col-title {
-        font-size: 12px;
-    }
-
-    .tabulator-cell {
-        padding: 8px 6px !important;
-        font-size: 13px;
-    }
-
-    .tabulator-row {
-        min-height: 46px;
-    }
-
-    .columna-texto-ajustable {
-        line-height: 1.1;
-    }
-
-    .tabulator-page {
-        padding: 3px 7px;
-        font-size: 13px;
-    }
-
+	.tabulator {
+		font-size: 13px;
+		border-radius: 14px;
+	}
+	.tabulator .tabulator-header .tabulator-col-content {
+		padding: 6px 5px;
+	}
+	.tabulator .tabulator-header .tabulator-col-title {
+		font-size: 12px;
+	}
+	.tabulator-cell {
+		padding: 8px 6px !important;
+		font-size: 13px;
+	}
+	.tabulator-row {
+		min-height: 46px;
+	}
+	.columna-texto-ajustable {
+		line-height: 1.1;
+	}
+	.tabulator-page {
+		padding: 3px 7px;
+		font-size: 13px;
+	}
 }
-
 /* =========================================
    TABLA DE USUARIOS
 ========================================= */
-
 .badge-rol {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 120px;
-    padding: 6px 12px;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 600;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 120px;
+	padding: 6px 12px;
+	border-radius: 10px;
+	font-size: 16px;
+	font-weight: 600;
 }
-
 .badge-rol.administrador {
-    background: #d9f5ff;
-    color: #1a81a0;
+	background: #d9f5ff;
+	color: #1a81a0;
 }
-
 .badge-rol.colaborador {
-    background: #e9e9e9;
-    color: #555;
+	background: #e9e9e9;
+	color: #555;
 }
 
-/* =========================================
-   TABLA DE VENTAS - DASHBOARD
-========================================= */
+/* =========================================================
+   TABLA DE VENTAS
+   ========================================================= */
 
-#tablaVentas .tabulator {
+#tablaVentas.tabulator {
+    width: 100%;
     border: none;
-    border-radius: 12px;
+    border-radius: 14px;
+    background: #ffffff;
     box-shadow: none;
-    font-size: 15px;
+    overflow: hidden;
     font-family: 'Baloo 2', cursive;
-    background: #fff;
+    font-size: 15px;
 }
 
-/* ENCABEZADO */
+/* =========================================================
+   ENCABEZADO
+   ========================================================= */
 
-#tablaVentas .tabulator .tabulator-header {
+#tablaVentas.tabulator .tabulator-header {
     background: #1a81a0;
     border: none;
 }
 
-#tablaVentas .tabulator .tabulator-header .tabulator-col {
+#tablaVentas.tabulator .tabulator-header .tabulator-col {
     background: #1a81a0;
-    color: white;
+    color: #ffffff;
     border: none;
-    min-height: 42px;
+    min-height: 46px;
 }
 
-#tablaVentas .tabulator .tabulator-header .tabulator-col-content {
-    padding: 8px 10px;
+#tablaVentas.tabulator .tabulator-header .tabulator-col-content {
+    padding: 9px 12px;
 }
 
-#tablaVentas .tabulator .tabulator-header .tabulator-col-title {
+#tablaVentas.tabulator .tabulator-header .tabulator-col-title {
     font-size: 14px;
     font-weight: 700;
     text-align: center;
-}
-
-/* PRODUCTOS */
-
-#tablaVentas .tabulator-cell[tabulator-field="productos"] {
     white-space: normal;
-    line-height: 1.25;
+    line-height: 1.15;
 }
 
-/* TOTAL */
+/* Iconos de ordenamiento */
+#tablaVentas.tabulator .tabulator-header .tabulator-col .tabulator-col-sorter {
+    color: rgba(255, 255, 255, 0.8);
+}
 
-#tablaVentas .tabulator-cell[tabulator-field="total"] {
+/* =========================================================
+   FILAS
+   ========================================================= */
+
+#tablaVentas.tabulator .tabulator-row {
+    min-height: 52px;
+    background: #ffffff;
+    border-bottom: 1px solid rgba(28, 66, 147, 0.10);
+    transition:
+        background-color 0.18s ease,
+        transform 0.18s ease;
+}
+
+#tablaVentas.tabulator .tabulator-row:nth-child(even) {
+    background: #f9fdfe;
+}
+
+#tablaVentas.tabulator .tabulator-row:hover {
+    background: #eefcff;
+}
+
+/* =========================================================
+   CELDAS
+   ========================================================= */
+
+#tablaVentas.tabulator .tabulator-cell {
+    padding: 10px 13px !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    font-size: 14px;
+    color: #344b50;
+    display: flex;
+    align-items: center;
+}
+
+/* Número de venta */
+#tablaVentas.tabulator
+.tabulator-cell[tabulator-field="id"] {
+    justify-content: center;
+    font-weight: 700;
+    color: #4a7f83;
+}
+
+/* Fecha */
+#tablaVentas.tabulator
+.tabulator-cell[tabulator-field="fechaFormateada"] {
+    justify-content: center;
+    white-space: nowrap;
+    color: #52676c;
+}
+
+/* Productos */
+#tablaVentas.tabulator
+.tabulator-cell[tabulator-field="productos"] {
+    justify-content: flex-start;
+    white-space: normal;
+    line-height: 1.3;
+    color: #40575c;
+}
+
+/* Total */
+#tablaVentas.tabulator
+.tabulator-cell[tabulator-field="total"] {
+    justify-content: flex-end;
+    white-space: nowrap;
+    font-size: 15px;
     font-weight: 700;
     color: #1a81a0;
 }
 
-/* ESTADO */
+/* Estado */
+#tablaVentas.tabulator
+.tabulator-cell[tabulator-field="estado"] {
+    justify-content: center;
+}
+
+/* =========================================================
+   ETIQUETA DE ESTADO
+   ========================================================= */
 
 #tablaVentas .estado-venta {
     display: inline-flex;
     align-items: center;
     justify-content: center;
 
-    padding: 4px 10px;
-    min-width: 82px;
+    min-width: 86px;
+    padding: 5px 11px;
 
     border-radius: 20px;
 
-    background: #d9f5ff;
+    background: #dff7fb;
     color: #1a81a0;
 
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
 }
 
-/* MENSAJE SIN DATOS */
+/* =========================================================
+   PIE / PAGINACIÓN
+   ========================================================= */
 
-#tablaVentas .tabulator-placeholder {
-    color: #667;
-    font-size: 15px;
+
+#tablaVentas.tabulator .tabulator-page:hover {
+    background: #befbfc;
+    color: #1a81a0;
+}
+
+#tablaVentas.tabulator .tabulator-page.active {
+    background: #1a81a0;
+    color: #ffffff;
+}
+
+/* =========================================================
+   SELECTOR DE CANTIDAD
+   ========================================================= */
+
+#tablaVentas.tabulator .tabulator-footer
+.tabulator-page-counter {
+    color: #6b7f83;
+}
+
+#tablaVentas.tabulator .tabulator-footer
+.tabulator-page-size {
+    border: 1px solid #cfe5e8;
+    border-radius: 7px;
+    background: #ffffff;
+    color: #4a7f83;
     font-family: 'Baloo 2', cursive;
+    font-size: 13px;
+    padding: 4px 7px;
 }
 
-/* =========================================
-   RESPONSIVE - TABLA DE VENTAS
-========================================= */
+/* =========================================================
+   MENSAJE SIN DATOS
+   ========================================================= */
+
+#tablaVentas.tabulator .tabulator-placeholder {
+    background: #ffffff;
+    color: #718589;
+    font-family: 'Baloo 2', cursive;
+    font-size: 15px;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
 
 @media (max-width: 991px) {
 
-    #tablaVentas .tabulator {
-        font-size: 14px;
-    }
-
-    #tablaVentas .tabulator .tabulator-header .tabulator-col-content {
-        padding: 7px 8px;
-    }
-
-    #tablaVentas .tabulator .tabulator-header .tabulator-col-title {
+    #tablaVentas.tabulator .tabulator-cell {
+        padding: 9px 10px !important;
         font-size: 13px;
     }
 
-    #tablaVentas .tabulator-cell {
-        padding: 8px 9px !important;
+    #tablaVentas.tabulator .tabulator-header
+    .tabulator-col-title {
         font-size: 13px;
-    }
-
-    #tablaVentas .tabulator-row {
-        min-height: 44px;
     }
 
     #tablaVentas .estado-venta {
-        font-size: 12px;
-        padding: 3px 8px;
-        min-width: 72px;
+        min-width: 76px;
+        padding: 4px 8px;
+        font-size: 11px;
     }
 }
 
-
 @media (max-width: 576px) {
 
-    #tablaVentas .tabulator {
-        border-radius: 10px;
+    #tablaVentas.tabulator {
+        font-size: 13px;
     }
 
-    #tablaVentas .tabulator .tabulator-header .tabulator-col-content {
-        padding: 6px;
-    }
-
-    #tablaVentas .tabulator .tabulator-header .tabulator-col-title {
+    #tablaVentas.tabulator .tabulator-cell {
+        padding: 8px !important;
         font-size: 12px;
     }
 
-    #tablaVentas .tabulator-cell {
-        padding: 7px 6px !important;
+    #tablaVentas.tabulator .tabulator-header
+    .tabulator-col-title {
         font-size: 12px;
-    }
-
-    #tablaVentas .tabulator-row {
-        min-height: 42px;
     }
 
     #tablaVentas .estado-venta {
-        font-size: 11px;
-        padding: 3px 7px;
-        min-width: 65px;
-    }
-
-    #tablaVentas .tabulator-page {
-        padding: 3px 7px;
-        font-size: 12px;
+        min-width: 70px;
+        font-size: 10px;
     }
 }

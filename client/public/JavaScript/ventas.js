@@ -120,7 +120,7 @@ async function obtenerDatos(endpoint) {
     try {
         datos = await respuesta.json();
     } catch {
-        throw new Error(`El servidor respondió con un formato no válido. Código: ${respuesta.status}`);
+        throw new Error("Verifica tu conexión o intenta de nuevo más tarde");
     }
     if (!respuesta.ok) {
         throw new Error(datos?.mensaje || `Error del servidor (${respuesta.status}).`);
@@ -388,51 +388,43 @@ function inicializarTabla() {
         layout: "fitColumns",
         placeholder: "No hay ventas registradas hoy.",
         pagination: true,
-        paginationSize: 10,
-        paginationSizeSelector: [
-            10,
-            20,
-            50
-        ],
-        columns: [{
-            title: "N.º venta",
-            field: "id",
-            width: 100,
-            hozAlign: "center"
-        }, {
-            title: "Fecha",
-            field: "fechaFormateada",
-            width: 120,
-            hozAlign: "center"
-        }, {
-            title: "Productos",
-            field: "productos",
-            minWidth: 250,
-            widthGrow: 3,
-            formatter: "textarea",
-            variableHeight: true
-        }, {
-            title: "Total",
-            field: "total",
-            width: 130,
-            hozAlign: "right",
-            formatter: function (cell) {
-                return formatearMoneda(cell.getValue());
-            }
-        }, {
-            title: "Estado",
-            field: "estado",
-            width: 130,
-            hozAlign: "center",
-            formatter: function (cell) {
-                const estado = cell.getValue() || "Completada";
-                return `
+        paginationSize: 5,
+        columns: [
+            { title: "N.º venta", field: "id", width: 100, hozAlign: "center" },
+            {
+                title: "Fecha",
+                field: "fechaFormateada",
+                width: 120,
+                hozAlign: "center"
+            }, {
+                title: "Productos",
+                field: "productos",
+                minWidth: 250,
+                widthGrow: 3,
+                formatter: "textarea",
+                variableHeight: true
+            }, {
+                title: "Total",
+                field: "total",
+                width: 130,
+                hozAlign: "right",
+                formatter: function (cell) {
+                    return formatearMoneda(cell.getValue());
+                }
+            }, {
+                title: "Estado",
+                field: "estado",
+                width: 130,
+                hozAlign: "center",
+                formatter: function (cell) {
+                    const estado = cell.getValue() || "Completada";
+                    return `
                             <span class="estado-venta">
                                 ${escaparHTML(estado)}
                             </span>
                         `;
-            }
-        }]
+                }
+            }]
     });
 }
 // ============================================================
@@ -502,15 +494,24 @@ function crearGraficoSemanal(datos) {
                 ? "Domingo"
                 : dias[numeroDia - 1];
 
-        ventasPorDia[nombreDia] += Number(item.total_ventas) || 0;
+        ventasPorDia[nombreDia] +=
+            Number(item.total_ventas) || 0;
     });
 
     const valores = dias.map(dia => ventasPorDia[dia]);
+
+    // ============================================
+    // DESTRUIR GRÁFICO ANTERIOR
+    // ============================================
 
     if (graficoSemanal) {
         graficoSemanal.destroy();
         graficoSemanal = null;
     }
+
+    // ============================================
+    // CREAR GRÁFICO
+    // ============================================
 
     graficoSemanal = new Chart(canvas, {
         type: "doughnut",
@@ -521,7 +522,8 @@ function crearGraficoSemanal(datos) {
             datasets: [
                 {
                     data: valores,
-                    borderWidth: 2
+                    borderWidth: 2,
+                    hoverOffset: 6
                 }
             ]
         },
@@ -532,18 +534,37 @@ function crearGraficoSemanal(datos) {
 
             cutout: "58%",
 
+            layout: {
+                padding: {
+                    top: 10,
+                    bottom: 10,
+                    left: 10,
+                    right: 10
+                }
+            },
+
+            animation: {
+                duration: 700
+            },
+
             plugins: {
                 legend: {
                     display: false
                 },
 
                 tooltip: {
+                    displayColors: true,
+
+                    padding: 10,
+
                     callbacks: {
                         label: context => {
                             return (
                                 context.label +
                                 ": " +
-                                formatearMoneda(Number(context.raw || 0))
+                                formatearMoneda(
+                                    Number(context.raw || 0)
+                                )
                             );
                         }
                     }
@@ -572,14 +593,29 @@ function crearGraficoSemanal(datos) {
 
             return `
                 <div class="weekly-legend-item">
-                    <span class="weekly-legend-name">
-                        ${dia}
-                    </span>
 
-                    <span class="weekly-legend-value">
-                        ${formatearMoneda(valor)}
-                        <small>${porcentaje.toFixed(1)}%</small>
-                    </span>
+                    <div class="weekly-legend-left">
+
+                        <span class="weekly-legend-indicator"></span>
+
+                        <span class="weekly-legend-name">
+                            ${dia}
+                        </span>
+
+                    </div>
+
+                    <div class="weekly-legend-right">
+
+                        <span class="weekly-legend-value">
+                            ${formatearMoneda(valor)}
+                        </span>
+
+                        <span class="weekly-legend-percentage">
+                            ${porcentaje.toFixed(1)}%
+                        </span>
+
+                    </div>
+
                 </div>
             `;
         })
@@ -677,42 +713,281 @@ function crearGraficoMensual(datos) {
         }
     });
 }
+
 // ============================================================
-// EXPORTAR CSV
+// EXPORTAR PDF
 // ============================================================
-function exportarCSV() {
+function exportarPDF() {
+
     if (!ventasDiarias.length) {
-        mostrarMensaje("No hay ventas de hoy para exportar.", "error");
+        mostrarMensaje(
+            "No hay ventas en el período seleccionado para exportar.",
+            "error"
+        );
         return;
     }
-    const filas = [
-        ["Numero de venta", "Fecha", "Productos", "Total", "Estado"], ...ventasDiarias.map(venta => [
-            venta.id,
-            venta.fecha,
-            venta.productos,
-            Number(venta.total || 0).toFixed(2),
-            venta.estado
-        ])
-    ];
-    const contenido = filas.map(fila => fila.map(valor => `"${String(
-        valor
-    ).replace(
-        /"/g,
-        '""'
-    )}"`).join(";")).join("\r\n");
-    const archivo = new Blob(
-        ["\uFEFF" + contenido], {
-        type: "text/csv;charset=utf-8;"
-    });
-    const url = URL.createObjectURL(archivo);
-    const enlace = document.createElement("a");
-    enlace.href = url;
-    enlace.download = "reporte_ventas_diarias.csv";
-    document.body.appendChild(enlace);
-    enlace.click();
-    enlace.remove();
-    URL.revokeObjectURL(url);
+
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+        mostrarMensaje(
+            "No se pudo cargar el generador de PDF.",
+            "error"
+        );
+        console.error("jsPDF no está disponible.");
+        return;
+    }
+
+    try {
+
+        const { jsPDF } = window.jspdf;
+
+        const doc = new jsPDF({
+            orientation: "landscape",
+            unit: "mm",
+            format: "a4"
+        });
+
+        // ====================================================
+        // RANGO DE FECHAS
+        // ====================================================
+
+        const { desde, hasta } = obtenerRangoFechas();
+
+        // ====================================================
+        // INFORMACIÓN DEL REPORTE
+        // ====================================================
+
+        const fechaGeneracion = new Date().toLocaleDateString(
+            "es-NI",
+            {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            }
+        );
+
+        const totalVentas = ventasDiarias.reduce(
+            (suma, venta) =>
+                suma + Number(venta.total || 0),
+            0
+        );
+
+        const cantidadVentas = ventasDiarias.length;
+
+        // ====================================================
+        // ENCABEZADO
+        // ====================================================
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(18);
+
+        doc.text(
+            "Pa'TuBoca Delicias y Más",
+            14,
+            18
+        );
+
+        doc.setFontSize(14);
+
+        doc.text(
+            "Reporte de ventas",
+            14,
+            27
+        );
+
+        // ====================================================
+        // INFORMACIÓN DEL PERÍODO
+        // ====================================================
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+
+        doc.text(
+            `Período: ${formatearFecha(desde)} - ${formatearFecha(hasta)}`,
+            14,
+            36
+        );
+
+        doc.text(
+            `Fecha de generación: ${fechaGeneracion}`,
+            14,
+            42
+        );
+
+        // ====================================================
+        // RESUMEN
+        // ====================================================
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10);
+
+        doc.text(
+            `Cantidad de ventas: ${cantidadVentas}`,
+            200,
+            36
+        );
+
+        doc.text(
+            `Total vendido: ${formatearMoneda(totalVentas)}`,
+            200,
+            42
+        );
+
+        // ====================================================
+        // DATOS DE LA TABLA
+        // ====================================================
+
+        const filas = ventasDiarias.map(venta => {
+
+            return [
+                venta.id,
+                venta.fechaFormateada,
+                venta.productos,
+                formatearMoneda(venta.total),
+                venta.estado || "Completada"
+            ];
+
+        });
+
+        // ====================================================
+        // TABLA
+        // ====================================================
+
+        doc.autoTable({
+
+            startY: 50,
+
+            head: [[
+                "N.º venta",
+                "Fecha",
+                "Productos",
+                "Total",
+                "Estado"
+            ]],
+
+            body: filas,
+
+            theme: "grid",
+
+            styles: {
+                font: "helvetica",
+                fontSize: 9,
+                cellPadding: 3,
+                valign: "middle"
+            },
+
+            headStyles: {
+                fontStyle: "bold",
+                halign: "center"
+            },
+
+            columnStyles: {
+
+                0: {
+                    halign: "center",
+                    cellWidth: 25
+                },
+
+                1: {
+                    halign: "center",
+                    cellWidth: 30
+                },
+
+                2: {
+                    cellWidth: 150
+                },
+
+                3: {
+                    halign: "right",
+                    cellWidth: 35
+                },
+
+                4: {
+                    halign: "center",
+                    cellWidth: 30
+                }
+            },
+
+            margin: {
+                left: 14,
+                right: 14
+            }
+        });
+
+        // ====================================================
+        // PIE DEL REPORTE
+        // ====================================================
+
+        const posicionFinal = doc.lastAutoTable.finalY + 10;
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+
+        doc.text(
+            `Total de ventas: ${formatearMoneda(totalVentas)}`,
+            14,
+            posicionFinal
+        );
+
+        // ====================================================
+        // PIE DE PÁGINA
+        // ====================================================
+
+        const paginas = doc.internal.getNumberOfPages();
+
+        for (let pagina = 1; pagina <= paginas; pagina++) {
+
+            doc.setPage(pagina);
+
+            const alturaPagina =
+                doc.internal.pageSize.getHeight();
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(8);
+
+            doc.text(
+                `Pa'TuBoca Delicias y Más - Reporte de ventas`,
+                14,
+                alturaPagina - 8
+            );
+
+            doc.text(
+                `Página ${pagina} de ${paginas}`,
+                280,
+                alturaPagina - 8,
+                {
+                    align: "right"
+                }
+            );
+        }
+
+        // ====================================================
+        // NOMBRE DEL ARCHIVO
+        // ====================================================
+
+        const nombreArchivo =
+            `reporte_ventas_${desde}_${hasta}.pdf`;
+
+        doc.save(nombreArchivo);
+
+        mostrarMensaje(
+            "Reporte PDF generado correctamente.",
+            "exito"
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Error al generar el PDF:",
+            error
+        );
+
+        mostrarMensaje(
+            "No se pudo generar el reporte PDF.",
+            "error"
+        );
+    }
 }
+
 // ============================================================
 // FECHA DE GENERACIÓN
 // ============================================================
@@ -732,13 +1007,6 @@ function actualizarFechaGeneracion() {
 // ============================================================
 function configurarFechas() {
     const hoy = obtenerFechaActual();
-    /*
-     * La tabla diaria siempre corresponde
-     * al día actual.
-     *
-     * Los campos de fecha se mantienen solamente
-     * para no romper el HTML existente.
-     */
     if (fechaInicio) {
         fechaInicio.value = hoy;
         fechaInicio.max = hoy;
@@ -809,12 +1077,11 @@ document.addEventListener("DOMContentLoaded",
         // ========================================
         // BOTÓN PDF
         // ========================================
+
         const botonPDF = document.getElementById("save-pdf");
+
         if (botonPDF) {
-            botonPDF.addEventListener("click",
-                () => {
-                    mostrarMensaje("La generación del PDF todavía no está configurada.", "error");
-                });
+            botonPDF.addEventListener("click", exportarPDF);
         }
         // ========================================
         // CARGAR REPORTE
