@@ -185,6 +185,8 @@ async function cargarDatosSemanales(desde, hasta) {
             `/semanales?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}`
         );
 
+        console.log("DATOS SEMANALES:", datos);
+
         datosSemanales = Array.isArray(datos)
             ? datos
             : [];
