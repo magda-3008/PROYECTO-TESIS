@@ -634,43 +634,6 @@
     font-weight: 600;
 }
 
-/* PAGINACIÓN */
-
-#tablaVentas .tabulator-footer {
-    background: white;
-    border-top: 1px solid rgba(28, 66, 147, 0.12);
-    padding: 6px 8px;
-}
-
-#tablaVentas .tabulator-page {
-    border: none;
-    border-radius: 7px;
-    padding: 3px 8px;
-    margin: 0 2px;
-    font-family: 'Baloo 2', cursive;
-    transition: 0.2s;
-}
-
-#tablaVentas .tabulator-page:hover {
-    background: #befbfc;
-}
-
-#tablaVentas .tabulator-page.active {
-    background: #1a81a0;
-    color: white;
-}
-
-/* TEXTO DE PAGINACIÓN */
-
-#tablaVentas .tabulator-paginator {
-    font-size: 13px;
-}
-
-#tablaVentas .tabulator-pages {
-    display: flex;
-    align-items: center;
-}
-
 /* MENSAJE SIN DATOS */
 
 #tablaVentas .tabulator-placeholder {
