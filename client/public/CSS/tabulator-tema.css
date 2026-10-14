@@ -564,58 +564,232 @@
     color: #555;
 }
 
-/* =========================================================
-   TABLA DE REPORTE DE VENTAS
-   ========================================================= */
+/* =========================================
+   TABLA DE VENTAS - DASHBOARD
+========================================= */
 
-#tablaVentas {
-    width: 100%;
-    font-family: 'Baloo 2', cursive;
-}
-
-/* Contenedor principal */
 #tablaVentas .tabulator {
-    width: 100%;
     border: none;
-    border-radius: 14px;
+    border-radius: 12px;
+    box-shadow: none;
+    font-size: 15px;
+    font-family: 'Baloo 2', cursive;
     overflow: hidden;
-    background: #ffffff;
-    box-shadow: 0 4px 15px rgba(26, 129, 160, 0.10);
-   
+    background: #fff;
 }
 
-/* =========================================================
-   ENCABEZADO
-   ========================================================= */
+/* ENCABEZADO */
 
-#tablaVentas .tabulator-header {
+#tablaVentas .tabulator .tabulator-header {
     background: #1a81a0;
     border: none;
-    min-height: 46px;
 }
 
-#tablaVentas .tabulator-header .tabulator-col {
+#tablaVentas .tabulator .tabulator-header .tabulator-col {
     background: #1a81a0;
-    color: #ffffff;
-    border: none !important;
-    min-height: 46px;
+    color: white;
+    border: none;
+    min-height: 42px;
 }
 
-#tablaVentas .tabulator-header .tabulator-col-content {
-    padding: 11px 12px;
+#tablaVentas .tabulator .tabulator-header .tabulator-col-content {
+    padding: 8px 10px;
 }
 
-#tablaVentas .tabulator-header .tabulator-col-title {
-    color: #ffffff;
+#tablaVentas .tabulator .tabulator-header .tabulator-col-title {
     font-size: 14px;
     font-weight: 700;
     text-align: center;
+}
+
+/* FILAS */
+
+#tablaVentas .tabulator-row {
+    min-height: 48px;
+    background: white;
+    border-bottom: 1px solid rgba(28, 66, 147, 0.12);
+}
+
+#tablaVentas .tabulator-row:nth-child(even) {
+    background: #fbfeff;
+}
+
+#tablaVentas .tabulator-row:hover {
+    background: #eefcff;
+}
+
+/* CELDAS */
+
+#tablaVentas .tabulator-cell {
+    padding: 10px 12px !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+/* PRODUCTOS */
+
+#tablaVentas .tabulator-cell[tabulator-field="productos"] {
     white-space: normal;
-    line-height: 1.2;
+    line-height: 1.25;
 }
 
-/* Flechas de ordenamiento */
-#tablaVentas .tabulator-col-sorter {
-    color: rgba(255, 255, 255, 0.85);
+/* TOTAL */
+
+#tablaVentas .tabulator-cell[tabulator-field="total"] {
+    font-weight: 700;
+    color: #1a81a0;
 }
 
+/* ESTADO */
+
+#tablaVentas .estado-venta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 4px 10px;
+    min-width: 82px;
+
+    border-radius: 20px;
+
+    background: #d9f5ff;
+    color: #1a81a0;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* PAGINACIÓN */
+
+#tablaVentas .tabulator-footer {
+    background: white;
+    border-top: 1px solid rgba(28, 66, 147, 0.12);
+    padding: 6px 8px;
+}
+
+#tablaVentas .tabulator-page {
+    border: none;
+    border-radius: 7px;
+    padding: 3px 8px;
+    margin: 0 2px;
+    font-family: 'Baloo 2', cursive;
+    transition: 0.2s;
+}
+
+#tablaVentas .tabulator-page:hover {
+    background: #befbfc;
+}
+
+#tablaVentas .tabulator-page.active {
+    background: #1a81a0;
+    color: white;
+}
+
+/* TEXTO DE PAGINACIÓN */
+
+#tablaVentas .tabulator-paginator {
+    font-size: 13px;
+}
+
+#tablaVentas .tabulator-pages {
+    display: flex;
+    align-items: center;
+}
+
+/* MENSAJE SIN DATOS */
+
+#tablaVentas .tabulator-placeholder {
+    color: #667;
+    font-size: 15px;
+    font-family: 'Baloo 2', cursive;
+}
+
+/* SCROLLBAR */
+
+#tablaVentas .tabulator-tableHolder::-webkit-scrollbar {
+    height: 7px;
+    width: 7px;
+}
+
+#tablaVentas .tabulator-tableHolder::-webkit-scrollbar-thumb {
+    background: #b9dbe6;
+    border-radius: 10px;
+}
+
+#tablaVentas .tabulator-tableHolder::-webkit-scrollbar-thumb:hover {
+    background: #87bfd2;
+}
+
+
+/* =========================================
+   RESPONSIVE - TABLA DE VENTAS
+========================================= */
+
+@media (max-width: 991px) {
+
+    #tablaVentas .tabulator {
+        font-size: 14px;
+    }
+
+    #tablaVentas .tabulator .tabulator-header .tabulator-col-content {
+        padding: 7px 8px;
+    }
+
+    #tablaVentas .tabulator .tabulator-header .tabulator-col-title {
+        font-size: 13px;
+    }
+
+    #tablaVentas .tabulator-cell {
+        padding: 8px 9px !important;
+        font-size: 13px;
+    }
+
+    #tablaVentas .tabulator-row {
+        min-height: 44px;
+    }
+
+    #tablaVentas .estado-venta {
+        font-size: 12px;
+        padding: 3px 8px;
+        min-width: 72px;
+    }
+}
+
+
+@media (max-width: 576px) {
+
+    #tablaVentas .tabulator {
+        border-radius: 10px;
+    }
+
+    #tablaVentas .tabulator .tabulator-header .tabulator-col-content {
+        padding: 6px;
+    }
+
+    #tablaVentas .tabulator .tabulator-header .tabulator-col-title {
+        font-size: 12px;
+    }
+
+    #tablaVentas .tabulator-cell {
+        padding: 7px 6px !important;
+        font-size: 12px;
+    }
+
+    #tablaVentas .tabulator-row {
+        min-height: 42px;
+    }
+
+    #tablaVentas .estado-venta {
+        font-size: 11px;
+        padding: 3px 7px;
+        min-width: 65px;
+    }
+
+    #tablaVentas .tabulator-page {
+        padding: 3px 7px;
+        font-size: 12px;
+    }
+}

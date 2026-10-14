@@ -196,7 +196,7 @@ input[type="date"] {
     background: var(--blanco);
     color: var(--texto);
     font-family: inherit;
-    font-size: 12px;
+    font-size: 15px;
 }
 
 input[type="date"]:focus {
@@ -211,7 +211,7 @@ input[type="date"]:focus {
     border: none;
     border-radius: 9px;
     font-family: inherit;
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 800;
     cursor: pointer;
     transition: transform .15s, filter .15s;
@@ -279,7 +279,7 @@ input[type="date"]:focus {
 .summary-label {
     margin: 0;
     color: #1685a0;
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 750;
 }
 
@@ -585,7 +585,7 @@ footer {
 
     .nav a {
         padding: 11px 10px;
-        font-size: 12px;
+        font-size: 15px;
     }
 
     .logo {
@@ -682,7 +682,7 @@ footer {
     }
 
     .heading-title p {
-        font-size: 12px;
+        font-size: 15px;
     }
 
     .date-filters {
@@ -960,7 +960,7 @@ footer {
     }
 
     .panel-heading h2 {
-        font-size: 12px;
+        font-size: 15px;
     }
 
     .muted {
@@ -1185,7 +1185,7 @@ body {
 	background: transparent;
 	text-align: left;
 	color: #555555;
-	font-size: 12px;
+	font-size: 15px;
 	cursor: pointer;
 }
 .menu-dropdown button:hover {
