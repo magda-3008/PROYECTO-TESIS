@@ -574,7 +574,6 @@
     box-shadow: none;
     font-size: 15px;
     font-family: 'Baloo 2', cursive;
-    overflow: hidden;
     background: #fff;
 }
 
@@ -600,33 +599,6 @@
     font-size: 14px;
     font-weight: 700;
     text-align: center;
-}
-
-/* FILAS */
-
-#tablaVentas .tabulator-row {
-    min-height: 48px;
-    background: white;
-    border-bottom: 1px solid rgba(28, 66, 147, 0.12);
-}
-
-#tablaVentas .tabulator-row:nth-child(even) {
-    background: #fbfeff;
-}
-
-#tablaVentas .tabulator-row:hover {
-    background: #eefcff;
-}
-
-/* CELDAS */
-
-#tablaVentas .tabulator-cell {
-    padding: 10px 12px !important;
-    border-right: none !important;
-    border-bottom: none !important;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
 }
 
 /* PRODUCTOS */
@@ -706,23 +678,6 @@
     font-size: 15px;
     font-family: 'Baloo 2', cursive;
 }
-
-/* SCROLLBAR */
-
-#tablaVentas .tabulator-tableHolder::-webkit-scrollbar {
-    height: 7px;
-    width: 7px;
-}
-
-#tablaVentas .tabulator-tableHolder::-webkit-scrollbar-thumb {
-    background: #b9dbe6;
-    border-radius: 10px;
-}
-
-#tablaVentas .tabulator-tableHolder::-webkit-scrollbar-thumb:hover {
-    background: #87bfd2;
-}
-
 
 /* =========================================
    RESPONSIVE - TABLA DE VENTAS
