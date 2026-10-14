@@ -185,8 +185,6 @@ async function cargarDatosSemanales(desde, hasta) {
             `/semanales?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}`
         );
 
-        console.log("DATOS SEMANALES:", datos);
-
         datosSemanales = Array.isArray(datos)
             ? datos
             : [];
@@ -452,11 +450,22 @@ function actualizarTabla(ventas) {
 function crearGraficoSemanal(datos) {
     const canvas = document.getElementById("weeklyChart");
     const leyenda = document.getElementById("weekly-legend");
+
     if (!canvas) {
         console.error("No se encontró #weeklyChart.");
         return;
     }
-    const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+
+    const dias = [
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes",
+        "Sábado",
+        "Domingo"
+    ];
+
     const ventasPorDia = {
         Lunes: 0,
         Martes: 0,
@@ -466,83 +475,105 @@ function crearGraficoSemanal(datos) {
         Sábado: 0,
         Domingo: 0
     };
-    /*
-     * PostgreSQL ya devuelve una fila por fecha.
-     * Aquí solamente acomodamos los resultados
-     * para conservar el diseño actual del gráfico.
-     */
+
     datos.forEach(item => {
-        if (!item.fecha) {
-            return;
-        }
-        const fecha = new Date(`${item.fecha}T00:00:00`);
+        if (!item.fecha) return;
+
+        const fecha = new Date(item.fecha);
+
         if (Number.isNaN(fecha.getTime())) {
             return;
         }
+
         const numeroDia = fecha.getDay();
-        const nombreDia = numeroDia === 0 ? "Domingo" : dias[numeroDia - 1];
+
+        const nombreDia =
+            numeroDia === 0
+                ? "Domingo"
+                : dias[numeroDia - 1];
+
         ventasPorDia[nombreDia] += Number(item.total_ventas) || 0;
     });
+
     const valores = dias.map(dia => ventasPorDia[dia]);
+
     if (graficoSemanal) {
         graficoSemanal.destroy();
         graficoSemanal = null;
     }
+
     graficoSemanal = new Chart(canvas, {
         type: "doughnut",
+
         data: {
             labels: dias,
-            datasets: [{
-                data: valores,
-                borderWidth: 2
-            }]
+
+            datasets: [
+                {
+                    data: valores,
+                    borderWidth: 2
+                }
+            ]
         },
+
         options: {
             responsive: true,
             maintainAspectRatio: false,
+
             cutout: "58%",
+
             plugins: {
                 legend: {
                     display: false
                 },
+
                 tooltip: {
                     callbacks: {
-                        label: function (context) {
-                            const valor = Number(context.raw || 0);
-                            return (context.label + ": " + formatearMoneda(valor));
+                        label: context => {
+                            return (
+                                context.label +
+                                ": " +
+                                formatearMoneda(Number(context.raw || 0))
+                            );
                         }
                     }
                 }
             }
         }
     });
+
     if (!leyenda) {
         return;
     }
+
     const total = valores.reduce(
-        (suma, valor) => suma + valor, 0);
-    leyenda.innerHTML = dias.map(
-        (dia, indice) => {
+        (suma, valor) => suma + valor,
+        0
+    );
+
+    leyenda.innerHTML = dias
+        .map((dia, indice) => {
             const valor = valores[indice];
-            const porcentaje = total > 0 ? (valor / total) * 100 : 0;
+
+            const porcentaje =
+                total > 0
+                    ? (valor / total) * 100
+                    : 0;
+
             return `
-                    <div class="weekly-legend-item">
+                <div class="weekly-legend-item">
+                    <span class="weekly-legend-name">
+                        ${dia}
+                    </span>
 
-                        <span class="weekly-legend-name">
-                            ${dia}
-                        </span>
-
-                        <span class="weekly-legend-value">
-                            ${formatearMoneda(valor)}
-
-                            <small>
-                                ${porcentaje.toFixed(1)}%
-                            </small>
-                        </span>
-
-                    </div>
-                `;
-        }).join("");
+                    <span class="weekly-legend-value">
+                        ${formatearMoneda(valor)}
+                        <small>${porcentaje.toFixed(1)}%</small>
+                    </span>
+                </div>
+            `;
+        })
+        .join("");
 }
 // ============================================================
 // GRÁFICO MENSUAL
@@ -554,7 +585,7 @@ function crearGraficoMensual(datos) {
         return;
     }
     const etiquetas = datos.map(item => {
-        const fecha = new Date(`${item.mes}T00:00:00`);
+        const fecha = new Date(item.mes);
         if (Number.isNaN(fecha.getTime())) {
             return item.mes;
         }
