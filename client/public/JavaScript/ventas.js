@@ -79,6 +79,26 @@ function obtenerFechaActual() {
     const dia = String(ahora.getDate()).padStart(2, "0");
     return `${anio}-${mes}-${dia}`;
 }
+
+function obtenerRangoFechas() {
+    const desde = fechaInicio?.value;
+    const hasta = fechaFin?.value;
+
+    if (!desde || !hasta) {
+        throw new Error("Selecciona las fechas desde y hasta.");
+    }
+
+    if (desde > hasta) {
+        throw new Error(
+            "La fecha desde no puede ser posterior a la fecha hasta."
+        );
+    }
+
+    return {
+        desde,
+        hasta
+    };
+}
 // ============================================================
 // ESCAPAR HTML
 // ============================================================
@@ -130,65 +150,108 @@ function normalizarVenta(venta) {
 // ============================================================
 // CARGAR VENTAS DIARIAS
 // ============================================================
-async function cargarVentasDiarias() {
+async function cargarVentasDiarias(desde, hasta) {
     try {
-        const datos = await obtenerDatos("/diarias");
-        ventasDiarias = Array.isArray(datos) ? datos.map(normalizarVenta) : [];
+        const datos = await obtenerDatos(
+            `/diarias?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}`
+        );
+
+        ventasDiarias = Array.isArray(datos)
+            ? datos.map(normalizarVenta)
+            : [];
+
         actualizarTabla(ventasDiarias);
         actualizarKPIs();
+
         return ventasDiarias;
+
     } catch (error) {
-        console.error("Error al cargar ventas diarias:", error);
+        console.error("Error al cargar ventas del rango:", error);
+
         ventasDiarias = [];
+
         actualizarTabla([]);
         actualizarKPIs();
+
         throw error;
     }
 }
 // ============================================================
 // CARGAR RESUMEN SEMANAL
 // ============================================================
-async function cargarDatosSemanales() {
+async function cargarDatosSemanales(desde, hasta) {
     try {
-        const datos = await obtenerDatos("/semanales");
-        datosSemanales = Array.isArray(datos) ? datos : [];
+        const datos = await obtenerDatos(
+            `/semanales?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}`
+        );
+
+        datosSemanales = Array.isArray(datos)
+            ? datos
+            : [];
+
         crearGraficoSemanal(datosSemanales);
+
         return datosSemanales;
+
     } catch (error) {
-        console.error("Error al cargar resumen semanal:", error);
+        console.error("Error al cargar resumen por día:", error);
+
         datosSemanales = [];
+
         crearGraficoSemanal([]);
+
         throw error;
     }
 }
 // ============================================================
 // CARGAR RESUMEN MENSUAL
 // ============================================================
-async function cargarDatosMensuales() {
+async function cargarDatosMensuales(desde, hasta) {
     try {
-        const datos = await obtenerDatos("/mensuales");
-        datosMensuales = Array.isArray(datos) ? datos : [];
+        const datos = await obtenerDatos(
+            `/mensuales?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}`
+        );
+
+        datosMensuales = Array.isArray(datos)
+            ? datos
+            : [];
+
         crearGraficoMensual(datosMensuales);
+
         return datosMensuales;
+
     } catch (error) {
         console.error("Error al cargar resumen mensual:", error);
+
         datosMensuales = [];
+
         crearGraficoMensual([]);
+
         throw error;
     }
 }
 // ============================================================
 // CARGAR PRODUCTO MÁS VENDIDO
 // ============================================================
-async function cargarProductoMasVendido() {
+async function cargarProductoMasVendido(desde, hasta) {
     try {
-        productoMasVendido = await obtenerDatos("/producto-mas-vendido");
+        const datos = await obtenerDatos(
+            `/producto-mas-vendido?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}`
+        );
+
+        productoMasVendido = datos;
+
         actualizarProductoMasVendido();
+
         return productoMasVendido;
+
     } catch (error) {
         console.error("Error al cargar producto más vendido:", error);
+
         productoMasVendido = null;
+
         actualizarProductoMasVendido();
+
         throw error;
     }
 }
@@ -197,22 +260,38 @@ async function cargarProductoMasVendido() {
 // ============================================================
 async function cargarReporte() {
     const boton = document.getElementById("apply-filters");
+
     if (boton) {
         boton.disabled = true;
     }
+
     mostrarMensaje("Cargando reporte...");
+
     try {
+        const { desde, hasta } = obtenerRangoFechas();
+
         await Promise.all([
-            cargarVentasDiarias(),
-            cargarDatosSemanales(),
-            cargarDatosMensuales(),
-            cargarProductoMasVendido()
+            cargarVentasDiarias(desde, hasta),
+            cargarDatosSemanales(desde, hasta),
+            cargarDatosMensuales(desde, hasta),
+            cargarProductoMasVendido(desde, hasta)
         ]);
+
         actualizarFechaGeneracion();
-        mostrarMensaje("Reporte cargado correctamente.", "exito");
+
+        mostrarMensaje(
+            "Reporte cargado correctamente.",
+            "exito"
+        );
+
     } catch (error) {
         console.error("Error al cargar el reporte:", error);
-        mostrarMensaje("No se pudo cargar el reporte. " + error.message, "error");
+
+        mostrarMensaje(
+            "No se pudo cargar el reporte. " + error.message,
+            "error"
+        );
+
     } finally {
         if (boton) {
             boton.disabled = false;

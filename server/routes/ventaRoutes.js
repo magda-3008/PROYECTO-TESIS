@@ -244,12 +244,27 @@ router.post("/", async (req, res) => {
 
 
 // ============================================================
-// VENTAS DEL DÍA ACTUAL
+// VENTAS DEL RANGO DE FECHAS
 // ============================================================
 
 router.get("/diarias", async (req, res) => {
     try {
-        const resultado = await pool.query(`
+        const { desde, hasta } = req.query;
+
+        if (!desde || !hasta) {
+            return res.status(400).json({
+                mensaje: "Debe indicar las fechas desde y hasta."
+            });
+        }
+
+        if (desde > hasta) {
+            return res.status(400).json({
+                mensaje: "La fecha desde no puede ser posterior a la fecha hasta."
+            });
+        }
+
+        const resultado = await pool.query(
+            `
             SELECT
                 v.id_venta,
                 v.fecha,
@@ -272,22 +287,25 @@ router.get("/diarias", async (req, res) => {
                 ON dv.id_venta = v.id_venta
             LEFT JOIN producto p
                 ON p.id_producto = dv.id_producto
-            WHERE v.fecha = CURRENT_DATE
+            WHERE v.fecha BETWEEN $1 AND $2
             GROUP BY
                 v.id_venta,
                 v.fecha,
                 v.total
             ORDER BY
+                v.fecha DESC,
                 v.id_venta DESC;
-        `);
+            `,
+            [desde, hasta]
+        );
 
         res.status(200).json(resultado.rows);
 
     } catch (error) {
-        console.error("Error al consultar ventas diarias:", error);
+        console.error("Error al consultar ventas por rango:", error);
 
         res.status(500).json({
-            mensaje: "No se pudieron consultar las ventas del día."
+            mensaje: "No se pudieron consultar las ventas del período seleccionado."
         });
     }
 });
@@ -299,17 +317,33 @@ router.get("/diarias", async (req, res) => {
 
 router.get("/semanales", async (req, res) => {
     try {
-        const resultado = await pool.query(`
+        const { desde, hasta } = req.query;
+
+        if (!desde || !hasta) {
+            return res.status(400).json({
+                mensaje: "Debe indicar las fechas desde y hasta."
+            });
+        }
+
+        if (desde > hasta) {
+            return res.status(400).json({
+                mensaje: "La fecha desde no puede ser posterior a la fecha hasta."
+            });
+        }
+
+        const resultado = await pool.query(
+            `
             SELECT
                 fecha,
                 COUNT(*) AS cantidad_ventas,
                 COALESCE(SUM(total), 0) AS total_ventas
             FROM venta
-            WHERE fecha >= CURRENT_DATE - INTERVAL '6 days'
-              AND fecha <= CURRENT_DATE
+            WHERE fecha BETWEEN $1 AND $2
             GROUP BY fecha
             ORDER BY fecha;
-        `);
+            `,
+            [desde, hasta]
+        );
 
         res.status(200).json(resultado.rows);
 
@@ -317,7 +351,7 @@ router.get("/semanales", async (req, res) => {
         console.error("Error al consultar ventas semanales:", error);
 
         res.status(500).json({
-            mensaje: "No se pudieron consultar las ventas semanales."
+            mensaje: "No se pudieron consultar las ventas por día."
         });
     }
 });
@@ -329,17 +363,33 @@ router.get("/semanales", async (req, res) => {
 
 router.get("/mensuales", async (req, res) => {
     try {
-        const resultado = await pool.query(`
+        const { desde, hasta } = req.query;
+
+        if (!desde || !hasta) {
+            return res.status(400).json({
+                mensaje: "Debe indicar las fechas desde y hasta."
+            });
+        }
+
+        if (desde > hasta) {
+            return res.status(400).json({
+                mensaje: "La fecha desde no puede ser posterior a la fecha hasta."
+            });
+        }
+
+        const resultado = await pool.query(
+            `
             SELECT
                 DATE_TRUNC('month', fecha)::date AS mes,
                 COUNT(*) AS cantidad_ventas,
                 COALESCE(SUM(total), 0) AS total_ventas
             FROM venta
-            WHERE fecha >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '5 months'
-              AND fecha <= CURRENT_DATE
+            WHERE fecha BETWEEN $1 AND $2
             GROUP BY DATE_TRUNC('month', fecha)
             ORDER BY mes;
-        `);
+            `,
+            [desde, hasta]
+        );
 
         res.status(200).json(resultado.rows);
 
@@ -354,12 +404,27 @@ router.get("/mensuales", async (req, res) => {
 
 
 // ============================================================
-// PRODUCTO MÁS VENDIDO DEL DÍA
+// PRODUCTO MÁS VENDIDO DEL RANGO
 // ============================================================
 
 router.get("/producto-mas-vendido", async (req, res) => {
     try {
-        const resultado = await pool.query(`
+        const { desde, hasta } = req.query;
+
+        if (!desde || !hasta) {
+            return res.status(400).json({
+                mensaje: "Debe indicar las fechas desde y hasta."
+            });
+        }
+
+        if (desde > hasta) {
+            return res.status(400).json({
+                mensaje: "La fecha desde no puede ser posterior a la fecha hasta."
+            });
+        }
+
+        const resultado = await pool.query(
+            `
             SELECT
                 p.id_producto,
                 p.nombre,
@@ -373,7 +438,7 @@ router.get("/producto-mas-vendido", async (req, res) => {
                 ON v.id_venta = dv.id_venta
             INNER JOIN producto p
                 ON p.id_producto = dv.id_producto
-            WHERE v.fecha = CURRENT_DATE
+            WHERE v.fecha BETWEEN $1 AND $2
             GROUP BY
                 p.id_producto,
                 p.nombre
@@ -381,7 +446,9 @@ router.get("/producto-mas-vendido", async (req, res) => {
                 cantidad_vendida DESC,
                 total_vendido DESC
             LIMIT 1;
-        `);
+            `,
+            [desde, hasta]
+        );
 
         res.status(200).json(resultado.rows[0] || null);
 
