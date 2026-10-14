@@ -1,700 +1,671 @@
-
 "use strict";
-
-
-const API_URL = "http://localhost:3000/api/ventasRoutes";
-
+// ============================================================
+// CONFIGURACIÓN
+// ============================================================
+const API_URL = "/api/ventasRoutes";
 const MONEDA = "C$";
-
-// Datos recibidos desde el servidor
-let todasLasVentas = [];
+// ============================================================
+// VARIABLES
+// ============================================================
+let ventasDiarias = [];
+let datosSemanales = [];
+let datosMensuales = [];
+let productoMasVendido = null;
 let tablaVentas = null;
-let graficoVentas = null;
-let graficoProductos = null;
-
-// ============================================
+let graficoSemanal = null;
+let graficoMensual = null;
+// ============================================================
 // ELEMENTOS HTML
-// ============================================
-
-const mensaje = document.getElementById("mensaje");
-const fechaInicio = document.getElementById("fechaInicio");
-const fechaFin = document.getElementById("fechaFin");
-const estadoFiltro = document.getElementById("estadoFiltro");
-
-const totalIngresos = document.getElementById("totalIngresos");
-const cantidadVentas = document.getElementById("cantidadVentas");
-const ticketPromedio = document.getElementById("ticketPromedio");
-
-// ============================================
+// ============================================================
+let mensaje;
+let fechaInicio;
+let fechaFin;
+let kpiTotal;
+let kpiCount;
+let kpiDiscounts;
+let bestShare;
+let bestImage;
+let bestName;
+let bestQuantity;
+let bestTotal;
+let generatedDate;
+// ============================================================
 // FUNCIONES GENERALES
-// ============================================
-
+// ============================================================
 function mostrarMensaje(texto, tipo = "") {
+    if (!mensaje) {
+        return;
+    }
     mensaje.textContent = texto;
     mensaje.className = "mensaje";
-
     if (tipo) {
         mensaje.classList.add(tipo);
     }
 }
-
+// ============================================================
+// FORMATEAR MONEDA
+// ============================================================
 function formatearMoneda(valor) {
     const numero = Number(valor) || 0;
-
-    return MONEDA + " " + numero.toLocaleString("es-NI", {
+    return (MONEDA + " " + numero.toLocaleString("es-NI", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-    });
+    }));
 }
-
-function obtenerPrimero(objeto, propiedades, valorPorDefecto = "") {
-    for (const propiedad of propiedades) {
-        if (objeto[propiedad] !== undefined &&
-            objeto[propiedad] !== null) {
-            return objeto[propiedad];
-        }
-    }
-
-    return valorPorDefecto;
-}
-
-function normalizarEstado(estado) {
-    const valor = String(estado || "Sin estado")
-        .trim()
-        .toLowerCase();
-
-    if (["completada", "completado", "pagada", "pagado",
-        "finalizada", "finalizado"].includes(valor)) {
-        return "completada";
-    }
-
-    if (["pendiente", "en proceso"].includes(valor)) {
-        return "pendiente";
-    }
-
-    if (["anulada", "anulado", "cancelada", "cancelado"].includes(valor)) {
-        return "anulada";
-    }
-
-    return valor || "sin estado";
-}
-
+// ============================================================
+// FORMATEAR FECHA
+// ============================================================
 function formatearFecha(fecha) {
     if (!fecha) {
         return "Sin fecha";
     }
-
-    // Evita interpretar una fecha SQL YYYY-MM-DD
-    // como el día anterior debido a la zona horaria.
     const coincidencia = String(fecha).match(/^(\d{4})-(\d{2})-(\d{2})/);
-
     if (coincidencia) {
         return `${coincidencia[3]}/${coincidencia[2]}/${coincidencia[1]}`;
     }
-
     const fechaConvertida = new Date(fecha);
-
     if (Number.isNaN(fechaConvertida.getTime())) {
         return String(fecha);
     }
-
     return fechaConvertida.toLocaleDateString("es-NI");
 }
-
-function obtenerClaveFecha(fecha) {
-    if (!fecha) return "";
-
-    const coincidencia = String(fecha).match(/^(\d{4}-\d{2}-\d{2})/);
-
-    if (coincidencia) {
-        return coincidencia[1];
-    }
-
-    const fechaConvertida = new Date(fecha);
-
-    if (Number.isNaN(fechaConvertida.getTime())) {
-        return "";
-    }
-
-    const anio = fechaConvertida.getFullYear();
-    const mes = String(fechaConvertida.getMonth() + 1).padStart(2, "0");
-    const dia = String(fechaConvertida.getDate()).padStart(2, "0");
-
+// ============================================================
+// OBTENER FECHA ACTUAL EN FORMATO YYYY-MM-DD
+// ============================================================
+function obtenerFechaActual() {
+    const ahora = new Date();
+    const anio = ahora.getFullYear();
+    const mes = String(ahora.getMonth() + 1).padStart(2, "0");
+    const dia = String(ahora.getDate()).padStart(2, "0");
     return `${anio}-${mes}-${dia}`;
 }
-
-// ============================================
-// ADAPTAR LOS DATOS DE LA API
-// ============================================
-
-// Esta función admite varios nombres habituales de campos.
-// Debes verificar que coincidan con los que devuelve tu API.
-
-function normalizarVenta(venta, indice) {
-    const detalles = obtenerPrimero(
-        venta,
-        ["detalles", "productos", "detalle_venta", "items"],
-        []
-    );
-
-    let nombresProductos = "";
-
-    if (Array.isArray(detalles)) {
-        nombresProductos = detalles
-            .map(item => {
-                if (typeof item === "string") return item;
-
-                return obtenerPrimero(
-                    item,
-                    ["nombre_producto", "nombre", "producto"],
-                    ""
-                );
-            })
-            .filter(Boolean)
-            .join(", ");
-    } else if (typeof detalles === "string") {
-        nombresProductos = detalles;
+// ============================================================
+// ESCAPAR HTML
+// ============================================================
+function escaparHTML(texto) {
+    return String(texto ?? "").replace(/[&<>"']/g, caracter => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+    })[caracter]);
+}
+// ============================================================
+// PETICIÓN A LA API
+// ============================================================
+async function obtenerDatos(endpoint) {
+    const respuesta = await fetch(`${API_URL}${endpoint}`);
+    let datos = null;
+    try {
+        datos = await respuesta.json();
+    } catch {
+        throw new Error(`El servidor respondió con un formato no válido. Código: ${respuesta.status}`);
     }
-
-    const fecha = obtenerPrimero(
-        venta,
-        ["fecha_venta", "fecha", "created_at", "fecha_registro"],
-        ""
-    );
-
-    const id = obtenerPrimero(
-        venta,
-        ["id_venta", "idVenta", "id", "numero_venta"],
-        indice + 1
-    );
-
-    const total = Number(obtenerPrimero(
-        venta,
-        ["total_venta", "total", "monto_total", "total_pagar"],
-        0
-    ));
-
-    const estado = normalizarEstado(obtenerPrimero(
-        venta,
-        ["estado", "estado_venta", "estatus"],
-        "Sin estado"
-    ));
-
-    // Si la API no devuelve productos, mostrar un texto neutral.
-    if (!nombresProductos) {
-        nombresProductos = "Detalle no disponible";
+    if (!respuesta.ok) {
+        throw new Error(datos?.mensaje || `Error del servidor (${respuesta.status}).`);
     }
-
+    return datos;
+}
+// ============================================================
+// NORMALIZAR VENTA DIARIA
+// ============================================================
+function normalizarVenta(venta) {
+    const detalles = Array.isArray(venta.detalles) ? venta.detalles : [];
+    const productos = detalles.map(detalle => {
+        const nombre = detalle.nombre || `Producto ${detalle.id_producto}`;
+        const cantidad = Number(detalle.cantidad) || 0;
+        return `${cantidad} × ${nombre}`;
+    }).join(", ");
     return {
-        id: String(id),
-        fecha: fecha,
-        fechaClave: obtenerClaveFecha(fecha),
-        productos: nombresProductos,
-        total: Number.isFinite(total) ? total : 0,
-        estado: estado,
-        detalles: Array.isArray(detalles) ? detalles : []
+        id: venta.id_venta,
+        fecha: venta.fecha,
+        fechaFormateada: formatearFecha(venta.fecha),
+        productos: productos || "Detalle no disponible",
+        total: Number(venta.total) || 0,
+        estado: "Completada",
+        detalles
     };
 }
-
-// ============================================
-// CARGAR VENTAS DESDE EL BACKEND
-// ============================================
-
-async function cargarVentas() {
-    const boton = document.getElementById("btnActualizar");
-
-    boton.disabled = true;
-    mostrarMensaje("Cargando ventas desde el servidor...");
-
+// ============================================================
+// CARGAR VENTAS DIARIAS
+// ============================================================
+async function cargarVentasDiarias() {
     try {
-        const respuesta = await fetch(API_URL, {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        });
-
-        if (!respuesta.ok) {
-            throw new Error(
-                `El servidor respondió con el estado ${respuesta.status}.`
-            );
-        }
-
-        const resultado = await respuesta.json();
-
-        // Admite una respuesta como [] o como { ventas: [] }.
-        const lista = Array.isArray(resultado)
-            ? resultado
-            : resultado.ventas ??
-            resultado.data ??
-            resultado.resultados;
-
-        if (!Array.isArray(lista)) {
-            throw new Error(
-                "La API no devolvió una lista de ventas. " +
-                "Revisa el formato de la respuesta."
-            );
-        }
-
-        todasLasVentas = lista.map(normalizarVenta);
-
-        actualizarReporte();
-
-        mostrarMensaje(
-            `Datos cargados correctamente: ${todasLasVentas.length} ventas.`,
-            "exito"
-        );
-
+        const datos = await obtenerDatos("/diarias");
+        ventasDiarias = Array.isArray(datos) ? datos.map(normalizarVenta) : [];
+        actualizarTabla(ventasDiarias);
+        actualizarKPIs();
+        return ventasDiarias;
     } catch (error) {
-        console.error("Error al cargar las ventas:", error);
-
-        mostrarMensaje(
-            "No se pudieron cargar las ventas. Verifica que el servidor " +
-            "esté activo, que la ruta de la API sea correcta y que " +
-            "la respuesta contenga una lista de ventas. Detalle: " +
-            error.message,
-            "error"
-        );
-
+        console.error("Error al cargar ventas diarias:", error);
+        ventasDiarias = [];
+        actualizarTabla([]);
+        actualizarKPIs();
+        throw error;
+    }
+}
+// ============================================================
+// CARGAR RESUMEN SEMANAL
+// ============================================================
+async function cargarDatosSemanales() {
+    try {
+        const datos = await obtenerDatos("/semanales");
+        datosSemanales = Array.isArray(datos) ? datos : [];
+        crearGraficoSemanal(datosSemanales);
+        return datosSemanales;
+    } catch (error) {
+        console.error("Error al cargar resumen semanal:", error);
+        datosSemanales = [];
+        crearGraficoSemanal([]);
+        throw error;
+    }
+}
+// ============================================================
+// CARGAR RESUMEN MENSUAL
+// ============================================================
+async function cargarDatosMensuales() {
+    try {
+        const datos = await obtenerDatos("/mensuales");
+        datosMensuales = Array.isArray(datos) ? datos : [];
+        crearGraficoMensual(datosMensuales);
+        return datosMensuales;
+    } catch (error) {
+        console.error("Error al cargar resumen mensual:", error);
+        datosMensuales = [];
+        crearGraficoMensual([]);
+        throw error;
+    }
+}
+// ============================================================
+// CARGAR PRODUCTO MÁS VENDIDO
+// ============================================================
+async function cargarProductoMasVendido() {
+    try {
+        productoMasVendido = await obtenerDatos("/producto-mas-vendido");
+        actualizarProductoMasVendido();
+        return productoMasVendido;
+    } catch (error) {
+        console.error("Error al cargar producto más vendido:", error);
+        productoMasVendido = null;
+        actualizarProductoMasVendido();
+        throw error;
+    }
+}
+// ============================================================
+// CARGAR TODO EL REPORTE
+// ============================================================
+async function cargarReporte() {
+    const boton = document.getElementById("apply-filters");
+    if (boton) {
+        boton.disabled = true;
+    }
+    mostrarMensaje("Cargando reporte...");
+    try {
+        await Promise.all([
+            cargarVentasDiarias(),
+            cargarDatosSemanales(),
+            cargarDatosMensuales(),
+            cargarProductoMasVendido()
+        ]);
+        actualizarFechaGeneracion();
+        mostrarMensaje("Reporte cargado correctamente.", "exito");
+    } catch (error) {
+        console.error("Error al cargar el reporte:", error);
+        mostrarMensaje("No se pudo cargar el reporte. " + error.message, "error");
     } finally {
-        boton.disabled = false;
+        if (boton) {
+            boton.disabled = false;
+        }
     }
 }
-
-// ============================================
-// FILTROS
-// ============================================
-
-function obtenerVentasFiltradas() {
-    const desde = fechaInicio.value;
-    const hasta = fechaFin.value;
-    const estado = estadoFiltro.value.toLowerCase();
-
-    return todasLasVentas.filter(venta => {
-        if (desde && venta.fechaClave && venta.fechaClave < desde) {
-            return false;
-        }
-
-        if (hasta && venta.fechaClave && venta.fechaClave > hasta) {
-            return false;
-        }
-
-        if (estado && venta.estado !== estado) {
-            return false;
-        }
-
-        return true;
-    });
-}
-
-// ============================================
-// ACTUALIZAR RESUMEN Y TABLA
-// ============================================
-
-function actualizarReporte() {
-    const ventasFiltradas = obtenerVentasFiltradas();
-
-    // Las ventas anuladas no se cuentan como ingresos.
-    const ventasValidas = ventasFiltradas.filter(
-        venta => venta.estado !== "anulada"
-    );
-
-    const ingresos = ventasValidas.reduce(
-        (suma, venta) => suma + venta.total,
-        0
-    );
-
-    const promedio = ventasValidas.length
-        ? ingresos / ventasValidas.length
-        : 0;
-
-    totalIngresos.textContent = formatearMoneda(ingresos);
-    cantidadVentas.textContent = ventasFiltradas.length.toLocaleString("es-NI");
-    ticketPromedio.textContent = formatearMoneda(promedio);
-
-    actualizarTabla(ventasFiltradas);
-    actualizarGraficos(ventasValidas);
-}
-
-// ============================================
-// TABLA CON DATATABLES
-// ============================================
-
-function inicializarTabla() {
-    tablaVentas = new DataTable("#tablaVentas", {
-        data: [],
-
-        columns: [
-            {
-                data: "id",
-                render: DataTable.render.text()
-            },
-            {
-                data: "fecha",
-                render: function (valor, tipo, fila) {
-                    if (tipo === "sort" || tipo === "type") {
-                        return fila.fechaClave || "";
-                    }
-
-                    return formatearFecha(valor);
-                }
-            },
-            {
-                data: "productos",
-                render: DataTable.render.text()
-            },
-            {
-                data: "total",
-                render: function (valor, tipo) {
-                    if (tipo === "sort" || tipo === "type") {
-                        return Number(valor) || 0;
-                    }
-
-                    return formatearMoneda(valor);
-                }
-            },
-            {
-                data: "estado",
-                render: function (valor, tipo) {
-                    if (tipo !== "display") {
-                        return valor;
-                    }
-
-                    let clase = "estado-otro";
-
-                    if (valor === "completada") {
-                        clase = "estado-completada";
-                    } else if (valor === "pendiente") {
-                        clase = "estado-pendiente";
-                    } else if (valor === "anulada") {
-                        clase = "estado-anulada";
-                    }
-
-                    const texto = valor.charAt(0).toUpperCase() +
-                        valor.slice(1);
-
-                    return `<span class="estado ${clase}">${texto}</span>`;
-                }
-            }
-        ],
-
-        pageLength: 10,
-        lengthMenu: [5, 10, 25, 50],
-        order: [[1, "desc"]],
-
-        language: {
-            url: "https://cdn.datatables.net/plug-ins/2.3.4/i18n/es-ES.json"
-        },
-
-        responsive: false,
-        autoWidth: false
-    });
-}
-
-function actualizarTabla(ventas) {
-    tablaVentas.clear();
-    tablaVentas.rows.add(ventas);
-    tablaVentas.draw();
-}
-
-// ============================================
-// GRÁFICO DE VENTAS POR DÍA
-// ============================================
-
-function crearGraficoVentas(ventas) {
-    const agrupadas = {};
-
-    ventas.forEach(venta => {
-        const clave = venta.fechaClave || "Sin fecha";
-
-        agrupadas[clave] = (agrupadas[clave] || 0) + venta.total;
-    });
-
-    const fechas = Object.keys(agrupadas)
-        .filter(fecha => fecha !== "Sin fecha")
-        .sort();
-
-    const etiquetas = fechas.map(fecha => {
-        const partes = fecha.split("-");
-        return `${partes[2]}/${partes[1]}`;
-    });
-
-    const valores = fechas.map(fecha => agrupadas[fecha]);
-
-    if (graficoVentas) {
-        graficoVentas.destroy();
+// ============================================================
+// ACTUALIZAR KPIs
+// ============================================================
+function actualizarKPIs() {
+    const total = ventasDiarias.reduce(
+        (suma, venta) => suma + Number(venta.total || 0), 0);
+    const cantidadVentas = ventasDiarias.length;
+    if (kpiTotal) {
+        kpiTotal.textContent = formatearMoneda(total);
     }
-
-    graficoVentas = new Chart(
-        document.getElementById("graficoVentas"),
-        {
-            type: "line",
-
-            data: {
-                labels: etiquetas,
-                datasets: [{
-                    label: "Ingresos",
-                    data: valores,
-                    borderColor: "#e84a91",
-                    backgroundColor: "rgba(232, 74, 145, 0.15)",
-                    fill: true,
-                    tension: 0.35,
-                    borderWidth: 3,
-                    pointRadius: 4,
-                    pointBackgroundColor: "#bd286d"
-                }]
-            },
-
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-
-                    tooltip: {
-                        callbacks: {
-                            label: contexto =>
-                                formatearMoneda(contexto.parsed.y)
-                        }
-                    }
-                },
-
-                scales: {
-                    y: {
-                        beginAtZero: true,
-
-                        ticks: {
-                            callback: valor =>
-                                "C$ " + Number(valor).toLocaleString("es-NI")
-                        }
-                    }
-                }
-            }
-        }
-    );
-}
-
-
-
-function crearGraficoProductos(ventas) {
-    const agrupadas = {};
-
-    ventas.forEach(venta => {
-        venta.detalles.forEach(detalle => {
-            const nombre = obtenerPrimero(
-                detalle,
-                ["nombre_producto", "nombre", "producto"],
-                ""
-            );
-
-            if (!nombre || typeof nombre !== "string") {
-                return;
-            }
-
-            const subtotal = Number(obtenerPrimero(
-                detalle,
-                ["subtotal", "subtotal_detalle", "total_detalle"],
-                0
-            ));
-
-            const cantidad = Number(obtenerPrimero(
-                detalle,
-                ["cantidad", "cantidad_vendida"],
-                1
-            ));
-
-            // Se prioriza el subtotal; si no existe, se usa la cantidad.
-            const tieneSubtotal = [
-                "subtotal", "subtotal_detalle", "total_detalle"
-            ].some(campo => detalle[campo] !== undefined &&
-                detalle[campo] !== null);
-
-            const valor = tieneSubtotal
-                ? (Number.isFinite(subtotal) ? subtotal : 0)
-                : (Number.isFinite(cantidad) ? cantidad : 0);
-
-            agrupadas[nombre] = (agrupadas[nombre] || 0) + valor;
-        });
-    });
-
-    const productos = Object.entries(agrupadas)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 7);
-
-    if (graficoProductos) {
-        graficoProductos.destroy();
+    if (kpiCount) {
+        kpiCount.textContent = cantidadVentas.toLocaleString("es-NI");
     }
-
-    const colores = [
-        "#e84a91",
-        "#f59ac3",
-        "#b86ad9",
-        "#8e83e8",
-        "#f4b942",
-        "#63b89b",
-        "#ef7d68"
-    ];
-
-    graficoProductos = new Chart(
-        document.getElementById("graficoProductos"),
-        {
-            type: "doughnut",
-
-            data: {
-                labels: productos.length
-                    ? productos.map(item => item[0])
-                    : ["Sin detalle de productos"],
-
-                datasets: [{
-                    data: productos.length
-                        ? productos.map(item => item[1])
-                        : [1],
-
-                    backgroundColor: colores,
-                    borderColor: "#ffffff",
-                    borderWidth: 3
-                }]
-            },
-
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-
-                plugins: {
-                    legend: {
-                        position: "bottom"
-                    },
-
-                    tooltip: {
-                        callbacks: {
-                            label: contexto => {
-                                if (!productos.length) {
-                                    return "No hay detalles de productos";
-                                }
-
-                                const usaSubtotal = ventas.some(venta =>
-                                    venta.detalles.some(detalle =>
-                                        detalle.subtotal != null ||
-                                        detalle.subtotal_detalle != null ||
-                                        detalle.total_detalle != null
-                                    )
-                                );
-
-                                const valor = Number(contexto.parsed) || 0;
-
-                                return usaSubtotal
-                                    ? `${contexto.label}: ${formatearMoneda(valor)}`
-                                    : `${contexto.label}: ${valor} unidades`;
-                            }
-                        }
-                    }
-                }
-            }
+    /*
+     * Actualmente la tabla venta no almacena
+     * descuentos como un campo independiente.
+     *
+     * Por eso el KPI permanece en C$ 0.00.
+     */
+    if (kpiDiscounts) {
+        kpiDiscounts.textContent = formatearMoneda(0);
+    }
+}
+// ============================================================
+// PRODUCTO MÁS VENDIDO
+// ============================================================
+function actualizarProductoMasVendido() {
+    if (!productoMasVendido) {
+        if (bestName) {
+            bestName.textContent = "Sin datos";
         }
-    );
-}
-
-function actualizarGraficos(ventas) {
-    crearGraficoVentas(ventas);
-    crearGraficoProductos(ventas);
-}
-
-// ============================================
-// EXPORTAR TABLA A CSV
-// ============================================
-
-function exportarCSV() {
-    const ventas = obtenerVentasFiltradas();
-
-    if (!ventas.length) {
-        mostrarMensaje("No hay ventas para exportar.", "error");
+        if (bestQuantity) {
+            bestQuantity.textContent = "0";
+        }
+        if (bestTotal) {
+            bestTotal.textContent = formatearMoneda(0);
+        }
+        if (bestShare) {
+            bestShare.textContent = "0%";
+        }
+        if (bestImage) {
+            bestImage.hidden = true;
+        }
         return;
     }
+    const nombre = productoMasVendido.nombre || `Producto ${productoMasVendido.id_producto}`;
+    const cantidad = Number(productoMasVendido.cantidad_vendida) || 0;
+    const total = Number(productoMasVendido.total_vendido) || 0;
+    const totalUnidades = ventasDiarias.reduce(
+        (suma, venta) => {
+            if (!Array.isArray(venta.detalles)) {
+                return suma;
+            }
+            return (suma + venta.detalles.reduce(
+                (subtotal, detalle) => subtotal + (Number(detalle.cantidad) || 0), 0));
+        }, 0);
+    const porcentaje = totalUnidades > 0 ? (cantidad / totalUnidades) * 100 : 0;
+    if (bestName) {
+        bestName.textContent = nombre;
+    }
+    if (bestQuantity) {
+        bestQuantity.textContent = cantidad.toLocaleString("es-NI");
+    }
+    if (bestTotal) {
+        bestTotal.textContent = formatearMoneda(total);
+    }
+    if (bestShare) {
+        bestShare.textContent = `${porcentaje.toFixed(1)}%`;
+    }
+    /*
+     * El endpoint actual no devuelve foto del producto,
+     * por lo que mantenemos oculta la imagen.
+     */
+    if (bestImage) {
+        bestImage.hidden = true;
+    }
+}
+// ============================================================
+// TABLA TABULATOR
+// ============================================================
+function inicializarTabla() {
+    const tabla = document.getElementById("tablaVentas");
+    if (!tabla) {
+        console.error("No se encontró #tablaVentas.");
+        return;
+    }
+    tablaVentas = new Tabulator("#tablaVentas", {
+        layout: "fitColumns",
+        placeholder: "No hay ventas registradas hoy.",
+        pagination: true,
+        paginationSize: 10,
+        paginationSizeSelector: [
+            10,
+            20,
+            50
+        ],
+        columns: [{
+            title: "N.º venta",
+            field: "id",
+            width: 100,
+            hozAlign: "center"
+        }, {
+            title: "Fecha",
+            field: "fechaFormateada",
+            width: 120,
+            hozAlign: "center"
+        }, {
+            title: "Productos",
+            field: "productos",
+            minWidth: 250,
+            widthGrow: 3,
+            formatter: "textarea",
+            variableHeight: true
+        }, {
+            title: "Total",
+            field: "total",
+            width: 130,
+            hozAlign: "right",
+            formatter: function (cell) {
+                return formatearMoneda(cell.getValue());
+            }
+        }, {
+            title: "Estado",
+            field: "estado",
+            width: 130,
+            hozAlign: "center",
+            formatter: function (cell) {
+                const estado = cell.getValue() || "Completada";
+                return `
+                            <span class="estado-venta">
+                                ${escaparHTML(estado)}
+                            </span>
+                        `;
+            }
+        }]
+    });
+}
+// ============================================================
+// ACTUALIZAR TABLA
+// ============================================================
+function actualizarTabla(ventas) {
+    if (!tablaVentas) {
+        return;
+    }
+    tablaVentas.setData(ventas);
+}
+// ============================================================
+// GRÁFICO SEMANAL
+// ============================================================
+function crearGraficoSemanal(datos) {
+    const canvas = document.getElementById("weeklyChart");
+    const leyenda = document.getElementById("weekly-legend");
+    if (!canvas) {
+        console.error("No se encontró #weeklyChart.");
+        return;
+    }
+    const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+    const ventasPorDia = {
+        Lunes: 0,
+        Martes: 0,
+        Miércoles: 0,
+        Jueves: 0,
+        Viernes: 0,
+        Sábado: 0,
+        Domingo: 0
+    };
+    /*
+     * PostgreSQL ya devuelve una fila por fecha.
+     * Aquí solamente acomodamos los resultados
+     * para conservar el diseño actual del gráfico.
+     */
+    datos.forEach(item => {
+        if (!item.fecha) {
+            return;
+        }
+        const fecha = new Date(`${item.fecha}T00:00:00`);
+        if (Number.isNaN(fecha.getTime())) {
+            return;
+        }
+        const numeroDia = fecha.getDay();
+        const nombreDia = numeroDia === 0 ? "Domingo" : dias[numeroDia - 1];
+        ventasPorDia[nombreDia] += Number(item.total_ventas) || 0;
+    });
+    const valores = dias.map(dia => ventasPorDia[dia]);
+    if (graficoSemanal) {
+        graficoSemanal.destroy();
+        graficoSemanal = null;
+    }
+    graficoSemanal = new Chart(canvas, {
+        type: "doughnut",
+        data: {
+            labels: dias,
+            datasets: [{
+                data: valores,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "58%",
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const valor = Number(context.raw || 0);
+                            return (context.label + ": " + formatearMoneda(valor));
+                        }
+                    }
+                }
+            }
+        }
+    });
+    if (!leyenda) {
+        return;
+    }
+    const total = valores.reduce(
+        (suma, valor) => suma + valor, 0);
+    leyenda.innerHTML = dias.map(
+        (dia, indice) => {
+            const valor = valores[indice];
+            const porcentaje = total > 0 ? (valor / total) * 100 : 0;
+            return `
+                    <div class="weekly-legend-item">
 
+                        <span class="weekly-legend-name">
+                            ${dia}
+                        </span>
+
+                        <span class="weekly-legend-value">
+                            ${formatearMoneda(valor)}
+
+                            <small>
+                                ${porcentaje.toFixed(1)}%
+                            </small>
+                        </span>
+
+                    </div>
+                `;
+        }).join("");
+}
+// ============================================================
+// GRÁFICO MENSUAL
+// ============================================================
+function crearGraficoMensual(datos) {
+    const canvas = document.getElementById("monthlyChart");
+    if (!canvas) {
+        console.error("No se encontró #monthlyChart.");
+        return;
+    }
+    const etiquetas = datos.map(item => {
+        const fecha = new Date(`${item.mes}T00:00:00`);
+        if (Number.isNaN(fecha.getTime())) {
+            return item.mes;
+        }
+        return fecha.toLocaleDateString("es-NI", {
+            month: "short",
+            year: "numeric"
+        });
+    });
+    const valores = datos.map(item => Number(item.total_ventas) || 0);
+    if (graficoMensual) {
+        graficoMensual.destroy();
+        graficoMensual = null;
+    }
+    graficoMensual = new Chart(canvas, {
+        type: "bar",
+        data: {
+            labels: etiquetas,
+            datasets: [{
+                label: "Ventas",
+                data: valores,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function (valor) {
+                            return (MONEDA + " " + Number(valor).toLocaleString("es-NI"));
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return ("Ventas: " + formatearMoneda(context.raw));
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+// ============================================================
+// EXPORTAR CSV
+// ============================================================
+function exportarCSV() {
+    if (!ventasDiarias.length) {
+        mostrarMensaje("No hay ventas de hoy para exportar.", "error");
+        return;
+    }
     const filas = [
-        ["Numero de venta", "Fecha", "Productos", "Total", "Estado"],
-
-        ...ventas.map(venta => [
+        ["Numero de venta", "Fecha", "Productos", "Total", "Estado"], ...ventasDiarias.map(venta => [
             venta.id,
-            formatearFecha(venta.fecha),
+            venta.fecha,
             venta.productos,
-            venta.total.toFixed(2),
+            Number(venta.total || 0).toFixed(2),
             venta.estado
         ])
     ];
-
-    // Escapar comillas y separar los campos de forma segura.
-    const contenido = filas.map(fila =>
-        fila.map(valor =>
-            `"${String(valor).replace(/"/g, '""')}"`
-        ).join(";")
-    ).join("\r\n");
-
+    const contenido = filas.map(fila => fila.map(valor => `"${String(
+        valor
+    ).replace(
+        /"/g,
+        '""'
+    )}"`).join(";")).join("\r\n");
     const archivo = new Blob(
-        ["\uFEFF" + contenido],
-        { type: "text/csv;charset=utf-8;" }
-    );
-
+        ["\uFEFF" + contenido], {
+        type: "text/csv;charset=utf-8;"
+    });
     const url = URL.createObjectURL(archivo);
     const enlace = document.createElement("a");
-
     enlace.href = url;
-    enlace.download = "reporte_ventas.csv";
-
+    enlace.download = "reporte_ventas_diarias.csv";
     document.body.appendChild(enlace);
     enlace.click();
     enlace.remove();
-
     URL.revokeObjectURL(url);
 }
-
-// ============================================
+// ============================================================
+// FECHA DE GENERACIÓN
+// ============================================================
+function actualizarFechaGeneracion() {
+    if (!generatedDate) {
+        return;
+    }
+    const ahora = new Date();
+    generatedDate.textContent = ahora.toLocaleDateString("es-NI", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+    });
+}
+// ============================================================
+// CONFIGURAR FECHAS
+// ============================================================
+function configurarFechas() {
+    const hoy = obtenerFechaActual();
+    /*
+     * La tabla diaria siempre corresponde
+     * al día actual.
+     *
+     * Los campos de fecha se mantienen solamente
+     * para no romper el HTML existente.
+     */
+    if (fechaInicio) {
+        fechaInicio.value = hoy;
+        fechaInicio.max = hoy;
+    }
+    if (fechaFin) {
+        fechaFin.value = hoy;
+        fechaFin.max = hoy;
+    }
+}
+// ============================================================
 // EVENTOS
-// ============================================
-
-document.getElementById("btnActualizar")
-    .addEventListener("click", cargarVentas);
-
-document.getElementById("btnFiltrar")
-    .addEventListener("click", () => {
-        if (fechaInicio.value && fechaFin.value &&
-            fechaInicio.value > fechaFin.value) {
-            mostrarMensaje(
-                "La fecha inicial no puede ser posterior a la fecha final.",
-                "error"
-            );
-            return;
+// ============================================================
+document.addEventListener("DOMContentLoaded",
+    () => {
+        // ========================================
+        // OBTENER ELEMENTOS HTML
+        // ========================================
+        mensaje = document.getElementById("mensaje");
+        fechaInicio = document.getElementById("date-from");
+        fechaFin = document.getElementById("date-to");
+        kpiTotal = document.getElementById("kpi-total");
+        kpiCount = document.getElementById("kpi-count");
+        kpiDiscounts = document.getElementById("kpi-discounts");
+        bestShare = document.getElementById("best-share");
+        bestImage = document.getElementById("best-image");
+        bestName = document.getElementById("best-name");
+        bestQuantity = document.getElementById("best-quantity");
+        bestTotal = document.getElementById("best-total");
+        generatedDate = document.getElementById("generated-date");
+        // ========================================
+        // FECHAS
+        // ========================================
+        configurarFechas();
+        // ========================================
+        // FECHA DE GENERACIÓN
+        // ========================================
+        actualizarFechaGeneracion();
+        // ========================================
+        // INICIALIZAR TABLA
+        // ========================================
+        inicializarTabla();
+        // ========================================
+        // BOTÓN ACTUALIZAR
+        // ========================================
+        const botonActualizar = document.getElementById("apply-filters");
+        if (botonActualizar) {
+            botonActualizar.addEventListener("click", async () => {
+                await cargarReporte();
+            });
         }
-
-        actualizarReporte();
-        mostrarMensaje("Filtros aplicados correctamente.", "exito");
+        // ========================================
+        // BOTÓN EXPORTAR CSV
+        // ========================================
+        const botonCSV = document.getElementById("export-csv");
+        if (botonCSV) {
+            botonCSV.addEventListener("click", exportarCSV);
+        }
+        /*
+         * Algunos HTML pueden tener un botón
+         * con otro ID para la exportación.
+         *
+         * Lo conservamos como compatibilidad.
+         */
+        const botonCSVAlternativo = document.getElementById("save-csv");
+        if (botonCSVAlternativo && botonCSVAlternativo !== botonCSV) {
+            botonCSVAlternativo.addEventListener("click", exportarCSV);
+        }
+        // ========================================
+        // BOTÓN PDF
+        // ========================================
+        const botonPDF = document.getElementById("save-pdf");
+        if (botonPDF) {
+            botonPDF.addEventListener("click",
+                () => {
+                    mostrarMensaje("La generación del PDF todavía no está configurada.", "error");
+                });
+        }
+        // ========================================
+        // CARGAR REPORTE
+        // ========================================
+        cargarReporte();
     });
-
-document.getElementById("btnLimpiar")
-    .addEventListener("click", () => {
-        fechaInicio.value = "";
-        fechaFin.value = "";
-        estadoFiltro.value = "";
-
-        actualizarReporte();
-        mostrarMensaje("Se limpiaron los filtros.", "exito");
-    });
-
-document.getElementById("btnExportar")
-    .addEventListener("click", exportarCSV);
-
-// ============================================
-// INICIO
-// ============================================
-
-document.addEventListener("DOMContentLoaded", () => {
-    inicializarTabla();
-
-    // Crea los gráficos vacíos mientras llegan los datos.
-    actualizarGraficos([]);
-
-    cargarVentas();
-});
