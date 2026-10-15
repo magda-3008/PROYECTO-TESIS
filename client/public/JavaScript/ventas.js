@@ -285,7 +285,7 @@ function inicializarTabla() {
         layout: "fitColumns",
         placeholder: "No hay ventas registradas hoy.",
         pagination: true,
-        paginationSize: 7,
+        paginationSize: 9,
         columns: [{
             title: "N.º venta",
             field: "id",
