@@ -455,6 +455,7 @@
     font-size: 15px;
 }
 
+
 /* =========================================================
    ENCABEZADO
    ========================================================= */
@@ -483,22 +484,26 @@
     line-height: 1.15;
 }
 
+
 /* Iconos de ordenamiento */
-#tablaVentas.tabulator .tabulator-header .tabulator-col .tabulator-col-sorter {
+
+#tablaVentas.tabulator
+.tabulator-header
+.tabulator-col
+.tabulator-col-sorter {
     color: rgba(255, 255, 255, 0.8);
 }
+
 
 /* =========================================================
    FILAS
    ========================================================= */
 
 #tablaVentas.tabulator .tabulator-row {
-    min-height: 52px;
+    min-height: 48px;
     background: #ffffff;
     border-bottom: 1px solid rgba(28, 66, 147, 0.10);
-    transition:
-        background-color 0.18s ease,
-        transform 0.18s ease;
+    transition: background-color 0.18s ease;
 }
 
 #tablaVentas.tabulator .tabulator-row:nth-child(even) {
@@ -509,9 +514,18 @@
     background: #eefcff;
 }
 
+
 /* =========================================================
    CELDAS
    ========================================================= */
+
+/*
+   IMPORTANTE:
+   No usamos display:flex aquí.
+
+   Tabulator necesita controlar la altura de las celdas
+   cuando una fila tiene varios productos.
+*/
 
 #tablaVentas.tabulator .tabulator-cell {
     padding: 10px 13px !important;
@@ -519,50 +533,80 @@
     border-bottom: none !important;
     font-size: 14px;
     color: #344b50;
-    display: flex;
-    align-items: center;
+    vertical-align: middle;
 }
 
-/* Número de venta */
+
+/* =========================================================
+   NÚMERO DE VENTA
+   ========================================================= */
+
 #tablaVentas.tabulator
 .tabulator-cell[tabulator-field="id"] {
-    justify-content: center;
+    text-align: center;
+    vertical-align: middle;
     font-weight: 700;
     color: #4a7f83;
 }
 
-/* Fecha */
+
+/* =========================================================
+   FECHA
+   ========================================================= */
+
 #tablaVentas.tabulator
 .tabulator-cell[tabulator-field="fechaFormateada"] {
-    justify-content: center;
+    text-align: center;
+    vertical-align: middle;
     white-space: nowrap;
     color: #52676c;
 }
 
-/* Productos */
+
+/* =========================================================
+   PRODUCTOS
+   ========================================================= */
+
+/*
+   Esta es la única columna que puede crecer
+   verticalmente cuando existen varios productos.
+*/
+
 #tablaVentas.tabulator
 .tabulator-cell[tabulator-field="productos"] {
-    justify-content: flex-start;
+    text-align: left;
+    vertical-align: middle;
     white-space: normal;
-    line-height: 1.3;
+    line-height: 1.35;
     color: #40575c;
 }
 
-/* Total */
+
+/* =========================================================
+   TOTAL
+   ========================================================= */
+
 #tablaVentas.tabulator
 .tabulator-cell[tabulator-field="total"] {
-    justify-content: flex-end;
+    text-align: right;
+    vertical-align: middle;
     white-space: nowrap;
     font-size: 15px;
     font-weight: 700;
     color: #1a81a0;
 }
 
-/* Estado */
+
+/* =========================================================
+   ESTADO
+   ========================================================= */
+
 #tablaVentas.tabulator
 .tabulator-cell[tabulator-field="estado"] {
-    justify-content: center;
+    text-align: center;
+    vertical-align: middle;
 }
+
 
 /* =========================================================
    ETIQUETA DE ESTADO
@@ -586,10 +630,47 @@
     line-height: 1;
 }
 
+
 /* =========================================================
    PIE / PAGINACIÓN
    ========================================================= */
 
+#tablaVentas.tabulator .tabulator-footer {
+    background: #ffffff;
+    border-top: 1px solid rgba(28, 66, 147, 0.10);
+    padding: 8px 10px;
+}
+
+#tablaVentas.tabulator .tabulator-paginator {
+    font-family: 'Baloo 2', cursive;
+    font-size: 13px;
+}
+
+#tablaVentas.tabulator .tabulator-pages {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#tablaVentas.tabulator .tabulator-page {
+    min-width: 30px;
+    height: 30px;
+
+    padding: 3px 8px;
+
+    border: none;
+    border-radius: 7px;
+
+    background: transparent;
+    color: #4a7f83;
+
+    font-family: 'Baloo 2', cursive;
+    font-size: 13px;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
 
 #tablaVentas.tabulator .tabulator-page:hover {
     background: #befbfc;
@@ -600,6 +681,7 @@
     background: #1a81a0;
     color: #ffffff;
 }
+
 
 /* =========================================================
    SELECTOR DE CANTIDAD
@@ -616,10 +698,13 @@
     border-radius: 7px;
     background: #ffffff;
     color: #4a7f83;
+
     font-family: 'Baloo 2', cursive;
     font-size: 13px;
+
     padding: 4px 7px;
 }
+
 
 /* =========================================================
    MENSAJE SIN DATOS
@@ -631,6 +716,34 @@
     font-family: 'Baloo 2', cursive;
     font-size: 15px;
 }
+
+
+/* =========================================================
+   BARRA DE DESPLAZAMIENTO
+   ========================================================= */
+
+#tablaVentas.tabulator
+.tabulator-tableholder::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+#tablaVentas.tabulator
+.tabulator-tableholder::-webkit-scrollbar-track {
+    background: #f4fbfc;
+}
+
+#tablaVentas.tabulator
+.tabulator-tableholder::-webkit-scrollbar-thumb {
+    background: #b9dbe6;
+    border-radius: 10px;
+}
+
+#tablaVentas.tabulator
+.tabulator-tableholder::-webkit-scrollbar-thumb:hover {
+    background: #87bfd2;
+}
+
 
 /* =========================================================
    RESPONSIVE
@@ -654,6 +767,7 @@
         font-size: 11px;
     }
 }
+
 
 @media (max-width: 576px) {
 
