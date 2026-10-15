@@ -1,12 +1,6 @@
 "use strict";
-// ============================================================
-// CONFIGURACIÓN
-// ============================================================
 const API_URL = "/api/ventas";
 const MONEDA = "C$";
-// ============================================================
-// VARIABLES
-// ============================================================
 let ventasDiarias = [];
 let datosSemanales = [];
 let datosMensuales = [];
@@ -14,9 +8,6 @@ let productoMasVendido = null;
 let tablaVentas = null;
 let graficoSemanal = null;
 let graficoMensual = null;
-// ============================================================
-// ELEMENTOS HTML
-// ============================================================
 let mensaje;
 let fechaInicio;
 let fechaFin;
@@ -29,9 +20,7 @@ let bestName;
 let bestQuantity;
 let bestTotal;
 let generatedDate;
-// ============================================================
-// FUNCIONES GENERALES
-// ============================================================
+
 function mostrarMensaje(texto, tipo = "") {
     if (!mensaje) {
         return;
@@ -42,9 +31,7 @@ function mostrarMensaje(texto, tipo = "") {
         mensaje.classList.add(tipo);
     }
 }
-// ============================================================
-// FORMATEAR MONEDA
-// ============================================================
+
 function formatearMoneda(valor) {
     const numero = Number(valor) || 0;
     return (MONEDA + " " + numero.toLocaleString("es-NI", {
@@ -52,9 +39,7 @@ function formatearMoneda(valor) {
         maximumFractionDigits: 2
     }));
 }
-// ============================================================
-// FORMATEAR FECHA
-// ============================================================
+
 function formatearFecha(fecha) {
     if (!fecha) {
         return "Sin fecha";
@@ -69,9 +54,7 @@ function formatearFecha(fecha) {
     }
     return fechaConvertida.toLocaleDateString("es-NI");
 }
-// ============================================================
-// OBTENER FECHA ACTUAL EN FORMATO YYYY-MM-DD
-// ============================================================
+
 function obtenerFechaActual() {
     const ahora = new Date();
     const anio = ahora.getFullYear();
@@ -83,25 +66,18 @@ function obtenerFechaActual() {
 function obtenerRangoFechas() {
     const desde = fechaInicio?.value;
     const hasta = fechaFin?.value;
-
     if (!desde || !hasta) {
         throw new Error("Selecciona las fechas desde y hasta.");
     }
-
     if (desde > hasta) {
-        throw new Error(
-            "La fecha desde no puede ser posterior a la fecha hasta."
-        );
+        throw new Error("La fecha desde no puede ser posterior a la fecha hasta.");
     }
-
     return {
         desde,
         hasta
     };
 }
-// ============================================================
-// ESCAPAR HTML
-// ============================================================
+
 function escaparHTML(texto) {
     return String(texto ?? "").replace(/[&<>"']/g, caracter => ({
         "&": "&amp;",
@@ -111,9 +87,6 @@ function escaparHTML(texto) {
         "'": "&#039;"
     })[caracter]);
 }
-// ============================================================
-// PETICIÓN A LA API
-// ============================================================
 async function obtenerDatos(endpoint) {
     const respuesta = await fetch(`${API_URL}${endpoint}`);
     let datos = null;
@@ -127,9 +100,7 @@ async function obtenerDatos(endpoint) {
     }
     return datos;
 }
-// ============================================================
-// NORMALIZAR VENTA DIARIA
-// ============================================================
+
 function normalizarVenta(venta) {
     const detalles = Array.isArray(venta.detalles) ? venta.detalles : [];
     const productos = detalles.map(detalle => {
@@ -143,164 +114,92 @@ function normalizarVenta(venta) {
         fechaFormateada: formatearFecha(venta.fecha),
         productos: productos || "Detalle no disponible",
         total: Number(venta.total) || 0,
-        estado: "Completada",
         detalles
     };
 }
-// ============================================================
-// CARGAR VENTAS DIARIAS
-// ============================================================
 async function cargarVentasDiarias(desde, hasta) {
     try {
-        const datos = await obtenerDatos(
-            `/diarias?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}`
-        );
-
-        ventasDiarias = Array.isArray(datos)
-            ? datos.map(normalizarVenta)
-            : [];
-
+        const datos = await obtenerDatos(`/diarias?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}`);
+        ventasDiarias = Array.isArray(datos) ? datos.map(normalizarVenta) : [];
         actualizarTabla(ventasDiarias);
         actualizarKPIs();
-
         return ventasDiarias;
-
     } catch (error) {
         console.error("Error al cargar ventas del rango:", error);
-
         ventasDiarias = [];
-
         actualizarTabla([]);
         actualizarKPIs();
-
         throw error;
     }
 }
-// ============================================================
-// CARGAR RESUMEN SEMANAL
-// ============================================================
 async function cargarDatosSemanales(desde, hasta) {
     try {
-        const datos = await obtenerDatos(
-            `/semanales?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}`
-        );
-
-        datosSemanales = Array.isArray(datos)
-            ? datos
-            : [];
-
+        const datos = await obtenerDatos(`/semanales?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}`);
+        datosSemanales = Array.isArray(datos) ? datos : [];
         crearGraficoSemanal(datosSemanales);
-
         return datosSemanales;
-
     } catch (error) {
         console.error("Error al cargar resumen por día:", error);
-
         datosSemanales = [];
-
         crearGraficoSemanal([]);
-
         throw error;
     }
 }
-// ============================================================
-// CARGAR RESUMEN MENSUAL
-// ============================================================
 async function cargarDatosMensuales(desde, hasta) {
     try {
-        const datos = await obtenerDatos(
-            `/mensuales?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}`
-        );
-
-        datosMensuales = Array.isArray(datos)
-            ? datos
-            : [];
-
+        const datos = await obtenerDatos(`/mensuales?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}`);
+        datosMensuales = Array.isArray(datos) ? datos : [];
         crearGraficoMensual(datosMensuales);
-
         return datosMensuales;
-
     } catch (error) {
         console.error("Error al cargar resumen mensual:", error);
-
         datosMensuales = [];
-
         crearGraficoMensual([]);
-
         throw error;
     }
 }
-// ============================================================
-// CARGAR PRODUCTO MÁS VENDIDO
-// ============================================================
 async function cargarProductoMasVendido(desde, hasta) {
     try {
-        const datos = await obtenerDatos(
-            `/producto-mas-vendido?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}`
-        );
-
+        const datos = await obtenerDatos(`/producto-mas-vendido?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}`);
         productoMasVendido = datos;
-
         actualizarProductoMasVendido();
-
         return productoMasVendido;
-
     } catch (error) {
         console.error("Error al cargar producto más vendido:", error);
-
         productoMasVendido = null;
-
         actualizarProductoMasVendido();
-
         throw error;
     }
 }
-// ============================================================
-// CARGAR TODO EL REPORTE
-// ============================================================
 async function cargarReporte() {
     const boton = document.getElementById("apply-filters");
-
     if (boton) {
         boton.disabled = true;
     }
-
     mostrarMensaje("Cargando reporte...");
-
     try {
-        const { desde, hasta } = obtenerRangoFechas();
-
+        const {
+            desde,
+            hasta
+        } = obtenerRangoFechas();
         await Promise.all([
             cargarVentasDiarias(desde, hasta),
             cargarDatosSemanales(desde, hasta),
             cargarDatosMensuales(desde, hasta),
             cargarProductoMasVendido(desde, hasta)
         ]);
-
         actualizarFechaGeneracion();
-
-        mostrarMensaje(
-            "Reporte cargado correctamente.",
-            "exito"
-        );
-
+        mostrarMensaje("Reporte cargado correctamente.", "exito");
     } catch (error) {
         console.error("Error al cargar el reporte:", error);
-
-        mostrarMensaje(
-            "No se pudo cargar el reporte. " + error.message,
-            "error"
-        );
-
+        mostrarMensaje("No se pudo cargar el reporte. " + error.message, "error");
     } finally {
         if (boton) {
             boton.disabled = false;
         }
     }
 }
-// ============================================================
-// ACTUALIZAR KPIs
-// ============================================================
+
 function actualizarKPIs() {
     const total = ventasDiarias.reduce(
         (suma, venta) => suma + Number(venta.total || 0), 0);
@@ -321,9 +220,7 @@ function actualizarKPIs() {
         kpiDiscounts.textContent = formatearMoneda(0);
     }
 }
-// ============================================================
-// PRODUCTO MÁS VENDIDO
-// ============================================================
+
 function actualizarProductoMasVendido() {
     if (!productoMasVendido) {
         if (bestName) {
@@ -351,8 +248,8 @@ function actualizarProductoMasVendido() {
             if (!Array.isArray(venta.detalles)) {
                 return suma;
             }
-            return (suma + venta.detalles.reduce(
-                (subtotal, detalle) => subtotal + (Number(detalle.cantidad) || 0), 0));
+            return suma + venta.detalles.reduce(
+                (subtotal, detalle) => subtotal + (Number(detalle.cantidad) || 0), 0);
         }, 0);
     const porcentaje = totalUnidades > 0 ? (cantidad / totalUnidades) * 100 : 0;
     if (bestName) {
@@ -367,17 +264,17 @@ function actualizarProductoMasVendido() {
     if (bestShare) {
         bestShare.textContent = `${porcentaje.toFixed(1)}%`;
     }
-    /*
-     * El endpoint actual no devuelve foto del producto,
-     * por lo que mantenemos oculta la imagen.
-     */
+    // Mostrar imagen del producto más vendido
     if (bestImage) {
-        bestImage.hidden = true;
+        if (productoMasVendido.foto_producto) {
+            bestImage.src = productoMasVendido.foto_producto;
+            bestImage.hidden = false;
+        } else {
+            bestImage.hidden = true;
+        }
     }
 }
-// ============================================================
-// TABLA TABULATOR
-// ============================================================
+
 function inicializarTabla() {
     const tabla = document.getElementById("tablaVentas");
     if (!tabla) {
@@ -388,63 +285,51 @@ function inicializarTabla() {
         layout: "fitColumns",
         placeholder: "No hay ventas registradas hoy.",
         pagination: true,
-        paginationSize: 10,
-        columns: [
-            { title: "N.º venta", field: "id", width: 100, hozAlign: "center" },
-            {
-                title: "Fecha",
-                field: "fechaFormateada",
-                width: 120,
-                hozAlign: "center"
-            }, {
-                title: "Productos",
-                field: "productos",
-                minWidth: 250,
-                widthGrow: 3,
-                formatter: "textarea",
-                variableHeight: true
-            }, {
-                title: "Total",
-                field: "total",
-                width: 130,
-                hozAlign: "right",
-                formatter: function (cell) {
-                    return formatearMoneda(cell.getValue());
-                }
-            }]
+        paginationSize: 7,
+        columns: [{
+            title: "N.º venta",
+            field: "id",
+            width: 100,
+            hozAlign: "center"
+        }, {
+            title: "Fecha",
+            field: "fechaFormateada",
+            width: 120,
+            hozAlign: "center"
+        }, {
+            title: "Productos",
+            field: "productos",
+            minWidth: 250,
+            widthGrow: 3,
+            formatter: "textarea",
+            variableHeight: true
+        }, {
+            title: "Total",
+            field: "total",
+            width: 130,
+            hozAlign: "right",
+            formatter: function (cell) {
+                return formatearMoneda(cell.getValue());
+            }
+        }]
     });
 }
-// ============================================================
-// ACTUALIZAR TABLA
-// ============================================================
+
 function actualizarTabla(ventas) {
     if (!tablaVentas) {
         return;
     }
     tablaVentas.setData(ventas);
 }
-// ============================================================
-// GRÁFICO SEMANAL
-// ============================================================
+
 function crearGraficoSemanal(datos) {
     const canvas = document.getElementById("weeklyChart");
     const leyenda = document.getElementById("weekly-legend");
-
     if (!canvas) {
         console.error("No se encontró #weeklyChart.");
         return;
     }
-
-    const dias = [
-        "Lunes",
-        "Martes",
-        "Miércoles",
-        "Jueves",
-        "Viernes",
-        "Sábado",
-        "Domingo"
-    ];
-
+    const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
     const ventasPorDia = {
         Lunes: 0,
         Martes: 0,
@@ -454,73 +339,38 @@ function crearGraficoSemanal(datos) {
         Sábado: 0,
         Domingo: 0
     };
-
     datos.forEach(item => {
         if (!item.fecha) return;
-
-        const coincidencia = String(item.fecha).match(
-            /^(\d{4})-(\d{2})-(\d{2})/
-        );
-
+        const coincidencia = String(item.fecha).match(/^(\d{4})-(\d{2})-(\d{2})/);
         if (!coincidencia) {
             return;
         }
-
         const anio = Number(coincidencia[1]);
         const mes = Number(coincidencia[2]);
         const dia = Number(coincidencia[3]);
-
-        const numeroDia = new Date(
-            anio,
-            mes - 1,
-            dia
-        ).getDay();
-
-        const nombreDia =
-            numeroDia === 0
-                ? "Domingo"
-                : dias[numeroDia - 1];
-
-        ventasPorDia[nombreDia] +=
-            Number(item.total_ventas) || 0;
+        const numeroDia = new Date(anio, mes - 1, dia).getDay();
+        const nombreDia = numeroDia === 0 ? "Domingo" : dias[numeroDia - 1];
+        ventasPorDia[nombreDia] += Number(item.total_ventas) || 0;
     });
-
     const valores = dias.map(dia => ventasPorDia[dia]);
-
-    // ============================================
-    // DESTRUIR GRÁFICO ANTERIOR
-    // ============================================
-
     if (graficoSemanal) {
         graficoSemanal.destroy();
         graficoSemanal = null;
     }
-
-    // ============================================
-    // CREAR GRÁFICO
-    // ============================================
-
     graficoSemanal = new Chart(canvas, {
         type: "doughnut",
-
         data: {
             labels: dias,
-
-            datasets: [
-                {
-                    data: valores,
-                    borderWidth: 2,
-                    hoverOffset: 6
-                }
-            ]
+            datasets: [{
+                data: valores,
+                borderWidth: 2,
+                hoverOffset: 6
+            }]
         },
-
         options: {
             responsive: true,
             maintainAspectRatio: false,
-
             cutout: "58%",
-
             layout: {
                 padding: {
                     top: 10,
@@ -529,56 +379,34 @@ function crearGraficoSemanal(datos) {
                     right: 10
                 }
             },
-
             animation: {
                 duration: 700
             },
-
             plugins: {
                 legend: {
                     display: false
                 },
-
                 tooltip: {
                     displayColors: true,
-
                     padding: 10,
-
                     callbacks: {
                         label: context => {
-                            return (
-                                context.label +
-                                ": " +
-                                formatearMoneda(
-                                    Number(context.raw || 0)
-                                )
-                            );
+                            return (context.label + ": " + formatearMoneda(Number(context.raw || 0)));
                         }
                     }
                 }
             }
         }
     });
-
     if (!leyenda) {
         return;
     }
-
     const total = valores.reduce(
-        (suma, valor) => suma + valor,
-        0
-    );
-
-    leyenda.innerHTML = dias
-        .map((dia, indice) => {
-            const valor = valores[indice];
-
-            const porcentaje =
-                total > 0
-                    ? (valor / total) * 100
-                    : 0;
-
-            return `
+        (suma, valor) => suma + valor, 0);
+    leyenda.innerHTML = dias.map((dia, indice) => {
+        const valor = valores[indice];
+        const porcentaje = total > 0 ? (valor / total) * 100 : 0;
+        return `
                 <div class="weekly-legend-item">
 
                     <div class="weekly-legend-left">
@@ -605,95 +433,64 @@ function crearGraficoSemanal(datos) {
 
                 </div>
             `;
-        })
-        .join("");
+    }).join("");
 }
-// ============================================================
-// GRÁFICO MENSUAL
-// ============================================================
+
 function crearGraficoMensual(datos) {
     const canvas = document.getElementById("monthlyChart");
-
     if (!canvas) {
         console.error("No se encontró #monthlyChart.");
         return;
     }
-
     const etiquetas = datos.map(item => {
         if (!item.mes) {
             return "Sin fecha";
         }
-
-        const coincidencia = String(item.mes).match(
-            /^(\d{4})-(\d{2})-(\d{2})/
-        );
-
+        const coincidencia = String(item.mes).match(/^(\d{4})-(\d{2})-(\d{2})/);
         if (!coincidencia) {
             return String(item.mes);
         }
-
         const anio = Number(coincidencia[1]);
         const mes = Number(coincidencia[2]);
-
         const fecha = new Date(anio, mes - 1, 1);
-
         return fecha.toLocaleDateString("es-NI", {
             month: "long",
             year: "numeric"
         });
     });
-
-    const valores = datos.map(
-        item => Number(item.total_ventas) || 0
-    );
-
+    const valores = datos.map(item => Number(item.total_ventas) || 0);
     if (graficoMensual) {
         graficoMensual.destroy();
         graficoMensual = null;
     }
-
     graficoMensual = new Chart(canvas, {
         type: "bar",
-
         data: {
             labels: etiquetas,
-
-            datasets: [
-                {
-                    label: "Ventas",
-                    data: valores,
-                    borderWidth: 1
-                }
-            ]
+            datasets: [{
+                label: "Ventas",
+                data: valores,
+                borderWidth: 1
+            }]
         },
-
         options: {
             responsive: true,
             maintainAspectRatio: false,
-
             scales: {
                 y: {
                     beginAtZero: true,
-
                     ticks: {
-                        callback: valor =>
-                            MONEDA +
-                            " " +
-                            Number(valor).toLocaleString("es-NI")
+                        callback: valor => MONEDA + " " + Number(valor).toLocaleString("es-NI")
                     }
                 }
             },
-
             plugins: {
                 legend: {
                     display: false
                 },
-
                 tooltip: {
                     callbacks: {
-                        label: context =>
-                            "Ventas: " +
-                            formatearMoneda(context.raw)
+                        label: context => "Ventas: " + formatearMoneda(context.raw)
                     }
                 }
             }
@@ -701,283 +498,125 @@ function crearGraficoMensual(datos) {
     });
 }
 
-// ============================================================
-// EXPORTAR PDF
-// ============================================================
 function exportarPDF() {
-
     if (!ventasDiarias.length) {
-        mostrarMensaje(
-            "No hay ventas en el período seleccionado para exportar.",
-            "error"
-        );
+        mostrarMensaje("No hay ventas en el período seleccionado para exportar.", "error");
         return;
     }
-
     if (!window.jspdf || !window.jspdf.jsPDF) {
-        mostrarMensaje(
-            "No se pudo cargar el generador de PDF.",
-            "error"
-        );
+        mostrarMensaje("No se pudo cargar el generador de PDF.", "error");
         console.error("jsPDF no está disponible.");
         return;
     }
-
     try {
-
-        const { jsPDF } = window.jspdf;
-
+        const {
+            jsPDF
+        } = window.jspdf;
         const doc = new jsPDF({
             orientation: "landscape",
             unit: "mm",
             format: "a4"
         });
-
-        // ====================================================
-        // RANGO DE FECHAS
-        // ====================================================
-
-        const { desde, hasta } = obtenerRangoFechas();
-
-        // ====================================================
-        // INFORMACIÓN DEL REPORTE
-        // ====================================================
-
-        const fechaGeneracion = new Date().toLocaleDateString(
-            "es-NI",
-            {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric"
-            }
-        );
-
+        const {
+            desde,
+            hasta
+        } = obtenerRangoFechas();
+        const fechaGeneracion = new Date().toLocaleDateString("es-NI", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        });
         const totalVentas = ventasDiarias.reduce(
-            (suma, venta) =>
-                suma + Number(venta.total || 0),
-            0
-        );
-
+            (suma, venta) => suma + Number(venta.total || 0), 0);
         const cantidadVentas = ventasDiarias.length;
-
-        // ====================================================
-        // ENCABEZADO
-        // ====================================================
-
         doc.setFont("helvetica", "bold");
         doc.setFontSize(18);
-
-        doc.text(
-            "Pa'TuBoca Delicias y Más",
-            14,
-            18
-        );
-
+        doc.text("Pa'TuBoca Delicias y Más", 14, 18);
         doc.setFontSize(14);
-
-        doc.text(
-            "Reporte de ventas",
-            14,
-            27
-        );
-
-        // ====================================================
-        // INFORMACIÓN DEL PERÍODO
-        // ====================================================
-
+        doc.text("Reporte de ventas", 14, 27);
         doc.setFont("helvetica", "normal");
         doc.setFontSize(10);
-
-        doc.text(
-            `Período: ${formatearFecha(desde)} - ${formatearFecha(hasta)}`,
-            14,
-            36
-        );
-
-        doc.text(
-            `Fecha de generación: ${fechaGeneracion}`,
-            14,
-            42
-        );
-
-        // ====================================================
-        // RESUMEN
-        // ====================================================
-
+        doc.text(`Período: ${formatearFecha(desde)} - ${formatearFecha(hasta)}`, 14, 36);
+        doc.text(`Fecha de generación: ${fechaGeneracion}`, 14, 42);
         doc.setFont("helvetica", "bold");
         doc.setFontSize(10);
-
-        doc.text(
-            `Cantidad de ventas: ${cantidadVentas}`,
-            200,
-            36
-        );
-
-        doc.text(
-            `Total vendido: ${formatearMoneda(totalVentas)}`,
-            200,
-            42
-        );
-
-        // ====================================================
-        // DATOS DE LA TABLA
-        // ====================================================
-
+        doc.text(`Cantidad de ventas: ${cantidadVentas}`, 200, 36);
+        doc.text(`Total vendido: ${formatearMoneda(totalVentas)}`, 200, 42);
         const filas = ventasDiarias.map(venta => {
-
             return [
                 venta.id,
                 venta.fechaFormateada,
                 venta.productos,
                 formatearMoneda(venta.total),
-                venta.estado || "Completada"
             ];
-
         });
-
-        // ====================================================
-        // TABLA
-        // ====================================================
-
         doc.autoTable({
-
             startY: 50,
-
-            head: [[
-                "N.º venta",
-                "Fecha",
-                "Productos",
-                "Total",
-                "Estado"
-            ]],
-
+            head: [
+                ["N.º venta", "Fecha", "Productos", "Total"]
+            ],
             body: filas,
-
             theme: "grid",
-
             styles: {
                 font: "helvetica",
                 fontSize: 9,
                 cellPadding: 3,
                 valign: "middle"
             },
-
             headStyles: {
                 fontStyle: "bold",
                 halign: "center"
             },
-
             columnStyles: {
-
                 0: {
                     halign: "center",
                     cellWidth: 25
                 },
-
                 1: {
                     halign: "center",
                     cellWidth: 30
                 },
-
                 2: {
                     cellWidth: 150
                 },
-
                 3: {
                     halign: "right",
                     cellWidth: 35
                 },
-
                 4: {
                     halign: "center",
                     cellWidth: 30
                 }
             },
-
             margin: {
                 left: 14,
                 right: 14
             }
         });
-
-        // ====================================================
-        // PIE DEL REPORTE
-        // ====================================================
-
         const posicionFinal = doc.lastAutoTable.finalY + 10;
-
         doc.setFont("helvetica", "bold");
         doc.setFontSize(11);
-
-        doc.text(
-            `Total de ventas: ${formatearMoneda(totalVentas)}`,
-            14,
-            posicionFinal
-        );
-
-        // ====================================================
-        // PIE DE PÁGINA
-        // ====================================================
-
+        doc.text(`Total de ventas: ${formatearMoneda(totalVentas)}`, 14, posicionFinal);
         const paginas = doc.internal.getNumberOfPages();
-
         for (let pagina = 1; pagina <= paginas; pagina++) {
-
             doc.setPage(pagina);
-
-            const alturaPagina =
-                doc.internal.pageSize.getHeight();
-
+            const alturaPagina = doc.internal.pageSize.getHeight();
             doc.setFont("helvetica", "normal");
             doc.setFontSize(8);
-
-            doc.text(
-                `Pa'TuBoca Delicias y Más - Reporte de ventas`,
-                14,
-                alturaPagina - 8
-            );
-
-            doc.text(
-                `Página ${pagina} de ${paginas}`,
-                280,
-                alturaPagina - 8,
-                {
-                    align: "right"
-                }
-            );
+            doc.text(`Pa'TuBoca Delicias y Más - Reporte de ventas`, 14, alturaPagina - 8);
+            doc.text(`Página ${pagina} de ${paginas}`, 280, alturaPagina - 8, {
+                align: "right"
+            });
         }
-
-        // ====================================================
-        // NOMBRE DEL ARCHIVO
-        // ====================================================
-
-        const nombreArchivo =
-            `reporte_ventas_${desde}_${hasta}.pdf`;
-
+        const nombreArchivo = `reporte_ventas_${desde}_${hasta}.pdf`;
         doc.save(nombreArchivo);
-
-        mostrarMensaje(
-            "Reporte PDF generado correctamente.",
-            "exito"
-        );
-
+        mostrarMensaje("Reporte PDF generado correctamente.", "exito");
     } catch (error) {
-
-        console.error(
-            "Error al generar el PDF:",
-            error
-        );
-
-        mostrarMensaje(
-            "No se pudo generar el reporte PDF.",
-            "error"
-        );
+        console.error("Error al generar el PDF:", error);
+        mostrarMensaje("No se pudo generar el reporte PDF.", "error");
     }
 }
 
-// ============================================================
-// FECHA DE GENERACIÓN
-// ============================================================
 function actualizarFechaGeneracion() {
     if (!generatedDate) {
         return;
@@ -989,9 +628,7 @@ function actualizarFechaGeneracion() {
         year: "numeric"
     });
 }
-// ============================================================
-// CONFIGURAR FECHAS
-// ============================================================
+
 function configurarFechas() {
     const hoy = obtenerFechaActual();
     if (fechaInicio) {
@@ -1003,14 +640,8 @@ function configurarFechas() {
         fechaFin.max = hoy;
     }
 }
-// ============================================================
-// EVENTOS
-// ============================================================
 document.addEventListener("DOMContentLoaded",
     () => {
-        // ========================================
-        // OBTENER ELEMENTOS HTML
-        // ========================================
         mensaje = document.getElementById("mensaje");
         fechaInicio = document.getElementById("date-from");
         fechaFin = document.getElementById("date-to");
@@ -1023,55 +654,18 @@ document.addEventListener("DOMContentLoaded",
         bestQuantity = document.getElementById("best-quantity");
         bestTotal = document.getElementById("best-total");
         generatedDate = document.getElementById("generated-date");
-        // ========================================
-        // FECHAS
-        // ========================================
         configurarFechas();
-        // ========================================
-        // FECHA DE GENERACIÓN
-        // ========================================
         actualizarFechaGeneracion();
-        // ========================================
-        // INICIALIZAR TABLA
-        // ========================================
         inicializarTabla();
-        // ========================================
-        // BOTÓN ACTUALIZAR
-        // ========================================
         const botonActualizar = document.getElementById("apply-filters");
         if (botonActualizar) {
             botonActualizar.addEventListener("click", async () => {
                 await cargarReporte();
             });
         }
-        // ========================================
-        // BOTÓN EXPORTAR CSV
-        // ========================================
-        const botonCSV = document.getElementById("export-csv");
-        if (botonCSV) {
-            botonCSV.addEventListener("click", exportarCSV);
-        }
-        /*
-         * Algunos HTML pueden tener un botón
-         * con otro ID para la exportación.
-         *
-         * Lo conservamos como compatibilidad.
-         */
-        const botonCSVAlternativo = document.getElementById("save-csv");
-        if (botonCSVAlternativo && botonCSVAlternativo !== botonCSV) {
-            botonCSVAlternativo.addEventListener("click", exportarCSV);
-        }
-        // ========================================
-        // BOTÓN PDF
-        // ========================================
-
         const botonPDF = document.getElementById("save-pdf");
-
         if (botonPDF) {
             botonPDF.addEventListener("click", exportarPDF);
         }
-        // ========================================
-        // CARGAR REPORTE
-        // ========================================
         cargarReporte();
     });
