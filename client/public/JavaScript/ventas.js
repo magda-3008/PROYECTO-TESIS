@@ -388,7 +388,7 @@ function inicializarTabla() {
         layout: "fitColumns",
         placeholder: "No hay ventas registradas hoy.",
         pagination: true,
-        paginationSize: 5,
+        paginationSize: 10,
         columns: [
             { title: "N.º venta", field: "id", width: 100, hozAlign: "center" },
             {
@@ -410,19 +410,6 @@ function inicializarTabla() {
                 hozAlign: "right",
                 formatter: function (cell) {
                     return formatearMoneda(cell.getValue());
-                }
-            }, {
-                title: "Estado",
-                field: "estado",
-                width: 130,
-                hozAlign: "center",
-                formatter: function (cell) {
-                    const estado = cell.getValue() || "Completada";
-                    return `
-                            <span class="estado-venta">
-                                ${escaparHTML(estado)}
-                            </span>
-                        `;
                 }
             }]
     });
