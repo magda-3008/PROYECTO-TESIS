@@ -1,22 +1,24 @@
+/* ==========================================
+   1. VARIABLES DE TEMA Y RESET GENERAL
+   ========================================== */
 :root {
-	--header: #91c5c6;
-	--principal: #1a81a0;
-	--principalHover: #1a81a0;
-	--titulo: #4a7f83;
-	--blanco: #ffffff;
-	--texto: #000000;
-	--borde: #1a81a0;
-	--fondo: rgba(68, 59, 162, 0.414);
-	--sombra: 0 8px 18px rgba(156, 131, 131, 0.616);
-	--radio: 18px;
-	--transicion: .30s ease;
-	--menu: 240px;
+    --header: #befbfc;
+    --principal: #1a81a0;
+    --principalHover: #166881;
+    --titulo: #4a7f83;
+    --blanco: #ffffff;
+    --texto: #000000;
+    --borde: #1a81a0;
+    --fondo: rgba(68, 59, 162, 0.414);
+    --sombra: 0 8px 18px rgba(156, 131, 131, 0.616);
+    --radio: 18px;
+    --transicion: .30s ease;
 }
 
 * {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 html,
@@ -36,468 +38,233 @@ h6,
 p,
 a,
 span {
-	font-family: 'Baloo 2', cursive !important;
+    font-family: 'Baloo 2', cursive !important;
 }
 
+html {
+    scroll-behavior: smooth;
+}
 
 body {
-	background: var(--fondo);
-	color: var(--texto);
-	overflow-x: hidden;
+    background: var(--fondo);
+    color: var(--texto);
+    overflow-x: hidden;
+    position: relative;
+    min-height: 100vh;
 }
 
+body.modal-open {
+    padding-right: 0 !important;
+}
+
+button,
+a {
+    transition: var(--transicion);
+}
+
+button:active {
+    transform: scale(.97);
+}
+
+/* FONDO DE PANTALLA FIJO */
 .Fondo {
-position: fixed;
+    position: fixed;
     inset: 0;
     z-index: -1;
-    /* Reemplaza './Resources/tu-imagen.jpg' por la ruta de tu foto */
     background-image: url('../Resources/fondo-patuboca.jpeg'); 
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
 }
 
-/*ENCABEZADO*/
+/* ==========================================
+   2. ENCABEZADO Y NAVEGACIÓN SUPERIOR (PÍLDORA)
+   ========================================== */
 .Encabezado {
-	position: sticky;
-	top: 0;
-	z-index: 999;
-	background: var(--header);
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 16px 35px;
-	box-shadow: 0 3px 8px rgba(36, 34, 34, 0.578);;
-	transition: var(--transicion);
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background: var(--header);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    box-shadow: 0 3px 8px rgba(171, 160, 160, 0.459);
+    transition: var(--transicion);
 }
 
 .Encabezado-izquierda,
 .Encabezado-derecha {
-	display: flex;
-	align-items: center;
-}
-
-.Encabezado-izquierda {
-	display: flex;
+    display: flex;
     align-items: center;
-	gap: 18px;
 }
 
 .Encabezado-derecha {
-	gap: 18px;
+    gap: 18px;
 }
 
-/*BOTÓN MENÚ*/
-.btnMenu {
-	background: none;
-	border: none;
-	color: #1a81a0;
-	font-size: 30px;
-	cursor: pointer;
-	margin-left: 20px;
-	margin-top: 5px;
-	transition: .25s;
-}
-
-.btnMenu:hover {
-	transform: scale(1.08);
-}
-
-/*MENÚ LATERAL*/
-.Menu-lateral {
-	position: fixed;
-	top: 0;
-	left: calc(var(--menu) * -1);
-	width: var(--menu);
-	height: 100vh;
-	background: #91c5c6;
-	box-shadow: 3px 0 10px rgba(0, 0, 0, .12);
-	transition: var(--transicion);
-	z-index: 1000;
-}
-
-.Menu-lateral.activo {
-	left: 0;
-}
-
-.Menu-lateral nav {
-	display: flex;
-	flex-direction: column;
-	padding-top: 15px;
-}
-
-.Seccion-menu {
-	padding: 15px 15px 8px; 
-    text-align: center;     
-    color: #4a7f83;
-    font-size: 18px;        
-    font-weight: 700;
-}
-
-.Item-menu {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 12px 20px;
-    color: #4a7f83;
-    text-decoration: none;
-    font-size: 17px;
-    transition: .20s;
-    margin: 0 12px;        /* Agrega espacio a los lados para que no abarque todo el ancho */
-    border-radius: 12px;   /* Redondea los bordes del resaltado */
-}
-
-.Item-menu i {
-	width: 20px;
-	text-align: center;
-}
-
-.Item-menu:hover,
-.Item-menu.activo {
-	background: #82aeaf;
-	font-weight: normal;
-	transform: scale(1.01);
-}
-
-.Menu-lateral hr {
-	margin: 18px 20px;
-	border: none;
-	border-top: 1px solid rgba(230, 223, 223, 0.3);
-}
-
-/*MARCA*/
-.Marca {
-	display: flex;
-	flex-direction: column;
-	margin-left: 15px;
-    margin-top: 6px;
-}
-
-.Marca h1 {
-	font-size: 30px;
-	line-height: 1;
-	font-weight: 700;
-	color: #4a7f83;
-}
-
-/*BOTÓN AÑADIR VENTA*/
-.btnVenta {
-	display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    height: 50px;           
-    padding: 0 24px;       
-    border: none;
-    border-radius: 14px;    
-    background: var(--principal);
-    color: #fff;
-    font-size: 18px;       
-    font-weight: normal;
-    cursor: pointer;
-    transition: .25s;
-    text-decoration: none;
-}
-
-.btnVenta:hover {
-	background: #1a81a0;
-	transform: scale(1.03);
-}
-
-/*MODAL AGREGAR VENTA*/
-.modalVenta {
-	position: fixed;
-	inset: 0;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	background: rgba(0, 0, 0, .45);
-	opacity: 0;
-	visibility: hidden;
-	transition: .30s ease;
-	z-index: 2000;
-}
-
-.modalVenta.activo {
-	opacity: 1;
-	visibility: visible;
-}
-
-.modal-contenido {
-	width: 720px;
-	max-width: 95%;
-	background: #fff;
-	border-radius: 22px;
-	overflow: hidden;
-	box-shadow: 0 15px 35px rgba(0, 0, 0, .20);
-	animation: mostrarModal .30s ease;
-}
-
-.cerrarModal {
-	width: 42px;
-	height: 42px;
-	border: none;
-	background: transparent;
-	color: #4a7f83;
-	font-size: 30px;
-	cursor: pointer;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	transition: .25s;
-}
-
-.cerrarModal:hover {
-	background: #abdbdc;
-	border-radius: 50%;
-}
-
-/*Formulario*/
-.formVenta {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 22px;
-	padding: 25px 30px;
-}
-
-/*Encabezado*/
-.venta-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 18px 28px;
-	background: #befbfc;
-	border-bottom: 1px solid #91c5c6ad;
-}
-
-.venta-header h2 {
-	margin: 0;
-	font-size: 30px;
-	font-weight: 700;
-	color: #4a7f83;
-}
-
-/*Buscador*/
-.grupoBusqueda {
-	position: relative;
-	margin: 25px 30px 10px;
-}
-
-.iconoBuscar {
-	position: absolute;
-	left: 18px;
-	top: 50%;
-	transform: translateY(-50%);
-	color: #667;
-	font-size: 20px;
-}
-
-.buscarProducto {
-	width: 100%;
-	height: 50px;
-	padding: 0 15px 0 48px;
-	border: 2px solid #1a81a0;
-	background: #d3eff88e;
-	border-radius: 16px;
-	outline: none;
-	font-size: 20px;
-	border: 1px solid var(--borde);
-	border-radius: 16px;
-}
-
-.buscarProducto:focus {
-	border-color: #1a81a0;
-}
-
-/*Labels e inputs*/
-.campo {
-	display: flex;
-	flex-direction: column;
-}
-
-.campo label {
-	margin-bottom: 8px;
-	color: #4a7f83;
-	font-size: 17px;
-	font-weight: normal;
-}
-
-.campo input {
-	width: 100%;
-	height: 48px;
-	padding: 0 15px;
-	border: 1px solid #1a81a0;
-	background: #d3eff88e;
-	border-radius: 12px;
-	outline: none;
-	font-size: 17px;
-	transition: .25s;
-}
-
-.campo input:focus {
-	box-shadow: none;
-}
-
-/*Botones*/
-.modal-botones {
-	display: flex;
-	justify-content: center;
-	gap: 22px;
-	padding: 0 30px 30px;
-}
-
-.btnCancelar,
-.btnGuardar {
-	width: 160px;
-	height: 48px;
-	border: none;
-	border-radius: 12px;
-	font-size: 18px;
-	font-weight: normal;
-	cursor: pointer;
-	transition: .25s;
-}
-
-.btnCancelar {
-	background: #c94949;
-	color: #fff;
-}
-
-.btnCancelar:hover {
-	background: #c94949;
-	transform: scale(1.03);
-}
-
-.btnGuardar {
-	background: #37b458;
-	color: #fff;
-}
-
-.btnGuardar:hover {
-	background: #37b458;
-	transform: scale(1.03);
-}
-
-/*LOGO*/
+/* LOGO */
 .logoEmpresa {
-	width: 90px;
-	height: 90px;
-	border-radius: 100%;
-	object-fit: cover;
-	margin-left: 20px;
-	transition: .30s;
+    width: 90px;
+    height: 90px;
+    border-radius: 100%;
+    object-fit: cover;
+    transition: transform .30s;
 }
 
 .logoEmpresa:hover {
-	transform: scale(1.05);
+    transform: scale(1.05);
 }
 
-#btnCerrarSesion {
-	display: flex;
-	align-items: center;
+/* MENÚ NAVEGACIÓN ESTILO PÍLDORA */
+.nav-superior {
+    display: flex;
+    align-items: center;
+    background: #ffffffc3;
+    padding: 8px 16px;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.089);
+    gap: 8px;
 }
 
-/*CONTENIDO*/
-.Contenido {
-	padding: 35px;
-	transition: var(--transicion);
+.Item-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    color: var(--titulo);
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 30px;
+    transition: all 0.25s ease;
 }
 
-body.menu-abierto .Contenido,
-body.menu-abierto .Encabezado {
-	margin-left: var(--menu);
+.Item-nav i {
+    font-size: 18px;
 }
 
-/*TARJETA BLANCA PARA BUSCADOR Y FILTRO*/
-.busqueda-recetas {
-	width: 95%;
-	max-width: 1300px;
-	margin: 40px auto;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	gap: 25px;
-	flex-wrap: wrap;
+.Item-nav:hover {
+    background: #4a7f8383;
+    color: #4a7f83;
 }
 
+.Item-nav.activo {
+    background: #4a7f83;
+    color: #fff;
+}
+
+.nav-admin {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-separador {
+    color: rgba(74, 127, 131, 0.5);
+    font-weight: bold;
+}
+
+/* BOTÓN CERRAR SESIÓN */
+.btn-logout {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #166881;
+    color: var(--blanco);
+    border: none;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: normal;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.btn-logout:hover {
+    background-color: #1a81a0;
+    transform: scale(1.03);
+}
+
+/* ==========================================
+   2. TARJETA, BUSCADOR Y FILTRO DE RECETAS
+   ========================================== */
+/* TARJETA BLANCA PARA BUSCADOR Y FILTRO EN RECETAS */
 .busqueda-recetas-tarjeta {
-    width: 98%;
-    max-width: 1400px;
-    margin: 30px auto 20px auto; 
-    background: #ffffffc3;          
-    padding: 30px 40px;           
-    border-radius: 20px;          
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); 
+    width: calc(100% - 30px) !important;
+    max-width: 1550px !important;
+    margin: 30px auto 20px auto !important;
+    padding: 38px 48px 24px !important;
+    background: #ffffffc3 !important;
+    border-radius: 20px !important;
+    box-shadow: 0 8px 20px rgba(171, 160, 160, 0.459) !important;
+    box-sizing: border-box !important;
 }
 
 .busqueda-recetas-tarjeta .busqueda-recetas {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 25px;
-    flex-wrap: wrap;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 25px !important;
+    flex-wrap: wrap !important;
 }
 
-/*Contenedor del buscador*/
+/* Contenedor del buscador */
 .contenedor-busqueda {
-	display: flex;
-	align-items: center;
-	gap: 18px;
-	flex: 1;
-	min-width: 350px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex: 1;
+    min-width: 350px;
 }
 
-/*Caja del buscador*/
+/* Caja del buscador */
 .campo-busqueda {
-	flex: 1;
-	display: flex;
-	align-items: center;
-	height: 52px;
-	background: #d3eff88e;
-	border: 1px solid var(--borde);
-	border-radius: 16px;
-	box-shadow: 0 3px 8px rgba(0, 0, 0, .08);
-	overflow: hidden;
-	transition: .25s;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    height: 52px;
+    background: #d3eff88e;
+    border: 1px solid var(--borde);
+    border-radius: 16px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, .08);
+    overflow: hidden;
+    transition: .25s;
 }
 
-.campo-busqueda:hover {
-	border-color: #1a81a0;
-}
-
+.campo-busqueda:hover,
 .campo-busqueda:focus-within {
-	border-color: #1a81a0;
-	
+    border-color: #1a81a0;
 }
 
 .campo-busqueda i {
-	width: 55px;
-	text-align: center;
-	color: #667;
-	font-size: 20px;
+    width: 55px;
+    text-align: center;
+    color: #000;
+    font-size: 20px;
 }
 
 .campo-busqueda input {
-	flex: 1;
-	height: 100%;
-	border: none;
-	outline: none;
-	background: transparent;
-	font-size: 20px;
-	color: #000;
-	padding-right: 15px;
+    flex: 1;
+    height: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 20px;
+    color: #000;
+    padding-right: 15px;
 }
 
 .campo-busqueda input::placeholder {
-	color: #667;
+    color: #000;
 }
 
-/*BOTÓN BUSCAR*/
+/* Botón Buscar */
 .btnBuscar {
-	display: flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
@@ -505,63 +272,60 @@ body.menu-abierto .Encabezado {
     padding: 0 24px;        
     border: none;
     border-radius: 14px;    
-    background: var(--principal);
+    background: #166881;
     color: #fff;
     font-size: 18px;        
-    font-weight: normal;
     cursor: pointer;
     transition: .25s;
 }
 
 .btnBuscar:hover {
-	background: #1a81a0;
-	transform: scale(1.03);
+    background: #1a81a0;
+    transform: scale(1.03);
 }
 
-/*Contenedor del filtro*/
+/* Contenedor del filtro */
 .contenedor-filtro {
-	display: flex;
-	align-items: center;
-	gap: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .contenedor-filtro label {
-	font-size: 20px;
-	font-weight: 700;
-	color: #4a7f83;
+    font-size: 20px;
+    font-weight: 700;
+    color: #4a7f83;
 }
 
-/*Select*/
 .contenedor-filtro select {
-	width: 220px;
-	height: 50px;
-	padding: 0 42px 0 16px;
-	border: 1px solid var(--borde);
-	border-radius: 17px;
-	background: #d3eff88e;
-	color: #000;
-	font-size: 20px;
-	cursor: pointer;
-	transition: .25s;
-	appearance: none;
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%234a7f83' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5 8 12l6.5-6.5' stroke='%234a7f83' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-	background-repeat: no-repeat;
-	background-position: right 16px center;
+    width: 220px;
+    height: 50px;
+    padding: 0 42px 0 16px;
+    border: 1px solid var(--borde);
+    border-radius: 17px;
+    background: #d3eff88e;
+    color: #000;
+    font-size: 20px;
+    cursor: pointer;
+    transition: .25s;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%234a7f83' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5 8 12l6.5-6.5' stroke='%234a7f83' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
 }
 
-.contenedor-filtro select:hover {
-	border-color: #1a81a0;
-}
-
+.contenedor-filtro select:hover,
 .contenedor-filtro select:focus {
-	border-color: #1a81a0;
-	outline: none;
-	
+    border-color: #1a81a0;
+    outline: none;
 }
 
-/*CONTENEDOR Y TARJETAS DE RECETAS*/
+
+/* ==========================================
+   3. CONTENEDOR Y TARJETAS DE RECETAS
+   ========================================== */
 .contenedor-recetas {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -597,7 +361,10 @@ body.menu-abierto .Encabezado {
     padding: 10px 15px;
 }
 
-/*MODAL DE RECETAS (ESTRUCTURA GENERAL)*/
+
+/* ==========================================
+   4. MODAL DE RECETAS
+   ========================================== */
 #modalReceta .modal-content {
     border: none;
     border-radius: 20px;
@@ -605,10 +372,14 @@ body.menu-abierto .Encabezado {
     box-shadow: 0 15px 35px rgba(28, 66, 147, 0.25);
 }
 
-#modalReceta .modal-header {
+#modalReceta .modal-header,
+.venta-header {
     background: #befbfc;
     padding: 22px 28px;
     border-bottom: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 #modalReceta .modal-title {
@@ -624,7 +395,6 @@ body.menu-abierto .Encabezado {
     background: #fff;
 }
 
-/*ELEMENTOS INTERNOS DEL MODAL*/
 .imagen-modal {
     width: 100%;
     height: 320px;
@@ -667,7 +437,7 @@ body.menu-abierto .Encabezado {
     line-height: 1.8;
 }
 
-/*LISTA DE INGREDIENTES*/
+/* Lista de ingredientes */
 #listaIngredientes {
     padding-left: 22px;
     list-style-type: disc;
@@ -686,85 +456,131 @@ body.menu-abierto .Encabezado {
     color: #4a7f83;
 }
 
-/*CONFIGURACIÓN GENERAL Y TRANSICIONES*/
-html {
-    scroll-behavior: smooth;
-}
+/* ==========================================
+   CORRECCIÓN RESPONSIVE: MENÚ SUPERIOR Y FILTROS
+   ========================================== */
 
-button,
-a,
-.Item-menu {
-    transition: var(--transicion);
-}
-
-button:active {
-    transform: scale(.97);
-}
-
-.logoEmpresa:active {
-    transform: scale(.95);
-}
-
-/*ANIMACIONES*/
-@keyframes mostrarModal {
-    from {
-        opacity: 0;
-        transform: translateY(-20px) scale(.98);
+/* 1. Menú superior en píldora con scroll horizontal en móviles */
+@media (max-width: 992px) {
+    .Encabezado {
+        flex-wrap: wrap !important;
+        justify-content: space-between !important;
+        padding: 12px 15px !important;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
+
+    .nav-superior {
+        order: 3 !important;
+        width: 100% !important;
+        
+        justify-content: flex-start !important;
+        padding: 8px 10px !important;
+        margin-top: 10px !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .Item-nav {
+        flex-shrink: 0 !important;
+        padding: 8px 14px !important;
+        font-size: 15px !important;
     }
 }
 
-@keyframes aparecer {
-    from {
-        opacity: 0;
-        transform: translateY(15px);
+/* 2. Tarjeta y elementos del filtro de recetas en columna para pantallas estrechas */
+@media (max-width: 992px) {
+    .busqueda-recetas-tarjeta {
+        width: calc(100% - 20px) !important;
+        padding: 20px 15px !important;
+        margin: 15px auto !important;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+
+    .busqueda-recetas {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 15px !important;
+        width: 100% !important;
+    }
+
+    .contenedor-busqueda {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        gap: 12px !important;
+    }
+
+    .campo-busqueda {
+        width: 100% !important;
+    }
+
+    .btnBuscar {
+        width: 100% !important;
+    }
+
+    .contenedor-filtro {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        width: 100% !important;
+        gap: 8px !important;
+    }
+
+    .contenedor-filtro label {
+        font-size: 16px !important;
+    }
+
+    .contenedor-filtro select {
+        width: 100% !important;
+        max-width: none !important;
     }
 }
 
-/*DISEÑO RESPONSIVE GLOBAL (ORDENADO POR TAMAÑO)*/
+/* 3. Ajustes específicos para smartphones pequeños (<= 576px) */
+@media (max-width: 576px) {
+    .Encabezado {
+        padding: 10px !important;
+    }
 
-/* PANTALLAS GRANDES Y MEDIANAS (Min 901px) */
-@media (min-width: 901px) {
-    body.menu-abierto .Encabezado,
-    body.menu-abierto .Contenido {
-        margin-left: var(--menu);
+    .logoEmpresa {
+        width: 55px !important;
+        height: 55px !important;
+    }
+
+    .btn-logout {
+        padding: 6px 10px !important;
+        font-size: 14px !important;
+    }
+
+    .btn-logout span {
+        display: none !important; /* Oculta el texto del botón y deja solo el icono */
+    }
+
+    .campo-busqueda input,
+    .btnBuscar,
+    .contenedor-filtro select {
+        height: 46px !important;
+        font-size: 16px !important; /* Evita zoom automático en iOS */
     }
 }
 
-/* TABLETS Y PANTALLAS MEDIANAS (Max 1200px) */
+
+/* ==========================================
+   5. DISEÑO RESPONSIVE Y ADAPTABILIDAD
+   ========================================== */
 @media (max-width: 1200px) {
     .busqueda-recetas-tarjeta {
-        width: 92% !important;
-        padding: 25px;
+        width: calc(100% - 24px) !important;
+        padding: 25px !important;
     }
 }
 
-/* PANTALLAS HASTA 900px (Menú lateral adaptable y buscador en columna) */
+@media (max-width: 768px) {
+    .busqueda-recetas-tarjeta {
+        width: calc(100% - 24px) !important;
+        padding: 18px 15px !important;
+        margin: 20px auto !important;
+    }
+}
+
 @media (max-width: 900px) {
-    .Encabezado {
-        padding: 15px 20px;
-    }
-
-    .Contenido {
-        padding: 25px;
-    }
-
-    body.menu-abierto .Encabezado,
-    body.menu-abierto .Contenido {
-        margin-left: 0;
-    }
-
-    .Menu-lateral {
-        width: var(--menu);
-    }
-
     .busqueda-recetas {
         flex-direction: column;
         align-items: stretch;
@@ -787,70 +603,7 @@ button:active {
     }
 }
 
-/* MÓVILES (Max 768px) */
 @media (max-width: 768px) {
-    .Encabezado {
-        flex-direction: column;
-        align-items: center;
-        gap: 18px;
-    }
-
-    .Encabezado-izquierda {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .Encabezado-derecha {
-        width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .Marca {
-        flex: 1;
-        text-align: center;
-    }
-
-    .Marca h1 {
-        font-size: 24px;
-    }
-
-    .Marca p {
-        margin-left: 0;
-        text-align: center;
-        font-size: 13px;
-    }
-
-    .btnVenta {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .logoEmpresa {
-        width: 65px;
-        height: 65px;
-    }
-
-    .modal-contenido {
-        width: 95%;
-    }
-
-    .formVenta {
-        grid-template-columns: 1fr;
-        padding: 25px;
-    }
-
-    .modal-botones {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .btnCancelar,
-    .btnGuardar {
-        width: 100%;
-        max-width: 280px;
-    }
-
     .busqueda-recetas-tarjeta {
         width: 92% !important;
         margin: 20px auto !important;
@@ -864,10 +617,7 @@ button:active {
         gap: 12px;
     }
 
-    .campo-busqueda {
-        width: 100% !important;
-    }
-
+    .campo-busqueda,
     .btnBuscar {
         width: 100% !important;
     }
@@ -883,12 +633,7 @@ button:active {
     }
 }
 
-/*SMARTPHONES PEQUEÑOS (Max 576px) */
 @media (max-width: 576px) {
-    .Contenido {
-        padding: 15px;
-    }
-
     .busqueda-recetas-tarjeta {
         margin: 15px auto;
         padding: 15px;
@@ -898,7 +643,7 @@ button:active {
     .campo-busqueda input, 
     .btnBuscar, 
     .contenedor-filtro select {
-        font-size: 16px !important; /* Evita el zoom automático no deseado en iOS */
+        font-size: 16px !important; /* Previene zoom automático en iOS */
         height: 46px;
     }
 
@@ -907,29 +652,9 @@ button:active {
     }
 }
 
-/*DISPOSITIVOS MUY PEQUEÑOS (Max 480px) */
 @media (max-width: 480px) {
-    .Contenido {
-        padding: 18px;
-    }
-
-    .Marca h1 {
-        font-size: 21px;
-    }
-
-    .Marca p {
-        font-size: 12px;
-    }
-
-    .campo-busqueda {
-        height: 48px;
-    }
-
+    .campo-busqueda,
     .btnBuscar {
         height: 48px;
     }
-}
-
-body.modal-open {
-    padding-right: 0 !important;
 }

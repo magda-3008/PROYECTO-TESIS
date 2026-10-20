@@ -1,5 +1,5 @@
 :root {
-	--header: #91c5c6;
+	--header: #b3fbfc;
 	--principal: #1a81a0;
 	--principalHover: #1a81a0;
 	--titulo: #4a7f83;
@@ -141,7 +141,7 @@ body {
 	background: transparent;
 	text-align: left;
 	color: #555555;
-	font-size: 12px;
+	font-size: 18px;
 	cursor: pointer;
 }
 .menu-dropdown button:hover {
@@ -205,8 +205,8 @@ body {
 	padding: 9px 17px;
 	border: none;
 	border-radius: 7px;
-	background: transparent;
-	color: #555555;
+	background: #166881;
+	color: #ffffff;
 	font-size: 16px;
 	cursor: pointer;
 	transition: .2s;
@@ -223,25 +223,58 @@ body {
 /* =========================================
    BUSCADOR
 ========================================= */
+/* =========================================
+   ESTILO BUSCADOR REDONDEADO (ESTILO PÍLDORA)
+   ========================================= */
+
 .buscador-container {
-	width: 100%;
-	display: flex;
-	gap: 9px;
-	margin-bottom: 17px;
+    width: 100% !important;
+    display: flex !important;
+    margin-bottom: 17px !important;
 }
+
+.buscador-input-wrapper {
+    position: relative !important;
+    flex: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+/* Icono de la lupa alineado a la izquierda */
+.buscador-input-wrapper i {
+    position: absolute !important;
+    left: 18px !important;
+    color: #080808 !important;
+    font-size: 18px !important;
+    pointer-events: none !important;
+}
+
+/* Campo de texto redondeado */
 .buscador {
-	flex: 1;
-	height: 40px;
-	padding: 0 13px;
-	border: 1px solid #1a81a0;
-	background: #d3eff88e;
-	border-radius: 7px;
-	outline: none;
-	font-size: 20px;
-	color: #000;
+    width: 100% !important;
+    height: 48px !important; /* Altura cómoda similar a la captura */
+    padding: 0 20px 0 48px !important; /* Espacio interno para la lupa y el texto */
+    border: 1.5px solid #166881 !important; /* Borde fino con el azul de la marca */
+    background: rgba(211, 239, 248, 0.45) !important; /* Fondo suave semitransparente */
+    border-radius: 50rem !important; /* Bordes completamente redondeados tipo píldora */
+    outline: none !important;
+    font-size: 18px !important;
+    color: #050505 !important;
+    box-sizing: border-box !important;
+    transition: all 0.25s ease !important;
 }
+
+/* Efecto al hacer clic o seleccionar el campo */
+.buscador:focus {
+    background: rgba(211, 239, 248, 0.75) !important;
+    border-color: #166881 !important;
+}
+
+/* Color del texto sugerido (placeholder) */
 .buscador::placeholder {
-	color: #999999;
+    color: #0d0d0d !important;
+    font-size: 18px !important;
 }
 /* =========================================
    FILTRAR
@@ -251,7 +284,7 @@ body {
 	height: 40px;
 	border: 1px solid #1a81a0;
 	border-radius: 7px;
-	background: #1a81a0;
+	background: #166881;
 	color: #fff;
 	font-size: 15px;
 	cursor: pointer;
@@ -358,7 +391,7 @@ body {
 ========================================= */
 .producto-precio {
 	margin: 0 0 6px;
-	color: #1a81a0;
+	color: #1f9c75;
 	font-size: 17px;
 	font-weight: 700;
 }
@@ -383,7 +416,7 @@ body {
 	padding: 0 12px;
 	border: none;
 	border-radius: 7px;
-	background: #1a81a0;
+	background: #166881;
 	color: #ffffff;
 	font-family: 'Baloo 2', cursive !important;
 	font-size: 15px;
@@ -425,7 +458,7 @@ body {
 	padding: 20px;
 	text-align: center;
 	color: #6d7c7f;
-	font-size: 15px;
+	font-size: 18px;
 }
 #productosGrid > .mensaje-error {
 	color: #c03939;
@@ -463,13 +496,13 @@ body {
 	padding: 7px 9px;
 	border: 1px solid #e1baba;
 	border-radius: 6px;
-	background: #d04c4c;
+	background: #9b3737;
 	color: #fff;
-	font-size: 15px;
+	font-size: 17px;
 	cursor: pointer;
 }
 .btn-vaciar:hover {
-	background: #d04c4c;
+	background: #c94949;
 	transform: scale(1.03);
 }
 /* =========================================
@@ -482,7 +515,7 @@ body {
 	align-items: center;
 	padding: 12px 0;
 	color: #4a7f83;
-	font-size: 15px;
+	font-size: 17px;
 	font-weight: 700;
 	border-bottom: 2px solid #1a81a0;
 }
@@ -508,10 +541,10 @@ body {
 }
 .carrito-vacio p {
 	margin-bottom: 5px;
-	font-size: 15px;
+	font-size: 17px;
 }
 .carrito-vacio small {
-	font-size: 13px;
+	font-size: 17px;
 }
 /* =========================================
    ITEM INDIVIDUAL DEL CARRITO
@@ -525,7 +558,7 @@ body {
 	gap: 6px;
 	padding: 10px 0;
 	border-top: 1px solid #eeeeee;
-	font-size: 15px;
+	font-size: 17px;
 }
 /* =========================================
    PRODUCTO DEL CARRITO
@@ -559,7 +592,7 @@ body {
 ========================================= */
 .carrito-item > span {
 	color: #555555;
-	font-size: 14px;
+	font-size: 17px;
 	text-align: center;
 	white-space: nowrap;
 }
@@ -598,7 +631,7 @@ body {
 	min-width: 20px;
 	text-align: center;
 	color: #333333;
-	font-size: 15px;
+	font-size: 17px;
 	font-weight: 600;
 }
 .carrito-cantidad button {
@@ -767,7 +800,7 @@ body {
 ========================================= */
 .btn-cancelar {
 	border: 1px solid #c77575;
-	background: #c94949;
+	background: #9b3737;
 	color: #fff;
 }
 .btn-cancelar:hover {
@@ -780,177 +813,16 @@ body {
 ========================================= */
 .btn-guardar {
 	border: none;
-	background: #2fb34a;
+	background: #28773d;
 	color: #ffffff;
 }
 .btn-guardar:hover {
-	background: #2fb34a;
+	background: #37b458;
 	transform: scale(1.03);
 }
-/* =========================================
-   HEADER DEL SISTEMA
-========================================= */
-.Encabezado {
-	position: sticky;
-	top: 0;
-	z-index: 999;
-	background: var(--header);
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 16px 35px;
-	box-shadow:
-		0 3px 8px rgba(36, 34, 34, 0.578);
-	transition: var(--transicion);
-}
-body.menu-abierto .Encabezado {
-	margin-left: var(--menu);
-	width: calc(90% - var(--menu));
-}
-.Encabezado-izquierda,
-.Encabezado-derecha {
-	display: flex;
-	align-items: center;
-}
-.Encabezado-izquierda {
-	display: flex;
-	align-items: center;
-	gap: 18px;
-}
-.Encabezado-derecha {
-	gap: 18px;
-}
-/* =========================================
-   BOTÓN MENÚ LATERAL
-========================================= */
-.btnMenu {
-	background: none;
-	border: none;
-	color: #1a81a0;
-	font-size: 30px;
-	cursor: pointer;
-	margin-left: 20px;
-	margin-top: 5px;
-	transition: .25s;
-}
-.btnMenu:hover {
-	transform: scale(1.08);
-}
-/* =========================================
-   MENÚ LATERAL
-========================================= */
-.Menu-lateral {
-	position: fixed;
-	top: 0;
-	left: calc(var(--menu) * -1);
-	width: var(--menu);
-	height: 100vh;
-	background: #91c5c6;
-	box-shadow:
-		3px 0 10px rgba(0, 0, 0, .12);
-	transition: var(--transicion);
-	z-index: 1000;
-}
-.Menu-lateral.activo {
-	left: 0;
-}
-.Menu-lateral nav {
-	display: flex;
-	flex-direction: column;
-	padding-top: 15px;
-}
-.Seccion-menu {
-	padding: 15px 15px 8px;
-	text-align: center;
-	color: #4a7f83;
-	font-size: 18px;
-	font-weight: 700;
-}
-.Item-menu {
-	display: flex;
-	align-items: center;
-	gap: 15px;
-	padding: 12px 20px;
-	color: #4a7f83;
-	text-decoration: none;
-	font-size: 17px;
-	transition: .20s;
-	margin: 0 12px;
-	border-radius: 12px;
-}
-.Item-menu i {
-	width: 20px;
-	text-align: center;
-}
-.Item-menu:hover,
-.Item-menu.activo {
-	background: #82aeaf;
-	font-weight: normal;
-	transform: scale(1.01);
-}
-.Menu-lateral hr {
-	margin: 18px 20px;
-	border: none;
-	border-top:
-		1px solid rgba(230, 223, 223, 0.3);
-}
-/* =========================================
-   MARCA
-========================================= */
-.Marca {
-	display: flex;
-	flex-direction: column;
-	margin-left: 15px;
-	margin-top: 6px;
-}
-.Marca h1 {
-	font-size: 30px;
-	line-height: 1;
-	font-weight: 700;
-	color: #4a7f83;
-}
-/* =========================================
-   BOTÓN VENTA
-========================================= */
-.btnVenta {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 10px;
-	height: 50px;
-	padding: 0 24px;
-	border: none;
-	border-radius: 14px;
-	background: var(--principal);
-	color: #fff;
-	font-size: 18px;
-	font-weight: normal;
-	cursor: pointer;
-	transition: .25s;
-	text-decoration: none;
-}
-.btnVenta:hover {
-	background: #1a81a0;
-	transform: scale(1.03);
-}
-/* =========================================
-   LOGO EMPRESA
-========================================= */
-.logoEmpresa {
-	width: 90px;
-	height: 90px;
-	border-radius: 100%;
-	object-fit: cover;
-	margin-left: 20px;
-	transition: .30s;
-}
-.logoEmpresa:hover {
-	transform: scale(1.05);
-}
-#btnCerrarSesion {
-	display: flex;
-	align-items: center;
-}
+
+
+
 /* =========================================
    NAVEGACIÓN SUPERIOR
 ========================================= */
@@ -1005,20 +877,24 @@ body.menu-abierto .Encabezado {
 /* =========================================
    CONTENEDOR PRINCIPAL
 ========================================= */
+/* =========================================
+   ANCHO AMPLIADO DE LA TARJETA PRINCIPAL
+========================================= */
 .app-container {
-	width: 95%;
-	max-width: 1400px;
-	margin: 30px auto;
-	position: relative;
-	background: rgba(246, 242, 242, 0.525);
-	backdrop-filter: blur(10px);
-	-webkit-backdrop-filter: blur(10px);
-	border: 1px solid rgba(255, 255, 255, 0.6);
-	border-radius: 20px;
-	overflow: hidden;
-	box-shadow:
-		0 8px 32px rgba(0, 0, 0, 0.08);
+    width: 98% !important;        /* Ocupa casi todo el ancho horizontal de la pantalla */
+    max-width: 1580px !important; /* Aumenta el límite máximo para pantallas grandes (puedes subirlo a 1650px si la quieres aún más ancha) */
+    margin: 20px auto !important;
+    position: relative;
+    background: rgba(246, 242, 242, 0.525);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
+
+
 /* =========================================
    RESPONSIVE
 ========================================= */
@@ -1136,4 +1012,402 @@ body.modal-open {
 .modal-body .text-muted {
     color: #667 !important;
     font-size: 14px !important;
+}
+
+/* =========================================
+   MEDIA QUERIES GLOBALES Y ADAPTABLES
+========================================= */
+@media (max-width: 1150px) {
+    .venta-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 10px 15px;
+        justify-content: center;
+    }
+    .main {
+        padding: 12px;
+    }
+    .app-container {
+        width: 98%;
+        margin: 10px auto;
+        border-radius: 12px;
+    }
+    .productos-section,
+    .carrito-section {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 500px) {
+    .botones-venta {
+        grid-template-columns: 1fr;
+    }
+    .carrito-item {
+        grid-template-columns: minmax(0, 1fr) auto;
+        row-gap: 8px;
+    }
+    .carrito-producto {
+        grid-column: 1 / -1;
+    }
+    .carrito-item > span,
+    .carrito-item > strong {
+        text-align: left;
+    }
+}
+
+/* ===================================================
+   ADAPTABILIDAD EXACTA EN PANTALLAS PEQUEÑAS (VENTAS)
+   =================================================== */
+
+@media (max-width: 992px) {
+    /* La tarjeta blanca principal ocupa todo el ancho sin recortarse */
+    .main,
+    .app-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 10px auto !important;
+        padding: 15px 10px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* El contenedor pasa a 1 sola columna flexible sin anchos mínimos rígidos */
+    .venta-container {
+        grid-template-columns: 1fr !important;
+        width: 100% !important;
+        gap: 15px !important;
+    }
+
+    /* Secciones de Productos y Carrito al 100% */
+    .productos-section,
+    .carrito-section {
+        width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        padding: 12px 10px !important;
+    }
+
+    /* Categorías permitidas en varias líneas */
+    .categorias {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+    }
+
+    .categoria {
+        padding: 6px 10px !important;
+        font-size: 14px !important;
+    }
+
+    /* Buscador flexible */
+    .buscador-container {
+        width: 100% !important;
+    }
+
+    .buscador {
+        width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Encabezado del carrito flexible en pantallas estrechas */
+    .carrito-header {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+    }
+
+    .btn-vaciar {
+        width: 100% !important;
+    }
+
+    /* Columnas de productos e items del carrito responsivas */
+    .carrito-columnas,
+    .carrito-item {
+        grid-template-columns: 1fr 50px 55px 55px 25px !important;
+        font-size: 12px !important;
+        gap: 2px !important;
+    }
+
+    /* Botones de acción inferiores */
+    .botones-venta {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+
+    .btn-cancelar,
+    .btn-guardar {
+        width: 100% !important;
+    }
+}
+
+/* =========================================
+   AJUSTE DE DESCUENTO Y RESUMEN RESPONSIVO
+   ========================================= */
+
+.resumen-linea.descuento {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.resumen-linea.descuento span:first-child {
+    flex: 1 !important;
+    min-width: 0 !important;
+}
+
+.resumen-linea.descuento input {
+    width: 50px !important;
+    max-width: 60px !important;
+    min-width: 40px !important;
+    height: 28px !important;
+    padding: 0 4px !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+    flex-shrink: 0 !important;
+}
+
+.resumen-linea.descuento span:last-child {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+}
+
+/* Ajuste extra para móviles pequeños */
+@media (max-width: 576px) {
+    .resumen-linea.descuento {
+        gap: 4px !important;
+        font-size: 13px !important;
+    }
+
+    .resumen-linea.descuento input {
+        width: 45px !important;
+        height: 26px !important;
+        font-size: 13px !important;
+    }
+}
+
+/* =========================================
+   RESUMEN DEL CARRITO PERFECTAMENTE ALINEADO
+   ========================================= */
+
+/* Estructura base del resumen */
+.resumen {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    margin-top: 15px !important;
+    padding-top: 12px !important;
+    border-top: 1px solid #1a81a0 !important;
+}
+
+/* Fila genérica de resumen (Subtotal) */
+.resumen-linea {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 10px !important;
+    font-size: 14px !important;
+    color: #555555 !important;
+    gap: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Alineación de la fila de Descuento */
+.resumen-linea.descuento {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    gap: 6px !important;
+    box-sizing: border-box !important;
+}
+
+/* Etiqueta del Descuento */
+.resumen-linea.descuento span:first-child {
+    flex: 1 !important;
+    white-space: nowrap !important;
+}
+
+/* Input número de Descuento */
+.resumen-linea.descuento input {
+    width: 42px !important;
+    height: 26px !important;
+    padding: 0 2px !important;
+    text-align: center !important;
+    border: 1px solid #1a81a0 !important;
+    background: #d3eff88e !important;
+    border-radius: 5px !important;
+    outline: none !important;
+    font-size: 13px !important;
+    flex-shrink: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* Monto C$ en Descuento */
+.resumen-linea.descuento span:last-child {
+    white-space: nowrap !important;
+    text-align: right !important;
+    flex-shrink: 0 !important;
+}
+
+/* Fila de Total final */
+.resumen-total {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding-top: 12px !important;
+    margin-top: 8px !important;
+    border-top: 1px solid #1a81a0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.resumen-total label,
+.resumen-total span:first-child {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: #4a7f83 !important;
+}
+
+.resumen-total strong {
+    font-size: 18px !important;
+    color: #000000 !important;
+    white-space: nowrap !important;
+    text-align: right !important;
+}
+
+/* Ajustes especiales para dispositivos móviles muy pequeños (<= 480px) */
+@media (max-width: 480px) {
+    .resumen-linea {
+        font-size: 12px !important;
+        gap: 4px !important;
+    }
+
+    .resumen-linea.descuento input {
+        width: 36px !important;
+        height: 24px !important;
+        font-size: 12px !important;
+    }
+
+    .resumen-total label,
+    .resumen-total span:first-child {
+        font-size: 14px !important;
+    }
+
+    .resumen-total strong {
+        font-size: 15px !important;
+    }
+}
+
+/* =========================================
+   CORRECCIÓN DE ENCABEZADOS Y FILAS DEL CARRITO
+   ========================================= */
+
+/* Sincroniza las columnas del encabezado del carrito */
+.carrito-columnas {
+    display: grid !important;
+    grid-template-columns: minmax(70px, 1fr) 50px 45px 55px !important;
+    align-items: center !important;
+    gap: 2px !important;
+    padding: 8px 0 !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+}
+
+/* Sincroniza las columnas de cada item individual dentro del carrito */
+.carrito-item {
+    display: grid !important;
+    grid-template-columns: minmax(70px, 1fr) 50px 45px 55px 22px !important;
+    align-items: center !important;
+    gap: 2px !important;
+    padding: 8px 0 !important;
+    font-size: 12px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+}
+
+/* Evita que los textos del encabezado o de los productos se desborden */
+.carrito-columnas span,
+.carrito-item > span,
+.carrito-producto strong {
+    font-size: 11px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+}
+
+/* Ajuste específico para pantallas extremadamente pequeñas */
+@media (max-width: 480px) {
+    .carrito-columnas {
+        grid-template-columns: minmax(50px, 1fr) 42px 38px 45px !important;
+        font-size: 11px !important;
+    }
+
+    .carrito-item {
+        grid-template-columns: minmax(50px, 1fr) 42px 38px 45px 20px !important;
+        font-size: 11px !important;
+    }
+}
+
+/* =========================================
+   SOLUCIÓN PARA ENCABEZADO SUBTOTAL
+   ========================================= */
+
+.carrito-columnas {
+    display: grid !important;
+    /* Damos más espacio a Subtotal y ajustamos Cant. y Precio */
+    grid-template-columns: minmax(60px, 1fr) 52px 42px 70px !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 8px 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.carrito-item {
+    display: grid !important;
+    grid-template-columns: minmax(60px, 1fr) 52px 42px 70px 22px !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 8px 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Permitir que Subtotal use su tamaño adecuado sin recortarse */
+.carrito-columnas span {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+}
+
+/* Alineación específica para que la palabra Subtotal quede bien pegada a la derecha */
+.carrito-columnas span:last-child {
+    text-align: right !important;
+}
+
+/* Reducción suave para pantallas pequeñas sin recortar */
+@media (max-width: 480px) {
+    .carrito-columnas {
+        grid-template-columns: minmax(45px, 1fr) 46px 36px 62px !important;
+        gap: 2px !important;
+    }
+
+    .carrito-item {
+        grid-template-columns: minmax(45px, 1fr) 46px 36px 62px 18px !important;
+        gap: 2px !important;
+    }
+
+    .carrito-columnas span {
+        font-size: 12.5px !important;
+    }
 }

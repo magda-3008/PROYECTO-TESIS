@@ -9,6 +9,7 @@
     <link rel="icon" href="./Resources/Logo.png" type="image/png" />
 
     <link rel="stylesheet" href="./CSS/estilosagregarventas.css" />
+    <link rel="stylesheet" href="./CSS/estilosproducto.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
@@ -21,21 +22,21 @@
   </head>
 
   <body>
-    <body>
-    <!-- FONDO -->
+     <!-- FONDO DE PANTALLA -->
     <div class="Fondo"></div>
 
-    <!-- ENCABEZADO CON BARRA DE NAVEGACIÓN SUPERIOR -->
+    <!-- ENCABEZADO SUPERIOR -->
     <header class="Encabezado">
-      <!-- Izquierda vacía o flexible -->
+      <!-- Izquierda: Logo de la empresa -->
       <div class="Encabezado-izquierda">
-        <!-- Espacio libre ya que retiramos el texto -->
+        <a href="principal.html">
+          <img src="Resources/Logo.png" alt="Logo Pa'tuboca" class="logoEmpresa" />
+        </a>
       </div>
 
-      <!-- Centro: Barra de navegación más ancha y espaciosa -->
+      <!-- Centro: Barra de navegación (Píldora) -->
       <nav class="nav-superior">
-        <span class="nav-seccion"></span>
-        <a href="productos.html" class="Item-nav">
+        <a href="productos.html" class="Item-nav ">
           <i class="fa-solid fa-box-open"></i> Productos
         </a>
         <a href="materiaprima.html" class="Item-nav">
@@ -44,15 +45,14 @@
         <a href="recetas.html" class="Item-nav">
           <i class="fa-solid fa-book-open"></i> Recetas
         </a>
+        <a href="agregarventa.html" class="Item-nav activo">
+          <i class="fa-solid fa-cart-plus"></i> Agregar venta
+        </a>
         <a href="ventas.html" class="Item-nav">
           <i class="fa-solid fa-cash-register"></i> Ventas
         </a>
-         <a href="agregarventa.html" class="Item-nav activo">
-          <i class="fa-solid fa-plus"></i> Agregar venta
-        </a>
-        
 
-        <!-- ADMINISTRACIÓN (Opcional según rol) -->
+        <!-- Opción exclusiva para administradores -->
         <div id="menuAdministracion" class="nav-admin" style="display: none;">
           <span class="nav-separador">|</span>
           <a href="usuarios.html" class="Item-nav">
@@ -64,11 +64,12 @@
         </div>
       </nav>
 
-      <!-- Derecha: Logo de la empresa -->
+      <!-- Derecha: Botón Cerrar Sesión -->
       <div class="Encabezado-derecha">
-        <a href="principal.html">
-          <img src="Resources/Logo.png" alt="Logo" class="logoEmpresa" />
-        </a>
+        <button type="button" class="btn-logout" id="btnCerrarSesion">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Cerrar sesión</span>
+        </button>
       </div>
     </header>
 
@@ -101,13 +102,12 @@
               <button class="categoria" data-category="Postres">POSTRES</button>
             </div>
             <!-- BUSCADOR -->
-            <div class="buscador-container">
-              <input
-                type="text"
-                id="buscador"
-                class="buscador"
-                placeholder="Buscar producto..." />
-            </div>
+<div class="buscador-container">
+    <div class="buscador-input-wrapper">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="buscador" class="buscador" placeholder="Buscar producto..." />
+    </div>
+</div>
             <!-- GRID DE PRODUCTOS -->
 
             <div class="productos-grid" id="productosGrid"></div>
@@ -180,11 +180,11 @@
 
             <div class="botones-venta">
               <button class="btn-cancelar" id="btnCancelar">
-                <i class="fa-solid fa-xmark"></i> Cancelar
+                <i class=""></i> Cancelar
               </button>
 
               <button class="btn-guardar" id="btnGuardar">
-                <i class="fa-solid fa-check"></i> Guardar Venta
+                <i class=""></i> Guardar Venta
               </button>
             </div>
           </section>
