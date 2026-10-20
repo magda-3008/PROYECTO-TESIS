@@ -21,73 +21,76 @@
     <!-- Contenedor del video de fondo -->
     <div class="Fondo">
       <video autoplay muted loop playsinline class="video-fondo">
-        <source src="Resources/Vides.mp4" type="video/mp4" />
+        <source src="Resources/UVides.mp4" type="video/mp4" />
         Tu navegador no soporta videos de fondo.
       </video>
-      <!-- Capa semitransparente opcional para que el texto resalte más -->
       <div class="capa-overlay"></div>
     </div>
 
-    <!--ENCABEZADO-->
+    <!-- ENCABEZADO -->
     <header class="Encabezado">
-      <!--Derecha-->
       <div class="Encabezado-derecha">
-        <a href="agregarventa.html" class="btnVenta" id="btnVenta">
-          <i class="fa-solid fa-plus"></i>
-          <span>Agregar venta</span>
-        </a>
-
-        <a href="" id="btnCerrarSesion">
-          <img src="Resources/Logo.png" alt="Logo" class="logoEmpresa" />
-        </a>
+        <button type="button" class="btn-logout" id="btnCerrarSesion">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Cerrar sesión</span>
+        </button>
       </div>
     </header>
 
-    <!--Contenido que esta bajo el header color rosa -->
+    <!-- CONTENIDO PRINCIPAL -->
     <main>
-      <h2 class="saludo">TODO LISTO PARA TRABAJAR HOY</h2>
+      <!-- Cabecera: Título y Logo debajo -->
+      <div class="titulo-contenedor">
+        <h2 class="saludo">♥TODO LISTO PARA TRABAJAR HOY♥</h2>
+        <img src="Resources/Logo.png" alt="Logo Pa'tuboca" class="logo-mediano" />
+      </div>
 
-      <!-- Apartado de gestión -->
+      <!-- Apartado de gestión en filas de 3 -->
       <section>
         <div class="contenedor">
-          <!-- Tarjeta Productos -->
+          <!-- Fila 1 -->
           <a href="productos.html" class="card">
             <div class="icono"><i class="fa-solid fa-box-open"></i></div>
-            <span>PRODUCTOS</span
-            ><i class="fa-solid fa-chevron-right flecha"></i>
+            <span>PRODUCTOS</span>
+            <i class="fa-solid fa-chevron-right flecha"></i>
           </a>
-
-          <!-- Tarjeta Ingredientes -->
+          
           <a href="materiaprima.html" class="card">
             <div class="icono"><i class="fa-solid fa-boxes-stacked"></i></div>
-            <span>MATERIA PRIMA</span
-            ><i class="fa-solid fa-chevron-right flecha"></i>
+            <span>MATERIA PRIMA</span>
+            <i class="fa-solid fa-chevron-right flecha"></i>
           </a>
 
-          <!-- Tarjeta Recetas -->
           <a href="recetas.html" class="card">
             <div class="icono"><i class="fa-solid fa-book-open"></i></div>
-            <span>RECETAS</span><i class="fa-solid fa-chevron-right flecha"></i>
+            <span>RECETAS</span>
+            <i class="fa-solid fa-chevron-right flecha"></i>
           </a>
 
-          <!-- Tarjeta Ventas -->
+          <!-- Fila 2 -->
+          <a href="agregarventa.html" class="card" id="tarjetaAgregarVenta">
+            <div class="icono"><i class="fa-solid fa-cart-plus"></i></div>
+            <span>AGREGAR VENTA</span>
+            <i class="fa-solid fa-chevron-right flecha"></i>
+          </a>
+
           <a href="ventas.html" class="card">
             <div class="icono"><i class="fa-solid fa-cash-register"></i></div>
-            <span>VENTAS</span><i class="fa-solid fa-chevron-right flecha"></i>
+            <span>VENTAS</span>
+            <i class="fa-solid fa-chevron-right flecha"></i>
           </a>
 
           <a href="usuarios.html" class="card" id="tarjetaUsuarios">
-            <div class="icono">
-              <i class="fa-solid fa-user"></i>
-            </div>
+            <div class="icono"><i class="fa-solid fa-user"></i></div>
             <span>USUARIOS</span>
             <i class="fa-solid fa-chevron-right flecha"></i>
           </a>
 
+          <!-- Fila 3 (RESPALDOS queda en la 2da columna, debajo de VENTAS) -->
+          <div class="vacio"></div> <!-- Espacio transparente a la izquierda -->
+          
           <a href="respaldos.html" class="card" id="tarjetaRespaldos">
-            <div class="icono">
-              <i class="fa-solid fa-database"></i>
-            </div>
+            <div class="icono"><i class="fa-solid fa-database"></i></div>
             <span>RESPALDOS</span>
             <i class="fa-solid fa-chevron-right flecha"></i>
           </a>
@@ -95,7 +98,8 @@
       </section>
     </main>
 
-    <script src="./JavaScript/utilities/sesion.js"></script>
+     <!--<script src="./JavaScript/utilities/sesion.js"></script>-->
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
@@ -108,19 +112,8 @@
         if (usuarioActual.rol !== "Administrador") {
           document.getElementById("tarjetaUsuarios")?.remove();
           document.getElementById("tarjetaRespaldos")?.remove();
-          document.getElementById("btnVenta")?.remove();
-        }
-
-        const btnCerrarSesion = document.getElementById("btnCerrarSesion");
-
-        if (btnCerrarSesion) {
-          btnCerrarSesion.addEventListener("click", (event) => {
-            event.preventDefault();
-
-            cerrarSesion();
-          });
+          document.getElementById("tarjetaAgregarVenta")?.remove();
         }
       });
     </script>
-  </body>
-</html>
+</body>

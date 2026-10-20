@@ -2086,3 +2086,574 @@ body.modal-open {
 	color: #667 !important;
 	font-size: 14px !important;
 }
+
+
+/* ==========================================
+   RESPONSIVE COMPLETO - REPORTE DE VENTAS
+   Pegar al final del archivo CSS
+========================================== */
+
+/* Evitar desbordamientos horizontales */
+html {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.container,
+.page-heading,
+.heading-title,
+.summary-grid,
+.summary-card,
+.dashboard-grid,
+.panel,
+.right-column,
+.weekly-layout,
+.best-product,
+.date-filters {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.container {
+    width: 100%;
+    padding: clamp(10px, 2vw, 26px);
+}
+
+img,
+canvas,
+svg {
+    max-width: 100%;
+}
+
+/* Controles y textos adaptables */
+button,
+input,
+select,
+textarea {
+    max-width: 100%;
+}
+
+.page-heading > *,
+.panel-heading > * {
+    min-width: 0;
+}
+
+.heading-title h1,
+.heading-title p,
+.summary-label,
+.summary-card h2,
+.best-heading h2 {
+    overflow-wrap: anywhere;
+}
+
+.date-filters {
+    flex-wrap: wrap;
+}
+
+input[type="date"] {
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.btn-pdf {
+    white-space: normal;
+}
+
+/* ==========================================
+   LAPTOPS Y PANTALLAS MEDIANAS
+========================================== */
+@media screen and (max-width: 1200px) {
+
+    .container {
+        padding: 18px;
+    }
+
+    .page-heading {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px;
+    }
+
+    .heading-title {
+        min-width: 0;
+    }
+
+    .date-filters {
+        grid-column: 1 / -1;
+        grid-row: auto;
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .best-product {
+        grid-column: 1 / -1;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .right-column {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: auto;
+    }
+
+    .panel {
+        min-width: 0;
+    }
+
+    #tablaVentas,
+    .tabulator {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+/* ==========================================
+   TABLETAS
+========================================== */
+@media screen and (max-width: 768px) {
+
+    .container {
+        padding: 14px 12px;
+        margin: 0 auto;
+    }
+
+    .page-heading {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+        width: 100%;
+    }
+
+    .heading-title {
+        width: 100%;
+        gap: 10px;
+    }
+
+    .title-icon {
+        flex: 0 0 44px;
+        width: 44px;
+        height: 44px;
+        font-size: 22px;
+    }
+
+    h1 {
+        font-size: clamp(18px, 4vw, 23px);
+    }
+
+    .heading-title p {
+        font-size: 14px;
+    }
+
+    .date-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .date-filters label {
+        padding: 0;
+    }
+
+    input[type="date"] {
+        flex: 1 1 130px;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .date-filters .btn {
+        flex: 1 1 100%;
+    }
+
+    .btn-pdf {
+        width: 100%;
+        min-height: 42px;
+    }
+
+    .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .summary-card {
+        padding: 12px 10px;
+        gap: 9px;
+    }
+
+    .summary-icon {
+        flex: 0 0 36px;
+        width: 36px;
+        height: 36px;
+        font-size: 17px;
+    }
+
+    .summary-label {
+        font-size: 13px;
+    }
+
+    .summary-card h2 {
+        font-size: clamp(15px, 2.8vw, 20px);
+    }
+
+    .best-product {
+        grid-column: 1 / -1;
+    }
+
+    .best-product-body img {
+        width: 90px;
+        max-width: 30%;
+        height: 65px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .right-column {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto;
+        gap: 12px;
+    }
+
+    .panel {
+        width: 100%;
+        padding: 11px;
+    }
+
+    .panel-heading {
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    .panel-heading h2 {
+        font-size: 15px;
+    }
+
+    .muted {
+        font-size: 12px;
+    }
+
+    .weekly-layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 8px;
+    }
+
+    .pie-chart-wrap {
+        width: 100%;
+        height: 220px;
+    }
+
+    .monthly-chart-wrap {
+        width: 100%;
+        height: 220px;
+    }
+
+    #weekly-legend {
+        padding: 5px 0;
+    }
+
+    .weekly-legend-item {
+        gap: 8px;
+        padding: 6px;
+    }
+
+    .weekly-legend-name,
+    .weekly-legend-value {
+        font-size: 12px;
+    }
+
+    .weekly-legend-right {
+        gap: 8px;
+        margin-left: 5px;
+    }
+
+    /* Tabla de ventas */
+    #tablaVentas {
+        overflow-x: auto;
+    }
+
+    .tabulator {
+        width: 100% !important;
+        max-width: 100%;
+        font-size: 12px;
+    }
+
+    .tabulator .tabulator-header .tabulator-col .tabulator-col-content,
+    .tabulator-row .tabulator-cell {
+        padding: 7px 5px;
+    }
+
+    .tabulator .tabulator-footer {
+        overflow-x: auto;
+    }
+
+    .tabulator .tabulator-paginator {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 3px;
+    }
+
+    footer {
+        text-align: center;
+        font-size: 12px;
+    }
+}
+
+/* ==========================================
+   CELULARES
+========================================== */
+@media screen and (max-width: 480px) {
+
+    .container {
+        padding: 10px 8px;
+    }
+
+    .page-heading {
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .heading-title {
+        align-items: flex-start;
+    }
+
+    .title-icon {
+        flex-basis: 38px;
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        font-size: 19px;
+    }
+
+    h1 {
+        font-size: 18px;
+        line-height: 1.25;
+    }
+
+    .heading-title p {
+        font-size: 12px;
+        line-height: 1.4;
+    }
+
+    .date-filters {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        width: 100%;
+        gap: 7px;
+    }
+
+    .date-filters label {
+        font-size: 14px;
+    }
+
+    input[type="date"] {
+        width: 100%;
+        min-width: 0;
+        font-size: 14px;
+    }
+
+    .date-filters .btn,
+    .btn-pdf {
+        width: 100%;
+        font-size: 13px;
+        padding: 11px 8px;
+    }
+
+    .summary-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 9px;
+    }
+
+    .summary-card {
+        width: 100%;
+        min-height: 85px;
+        padding: 13px;
+    }
+
+    .summary-icon {
+        flex-basis: 40px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .summary-label {
+        font-size: 13px;
+    }
+
+    .summary-card h2 {
+        font-size: 19px;
+    }
+
+    .best-product {
+        grid-column: auto;
+        padding: 12px;
+    }
+
+    .best-heading {
+        align-items: flex-start;
+    }
+
+    .best-heading h2 {
+        font-size: 14px;
+    }
+
+    .share {
+        font-size: 12px;
+    }
+
+    .best-product-body {
+        gap: 9px;
+        flex-wrap: wrap;
+    }
+
+    .best-product-body img {
+        width: 75px;
+        max-width: 35%;
+        height: 60px;
+    }
+
+    .panel {
+        padding: 9px;
+        border-radius: 10px;
+    }
+
+    .panel-heading {
+        gap: 5px;
+        margin-bottom: 10px;
+    }
+
+    .panel-heading h2 {
+        font-size: 14px;
+    }
+
+    .muted {
+        font-size: 11px;
+        text-align: left;
+    }
+
+    .pie-chart-wrap {
+        height: 190px;
+    }
+
+    .monthly-chart-wrap {
+        height: 190px;
+    }
+
+    .weekly-legend-item {
+        padding: 6px 2px;
+    }
+
+    .weekly-legend-name,
+    .weekly-legend-value {
+        font-size: 11px;
+    }
+
+    .weekly-legend-percentage {
+        min-width: 38px;
+        font-size: 10px;
+    }
+
+    /* Mantener la tabla dentro de la pantalla */
+    #tablaVentas {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    .tabulator {
+        font-size: 11px;
+    }
+
+    .tabulator .tabulator-header .tabulator-col .tabulator-col-content {
+        padding: 7px 4px;
+    }
+
+    .tabulator-row .tabulator-cell {
+        padding: 7px 4px;
+        overflow-wrap: anywhere;
+    }
+
+    .tabulator .tabulator-paginator {
+        gap: 3px;
+        font-size: 10px;
+    }
+
+    .tabulator .tabulator-page {
+        margin: 2px;
+        padding: 4px 6px;
+    }
+}
+
+/* ==========================================
+   CELULARES MUY PEQUEÑOS
+========================================== */
+@media screen and (max-width: 350px) {
+
+    .container {
+        padding: 8px 5px;
+    }
+
+    .title-icon {
+        flex-basis: 32px;
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+
+    h1 {
+        font-size: 16px;
+    }
+
+    .summary-card {
+        padding: 10px 8px;
+    }
+
+    .summary-card h2 {
+        font-size: 17px;
+    }
+
+    .panel {
+        padding: 7px;
+    }
+
+    .weekly-legend-right {
+        gap: 4px;
+        margin-left: 3px;
+    }
+
+    .weekly-legend-name,
+    .weekly-legend-value {
+        font-size: 10px;
+    }
+}
+
+/* ==========================================
+   ACCESIBILIDAD: MENOS MOVIMIENTO
+========================================== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
