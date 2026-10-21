@@ -2,7 +2,6 @@ let recetaEnEdicion = null;
 let materiasPrimasEditar = [];
 let productosElaboradosEditar = [];
 let modalEditarReceta = null;
-
 async function cargarModalEditarReceta() {
     try {
         // Evitar cargar el HTML más de una vez
@@ -41,7 +40,6 @@ function inicializarModalEditarReceta() {
         elementoModal.addEventListener("hidden.bs.modal", limpiarModalEditarReceta);
     }
 }
-
 async function abrirModalEditarReceta(idReceta) {
     try {
         await cargarModalEditarReceta();
@@ -53,14 +51,11 @@ async function abrirModalEditarReceta(idReceta) {
         if (!Array.isArray(detalle) || detalle.length === 0) {
             throw new Error("La receta no contiene información.");
         }
-
         recetaEnEdicion = {
             id_receta: Number(idReceta),
             datos: detalle
         };
-
         await cargarDatosParaEdicion();
-
         llenarFormularioReceta(detalle);
         const elementoModal = document.getElementById("modalEditarReceta");
         modalEditarReceta = bootstrap.Modal.getOrCreateInstance(elementoModal);
@@ -74,7 +69,6 @@ async function abrirModalEditarReceta(idReceta) {
         });
     }
 }
-
 async function cargarDatosParaEdicion() {
     const [
         respuestaMP,
@@ -113,24 +107,15 @@ function agregarFilaIngredienteEditar(ingredienteExistente = null) {
     const fila = document.createElement("div");
     fila.className = "row g-2 align-items-end ingrediente-row ingrediente-editar mb-2";
     fila.innerHTML = `
-
-        <!-- Tipo de insumo -->
         <div class="col-md-3">
             <div class="campo">
-                <label>
-                    Tipo de insumo
-                </label>
+                <label>Tipo de insumo</label>
 
                 <select class="tipo-insumo-editar">
-
-                    <option value="">
-                        Seleccione
-                    </option>
-
+                    <option value="">Seleccione</option>
                     <option value="materia_prima">
                         Materia prima
                     </option>
-
                     <option value="producto">
                         Producto elaborado
                     </option>
@@ -138,53 +123,39 @@ function agregarFilaIngredienteEditar(ingredienteExistente = null) {
             </div>
         </div>
 
-
-        <!-- Insumo -->
         <div class="col-md-4">
             <div class="campo">
+                <label>Insumo</label>
 
-                <label>
-                    Insumo
-                </label>
-
-                <select
-                    class="insumo-editar"
-                    disabled>
-
+                <select class="insumo-editar" disabled>
                     <option value="">
                         Seleccione un insumo
                     </option>
-
                 </select>
             </div>
         </div>
 
-
-        <!-- Cantidad -->
         <div class="col-md-2">
             <div class="campo">
-                <label>
-                    Cantidad
-                </label>
+                <label>Cantidad</label>
+
                 <input
                     type="text"
                     class="cantidad-insumo-editar"
                     inputmode="text"
-                    placeholder="Cantidad">
+                    placeholder="Cantidad"
+                >
             </div>
         </div>
 
-        <!-- Unidad -->
-
         <div class="col-md-2">
             <div class="campo">
-                <label>
-                    Unidad
-                </label>
+                <label>Unidad</label>
 
                 <select
                     class="unidad-insumo-editar"
-                    disabled>
+                    disabled
+                >
                     <option value="">
                         Seleccione
                     </option>
@@ -192,47 +163,100 @@ function agregarFilaIngredienteEditar(ingredienteExistente = null) {
             </div>
         </div>
 
-        <!-- Eliminar -->
-
         <div class="col-md-1">
             <button
                 type="button"
                 class="btn btn-outline-danger btnEliminarIngredienteEditar w-100"
                 title="Eliminar ingrediente"
-                aria-label="Eliminar ingrediente">
-
+                aria-label="Eliminar ingrediente"
+            >
                 <i class="fa-solid fa-trash"></i>
-
             </button>
         </div>
 
-        <!-- Error -->
         <div class="col-12">
             <div class="error-msg error-fila-ingrediente"></div>
         </div>
 
+        <div class="col-12 aviso-ingrediente-inactivo d-none">
+            <div class="alert alert-warning d-flex align-items-center justify-content-between gap-2 mb-0">
+                <div>
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                    <strong>Este ingrediente está inactivo.</strong>
+                    <span>
+                        Debe reemplazarlo por uno activo o eliminarlo
+                        antes de guardar la receta.
+                    </span>
+                </div>
+
+                <button
+                    type="button"
+                    class="btn btn-warning btn-sm btnReemplazarIngredienteEditar"
+                >
+                    <i class="fa-solid fa-arrows-rotate me-1"></i>
+                    Reemplazar
+                </button>
+            </div>
+        </div>
     `;
     contenedor.appendChild(fila);
     const selectTipo = fila.querySelector(".tipo-insumo-editar");
     const selectInsumo = fila.querySelector(".insumo-editar");
     const selectUnidad = fila.querySelector(".unidad-insumo-editar");
     const btnEliminar = fila.querySelector(".btnEliminarIngredienteEditar");
+    const btnReemplazar = fila.querySelector(".btnReemplazarIngredienteEditar");
+    const avisoInactivo = fila.querySelector(".aviso-ingrediente-inactivo");
     selectTipo.addEventListener("change",
         () => {
+            fila.classList.remove("ingrediente-inactivo");
+            avisoInactivo.classList.add("d-none");
             cargarInsumosFilaEditar(fila, selectTipo.value);
         });
     selectInsumo.addEventListener("change",
         () => {
             cargarUnidadesFilaEditar(fila);
+            const opcionSeleccionada = selectInsumo.options[selectInsumo.selectedIndex];
+            const estaInactiva = opcionSeleccionada?.dataset.inactivo === "true";
+            if (!estaInactiva && selectInsumo.value) {
+                fila.classList.remove("ingrediente-inactivo");
+                avisoInactivo.classList.add("d-none");
+            }
         });
     btnEliminar.addEventListener("click",
         () => {
             fila.remove();
         });
+    btnReemplazar.addEventListener("click",
+        () => {
+            const tipo = selectTipo.value;
+            if (!tipo) {
+                return;
+            }
+            const inputCantidad = fila.querySelector(".cantidad-insumo-editar");
+            const cantidadActual = inputCantidad.value;
+            cargarInsumosFilaEditar(fila, tipo);
+
+            inputCantidad.value = cantidadActual;
+            selectUnidad.innerHTML = `
+                <option value="">
+                    Seleccione
+                </option>
+            `;
+            selectUnidad.disabled = true;
+            fila.classList.remove("ingrediente-inactivo");
+            avisoInactivo.classList.add("d-none");
+            selectInsumo.focus();
+        });
     if (ingredienteExistente) {
         const tipo = obtenerTipoIngrediente(ingredienteExistente);
         selectTipo.value = tipo;
         cargarInsumosFilaEditar(fila, tipo, ingredienteExistente);
+        const inputCantidad = fila.querySelector(".cantidad-insumo-editar");
+        inputCantidad.value = ingredienteExistente.cantidad_utilizada;
+        if (ingredienteEstaInactivo(ingredienteExistente)) {
+            fila.classList.add("ingrediente-inactivo");
+            avisoInactivo.classList.remove("d-none");
+        }
     }
 }
 
@@ -244,6 +268,19 @@ function obtenerTipoIngrediente(ingrediente) {
         return "producto";
     }
     return "";
+}
+
+function ingredienteEstaInactivo(ingrediente) {
+    if (!ingrediente) {
+        return false;
+    }
+    if (ingrediente.id_ma !== null && ingrediente.id_ma !== undefined) {
+        return ingrediente.estado_materia_prima === "Inactivo";
+    }
+    if (ingrediente.id_producto_insumo !== null && ingrediente.id_producto_insumo !== undefined) {
+        return ingrediente.estado_producto_insumo === "Inactivo";
+    }
+    return false;
 }
 
 function cargarInsumosFilaEditar(fila, tipo, ingredienteExistente = null) {
@@ -261,39 +298,74 @@ function cargarInsumosFilaEditar(fila, tipo, ingredienteExistente = null) {
     `;
     selectInsumo.disabled = true;
     selectUnidad.disabled = true;
-
+    let idIngredienteExistente = null;
+    let ingredienteInactivo = false;
+    if (ingredienteExistente) {
+        if (tipo === "materia_prima" && ingredienteExistente.id_ma !== null && ingredienteExistente.id_ma !== undefined) {
+            idIngredienteExistente = Number(ingredienteExistente.id_ma);
+            ingredienteInactivo = ingredienteEstaInactivo(ingredienteExistente);
+        }
+        if (tipo === "producto" && ingredienteExistente.id_producto_insumo !== null && ingredienteExistente.id_producto_insumo !== undefined) {
+            idIngredienteExistente = Number(ingredienteExistente.id_producto_insumo);
+            ingredienteInactivo = ingredienteEstaInactivo(ingredienteExistente);
+        }
+    }
     if (tipo === "materia_prima") {
         materiasPrimasEditar.forEach(materia => {
+            const idMateria = Number(materia.id_ma);
+            const esIngredienteExistente = idIngredienteExistente !== null && idIngredienteExistente === idMateria;
+            const estaInactiva =
+                materia.estado_mp === "Inactivo";
+            if (estaInactiva && !esIngredienteExistente) {
+                return;
+            }
             const opcion = document.createElement("option");
             opcion.value = materia.id_ma;
-            opcion.textContent = materia.nombre;
+            if (estaInactiva && esIngredienteExistente) {
+                opcion.textContent = `⚠ ${materia.nombre} (Inactiva)`;
+                opcion.dataset.inactivo = "true";
+            } else {
+                opcion.textContent = materia.nombre;
+            }
             selectInsumo.appendChild(opcion);
         });
         selectInsumo.disabled = false;
     }
-
     if (tipo === "producto") {
         productosElaboradosEditar.forEach(producto => {
+            const idProducto = Number(producto.id_producto);
 
+            //Un producto no puede utilizarse a sí mismo como ingrediente.
             if (recetaEnEdicion && Number(producto.id_producto) === Number(recetaEnEdicion.datos[0].id_producto)) {
+                return;
+            }
+            const esIngredienteExistente = idIngredienteExistente !== null && idIngredienteExistente === idProducto;
+            const estaInactivo =
+                producto.estado === "Inactivo";
+            if (estaInactivo && !esIngredienteExistente) {
                 return;
             }
             const opcion = document.createElement("option");
             opcion.value = producto.id_producto;
-            opcion.textContent = producto.nombre;
+            if (estaInactivo && esIngredienteExistente) {
+                opcion.textContent = `⚠ ${producto.nombre} (Inactivo)`;
+                opcion.dataset.inactivo = "true";
+            } else {
+                opcion.textContent = producto.nombre;
+            }
             selectInsumo.appendChild(opcion);
         });
         selectInsumo.disabled = false;
     }
-
-    if (ingredienteExistente) {
-        if (tipo === "materia_prima" && ingredienteExistente.id_ma !== null) {
-            selectInsumo.value = ingredienteExistente.id_ma;
-        }
-        if (tipo === "producto" && ingredienteExistente.id_producto_insumo !== null) {
-            selectInsumo.value = ingredienteExistente.id_producto_insumo;
-        }
+    if (ingredienteExistente && idIngredienteExistente !== null) {
+        selectInsumo.value = idIngredienteExistente;
         cargarUnidadesFilaEditar(fila, ingredienteExistente);
+
+        if (ingredienteInactivo) {
+            fila.classList.add("ingrediente-inactivo");
+        } else {
+            fila.classList.remove("ingrediente-inactivo");
+        }
     }
 }
 
@@ -313,11 +385,8 @@ function obtenerUnidadesDisponiblesEditar(materiaPrima) {
             texto: texto || capitalizarUnidadEditar(valor)
         });
     };
-
     agregarUnidad(materiaPrima.unidad_medida, materiaPrima.unidad_medida);
-
     agregarUnidad(materiaPrima.unidad_existencia, materiaPrima.unidad_existencia);
-
     if (Array.isArray(materiaPrima.conversiones)) {
         materiaPrima.conversiones.forEach(conversion => {
             agregarUnidad(conversion.unidad_ingresada, conversion.unidad_ingresada);
@@ -339,107 +408,69 @@ function cargarUnidadesFilaEditar(fila, ingredienteExistente = null) {
     const selectInsumo = fila.querySelector(".insumo-editar");
     const selectUnidad = fila.querySelector(".unidad-insumo-editar");
     const inputCantidad = fila.querySelector(".cantidad-insumo-editar");
-
     selectUnidad.innerHTML = `<option value="">Seleccione</option>`;
     selectUnidad.disabled = true;
-
     const tipo = selectTipo.value;
     const idInsumo = Number(selectInsumo.value);
-
     if (!idInsumo) {
         return;
     }
-
     // Producto elaborado utilizado como insumo
     if (tipo === "producto") {
         const opcion = document.createElement("option");
-
         opcion.value = "unidad";
         opcion.textContent = "Unidad";
-
         selectUnidad.appendChild(opcion);
-
         selectUnidad.value = "unidad";
         selectUnidad.disabled = false;
-
         if (ingredienteExistente) {
-            const cantidad = Number(
-                ingredienteExistente.cantidad_ingresada
-            );
-
-            inputCantidad.value = Number.isFinite(cantidad)
-                ? formatearUnidadHumana(cantidad)
-                : "";
+            const cantidad = Number(ingredienteExistente.cantidad_ingresada);
+            inputCantidad.value = Number.isFinite(cantidad) ? formatearUnidadHumana(cantidad) : "";
         }
-
         return;
     }
-
     if (tipo !== "materia_prima") {
         return;
     }
-
-    const materiaPrima = materiasPrimasEditar.find(
-        materia => Number(materia.id_ma) === idInsumo
-    );
-
+    const materiaPrima = materiasPrimasEditar.find(materia => Number(materia.id_ma) === idInsumo);
     if (!materiaPrima) {
         return;
     }
-
     const unidades = obtenerUnidadesDisponiblesEditar(materiaPrima);
-
     unidades.forEach(unidad => {
         const opcion = document.createElement("option");
 
-        // IMPORTANTE:
         // El value permanece normalizado para enviarlo al backend.
         opcion.value = unidad.valor;
-
         // Solo se modifica lo que ve el usuario.
         opcion.textContent = capitalizarUnidadEditar(unidad.texto);
-
         selectUnidad.appendChild(opcion);
     });
-
     selectUnidad.disabled = false;
-
     if (ingredienteExistente) {
-        const cantidad = Number(
-            ingredienteExistente.cantidad_ingresada
-        );
-
+        const cantidad = Number(ingredienteExistente.cantidad_ingresada);
         const unidadOriginal = ingredienteExistente.unidad_ingresada;
-
         // Mostrar únicamente la cantidad en lenguaje humano.
         if (Number.isFinite(cantidad)) {
             inputCantidad.value = formatearUnidadHumana(cantidad);
         } else {
             inputCantidad.value = "";
         }
-
         // Recuperar la unidad original.
         if (unidadOriginal) {
             const opcion = [...selectUnidad.options].find(
-                option =>
-                    option.value.toLowerCase() ===
-                    String(unidadOriginal).trim().toLowerCase()
+                option => unidadesSonEquivalentes(
+                    option.value,
+                    unidadOriginal
+                )
             );
-
             if (opcion) {
                 selectUnidad.value = opcion.value;
             } else {
                 const opcionHistorica = document.createElement("option");
-
-                opcionHistorica.value = String(unidadOriginal)
-                    .trim()
-                    .toLowerCase();
-
-                opcionHistorica.textContent =
-                    capitalizarUnidadEditar(unidadOriginal);
-
+                opcionHistorica.value = String(unidadOriginal).trim().toLowerCase();
+                opcionHistorica.textContent = capitalizarUnidadEditar(unidadOriginal);
                 selectUnidad.appendChild(opcionHistorica);
-
                 selectUnidad.value = opcionHistorica.value;
             }
         }
@@ -473,7 +504,6 @@ function validarFormularioEditar() {
     let valido = true;
     const nombre = document.getElementById("nombreRecetaEditar").value.trim();
     const cantidadBase = document.getElementById("cantidadBaseEditar").value.trim();
-
     if (!nombre) {
         mostrarErrorEditar("errorNombreRecetaEditar", "El nombre de la receta es obligatorio.");
         valido = false;
@@ -482,13 +512,11 @@ function validarFormularioEditar() {
         mostrarErrorEditar("errorNombreRecetaEditar", "El nombre no puede superar los 100 caracteres.");
         valido = false;
     }
-
     const numeroBase = Number(cantidadBase);
     if (!cantidadBase || !Number.isInteger(numeroBase) || numeroBase <= 0) {
         mostrarErrorEditar("errorCantidadBaseEditar", "Debe ingresar un número entero mayor que cero.");
         valido = false;
     }
-
     const filas = document.querySelectorAll("#contenedorIngredientesEditar .ingrediente-editar");
     if (filas.length === 0) {
         mostrarErrorEditar("errorIngredientesEditar", "Debe existir al menos un ingrediente.");
@@ -511,11 +539,7 @@ function validarFormularioEditar() {
             errores.push("Ingrese una cantidad.");
         } else {
             const cantidadNormalizada = parsearCantidad(cantidad);
-
-            if (
-                !Number.isFinite(cantidadNormalizada) ||
-                cantidadNormalizada <= 0
-            ) {
+            if (!Number.isFinite(cantidadNormalizada) || cantidadNormalizada <= 0) {
                 errores.push("Ingrese una cantidad válida mayor que cero.");
             }
         }
@@ -533,7 +557,6 @@ function validarFormularioEditar() {
     }
     return valido;
 }
-
 async function guardarCambiosReceta(evento) {
     evento.preventDefault();
     if (!validarFormularioEditar()) {
@@ -552,6 +575,7 @@ async function guardarCambiosReceta(evento) {
     const cantidadBase = Number(document.getElementById("cantidadBaseEditar").value);
     const descripcion = document.getElementById("descripcionRecetaEditar").value.trim();
     const ingredientes = obtenerIngredientesEditar();
+    console.log("INGREDIENTES ANTES DE ENVIAR:", ingredientes);
     try {
         boton.disabled = true;
         boton.innerHTML = `
@@ -577,22 +601,17 @@ async function guardarCambiosReceta(evento) {
         if (!respuesta.ok) {
             throw new Error(resultado.mensaje || "No fue posible actualizar la receta.");
         }
-
         const idRecetaActualizada = recetaEnEdicion.id_receta;
-
         if (modalEditarReceta) {
             modalEditarReceta.hide();
         }
-
         await cargarRecetas();
-
         await cargarDetalleReceta(idRecetaActualizada);
         await Swal.fire({
             icon: "success",
             title: "Receta actualizada",
             text: "Los cambios se guardaron correctamente.",
-            timer: 1800,
-            showConfirmButton: false
+            confirmButtonText: "Aceptar"
         });
     } catch (error) {
         console.error("Error al guardar receta:", error);
@@ -604,15 +623,13 @@ async function guardarCambiosReceta(evento) {
     } finally {
         boton.disabled = false;
         boton.innerHTML = `
-            <i class="fa-solid fa-circle-check me-1"></i>
+             <i class="fa-solid fa-check"></i>
             
             Guardar cambios
         `;
     }
 }
-/* =========================================================
-   LIMPIAR MODAL
-   ========================================================= */
+
 function limpiarModalEditarReceta() {
     const formulario = document.getElementById("formEditarReceta");
     if (formulario) {
@@ -625,9 +642,7 @@ function limpiarModalEditarReceta() {
     limpiarErroresEditar();
     recetaEnEdicion = null;
 }
-/* =========================================================
-   ERRORES
-   ========================================================= */
+
 function mostrarErrorEditar(id, mensaje) {
     const elemento = document.getElementById(id);
     if (elemento) {

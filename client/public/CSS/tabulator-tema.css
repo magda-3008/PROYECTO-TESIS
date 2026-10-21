@@ -1,5 +1,3 @@
-/*TEMA PERSONALIZADO TABULATOR*/
-/* Contenedor principal */
 .tabulator {
 	background: #fff;
 	border: none;
@@ -9,7 +7,7 @@
 	font-size: 18px;
 	font-family: 'Baloo 2', cursive;
 }
-/*ENCABEZADO*/
+
 .tabulator .tabulator-header {
 	background: #1a81a0;
 	border-bottom: none;
@@ -36,7 +34,7 @@
 	text-align: center;
 	line-height: 1.1;
 }
-/*FILAS*/
+
 .tabulator-row {
 	background: white;
 	min-height: 60px;
@@ -59,7 +57,7 @@
 	display: flex;
 	align-items: center;
 }
-/*HEADER DE NUMERACIÓN*/
+
 .tabulator-row-header,
 .tabulator-row-header-holder {
 	background: #1a81a0;
@@ -69,7 +67,7 @@
 	justify-content: center;
 	font-weight: bold;
 }
-/*PAGINACIÓN*/
+
 .tabulator-footer {
 	background: white;
 	border-top: 1px solid rgba(28, 66, 147, .15);
@@ -88,7 +86,7 @@
 	background: #1a81a0;
 	color: white;
 }
-/*MENÚ CONTEXTUAL*/
+
 .tabulator-menu {
 	border: none;
 	border-radius: 12px;
@@ -103,7 +101,7 @@
 .tabulator-menu-item:hover {
 	background: #befbfc;
 }
-/*ICONO DE ACCIONES*/
+
 .bi-three-dots-vertical {
 	font-size: 22px;
 	color: #1a81a0;
@@ -114,7 +112,7 @@
 	color: #0e617a;
 	transform: scale(1.2);
 }
-/*SCROLLBAR*/
+
 .tabulator-tableHolder::-webkit-scrollbar {
 	height: 10px;
 	width: 10px;
@@ -126,7 +124,7 @@
 .tabulator-tableHolder::-webkit-scrollbar-thumb:hover {
 	background: #87bfd2;
 }
-/*INPUTS DE EDICIÓN*/
+
 .tabulator-editing {
 	padding: 0 !important;
 }
@@ -138,7 +136,7 @@
 	height: 100%;
 	padding: 10px;
 }
-/*ORDENAMIENTO COLUMNAS*/
+
 .tabulator-arrow {
 	border-top-color: white !important;
 }
@@ -149,7 +147,7 @@
 	padding-left: 40px;
 	padding-right: 40px;
 }
-/*CARGANDO TABLA*/
+
 .tabla-cargando {
 	min-height: 350px;
 	display: flex;
@@ -164,7 +162,7 @@
 	width: 3rem;
 	height: 3rem;
 }
-/*TABLA VACÍA*/
+
 .tabla-vacia {
 	padding: 60px 20px;
 	text-align: center;
@@ -182,7 +180,7 @@
 	margin-top: 8px;
 	font-size: 17px;
 }
-/*ERROR AL CARGAR*/
+
 .tabla-error {
 	min-height: 350px;
 	display: flex;
@@ -221,28 +219,21 @@
 	background-color: #5b4bc4 !important;
 	border-color: #5b4bc4 !important;
 }
-/* =========================================
-        ESTADO DEL STOCK
-========================================= */
-/* Stock normal */
+
+
 .tabulator-row.stock-normal .tabulator-cell {
 	background-color: white !important;
 }
-/* Stock bajo */
+
 .tabulator-row.stock-bajo .tabulator-cell {
 	background-color: #fff3cd !important;
 }
-/* Stock agotado */
+
 .tabulator-row.stock-agotado .tabulator-cell {
 	background-color: #f8d7da !important;
 }
-/* =========================================
-        DISEÑO RESPONSIVE TABULATOR
-========================================= */
-/* -----------------------------------------
-   TABLET
-   577px - 991px
------------------------------------------ */
+
+/* Diseño responsive tablet */
 @media (min-width: 577px) and (max-width: 991px) {
 	.tabulator {
 		font-size: 16px;
@@ -267,10 +258,8 @@
 		line-height: 1.2;
 	}
 }
-/* -----------------------------------------
-   CELULAR
-   Hasta 576px
------------------------------------------ */
+
+/* Celular */
 @media (max-width: 576px) {
 	/* CONTENEDOR DE LA TABLA */
 	.tabulator {
@@ -278,7 +267,7 @@
 		font-size: 14px;
 		border-radius: 16px;
 	}
-	/* ENCABEZADO */
+
 	.tabulator .tabulator-header {
 		min-height: 44px;
 	}
@@ -292,11 +281,11 @@
 		font-size: 13px;
 		line-height: 1.15;
 	}
-	/* FILAS */
+
 	.tabulator-row {
 		min-height: 48px;
 	}
-	/* CELDAS */
+
 	.tabulator-cell {
 		padding: 9px 8px !important;
 		font-size: 14px;
@@ -308,7 +297,7 @@
 		max-width: 10% !important;
 		box-sizing: border-box;
 	}
-	/* BOTONES / ACCIONES */
+
 	.tabulator-cell .btn {
 		min-width: 34px;
 		min-height: 34px;
@@ -317,7 +306,7 @@
 	.bi-three-dots-vertical {
 		font-size: 21px;
 	}
-	/* MENÚ CONTEXTUAL */
+
 	.tabulator-menu {
 		border-radius: 12px;
 		max-width: calc(100vw - 30px);
@@ -326,7 +315,7 @@
 		padding: 11px 14px;
 		font-size: 15px;
 	}
-	/* PAGINACIÓN */
+
 	.tabulator-footer {
 		padding: 7px 5px;
 	}
@@ -335,7 +324,7 @@
 		margin: 0 2px;
 		font-size: 14px;
 	}
-	/* SCROLL HORIZONTAL */
+
 	.tabulator-tableHolder {
 		overflow-x: auto;
 		-webkit-overflow-scrolling: touch;
@@ -343,13 +332,13 @@
 	.tabulator-tableHolder::-webkit-scrollbar {
 		height: 7px;
 	}
-	/* INPUTS DE EDICIÓN */
+
 	.tabulator-editing input,
 	.tabulator-editing select {
 		padding: 7px;
 		font-size: 14px;
 	}
-	/* MENSAJE DE TABLA VACÍA */
+
 	.tabla-vacia {
 		padding: 45px 15px;
 	}
@@ -362,12 +351,12 @@
 	.tabla-vacia p {
 		font-size: 15px;
 	}
-	/* CARGANDO */
+
 	.tabla-cargando {
 		min-height: 280px;
 		font-size: 16px;
 	}
-	/* ERROR */
+
 	.tabla-error {
 		min-height: 280px;
 		padding: 20px;
@@ -388,10 +377,7 @@
 		padding: 7px 22px !important;
 	}
 }
-/* -----------------------------------------
-   CELULARES MUY PEQUEÑOS
-   Hasta 400px
------------------------------------------ */
+
 @media (max-width: 400px) {
 	.tabulator {
 		font-size: 13px;
@@ -418,9 +404,8 @@
 		font-size: 13px;
 	}
 }
-/* =========================================
-   TABLA DE USUARIOS
-========================================= */
+
+/* Tabla de usuarios */
 .badge-rol {
 	display: inline-flex;
 	align-items: center;
@@ -440,10 +425,6 @@
 	color: #555;
 }
 
-/* =========================================================
-   TABLA DE VENTAS
-   ========================================================= */
-
 #tablaVentas.tabulator {
     width: 100%;
     border: none;
@@ -454,11 +435,6 @@
     font-family: 'Baloo 2', cursive;
     font-size: 15px;
 }
-
-
-/* =========================================================
-   ENCABEZADO
-   ========================================================= */
 
 #tablaVentas.tabulator .tabulator-header {
     background: #1a81a0;
@@ -484,20 +460,12 @@
     line-height: 1.15;
 }
 
-
-/* Iconos de ordenamiento */
-
 #tablaVentas.tabulator
 .tabulator-header
 .tabulator-col
 .tabulator-col-sorter {
     color: rgba(255, 255, 255, 0.8);
 }
-
-
-/* =========================================================
-   FILAS
-   ========================================================= */
 
 #tablaVentas.tabulator .tabulator-row {
     min-height: 48px;
@@ -514,19 +482,6 @@
     background: #eefcff;
 }
 
-
-/* =========================================================
-   CELDAS
-   ========================================================= */
-
-/*
-   IMPORTANTE:
-   No usamos display:flex aquí.
-
-   Tabulator necesita controlar la altura de las celdas
-   cuando una fila tiene varios productos.
-*/
-
 #tablaVentas.tabulator .tabulator-cell {
     padding: 10px 13px !important;
     border-right: none !important;
@@ -536,11 +491,6 @@
     vertical-align: middle;
 }
 
-
-/* =========================================================
-   NÚMERO DE VENTA
-   ========================================================= */
-
 #tablaVentas.tabulator
 .tabulator-cell[tabulator-field="id"] {
     text-align: center;
@@ -548,11 +498,6 @@
     font-weight: 700;
     color: #4a7f83;
 }
-
-
-/* =========================================================
-   FECHA
-   ========================================================= */
 
 #tablaVentas.tabulator
 .tabulator-cell[tabulator-field="fechaFormateada"] {
@@ -562,16 +507,6 @@
     color: #52676c;
 }
 
-
-/* =========================================================
-   PRODUCTOS
-   ========================================================= */
-
-/*
-   Esta es la única columna que puede crecer
-   verticalmente cuando existen varios productos.
-*/
-
 #tablaVentas.tabulator
 .tabulator-cell[tabulator-field="productos"] {
     text-align: left;
@@ -580,11 +515,6 @@
     line-height: 1.35;
     color: #40575c;
 }
-
-
-/* =========================================================
-   TOTAL
-   ========================================================= */
 
 #tablaVentas.tabulator
 .tabulator-cell[tabulator-field="total"] {
@@ -596,20 +526,11 @@
     color: #1a81a0;
 }
 
-
-/* =========================================================
-   ESTADO
-   ========================================================= */
-
 #tablaVentas.tabulator
 .tabulator-cell[tabulator-field="estado"] {
     text-align: center;
     vertical-align: middle;
 }
-
-/* =========================================================
-   SELECTOR DE CANTIDAD
-   ========================================================= */
 
 #tablaVentas.tabulator .tabulator-footer
 .tabulator-page-counter {
@@ -629,22 +550,12 @@
     padding: 4px 7px;
 }
 
-
-/* =========================================================
-   MENSAJE SIN DATOS
-   ========================================================= */
-
 #tablaVentas.tabulator .tabulator-placeholder {
     background: #ffffff;
     color: #718589;
     font-family: 'Baloo 2', cursive;
     font-size: 15px;
 }
-
-
-/* =========================================================
-   BARRA DE DESPLAZAMIENTO
-   ========================================================= */
 
 #tablaVentas.tabulator
 .tabulator-tableholder::-webkit-scrollbar {
@@ -666,51 +577,4 @@
 #tablaVentas.tabulator
 .tabulator-tableholder::-webkit-scrollbar-thumb:hover {
     background: #87bfd2;
-}
-
-
-/* =========================================================
-   RESPONSIVE
-   ========================================================= */
-
-@media (max-width: 991px) {
-
-    #tablaVentas.tabulator .tabulator-cell {
-        padding: 9px 10px !important;
-        font-size: 13px;
-    }
-
-    #tablaVentas.tabulator .tabulator-header
-    .tabulator-col-title {
-        font-size: 13px;
-    }
-
-    #tablaVentas .estado-venta {
-        min-width: 76px;
-        padding: 4px 8px;
-        font-size: 11px;
-    }
-}
-
-
-@media (max-width: 576px) {
-
-    #tablaVentas.tabulator {
-        font-size: 13px;
-    }
-
-    #tablaVentas.tabulator .tabulator-cell {
-        padding: 8px !important;
-        font-size: 12px;
-    }
-
-    #tablaVentas.tabulator .tabulator-header
-    .tabulator-col-title {
-        font-size: 12px;
-    }
-
-    #tablaVentas .estado-venta {
-        min-width: 70px;
-        font-size: 10px;
-    }
 }

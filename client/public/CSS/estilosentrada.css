@@ -5,7 +5,6 @@
 	font-family: 'Baloo 2', cursive;
 }
 
-/*Centro el formulario en la pantalla y coloca la imagen de fondo*/
 body {
 	min-height: 100vh;
 	display: flex;
@@ -16,7 +15,6 @@ body {
 	padding: 20px;
 }
 
-/*Es la tarjeta donde se encuentra el formulario*/
 .Contenedor-general {
 	position: relative;
 	width: 100%;
@@ -28,7 +26,6 @@ body {
 	text-align: center;
 }
 
-/*Permite colocar el logo sobresaliendo de de la tarjeta*/
 .Contenedor-logo {
 	position: absolute;
 	top: -50px;
@@ -36,7 +33,6 @@ body {
 	transform: translateX(-50%);
 }
 
-/*Tamaño del logo y proporción*/
 .logo-img {
 	width: 135px;
 	height: 135px;
@@ -44,7 +40,6 @@ body {
 	transition: transform .3s ease;
 }
 
-/*TITULO*/
 .Contenedor-general h2 {
 	margin-top: 40px;
 	margin-bottom: 30px;
@@ -54,13 +49,11 @@ body {
 	letter-spacing: 1px;
 }
 
-/*Agrupa la etiqueta y el campo de texto*/
 .Titulo-caja {
 	text-align: left;
 	margin-bottom: 25px;
 }
 
-/*Etiquetas labels*/
 .Titulo-caja label {
 	display: block;
 	margin-bottom: 8px;
@@ -69,7 +62,6 @@ body {
 	font-weight: bold;
 }
 
-/*Corazones antes del texto*/
 .Titulo-caja label::before {
 	content: "♥";
 	margin-right: 7px;
@@ -77,7 +69,6 @@ body {
 	font-size: 17px;
 }
 
-/*INPUTS*/
 .Titulo-caja input {
 	width: 100%;
 	padding: 8px 4px;
@@ -90,12 +81,10 @@ body {
 	transition: border-color .3s ease;
 }
 
-/*Color del texto de referencia*/
 .Titulo-caja input::placeholder {
 	color: #667;
 }
 
-/*Cambia el color de la línea inferior cuando el usuario hace clic en el campo*/
 .Titulo-caja input:focus {
 	border-bottom: 1px solid #1a81a0;
 }
@@ -118,7 +107,6 @@ body {
 	color: #1a81a0;
 }
 
-/*MENSAJE*/
 .mensaje-login {
 	color: red;
 	font-size: 10;
@@ -134,7 +122,6 @@ body {
 	padding-right: 45px;
 }
 
-/*BOTÓN*/
 .btn-login {
 display: inline-block;
     width: 100%;
@@ -155,13 +142,11 @@ display: inline-block;
     transition: all 0.25s ease;	
 }
 
-/*Efecto al pasar el mouse por el boton*/
 .btn-login:hover {
 	background: #1a81a0;
 	transform: scale(1.03);
 }
 
-/*Centra el botón horizontal*/
 .Redondo {
 	display: flex;
 	justify-content: center;
@@ -169,7 +154,6 @@ display: inline-block;
 	border: none;
 }
 
-/*RESPONSIVE PRINCIPAL*/
 @media (max-width: 480px) {
 	.Contenedor-general {
 		padding: 35px 20px;
@@ -194,20 +178,14 @@ display: inline-block;
     color: #4a7f83;
     text-decoration: underline;
     cursor: pointer;
-    display: inline-block; /* Necesario para que funcionen las transformaciones */
-    transition: color 0.3s ease, transform 0.3s ease; /* Define qué se va a animar y cuánto dura */
+    display: inline-block; 
+    transition: color 0.3s ease, transform 0.3s ease; 
 }
 
-/* Animación al pasar el mouse */
 #btnRecuperarContrasena:hover {
-    color: #4a7f83;         /* Cambia a un tono más oscuro o brillante */
-    transform: translateY(-2px); /* Lo eleva ligeramente hacia arriba */
+    color: #4a7f83;       
+    transform: translateY(-2px); 
 }
-
-
-/* ==========================================
-   CAMPOS DE CONTRASEÑA - RECUPERACIÓN
-   ========================================== */
 
 .password-recuperacion {
     width: 250px;
@@ -220,12 +198,10 @@ display: inline-block;
     padding-right: 45px;
 }
 
-/* Ajuste de margen para dar espacio al logo en pantallas chicas */
 .Contenedor-general {
     margin-top: 50px;
 }
 
-/* Pantallas Medianas / Tablets (<= 768px) */
 @media (max-width: 768px) {
     body {
         padding: 15px;
@@ -246,7 +222,6 @@ display: inline-block;
     }
 }
 
-/* Celulares (<= 480px) */
 @media (max-width: 480px) {
     body {
         padding: 10px;
@@ -291,7 +266,6 @@ display: inline-block;
     }
 }
 
-/* Celulares en modo Horizontal / Poca Altura */
 @media (max-height: 600px) {
     body {
         align-items: flex-start;
@@ -304,15 +278,13 @@ display: inline-block;
     }
 }
 
-/* Ajuste responsivo para el título h2 */
 .Contenedor-general h2 {
-    font-size: clamp(24px, 7vw, 40px); /* Ajusta dinámicamente entre 24px y 40px */
-    word-break: break-word;            /* Evita que palabras largas sobresalgan */
+    font-size: clamp(24px, 7vw, 40px); 
+    word-break: break-word;           
     text-align: center;
     line-height: 1.2;
 }
 
-/* Reducción adicional para celulares muy pequeños */
 @media (max-width: 480px) {
     .Contenedor-general h2 {
         font-size: 26px;

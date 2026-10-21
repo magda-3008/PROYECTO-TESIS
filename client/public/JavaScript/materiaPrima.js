@@ -73,6 +73,124 @@ const vistas = {
             { title: "Unidad de medida", field: "unidad_medida", hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
             { title: "Cantidad por presentación", field: "unidad_por_paquete", variableHeight: true, hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true },
             {
+                title: "Estado",
+                field: "estado_mp",
+                hozAlign: "center",
+                minWidth: 80,
+
+                formatter: function (cell) {
+                    const valor = cell.getValue();
+
+                    if (valor === "Activo") {
+                        return `<span class="text-success fw-semibold">Activo</span>`;
+                    }
+
+                    if (valor === "Inactivo") {
+                        return `<span class="text-danger fw-semibold">Inactivo</span>`;
+                    }
+
+                    return valor;
+                },
+
+                cellClick: async function (e, cell) {
+
+                    // El Colaborador solamente puede consultar el estado.
+                    if (usuarioActual?.rol !== "Administrador") {
+                        return;
+                    }
+
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const estadoActual = cell.getValue();
+
+                    const nuevoEstado =
+                        estadoActual === "Activo"
+                            ? "Inactivo"
+                            : "Activo";
+
+                    const materiaprima = cell.getRow().getData();
+
+                    const estaDesactivando = nuevoEstado === "Inactivo";
+
+                    const resultado = await Swal.fire({
+                        title: estaDesactivando
+                            ? "¿Desactivar materia prima?"
+                            : "¿Activar materia prima?",
+
+                        text: estaDesactivando
+                            ? `La materia prima "${materiaprima.nombre}" dejará de estar disponible para nuevas operaciones.`
+                            : `La materia prima "${materiaprima.nombre}" volverá a estar disponible para nuevas operaciones.`,
+
+                        icon: "warning",
+
+                        showCancelButton: true,
+
+                        confirmButtonText: estaDesactivando
+                            ? "Sí, desactivar"
+                            : "Sí, activar",
+                        cancelButtonText: "Cancelar",
+                        reverseButtons: true,
+                        returnFocus: false
+                    });
+
+                    // Si cancela, no hacemos ningún cambio.
+                    if (!resultado.isConfirmed) {
+                        return;
+                    }
+
+                    try {
+
+                        const respuesta = await fetch(
+                            `/api/materiaprima/${materiaprima.id_ma}`,
+                            {
+                                method: "PATCH",
+                                credentials: "include",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                    estado_mp: nuevoEstado,
+                                }),
+                            },
+                        );
+
+                        if (!respuesta.ok) {
+                            await manejarErrorRespuesta(
+                                respuesta,
+                                "No se pudo actualizar el estado de la materia prima.",
+                            );
+                            return;
+                        }
+
+                        const datos = await respuesta.json();
+                        cell.setValue(nuevoEstado);
+
+                        document.dispatchEvent(
+                            new CustomEvent("estadoMateriaPrimaActualizada", {
+                                detail: {
+                                    id_ma: materiaprima.id_ma,
+                                    estado_mp: nuevoEstado,
+                                },
+                            }),
+                        );
+
+                    } catch (error) {
+
+                        console.error(
+                            "Error al actualizar el estado de la materia prima:",
+                            error
+                        );
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "No se pudo actualizar",
+                            text: error.message,
+                        });
+                    }
+                },
+            },
+            {
                 title: "Existencia actual", field: "stock_actual_i", hozAlign: "center", minWidth: 100, headerWordWrap: true, headerTooltip: true,
                 formatter: function (cell) {
                     const data = cell.getRow().getData();

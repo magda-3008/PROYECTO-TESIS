@@ -28,14 +28,14 @@ async function registrarSalidaMP() {
 
     const observacion = document.getElementById("observacionSalidaMP").value.trim();
     let valido = true;
-    // ---------------- VALIDAR MOTIVO ----------------
+    // Validar motivo
     if (!motivo) {
         const campo = document.getElementById("motivoSalidaMP");
         campo.classList.add("is-invalid");
         document.getElementById("errorMotivoSalidaMP").textContent = "Seleccione un motivo.";
         valido = false;
     }
-    // ---------------- VALIDAR CANTIDAAAAD ----------------
+    // Validar cantidad
     if (!Number.isFinite(cantidadHumana) || cantidadHumana <= 0) {
         const campo =
             document.getElementById("cantidadSalidaMP");
@@ -50,7 +50,7 @@ async function registrarSalidaMP() {
         valido = false;
     }
     if (!valido) return;
-    // ---------------- REGISTRAR MOVIMIENTO ----------------
+    // Registrar movimiento
     try {
         const respuesta = await fetch("/api/salidaMP", {
             method: "POST",
@@ -76,11 +76,11 @@ async function registrarSalidaMP() {
         }
 
         const datos = await respuesta.json();
-        // ---------------- ACTUALIZAR STOCK ----------------
+        // Actualizar stock
         MPSeleccionada.stock_actual_i =
             datos.nuevoStock;
         document.getElementById("stockActualMPSalida").textContent = formatearStockMateriaPrima(MPSeleccionada);
-        // ---------------- ACTUALIZAR TABLA ----------------
+        // Actualizar tabla
         if (typeof tablaMD !== "undefined" && tablaMD) {
 
             tablaMD.updateData([
@@ -91,14 +91,14 @@ async function registrarSalidaMP() {
             ]);
 
         }
-        // ---------------- MENSAJE ----------------
+
         await Swal.fire({
             icon: "success",
             title: "Salida registrada",
             text: "La salida de materia prima se registró correctamente.",
             confirmButtonText: "Aceptar"
         });
-        // ---------------- CERRAR MODAL ----------------
+
         const modalElement = document.getElementById("modalSalidaMP");
         const modal = bootstrap.Modal.getInstance(modalElement);
         if (modal) {

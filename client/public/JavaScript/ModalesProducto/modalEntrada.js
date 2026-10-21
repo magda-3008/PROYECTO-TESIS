@@ -85,7 +85,10 @@ function abrirModalEntrada(producto) {
   }
   productoSeleccionado = producto;
   document.getElementById("nombreProductoEntrada").textContent = producto.nombre;
-  document.getElementById("stockActualEntrada").textContent = producto.stock_actual;
+  const stock = Number(producto.stock_actual);
+
+  document.getElementById("stockActualEntrada").textContent =
+    stock === 1 ? "1 unidad" : `${stock} unidades`;
   document.getElementById("tipoProductoEntrada").textContent = producto.tipo;
   cargarMotivosEntrada(producto);
   const modal = new bootstrap.Modal(document.getElementById("modalEntrada"));
@@ -120,14 +123,14 @@ async function registrarEntrada() {
     document.getElementById("errorGeneral").textContent = "Debe seleccionar un producto.";
     return;
   }
-  // ---------------- MOTIVO ----------------
+
   const motivoInput = document.getElementById("tipoEntrada");
   const motivo = motivoInput.value;
   if (!motivo) {
     mostrarErrorCampo("tipoEntrada", "errorTipo", "Seleccione un motivo de entrada.");
     esValido = false;
   }
-  // ---------------- CANTIDAD ----------------
+
   const cantidadInput = document.getElementById("cantidadEntrada");
   const cantidad = Number(cantidadInput.value);
   if (isNaN(cantidad) || cantidad <= 0) {
@@ -137,9 +140,9 @@ async function registrarEntrada() {
   if (!esValido) {
     return;
   }
-  // ---------------- OBSERVACIÓN ----------------
+
   const observacion = document.getElementById("observacionEntrada").value.trim();
-  // ---------------- MOVIMIENTO ----------------
+
   const movimiento = {
     id_producto: productoSeleccionado.id_producto,
     tipo_movimiento: "ENTRADA",
@@ -147,7 +150,7 @@ async function registrarEntrada() {
     cantidad: cantidad,
     observacion: observacion || null
   };
-  // ---------------- ENVIAR AL SERVIDOR ----------------
+
   try {
     const response = await fetch("/api/entrada", {
       method: "POST",
@@ -167,23 +170,25 @@ async function registrarEntrada() {
     }
 
     const data = await response.json();
-    // ---------------- ACTUALIZAR STOCK ----------------
+
     const nuevoStock = data.nuevo_stock_actual !== undefined ? data.nuevo_stock_actual : Number(productoSeleccionado.stock_actual) + cantidad;
     productoSeleccionado.stock_actual = nuevoStock;
-    // ---------------- MENSAJE DE ÉXITO ----------------
+
     Swal.fire({
       icon: "success",
-      title: "Entrada registrada correctamente",
+      title: "Entrada registrada",
+      text: "La entrada de producto se registró correctamente.",
+      confirmButtonText: "Aceptar",
       returnFocus: false
     });
-    // ---------------- ACTUALIZAR TABLA ----------------
+
     if (typeof tabla !== "undefined" && tabla) {
       tabla.updateData([{
         id_producto: productoSeleccionado.id_producto,
         stock_actual: nuevoStock
       }]);
     }
-    // ---------------- CERRAR MODAL ----------------
+
     const modalEl = document.getElementById("modalEntrada");
     const modal = bootstrap.Modal.getInstance(modalEl);
     if (modal) {

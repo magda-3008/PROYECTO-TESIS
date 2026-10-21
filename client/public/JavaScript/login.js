@@ -75,13 +75,10 @@ togglePassword.addEventListener("click", () => {
    RECUPERACIÓN DE CONTRASEÑA
    ========================================================= */
 document.getElementById("btnRecuperarContrasena").addEventListener("click", async () => {
-
     const {
         value: datos
     } = await Swal.fire({
-
         title: "Recuperar contraseña",
-
         html: `
         <input
             type="text"
@@ -99,52 +96,28 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
             autocomplete="off"
         >
     `,
-
         focusConfirm: false,
-
         confirmButtonText: "Continuar",
-
         showCancelButton: true,
         cancelButtonText: "Cancelar",
-
         reverseButtons: true,
-
         allowOutsideClick: false,
-
         preConfirm: () => {
-
-            const nombreUsuario =
-                document
-                    .getElementById("nombreUsuarioRecuperacion")
-                    .value
-                    .trim();
-
-            const claveRecuperacion =
-                document
-                    .getElementById("claveRecuperacion")
-                    .value
-                    .trim();
-
+            const nombreUsuario = document.getElementById("nombreUsuarioRecuperacion").value.trim();
+            const claveRecuperacion = document.getElementById("claveRecuperacion").value.trim();
             if (!nombreUsuario || !claveRecuperacion) {
-
-                Swal.showValidationMessage(
-                    "Debe ingresar el nombre de usuario y la clave de recuperación."
-                );
-
+                Swal.showValidationMessage("Debe ingresar el nombre de usuario y la clave de recuperación.");
                 return false;
             }
-
             return {
                 nombre_usuario: nombreUsuario,
                 clave_recuperacion: claveRecuperacion
             };
         }
     });
-
     if (!datos) {
         return;
     }
-
     try {
         const respuesta = await fetch("/api/loguser/recuperacion/verificar", {
             method: "POST",
@@ -155,7 +128,6 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
             body: JSON.stringify(datos)
         });
         const resultado = await respuesta.json();
-
         if (!respuesta.ok) {
             await Swal.fire({
                 icon: "error",
@@ -165,7 +137,6 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
             });
             return;
         }
-
         const {
             value: contrasena
         } = await Swal.fire({
@@ -219,7 +190,6 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
             cancelButtonText: "Cancelar",
             confirmButtonText: "Cambiar contraseña",
             allowOutsideClick: false,
-
             didOpen: () => {
                 const nuevaContrasena = document.getElementById("nuevaContrasena");
                 const toggleNuevaContrasena = document.getElementById("toggleNuevaContrasena");
@@ -227,7 +197,6 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
                 const confirmarContrasena = document.getElementById("confirmarContrasena");
                 const toggleConfirmarContrasena = document.getElementById("toggleConfirmarContrasena");
                 const iconoConfirmar = toggleConfirmarContrasena.querySelector("i");
-
                 toggleNuevaContrasena.addEventListener("click",
                     () => {
                         if (nuevaContrasena.type === "password") {
@@ -242,7 +211,6 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
                             toggleNuevaContrasena.setAttribute("aria-label", "Mostrar contraseña");
                         }
                     });
-
                 toggleConfirmarContrasena.addEventListener("click",
                     () => {
                         if (confirmarContrasena.type === "password") {
@@ -258,7 +226,6 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
                         }
                     });
             },
-
             preConfirm: () => {
                 const nuevaContrasena = document.getElementById("nuevaContrasena").value;
                 const confirmarContrasena = document.getElementById("confirmarContrasena").value;
@@ -273,11 +240,9 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
                 return nuevaContrasena;
             }
         });
-
         if (!contrasena) {
             return;
         }
-
         const respuestaRestablecer = await fetch("/api/loguser/recuperacion/restablecer", {
             method: "POST",
             credentials: "include",
@@ -289,7 +254,6 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
             })
         });
         const resultadoRestablecer = await respuestaRestablecer.json();
-
         if (!respuestaRestablecer.ok) {
             await Swal.fire({
                 icon: "error",
@@ -299,7 +263,6 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
             });
             return;
         }
-
         await Swal.fire({
             icon: "success",
             title: "Contraseña actualizada",
@@ -327,7 +290,6 @@ document.getElementById("btnRecuperarContrasena").addEventListener("click", asyn
             allowOutsideClick: false,
             allowEscapeKey: false
         });
-
         window.location.href = "index.html";
     } catch (error) {
         console.error("Error durante la recuperación:", error);

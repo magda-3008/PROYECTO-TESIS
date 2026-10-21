@@ -12,9 +12,7 @@
 	--transicion: .30s ease;
 	--menu: 220px;
 }
-/* =========================================
-   GENERAL
-========================================= */
+
 * {
 	margin: 0;
 	padding: 0;
@@ -53,9 +51,7 @@ body {
 	background-position: center;
 	background-repeat: no-repeat;
 }
-/* =========================================
-   HEADER
-========================================= */
+
 .header {
 	width: 100%;
 	height: 72px;
@@ -65,9 +61,7 @@ body {
 	background: #ffffff;
 	border-bottom: 1px solid #e6e6e6;
 }
-/* =========================================
-   BOTÓN MENÚ
-========================================= */
+
 .btn-menu {
 	width: 40px;
 	height: 40px;
@@ -86,18 +80,14 @@ body {
 	background: #eff9f4;
 	color: #6044c6;
 }
-/* =========================================
-   TÍTULO HEADER
-========================================= */
+
 .header-title {
 	margin-left: 15px;
 	font-size: 20px;
 	font-weight: 700;
 	color: #4a7f83;
 }
-/* =========================================
-   LOGO
-========================================= */
+
 .Contenedor-logo {
 	width: 75px;
 	height: 48px;
@@ -112,9 +102,7 @@ body {
 	object-fit: contain;
 	display: block;
 }
-/* =========================================
-   MENÚ DESPLEGABLE
-========================================= */
+
 .menu-dropdown {
 	position: absolute;
 	top: 65px;
@@ -148,17 +136,13 @@ body {
 	background: #f3f0ff;
 	color: #6044c6;
 }
-/* =========================================
-   MAIN
-========================================= */
+
 .main {
 	width: 100%;
 	padding: 30px;
 	background: #ffffffc3 !important;
 }
-/* =========================================
-   TÍTULO PRINCIPAL
-========================================= */
+
 .page-header {
 	margin-bottom: 22px;
 }
@@ -172,9 +156,7 @@ body {
 	font-size: 17px;
 	color: #667;
 }
-/* =========================================
-   CONTENEDOR VENTA
-========================================= */
+
 .venta-container {
 	display: grid;
 	grid-template-columns:
@@ -182,9 +164,7 @@ body {
 	gap: 18px;
 	align-items: start;
 }
-/* =========================================
-   PRODUCTOS
-========================================= */
+
 .productos-section {
 	min-height: 590px;
 	padding: 17px;
@@ -192,9 +172,7 @@ body {
 	border: 1px solid #1a81a0;
 	border-radius: 12px;
 }
-/* =========================================
-   CATEGORÍAS
-========================================= */
+
 .categorias {
 	display: flex;
 	align-items: center;
@@ -220,12 +198,6 @@ body {
 	background: #1a81a0;
 	color: #ffffff;
 }
-/* =========================================
-   BUSCADOR
-========================================= */
-/* =========================================
-   ESTILO BUSCADOR REDONDEADO (ESTILO PÍLDORA)
-   ========================================= */
 
 .buscador-container {
     width: 100% !important;
@@ -241,7 +213,6 @@ body {
     width: 100% !important;
 }
 
-/* Icono de la lupa alineado a la izquierda */
 .buscador-input-wrapper i {
     position: absolute !important;
     left: 18px !important;
@@ -253,11 +224,11 @@ body {
 /* Campo de texto redondeado */
 .buscador {
     width: 100% !important;
-    height: 48px !important; /* Altura cómoda similar a la captura */
-    padding: 0 20px 0 48px !important; /* Espacio interno para la lupa y el texto */
-    border: 1.5px solid #166881 !important; /* Borde fino con el azul de la marca */
-    background: rgba(211, 239, 248, 0.45) !important; /* Fondo suave semitransparente */
-    border-radius: 50rem !important; /* Bordes completamente redondeados tipo píldora */
+    height: 48px !important; 
+    padding: 0 20px 0 48px !important; 
+    border: 1.5px solid #166881 !important;
+    background: rgba(211, 239, 248, 0.45) !important;
+    border-radius: 50rem !important;
     outline: none !important;
     font-size: 18px !important;
     color: #050505 !important;
@@ -265,20 +236,16 @@ body {
     transition: all 0.25s ease !important;
 }
 
-/* Efecto al hacer clic o seleccionar el campo */
 .buscador:focus {
     background: rgba(211, 239, 248, 0.75) !important;
     border-color: #166881 !important;
 }
 
-/* Color del texto sugerido (placeholder) */
 .buscador::placeholder {
     color: #0d0d0d !important;
     font-size: 18px !important;
 }
-/* =========================================
-   FILTRAR
-========================================= */
+
 .btn-filtrar {
 	width: 82px;
 	height: 40px;
@@ -294,9 +261,7 @@ body {
 	color: #fff;
 	transform: scale(1.03);
 }
-/* =========================================
-   GRID PRODUCTOS
-========================================= */
+
 .productos-grid {
 	display: grid;
 	grid-template-columns:
@@ -304,9 +269,7 @@ body {
 	gap: 18px;
 	align-items: stretch;
 }
-/* =========================================
-   TARJETA DE PRODUCTO
-========================================= */
+
 .producto,
 .producto-card {
 	min-width: 0;
@@ -329,9 +292,7 @@ body {
 		0 6px 16px rgba(26, 129, 160, 0.15);
 	transform: translateY(-3px);
 }
-/* =========================================
-   IMAGEN DEL PRODUCTO
-========================================= */
+
 .producto-imagen {
 	width: 100%;
 	height: 165px;
@@ -353,9 +314,7 @@ body {
 	object-fit: cover;
 	object-position: center;
 }
-/* =========================================
-   SIN FOTOGRAFÍA
-========================================= */
+
 .producto-sin-foto {
 	width: 100%;
 	height: 100%;
@@ -365,9 +324,7 @@ body {
 	color: #8a9a9d;
 	font-size: 14px;
 }
-/* =========================================
-   INFORMACIÓN DEL PRODUCTO
-========================================= */
+
 .producto-info {
 	flex: 1;
 	min-width: 0;
@@ -386,18 +343,14 @@ body {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
-/* =========================================
-   PRECIO DEL PRODUCTO
-========================================= */
+
 .producto-precio {
 	margin: 0 0 6px;
 	color: #1f9c75;
 	font-size: 17px;
 	font-weight: 700;
 }
-/* =========================================
-   STOCK DEL PRODUCTO
-========================================= */
+
 .producto-info small {
 	display: block;
 	margin-bottom: 12px;
@@ -405,9 +358,7 @@ body {
 	font-size: 13px;
 	line-height: 1.2;
 }
-/* =========================================
-   BOTÓN AGREGAR AL CARRITO
-========================================= */
+
 .btn-agregar,
 .btn-agregar-producto {
 	width: 100%;
@@ -435,9 +386,7 @@ body {
 .btn-agregar-producto:active {
 	transform: scale(.98);
 }
-/* =========================================
-   PRODUCTO AGOTADO
-========================================= */
+
 .btn-agregar-producto:disabled {
 	background: #aebabb;
 	color: #ffffff;
@@ -446,9 +395,7 @@ body {
 	box-shadow: none;
 	opacity: .85;
 }
-/* =========================================
-   MENSAJES DE PRODUCTOS
-========================================= */
+
 #productosGrid > p {
 	grid-column: 1 / -1;
 	min-height: 120px;
@@ -466,18 +413,14 @@ body {
 	border: 1px solid #efcaca;
 	border-radius: 10px;
 }
-/* =========================================
-   CARRITO
-========================================= */
+
 .carrito-section {
 	padding: 17px;
 	background: #d3eff88e;
 	border: 1px solid #1a81a0;
 	border-radius: 12px;
 }
-/* =========================================
-   HEADER DEL CARRITO
-========================================= */
+
 .carrito-header {
 	display: flex;
 	align-items: center;
@@ -489,9 +432,7 @@ body {
 	font-size: 20px;
 	color: #4a7f83;
 }
-/* =========================================
-   BOTÓN VACIAR
-========================================= */
+
 .btn-vaciar {
 	padding: 7px 9px;
 	border: 1px solid #e1baba;
@@ -505,9 +446,7 @@ body {
 	background: #c94949;
 	transform: scale(1.03);
 }
-/* =========================================
-   COLUMNAS DEL CARRITO
-========================================= */
+
 .carrito-columnas {
 	display: grid;
 	grid-template-columns:
@@ -519,15 +458,11 @@ body {
 	font-weight: 700;
 	border-bottom: 2px solid #1a81a0;
 }
-/* =========================================
-   ITEMS DEL CARRITO
-========================================= */
+
 .carrito-items {
 	width: 100%;
 }
-/* =========================================
-   CARRITO VACÍO
-========================================= */
+
 .carrito-vacio {
 	min-height: 110px;
 	display: flex;
@@ -546,9 +481,7 @@ body {
 .carrito-vacio small {
 	font-size: 17px;
 }
-/* =========================================
-   ITEM INDIVIDUAL DEL CARRITO
-========================================= */
+
 .carrito-item {
 	min-height: 62px;
 	display: grid;
@@ -560,9 +493,7 @@ body {
 	border-top: 1px solid #eeeeee;
 	font-size: 17px;
 }
-/* =========================================
-   PRODUCTO DEL CARRITO
-========================================= */
+
 .carrito-producto {
 	min-width: 0;
 	display: flex;
@@ -587,18 +518,14 @@ body {
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
-/* =========================================
-   PRECIO UNITARIO DEL CARRITO
-========================================= */
+
 .carrito-item > span {
 	color: #555555;
 	font-size: 17px;
 	text-align: center;
 	white-space: nowrap;
 }
-/* =========================================
-   CANTIDAD
-========================================= */
+
 .cantidad {
 	display: flex;
 	align-items: center;
@@ -618,9 +545,7 @@ body {
 	border-color: #806bd0;
 	color: #6044c6;
 }
-/* =========================================
-   CONTROLES + Y -
-========================================= */
+
 .carrito-cantidad {
 	display: flex;
 	align-items: center;
@@ -656,18 +581,14 @@ body {
 	color: #ffffff;
 	transform: scale(1.05);
 }
-/* =========================================
-   SUBTOTAL DE CADA PRODUCTO
-========================================= */
+
 .carrito-item > strong {
 	color: #1a81a0;
 	font-size: 15px;
 	text-align: right;
 	white-space: nowrap;
 }
-/* =========================================
-   BOTÓN ELIMINAR DEL CARRITO
-========================================= */
+
 .btn-eliminar {
 	border: none;
 	background: transparent;
@@ -695,9 +616,7 @@ body {
 	color: #c03939;
 	transform: scale(1.08);
 }
-/* =========================================
-   LÍNEAS DEL CARRITO
-========================================= */
+
 .carrito hr,
 .carrito-seccion hr {
 	border: none;
@@ -713,9 +632,7 @@ body {
 .carrito-productos {
 	border-bottom: 2px solid #1a81a0;
 }
-/* =========================================
-   RESUMEN
-========================================= */
+
 .resumen {
 	margin-top: 18px;
 	padding-top: 13px;
@@ -729,9 +646,7 @@ body {
 	color: #555555;
 	font-size: 15px;
 }
-/* =========================================
-   DESCUENTO
-========================================= */
+
 .resumen-linea.descuento {
 	display: grid;
 	grid-template-columns:
@@ -752,9 +667,7 @@ body {
 .resumen-linea.descuento input:focus {
 	border-color: #1a81a0;
 }
-/* =========================================
-   TOTALES
-========================================= */
+
 .carrito-resumen,
 .carrito-totales {
 	border-top: 1px solid #1a81a0;
@@ -776,9 +689,7 @@ body {
 	color: #000;
 	font-size: 20px;
 }
-/* =========================================
-   BOTONES DE VENTA
-========================================= */
+
 .botones-venta {
 	display: grid;
 	grid-template-columns:
@@ -795,9 +706,7 @@ body {
 	cursor: pointer;
 	transition: .2s;
 }
-/* =========================================
-   CANCELAR
-========================================= */
+
 .btn-cancelar {
 	border: 1px solid #c77575;
 	background: #9b3737;
@@ -808,9 +717,6 @@ body {
 	transform: scale(1.03);
 }
 
-/* =========================================
-   GUARDAR
-========================================= */
 .btn-guardar {
 	border: none;
 	background: #28773d;
@@ -821,11 +727,6 @@ body {
 	transform: scale(1.03);
 }
 
-
-
-/* =========================================
-   NAVEGACIÓN SUPERIOR
-========================================= */
 .nav-superior {
 	display: flex;
 	align-items: center;
@@ -874,15 +775,10 @@ body {
 	align-items: center;
 	gap: 12px;
 }
-/* =========================================
-   CONTENEDOR PRINCIPAL
-========================================= */
-/* =========================================
-   ANCHO AMPLIADO DE LA TARJETA PRINCIPAL
-========================================= */
+
 .app-container {
-    width: 98% !important;        /* Ocupa casi todo el ancho horizontal de la pantalla */
-    max-width: 1580px !important; /* Aumenta el límite máximo para pantallas grandes (puedes subirlo a 1650px si la quieres aún más ancha) */
+    width: 98% !important;      
+    max-width: 1580px !important; 
     margin: 20px auto !important;
     position: relative;
     background: rgba(246, 242, 242, 0.525);
@@ -894,10 +790,6 @@ body {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
-
-/* =========================================
-   RESPONSIVE
-========================================= */
 @media (max-width: 1100px) {
 	body {
 		padding: 20px;
@@ -1002,9 +894,7 @@ body {
 		justify-content: flex-end;
 	}
 }
-/* =========================================
-   MODALES
-========================================= */
+
 body.modal-open {
 	padding-right: 0 !important;
 }
@@ -1014,9 +904,6 @@ body.modal-open {
     font-size: 14px !important;
 }
 
-/* =========================================
-   MEDIA QUERIES GLOBALES Y ADAPTABLES
-========================================= */
 @media (max-width: 1150px) {
     .venta-container {
         grid-template-columns: 1fr;
@@ -1059,12 +946,7 @@ body.modal-open {
     }
 }
 
-/* ===================================================
-   ADAPTABILIDAD EXACTA EN PANTALLAS PEQUEÑAS (VENTAS)
-   =================================================== */
-
 @media (max-width: 992px) {
-    /* La tarjeta blanca principal ocupa todo el ancho sin recortarse */
     .main,
     .app-container {
         width: 100% !important;
@@ -1074,14 +956,12 @@ body.modal-open {
         box-sizing: border-box !important;
     }
 
-    /* El contenedor pasa a 1 sola columna flexible sin anchos mínimos rígidos */
     .venta-container {
         grid-template-columns: 1fr !important;
         width: 100% !important;
         gap: 15px !important;
     }
 
-    /* Secciones de Productos y Carrito al 100% */
     .productos-section,
     .carrito-section {
         width: 100% !important;
@@ -1090,7 +970,6 @@ body.modal-open {
         padding: 12px 10px !important;
     }
 
-    /* Categorías permitidas en varias líneas */
     .categorias {
         display: flex !important;
         flex-wrap: wrap !important;
@@ -1113,7 +992,6 @@ body.modal-open {
         box-sizing: border-box !important;
     }
 
-    /* Encabezado del carrito flexible en pantallas estrechas */
     .carrito-header {
         flex-direction: column !important;
         align-items: stretch !important;
@@ -1124,7 +1002,6 @@ body.modal-open {
         width: 100% !important;
     }
 
-    /* Columnas de productos e items del carrito responsivas */
     .carrito-columnas,
     .carrito-item {
         grid-template-columns: 1fr 50px 55px 55px 25px !important;
@@ -1143,10 +1020,6 @@ body.modal-open {
         width: 100% !important;
     }
 }
-
-/* =========================================
-   AJUSTE DE DESCUENTO Y RESUMEN RESPONSIVO
-   ========================================= */
 
 .resumen-linea.descuento {
     display: flex !important;
@@ -1178,7 +1051,6 @@ body.modal-open {
     flex-shrink: 0 !important;
 }
 
-/* Ajuste extra para móviles pequeños */
 @media (max-width: 576px) {
     .resumen-linea.descuento {
         gap: 4px !important;
@@ -1192,11 +1064,6 @@ body.modal-open {
     }
 }
 
-/* =========================================
-   RESUMEN DEL CARRITO PERFECTAMENTE ALINEADO
-   ========================================= */
-
-/* Estructura base del resumen */
 .resumen {
     width: 100% !important;
     box-sizing: border-box !important;
@@ -1205,7 +1072,6 @@ body.modal-open {
     border-top: 1px solid #1a81a0 !important;
 }
 
-/* Fila genérica de resumen (Subtotal) */
 .resumen-linea {
     display: flex !important;
     align-items: center !important;
@@ -1218,7 +1084,6 @@ body.modal-open {
     box-sizing: border-box !important;
 }
 
-/* Alineación de la fila de Descuento */
 .resumen-linea.descuento {
     display: flex !important;
     align-items: center !important;
@@ -1228,13 +1093,11 @@ body.modal-open {
     box-sizing: border-box !important;
 }
 
-/* Etiqueta del Descuento */
 .resumen-linea.descuento span:first-child {
     flex: 1 !important;
     white-space: nowrap !important;
 }
 
-/* Input número de Descuento */
 .resumen-linea.descuento input {
     width: 42px !important;
     height: 26px !important;
@@ -1249,14 +1112,12 @@ body.modal-open {
     box-sizing: border-box !important;
 }
 
-/* Monto C$ en Descuento */
 .resumen-linea.descuento span:last-child {
     white-space: nowrap !important;
     text-align: right !important;
     flex-shrink: 0 !important;
 }
 
-/* Fila de Total final */
 .resumen-total {
     display: flex !important;
     align-items: center !important;
@@ -1282,7 +1143,6 @@ body.modal-open {
     text-align: right !important;
 }
 
-/* Ajustes especiales para dispositivos móviles muy pequeños (<= 480px) */
 @media (max-width: 480px) {
     .resumen-linea {
         font-size: 12px !important;
@@ -1305,11 +1165,6 @@ body.modal-open {
     }
 }
 
-/* =========================================
-   CORRECCIÓN DE ENCABEZADOS Y FILAS DEL CARRITO
-   ========================================= */
-
-/* Sincroniza las columnas del encabezado del carrito */
 .carrito-columnas {
     display: grid !important;
     grid-template-columns: minmax(70px, 1fr) 50px 45px 55px !important;
@@ -1322,7 +1177,6 @@ body.modal-open {
     width: 100% !important;
 }
 
-/* Sincroniza las columnas de cada item individual dentro del carrito */
 .carrito-item {
     display: grid !important;
     grid-template-columns: minmax(70px, 1fr) 50px 45px 55px 22px !important;
@@ -1334,7 +1188,6 @@ body.modal-open {
     width: 100% !important;
 }
 
-/* Evita que los textos del encabezado o de los productos se desborden */
 .carrito-columnas span,
 .carrito-item > span,
 .carrito-producto strong {
@@ -1344,7 +1197,6 @@ body.modal-open {
     white-space: nowrap !important;
 }
 
-/* Ajuste específico para pantallas extremadamente pequeñas */
 @media (max-width: 480px) {
     .carrito-columnas {
         grid-template-columns: minmax(50px, 1fr) 42px 38px 45px !important;
@@ -1356,10 +1208,6 @@ body.modal-open {
         font-size: 11px !important;
     }
 }
-
-/* =========================================
-   SOLUCIÓN PARA ENCABEZADO SUBTOTAL
-   ========================================= */
 
 .carrito-columnas {
     display: grid !important;
@@ -1382,7 +1230,6 @@ body.modal-open {
     box-sizing: border-box !important;
 }
 
-/* Permitir que Subtotal use su tamaño adecuado sin recortarse */
 .carrito-columnas span {
     font-size: 14px !important;
     font-weight: 700 !important;
@@ -1390,12 +1237,10 @@ body.modal-open {
     overflow: visible !important;
 }
 
-/* Alineación específica para que la palabra Subtotal quede bien pegada a la derecha */
 .carrito-columnas span:last-child {
     text-align: right !important;
 }
 
-/* Reducción suave para pantallas pequeñas sin recortar */
 @media (max-width: 480px) {
     .carrito-columnas {
         grid-template-columns: minmax(45px, 1fr) 46px 36px 62px !important;

@@ -17,7 +17,7 @@ const productosInventario = {
       "stock-no-controlado",
     );
 
-    if (data.stock_actual === null) {
+    if (data.se_elabora_al_momento === true) {
       elemento.classList.add("stock-no-controlado");
       return;
     }
@@ -52,24 +52,59 @@ const productosInventario = {
         if (valor === "Activo") {
           return `<span class="text-success fw-semibold">Activo</span>`;
         }
+
         if (valor === "Inactivo") {
           return `<span class="text-danger fw-semibold">Inactivo</span>`;
         }
+
         return valor;
       },
+
       cellClick: async function (e, cell) {
+
         // El Colaborador solamente puede consultar el estado.
         if (usuarioActual?.rol !== "Administrador") {
           return;
         }
+
         e.preventDefault();
         e.stopPropagation();
 
         const estadoActual = cell.getValue();
-        const nuevoEstado = estadoActual === "Activo" ? "Inactivo" : "Activo";
+        const nuevoEstado =
+          estadoActual === "Activo" ? "Inactivo" : "Activo";
+
         const producto = cell.getRow().getData();
 
+        const estaDesactivando = nuevoEstado === "Inactivo";
+
+        const resultado = await Swal.fire({
+          title: estaDesactivando
+            ? "¿Desactivar producto?"
+            : "¿Activar producto?",
+
+          text: estaDesactivando
+            ? `El producto "${producto.nombre}" dejará de estar disponible para nuevas operaciones.`
+            : `El producto "${producto.nombre}" volverá a estar disponible para nuevas operaciones.`,
+
+          icon: "warning",
+
+          showCancelButton: true,
+
+          confirmButtonText: estaDesactivando
+            ? "Sí, desactivar"
+            : "Sí, activar",
+          cancelButtonText: "Cancelar",
+          reverseButtons: true,
+          returnFocus: false
+        });
+
+        if (!resultado.isConfirmed) {
+          return;
+        }
+
         try {
+
           const respuesta = await fetch(
             `/api/productos/${producto.id_producto}`,
             {
@@ -83,6 +118,7 @@ const productosInventario = {
               }),
             },
           );
+
           if (!respuesta.ok) {
             await manejarErrorRespuesta(
               respuesta,
@@ -90,12 +126,11 @@ const productosInventario = {
             );
             return;
           }
+
           const datos = await respuesta.json();
 
-          // Actualizar el estado visual de la tabla
           cell.setValue(nuevoEstado);
 
-          // Avisar al resto de la aplicación que cambió el estado de un producto
           document.dispatchEvent(
             new CustomEvent("estadoProductoActualizado", {
               detail: {
@@ -104,22 +139,30 @@ const productosInventario = {
               },
             }),
           );
+
         } catch (error) {
-          console.error("Error al actualizar el estado del producto:", error);
+
+          console.error(
+            "Error al actualizar el estado del producto:",
+            error
+          );
+
           Swal.fire({
             icon: "error",
-            title: "No se pudo actualizar",
-            text: error.message,
+            title: "Error",
+            text: "Ocurrió un error al actualizar el estado del producto.",
           });
         }
-      },
+      }
     },
     {
       title: "Existencia actual", field: "stock_actual", hozAlign: "center", minWidth: 80, headerWordWrap: true, headerTooltip: true,
       formatter: function (cell) {
         const valor = cell.getValue();
 
-        if (valor === null) {
+        const producto = cell.getRow().getData();
+
+        if (producto.se_elabora_al_momento === true) {
           return "—";
         }
 
@@ -137,28 +180,47 @@ const productosInventario = {
       hozAlign: "center",
       headerSort: false,
       minWidth: 120,
-      formatter: function () {
-        let acciones = `
-                    <button class="btnAccion btnEntrada" title="Registrar entrada"> <i class="fa-solid fa-circle-arrow-up"></i> </button>
 
-                    <button class="btnAccion btnSalida" title="Registrar salida"> <i class="fa-solid fa-circle-arrow-down"></i> </button>
+      formatter: function (cell) {
+        const producto = cell.getRow().getData();
 
-                    <button class="btnAccion btnHistorial" title="Ver historial"> <i class="fa-solid fa-clock"></i> </button>
+        let acciones = "";
 
-                `;
+        if (producto.se_elabora_al_momento !== true) {
+          acciones += `
+                <button class="btnAccion btnEntrada" title="Registrar entrada">
+                    <i class="fa-solid fa-circle-arrow-up"></i>
+                </button>
+
+                <button class="btnAccion btnSalida" title="Registrar salida">
+                    <i class="fa-solid fa-circle-arrow-down"></i>
+                </button>
+            `;
+        }
+
+        // El historial sí está disponible para todos los productos.
+        acciones += `
+            <button class="btnAccion btnHistorial" title="Ver historial">
+                <i class="fa-solid fa-clock"></i>
+            </button>
+        `;
 
         // Solo el Administrador puede editar productos.
         if (usuarioActual?.rol === "Administrador") {
           acciones += `
-                    <button class="btnAccion btnEditar" title="Editar producto"> <i class="fa-sharp fa-solid fa-pencil"></i> </button>
-                    `;
+                <button class="btnAccion btnEditar" title="Editar producto">
+                    <i class="fa-sharp fa-solid fa-pencil"></i>
+                </button>
+            `;
         }
+
         return `
-                    <div class="acciones-tabla">
-                        ${acciones}
-                    </div>
-                `;
+            <div class="acciones-tabla">
+                ${acciones}
+            </div>
+        `;
       },
+
       cellClick: function (e, cell) {
         const producto = cell.getRow().getData();
 
@@ -183,6 +245,7 @@ const productosInventario = {
           if (usuarioActual?.rol !== "Administrador") {
             return;
           }
+
           abrirModalEditarProducto(producto, cell.getRow());
         }
       },
@@ -344,7 +407,7 @@ function aplicarFiltros() {
             Number(data.stock_actual) > Number(data.stock_minimo_p);
           break;
         case "no-controla":
-          coincide = data.stock_actual === null;
+          coincide = data.se_elabora_al_momento === true;
           break;
       }
     }

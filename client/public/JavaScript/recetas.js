@@ -1,8 +1,6 @@
 let usuarioActual = null;
-
 document.addEventListener("DOMContentLoaded", async () => {
     usuarioActual = await verificarSesionYRedirigir();
-
     if (!usuarioActual) {
         return;
     }
@@ -30,12 +28,8 @@ async function cargarIngredientes() {
         const respuesta = await fetch("/api/materiaprima", {
             credentials: "include"
         });
-
         if (!respuesta.ok) {
-            await manejarErrorRespuesta(
-                respuesta,
-                "Error al obtener los ingredientes."
-            );
+            await manejarErrorRespuesta(respuesta, "Error al obtener los ingredientes.");
             return;
         }
         const ingredientes = await respuesta.json();
@@ -83,12 +77,8 @@ async function cargarRecetas(idIngrediente = "", nombre = "") {
         const respuesta = await fetch(url, {
             credentials: "include"
         });
-
         if (!respuesta.ok) {
-            await manejarErrorRespuesta(
-                respuesta,
-                "Error al obtener las recetas."
-            );
+            await manejarErrorRespuesta(respuesta, "Error al obtener las recetas.");
             return;
         }
         const recetas = await respuesta.json();
@@ -128,15 +118,9 @@ async function cargarRecetas(idIngrediente = "", nombre = "") {
     }
 }
 async function cargarDetalleReceta(idReceta) {
-
     try {
-
-        const modal = new bootstrap.Modal(
-            document.getElementById("modalReceta")
-        );
-
+        const modal = new bootstrap.Modal(document.getElementById("modalReceta"));
         document.getElementById("tituloModal").textContent = "Cargando...";
-
         document.getElementById("contenidoModal").innerHTML = `
             <div class="text-center py-5">
                 <div class="spinner-border text-info" role="status">
@@ -145,43 +129,21 @@ async function cargarDetalleReceta(idReceta) {
                 <p class="mt-3 text-muted">Obteniendo receta...</p>
             </div>
         `;
-
         modal.show();
-
-        const respuesta = await fetch(
-            `/api/detalle_receta/${idReceta}`,
-            {
-                credentials: "include"
-            }
-        );
-
+        const respuesta = await fetch(`/api/detalle_receta/${idReceta}`, {
+            credentials: "include"
+        });
         if (!respuesta.ok) {
-            await manejarErrorRespuesta(
-                respuesta,
-                "No se pudo obtener el detalle de la receta."
-            );
+            await manejarErrorRespuesta(respuesta, "No se pudo obtener el detalle de la receta.");
             return;
         }
-
         const detalle = await respuesta.json();
         const receta = detalle[0];
-
-        const urlImagenModal =
-            receta.imagen_url &&
-                receta.imagen_url !== "null"
-                ? receta.imagen_url
-                : "https://placehold.co/600x400?text=Sin+Imagen";
-
-        document.getElementById("tituloModal").textContent =
-            receta.nombre_receta;
-
-        const contenido =
-            document.getElementById("contenidoModal");
-
+        const urlImagenModal = receta.imagen_url && receta.imagen_url !== "null" ? receta.imagen_url : "https://placehold.co/600x400?text=Sin+Imagen";
+        document.getElementById("tituloModal").textContent = receta.nombre_receta;
+        const contenido = document.getElementById("contenidoModal");
         // El botón de editar solo se muestra al Administrador
-        const botonEditar =
-            usuarioActual?.rol === "Administrador"
-                ? `
+        const botonEditar = usuarioActual?.rol === "Administrador" ? `
                     <div class="accion-receta">
                         <button
                             type="button"
@@ -191,9 +153,7 @@ async function cargarDetalleReceta(idReceta) {
                             Editar receta
                         </button>
                     </div>
-                `
-                : "";
-
+                ` : "";
         contenido.innerHTML = `
             <img
                 src="${urlImagenModal}"
@@ -223,20 +183,10 @@ async function cargarDetalleReceta(idReceta) {
 
             ${botonEditar}
         `;
-
-        const lista =
-            document.getElementById("listaIngredientes");
-
+        const lista = document.getElementById("listaIngredientes");
         detalle.forEach(item => {
 
-            // Pasamos el nombre del insumo también para evaluar
-            // excepciones como el "Chantilly"
-            const textoMedida = formatearUnidadHumana(
-                item.cantidad_ingresada,
-                item.unidad_ingresada,
-                item.nombre_insumo
-            );
-
+            const textoMedida = formatearUnidadHumana(item.cantidad_ingresada, item.unidad_ingresada, item.nombre_insumo);
             lista.innerHTML += `
                 <li>
                     <strong>${item.nombre_insumo}</strong>
@@ -244,44 +194,24 @@ async function cargarDetalleReceta(idReceta) {
                 </li>
             `;
         });
-
         // El botón solo existe cuando el usuario es Administrador
-        const btnEditarReceta =
-            document.getElementById("btnEditarReceta");
-
+        const btnEditarReceta = document.getElementById("btnEditarReceta");
         if (btnEditarReceta) {
-
             btnEditarReceta.addEventListener("click", () => {
-
-                const modalDetalleElemento =
-                    document.getElementById("modalReceta");
-
-                const modalDetalle =
-                    bootstrap.Modal.getInstance(
-                        modalDetalleElemento
-                    );
-
-                modalDetalleElemento.addEventListener(
-                    "hidden.bs.modal",
+                const modalDetalleElemento = document.getElementById("modalReceta");
+                const modalDetalle = bootstrap.Modal.getInstance(modalDetalleElemento);
+                modalDetalleElemento.addEventListener("hidden.bs.modal",
                     () => {
                         abrirModalEditarReceta(idReceta);
-                    },
-                    {
-                        once: true
-                    }
-                );
-
+                    }, {
+                    once: true
+                });
                 modalDetalle?.hide();
             });
         }
-
     } catch (error) {
-
         console.error(error);
-
-        document.getElementById("tituloModal").textContent =
-            "Error";
-
+        document.getElementById("tituloModal").textContent = "Error";
         document.getElementById("contenidoModal").innerHTML = `
             <div class="text-center py-4">
                 <p>

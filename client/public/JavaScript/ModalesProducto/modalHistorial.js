@@ -1,7 +1,10 @@
 async function abrirHistorial(producto) {
   document.getElementById("nombreProductoHistorial").textContent = producto.nombre;
   document.getElementById("tipoProductoHistorial").textContent = producto.tipo;
-  document.getElementById("stockActualHistorial").textContent = producto.stock_actual || 0;
+  const stock = Number(producto.stock_actual);
+
+  document.getElementById("stockActualHistorial").textContent =
+    stock === 1 ? "1 unidad" : `${stock} unidades`;
 
   const cargando = document.getElementById("cargandoHistorial");
   const tbody = document.getElementById("tablaMovimientos");
@@ -43,7 +46,6 @@ async function abrirHistorial(producto) {
                     <td
                         colspan="5"
                         class="text-center text-muted py-4">
-
                         <i
                             class="fa-solid fa-clock-rotate-left" fs-4 d-block mb-2">
                         </i>
@@ -131,9 +133,7 @@ async function cargarMovimientosProducto(idProducto, periodo) {
 
     const movimientos = await respuesta.json();
     cargando.classList.add("d-none");
-    // --------------------------------------------------
-    // SIN MOVIMIENTOS
-    // --------------------------------------------------
+
     if (!movimientos || movimientos.length === 0) {
       tbody.innerHTML = `
                 <tr>
@@ -153,13 +153,8 @@ async function cargarMovimientosProducto(idProducto, periodo) {
             `;
       return;
     }
-    // --------------------------------------------------
-    // MOSTRAR MOVIMIENTOS
-    // --------------------------------------------------
+
     movimientos.forEach((mov) => {
-      // --------------------------------------------------
-      // FECHA
-      // --------------------------------------------------
       let fecha = "Sin fecha";
       if (mov.fecha) {
         const date = new Date(mov.fecha);
@@ -169,17 +164,12 @@ async function cargarMovimientosProducto(idProducto, periodo) {
           day: "numeric"
         });
       }
-      // --------------------------------------------------
-      // VARIABLES
-      // --------------------------------------------------
       let tipoBadge = "";
       let cantidadMostrar = "";
       let montoTexto = "—";
       const cantidad = Number(mov.cantidad) || 0;
       const costoTotal = Number(mov.costo_total) || 0;
-      // --------------------------------------------------
-      // ENTRADAS
-      // --------------------------------------------------
+
       if (mov.tipo_movimiento === "ENTRADA") {
         let motivoTexto = "";
         switch (mov.motivo) {
@@ -208,13 +198,10 @@ async function cargarMovimientosProducto(idProducto, periodo) {
                         +${cantidad}
                     </span>
                 `;
-        // --------------------------------------------------
-        // VALOR DE LA ENTRADA
-        // --------------------------------------------------
+
         if (mov.motivo === "COMPRA") {
           montoTexto = `
                         <div>
-
                             <span
                                 class="text-success font-monospace">
 
@@ -223,20 +210,15 @@ async function cargarMovimientosProducto(idProducto, periodo) {
           )}
 
                             </span>
-
                             <small
                                 class="d-block text-muted">
-
                                 Costo de compra
-
                             </small>
-
                         </div>
                     `;
         } else if (mov.motivo === "PRODUCCION") {
           montoTexto = `
                         <div>
-
                             <span
                                 class="text-success font-monospace">
 
@@ -245,14 +227,10 @@ async function cargarMovimientosProducto(idProducto, periodo) {
           )}
 
                             </span>
-
                             <small
                                 class="d-block text-muted">
-
                                 Costo de producción
-
                             </small>
-
                         </div>
                     `;
         } else if (mov.motivo === "AJUSTE") {
@@ -261,9 +239,7 @@ async function cargarMovimientosProducto(idProducto, periodo) {
           montoTexto = "—";
         }
       }
-      // --------------------------------------------------
-      // SALIDAS
-      // --------------------------------------------------
+
       else if (mov.tipo_movimiento === "SALIDA") {
         let motivoTexto = "";
         switch (mov.motivo) {
@@ -295,9 +271,7 @@ async function cargarMovimientosProducto(idProducto, periodo) {
                         -${cantidad}
                     </span>
                 `;
-        // --------------------------------------------------
-        // VALOR DE LA SALIDA
-        // --------------------------------------------------
+
         if (mov.motivo === "PERDIDA") {
           montoTexto = `
                         <div>
@@ -310,14 +284,10 @@ async function cargarMovimientosProducto(idProducto, periodo) {
           )}
 
                             </span>
-
                             <small
                                 class="d-block text-muted">
-
                                 Valor de la pérdida
-
                             </small>
-
                         </div>
                     `;
         } else if (mov.motivo === "AJUSTE") {
@@ -329,7 +299,6 @@ async function cargarMovimientosProducto(idProducto, periodo) {
         } else if (mov.motivo === "CONSUMO") {
           montoTexto = `
                         <div>
-
                             <span
                                 class="text-danger font-monospace">
 
@@ -338,21 +307,15 @@ async function cargarMovimientosProducto(idProducto, periodo) {
           )}
 
                             </span>
-
                             <small
                                 class="d-block text-muted">
-
                                 Costo de consumo
-
                             </small>
-
                         </div>
                     `;
         }
       }
-      // --------------------------------------------------
-      // TIPO DESCONOCIDO
-      // --------------------------------------------------
+
       else {
         tipoBadge = `
                     <span class="badge bg-secondary">
@@ -363,9 +326,7 @@ async function cargarMovimientosProducto(idProducto, periodo) {
         cantidadMostrar = cantidad;
         montoTexto = "—";
       }
-      // --------------------------------------------------
-      // CREAR FILA
-      // --------------------------------------------------
+
       const row = document.createElement("tr");
       row.innerHTML = `
                 <td>
@@ -413,9 +374,7 @@ async function cargarMovimientosProducto(idProducto, periodo) {
         `;
   }
 }
-// ======================================================
-// FORMATEAR PERÍODO
-// ======================================================
+
 function formatearPeriodo(anio, mes) {
   const nombresMeses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
   const numeroMes = Number(mes);

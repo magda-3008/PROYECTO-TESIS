@@ -1,4 +1,3 @@
-// Motivos de salida disponibles para registro manual
 const motivosSalida = [{
 	value: "PERDIDA",
 	label: "Pérdida"
@@ -35,13 +34,16 @@ function abrirModalSalida(producto) {
 	document.getElementById("cantidadSalida").value = "";
 	document.getElementById("observacionSalida").value = "";
 	document.getElementById("nombreProductoSalida").textContent = producto.nombre;
-	document.getElementById("stockActualSalida").textContent = producto.stock_actual;
+	const stock = Number(producto.stock_actual);
+
+	document.getElementById("stockActualSalida").textContent =
+		stock === 1 ? "1 unidad" : `${stock} unidades`;
 	document.getElementById("tipoProductoSalida").textContent = producto.tipo;
 	cargarMotivosSalida();
 	const modal = new bootstrap.Modal(document.getElementById("modalSalida"));
 	modal.show();
 }
-// ---------------- VALIDACIONES ----------------
+
 function limpiarErroresModalSalida() {
 	const modal = document.getElementById("modalSalida");
 	if (!modal) return;
@@ -61,38 +63,72 @@ function mostrarErrorCampoSalida(idInput, idError, mensaje) {
 		errorEl.textContent = mensaje;
 	}
 }
-// ---------------- REGISTRAR SALIDA ----------------
+
 async function registrarSalida() {
 	limpiarErroresModalSalida();
+
 	let esValido = true;
-	// ---------------- PRODUCTO ----------------
+
 	if (!productoSeleccionado) {
-		document.getElementById("errorGeneralSalida").textContent = "Debe seleccionar un producto.";
+		document.getElementById("errorGeneralSalida").textContent =
+			"Debe seleccionar un producto.";
 		return;
 	}
-	// ---------------- MOTIVO ----------------
-	const motivoInput = document.getElementById("motivoSalida");
+
+	const motivoInput =
+		document.getElementById("motivoSalida");
+
 	const motivo = motivoInput.value;
+
 	if (!motivo) {
-		mostrarErrorCampoSalida("motivoSalida", "errorMotivoSalida", "Seleccione un motivo de salida.");
+		mostrarErrorCampoSalida(
+			"motivoSalida",
+			"errorMotivoSalida",
+			"Seleccione un motivo de salida."
+		);
+
 		esValido = false;
 	}
-	// ---------------- CANTIDAD ----------------
-	const cantidadInput = document.getElementById("cantidadSalida");
+
+	const cantidadInput =
+		document.getElementById("cantidadSalida");
+
 	const cantidad = Number(cantidadInput.value);
-	if (isNaN(cantidad) || cantidad <= 0) {
-		mostrarErrorCampoSalida("cantidadSalida", "errorCantidadSalida", "Ingrese una cantidad válida mayor a 0.");
+
+	if (!Number.isInteger(cantidad) || cantidad <= 0) {
+
+		mostrarErrorCampoSalida(
+			"cantidadSalida",
+			"errorCantidadSalida",
+			"Ingrese una cantidad entera mayor a 0."
+		);
+
 		esValido = false;
-	} else if (cantidad > Number(productoSeleccionado.stock_actual)) {
-		mostrarErrorCampoSalida("cantidadSalida", "errorCantidadSalida", "La cantidad no puede superar el stock actual.");
+
+	} else if (
+		cantidad >
+		Number(productoSeleccionado.stock_actual)
+	) {
+
+		mostrarErrorCampoSalida(
+			"cantidadSalida",
+			"errorCantidadSalida",
+			"La cantidad no puede superar el stock actual."
+		);
+
 		esValido = false;
 	}
+
 	if (!esValido) {
 		return;
 	}
-	// ---------------- OBSERVACIÓN ----------------
-	const observacion = document.getElementById("observacionSalida").value.trim();
-	// ---------------- DATOS DEL MOVIMIENTO ----------------
+
+	const observacion =
+		document
+			.getElementById("observacionSalida")
+			.value
+			.trim();
+
 	const movimiento = {
 		id_producto: productoSeleccionado.id_producto,
 		tipo_movimiento: "SALIDA",
@@ -100,8 +136,9 @@ async function registrarSalida() {
 		cantidad: cantidad,
 		observacion: observacion || null
 	};
-	// ---------------- ENVIAR AL SERVIDOR ----------------
+
 	try {
+
 		const response = await fetch("/api/salida", {
 			method: "POST",
 			credentials: "include",
@@ -120,31 +157,54 @@ async function registrarSalida() {
 		}
 
 		const data = await response.json();
-		// ---------------- NUEVO STOCK ----------------
-		const nuevoStock = data.nuevo_stock_actual !== undefined ? data.nuevo_stock_actual : Number(productoSeleccionado.stock_actual) - cantidad;
-		productoSeleccionado.stock_actual = nuevoStock;
-		// ---------------- MENSAJE ----------------
+
+		const nuevoStock =
+			Number(data.nuevo_stock_actual);
+
+		productoSeleccionado.stock_actual =
+			nuevoStock;
+
 		Swal.fire({
 			icon: "success",
-			title: "Salida registrada correctamente",
+			title: "Salida registrada",
+			text: "La salida de producto se registró correctamente.",
+			confirmButtonText: "Aceptar",
 			returnFocus: false
 		});
-		// ---------------- ACTUALIZAR TABLA ----------------
-		if (typeof tabla !== "undefined" && tabla) {
+
+		if (
+			typeof tabla !== "undefined" &&
+			tabla
+		) {
 			tabla.updateData([{
-				id_producto: productoSeleccionado.id_producto,
+				id_producto:
+					productoSeleccionado.id_producto,
+
 				stock_actual: nuevoStock
 			}]);
 		}
-		// ---------------- CERRAR MODAL ----------------
-		const modalEl = document.getElementById("modalSalida");
-		const modal = bootstrap.Modal.getInstance(modalEl);
+
+		const modalEl =
+			document.getElementById("modalSalida");
+
+		const modal =
+			bootstrap.Modal.getInstance(modalEl);
+
 		if (modal) {
 			modal.hide();
 		}
+
 	} catch (error) {
-		console.error("Error al registrar la salida:", error);
-		document.getElementById("errorGeneralSalida").textContent = error.message;
+
+		console.error(
+			"Error al registrar la salida:",
+			error
+		);
+
+		document.getElementById(
+			"errorGeneralSalida"
+		).textContent = error.message;
+
 		Swal.fire({
 			icon: "error",
 			text: "No se pudo registrar la salida",
@@ -152,7 +212,7 @@ async function registrarSalida() {
 		});
 	}
 }
-// ---------------- EVENTOS ----------------
+
 const modalSalidaEl = document.getElementById("modalSalida");
 if (modalSalidaEl) {
 	modalSalidaEl.addEventListener("hidden.bs.modal", limpiarErroresModalSalida);

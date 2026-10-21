@@ -206,6 +206,34 @@
               elaboración
             </h6>
 
+            <!-- Modalidad de elaboración -->
+            <div
+              class="card border-0 bg-light p-3 mb-3"
+              style="border-radius: 14px">
+              <h6 class="titulo-modalidad mb-3 fw-bold text-dark">Modalidad de elaboración</h6>
+
+              <div class="modalidad-elaboracion">
+              <div class="form-check modalidad-check">
+                  <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="seElaboraAlMomento" />
+
+                  <label
+                      class="form-check-label"
+                      for="seElaboraAlMomento">
+                      Se elabora al momento
+                  </label>
+              </div>
+
+              <small class="modalidad-descripcion">
+                  Active esta opción si el producto se prepara únicamente cuando
+                  se realiza una venta y no se mantiene existencia de producto
+                  terminado.
+              </small>
+          </div>
+
+          <br>
             <!-- Receta -->
             <div
               class="card border-0 bg-light p-3 mb-3"
@@ -352,7 +380,7 @@
       <!-- Pie con botones centrados -->
       <div class="modal-botones">
         <button type="button" class="btnCancelar" data-bs-dismiss="modal">
-          <i class=""></i> Cancelar
+         Cancelar
         </button>
 
         <button type="button" id="guardarProducto" class="btnGuardar">
@@ -362,7 +390,7 @@
             role="status"
             aria-hidden="true"></span>
           <span id="textoGuardarProducto">
-            <i class=""></i> Guardar
+            Guardar
           </span>
         </button>
       </div>

@@ -25,9 +25,7 @@ function formatearCantidadMovimientoMP(cantidad, materiaPrima) {
     }
     const presentacionesCompletas = Math.floor(cantidadNumerica / contenidoPresentacion);
     const sobrante = limpiarDecimal(cantidadNumerica - (presentacionesCompletas * contenidoPresentacion));
-    /*
-     * La cantidad es menor que una presentación completa.
-     */
+
     if (presentacionesCompletas === 0) {
         const proporcion = cantidadNumerica / contenidoPresentacion;
         if (esFraccionSencilla(proporcion)) {
@@ -285,7 +283,6 @@ async function cargarMovimientosHistorialMP(materiaPrima) {
                         Math.abs(costoTotal)
                     )}
                             </span>
-
                             <small
                                 class="d-block text-muted"
                             >
@@ -305,7 +302,6 @@ async function cargarMovimientosHistorialMP(materiaPrima) {
                         Math.abs(costoTotal)
                     )}
                             </span>
-
                             <small
                                 class="d-block text-muted"
                             >

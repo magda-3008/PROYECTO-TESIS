@@ -210,12 +210,7 @@ function actualizarKPIs() {
     if (kpiCount) {
         kpiCount.textContent = cantidadVentas.toLocaleString("es-NI");
     }
-    /*
-     * Actualmente la tabla venta no almacena
-     * descuentos como un campo independiente.
-     *
-     * Por eso el KPI permanece en C$ 0.00.
-     */
+
     if (kpiDiscounts) {
         kpiDiscounts.textContent = formatearMoneda(0);
     }
