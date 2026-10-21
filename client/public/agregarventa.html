@@ -22,7 +22,7 @@
   </head>
 
   <body>
-     <!-- FONDO DE PANTALLA -->
+    <!-- FONDO DE PANTALLA -->
     <div class="Fondo"></div>
 
     <!-- ENCABEZADO SUPERIOR -->
@@ -30,13 +30,16 @@
       <!-- Izquierda: Logo de la empresa -->
       <div class="Encabezado-izquierda">
         <a href="principal.html">
-          <img src="Resources/Logo.png" alt="Logo Pa'tuboca" class="logoEmpresa" />
+          <img
+            src="Resources/Logo.png"
+            alt="Logo Pa'tuboca"
+            class="logoEmpresa" />
         </a>
       </div>
 
       <!-- Centro: Barra de navegación (Píldora) -->
       <nav class="nav-superior">
-        <a href="productos.html" class="Item-nav ">
+        <a href="productos.html" class="Item-nav">
           <i class="fa-solid fa-box-open"></i> Productos
         </a>
         <a href="materiaprima.html" class="Item-nav">
@@ -53,7 +56,7 @@
         </a>
 
         <!-- Opción exclusiva para administradores -->
-        <div id="menuAdministracion" class="nav-admin" style="display: none;">
+        <div id="menuAdministracion" class="nav-admin" style="display: none">
           <span class="nav-separador">|</span>
           <a href="usuarios.html" class="Item-nav">
             <i class="fa-solid fa-users"></i> Usuarios
@@ -78,7 +81,9 @@
         <div class="page-header">
           <h1>NUEVA VENTA</h1>
 
-          <p class="text-muted mb-0">Selecciona los productos y agrega al carrito</p>
+          <p class="text-muted mb-0">
+            Selecciona los productos y agrega al carrito
+          </p>
         </div>
 
         <!-- =================================
@@ -102,12 +107,16 @@
               <button class="categoria" data-category="Postres">POSTRES</button>
             </div>
             <!-- BUSCADOR -->
-<div class="buscador-container">
-    <div class="buscador-input-wrapper">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="buscador" class="buscador" placeholder="Buscar producto..." />
-    </div>
-</div>
+            <div class="buscador-container">
+              <div class="buscador-input-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input
+                  type="text"
+                  id="buscador"
+                  class="buscador"
+                  placeholder="Buscar producto..." />
+              </div>
+            </div>
             <!-- GRID DE PRODUCTOS -->
 
             <div class="productos-grid" id="productosGrid"></div>
@@ -117,7 +126,9 @@
             <!-- HEADER CARRITO -->
 
             <div class="carrito-header">
-              <h2><i class="fa-solid fa-cart-shopping"></i> CARRITO DE VENTAS</h2>
+              <h2>
+                <i class="fa-solid fa-cart-shopping"></i> CARRITO DE VENTAS
+              </h2>
 
               <button class="btn-vaciar" id="btnVaciar">
                 <i class="fa-solid fa-trash"></i> Vaciar carrito
@@ -192,10 +203,10 @@
       </main>
     </div>
 
+    <script src="./JavaScript/utilities/sesion.js"></script>
+
     <!-- JAVASCRIPT -->
     <script>
-
-
       /* ========= Menú de administración ========= */
 
       async function configurarMenuAdministracion() {
@@ -213,7 +224,7 @@
         }
 
         if (usuarioActual.rol === "Administrador") {
-          menuAdministracion.style.display = "block";
+          menuAdministracion.style.display = "flex";
         } else {
           document.getElementById("btnVenta")?.remove();
         }

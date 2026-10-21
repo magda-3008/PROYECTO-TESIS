@@ -61,12 +61,6 @@
         <a href="ventas.html" class="Item-nav">
           <i class="fa-solid fa-cash-register"></i> Ventas
         </a>
-        <a href="usuarios.html" class="Item-nav">
-          <i class="fa-solid fa-users"></i> Usuarios
-        </a>
-        <a href="respaldos.html" class="Item-nav">
-          <i class="fa-solid fa-database"></i> Respaldos
-        </a>
 
         <!-- Opción exclusiva para administradores -->
         <div id="menuAdministracion" class="nav-admin" style="display: none">
@@ -157,7 +151,7 @@
         }
 
         if (usuarioActual.rol === "Administrador") {
-          menuAdministracion.style.display = "block";
+          menuAdministracion.style.display = "flex";
         } else {
           document.getElementById("btnVenta")?.remove();
         }
