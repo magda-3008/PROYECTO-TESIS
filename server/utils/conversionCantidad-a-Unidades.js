@@ -8,8 +8,7 @@ function convertirCantidadAUnidadMedida(cantidad, materiaPrima) {
         throw new Error("La cantidad debe ser mayor que cero.");
     }
 
-    // Si ambas unidades son iguales,
-    // no se realiza ninguna conversión.
+    // Si ambas unidades son iguales, no se realiza ninguna conversión
     if (
         unidadMedida.toLowerCase() ===
         unidadExistencia.toLowerCase()

@@ -25,10 +25,6 @@ router.post("/", async (req, res) => {
             observacion
         } = req.body;
 
-        // ==========================================
-        // VALIDACIONES BÁSICAS
-        // ==========================================
-
         if (
             !id_ma ||
             !tipo_movimiento ||
@@ -39,19 +35,11 @@ router.post("/", async (req, res) => {
             throw new Error("Datos incompletos o inválidos.");
         }
 
-        // ==========================================
-        // VALIDAR TIPO DE MOVIMIENTO
-        // ==========================================
-
         if (tipo_movimiento !== "SALIDA") {
             throw new Error(
                 "El tipo de movimiento debe ser SALIDA."
             );
         }
-
-        // ==========================================
-        // VALIDAR MOTIVO
-        // ==========================================
 
         const motivosValidos = [
             "PERDIDA",
@@ -65,10 +53,6 @@ router.post("/", async (req, res) => {
             );
         }
 
-        // ==========================================
-        // FECHA / PERÍODO
-        // ==========================================
-
         const ahora = new Date();
 
         const anio =
@@ -76,10 +60,6 @@ router.post("/", async (req, res) => {
 
         const mes =
             req.body.mes || ahora.getMonth() + 1;
-
-        // ==========================================
-        // REGISTRAR SALIDA
-        // ==========================================
 
         const resultado = await registrarMovimientoSalida(
             client,
@@ -91,10 +71,6 @@ router.post("/", async (req, res) => {
             anio,
             mes
         );
-
-        // ==========================================
-        // CONFIRMAR TRANSACCIÓN
-        // ==========================================
 
         await client.query("COMMIT");
 
@@ -133,10 +109,6 @@ async function registrarMovimientoSalida(
     mes
 ) {
 
-    // ==========================================
-    // OBTENER MATERIA PRIMA Y BLOQUEAR REGISTRO
-    // ==========================================
-
     const resMateriaPrima = await client.query(
         `
         SELECT
@@ -164,20 +136,11 @@ async function registrarMovimientoSalida(
     const stockActual =
         Number(materiaPrima.stock_actual_i || 0);
 
-    // ==========================================
-    // CONVERTIR CANTIDAD HUMANA
-    // A UNIDAD NORMALIZADA
-    // ==========================================
-
     const cantidadFinal =
         convertirCantidadAUnidadMedida(
             cantidad,
             materiaPrima
         );
-
-    // ==========================================
-    // VALIDAR STOCK DISPONIBLE
-    // ==========================================
 
     if (cantidadFinal > stockActual) {
         throw new Error(
@@ -187,10 +150,6 @@ async function registrarMovimientoSalida(
         );
     }
 
-    // ==========================================
-    // CALCULAR COSTO UNITARIO
-    // ==========================================
-
     const costoUnitario =
         Number(
             materiaPrima.costo_total_ingrediente || 0
@@ -199,16 +158,8 @@ async function registrarMovimientoSalida(
             materiaPrima.unidad_por_paquete || 1
         );
 
-    // ==========================================
-    // CALCULAR COSTO TOTAL
-    // ==========================================
-
     const costoTotal =
         cantidadFinal * costoUnitario;
-
-    // ==========================================
-    // ACTUALIZAR STOCK
-    // ==========================================
 
     const resStock = await client.query(
         `
@@ -227,10 +178,6 @@ async function registrarMovimientoSalida(
         Number(
             resStock.rows[0].stock_actual_i
         );
-
-    // ==========================================
-    // REGISTRAR MOVIMIENTO
-    // ==========================================
 
     await client.query(
         `

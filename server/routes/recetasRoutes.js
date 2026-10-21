@@ -172,10 +172,39 @@ router.put("/:id", verificarAdministrador, async (req, res) => {
 			}
 			if (tipo === "materia_prima") {
 				const idMa = Number(id_ma);
+
 				if (!Number.isInteger(idMa) || idMa <= 0) {
 					throw new Error("El ingrediente de materia prima no es válido.");
 				}
-				const conversion = await convertirCantidad(cliente, idMa, cantidad, unidad.trim());
+
+				const materiaPrimaResultado = await cliente.query(`
+						SELECT
+							id_ma,
+							nombre,
+							estado_mp
+						FROM materia_prima_y_cd
+						WHERE id_ma = $1
+					`, [idMa]);
+
+				if (materiaPrimaResultado.rows.length === 0) {
+					throw new Error("La materia prima seleccionada no existe.");
+				}
+
+				const materiaPrima = materiaPrimaResultado.rows[0];
+
+				if (materiaPrima.estado_mp !== "Activo") {
+					throw new Error(
+						`La receta contiene ingredientes inactivos. Debe reemplazarlos o eliminarlos.`
+					);
+				}
+
+				const conversion = await convertirCantidad(
+					cliente,
+					idMa,
+					cantidad,
+					unidad.trim()
+				);
+
 				detallesPreparados.push({
 					id_ma: idMa,
 					id_producto_insumo: null,
@@ -192,19 +221,27 @@ router.put("/:id", verificarAdministrador, async (req, res) => {
 					throw new Error("Un producto no puede utilizarse a sí mismo como ingrediente.");
 				}
 				const productoResultado = await cliente.query(`
-                        SELECT
-                            id_producto,
-                            nombre,
-                            tipo
-                        FROM producto
-                        WHERE id_producto = $1
-                        `,
-					[idProductoInsumo]);
+						SELECT
+							id_producto,
+							nombre,
+							tipo,
+							estado
+						FROM producto
+						WHERE id_producto = $1
+					`, [idProductoInsumo]);
 				if (productoResultado.rows.length === 0) {
 					throw new Error("El producto elaborado seleccionado no existe.");
 				}
 				if (productoResultado.rows[0].tipo !== "Elaborado") {
-					throw new Error("Solo se pueden utilizar productos elaborados como ingredientes.");
+					throw new Error(
+						"Solo se pueden utilizar productos elaborados como ingredientes."
+					);
+				}
+
+				if (productoResultado.rows[0].estado !== "Activo") {
+					throw new Error(
+						`La receta contiene ingredientes inactivos. Debe reemplazarlos o eliminarlos.`
+					);
 				}
 				const cantidadNumero = convertirTextoANumero(cantidad);
 				if (!Number.isFinite(cantidadNumero) || cantidadNumero <= 0) {

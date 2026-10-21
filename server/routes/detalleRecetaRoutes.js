@@ -33,6 +33,9 @@ router.get("/:id", async (req, res) => {
 
                 COALESCE(mp.nombre, p.nombre) AS nombre_insumo,
 
+                    mp.estado_mp AS estado_materia_prima,
+                    p.estado AS estado_producto_insumo,
+
                 CASE
                     WHEN mp.id_ma IS NOT NULL THEN mp.unidad_medida
                     ELSE 'unidad(es)'

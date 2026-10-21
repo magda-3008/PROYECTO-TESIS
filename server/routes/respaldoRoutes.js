@@ -15,17 +15,15 @@ router.post("/", verificarSesion, verificarAdministrador, async (req, res) => {
         contrasena_actual
     } = req.body;
     try {
-        // ----------------------------------------
-        // 1. Validar que se haya enviado contraseña
-        // ----------------------------------------
+
+        // Validar que se haya enviado contraseña
         if (!contrasena_actual || typeof contrasena_actual !== "string") {
             return res.status(400).json({
                 mensaje: "Debe ingresar su contraseña de administrador."
             });
         }
-        // ----------------------------------------
-        // 2. Verificar contraseña del administrador
-        // ----------------------------------------
+
+        // Verificar contraseña del administrador
         const resultadoUsuario = await pool.query(`
                 SELECT id_usuario
                 FROM usuarios
@@ -42,17 +40,15 @@ router.post("/", verificarSesion, verificarAdministrador, async (req, res) => {
                 mensaje: "La contraseña de administrador es incorrecta."
             });
         }
-        // ----------------------------------------
-        // 3. Preparar nombre del archivo
-        // ----------------------------------------
+
+        // Preparar nombre del archivo
         const fecha = new Date();
         const anio = fecha.getFullYear();
         const mes = String(fecha.getMonth() + 1).padStart(2, "0");
         const dia = String(fecha.getDate()).padStart(2, "0");
         const nombreArchivo = `Respaldo_PaTuBoca_${anio}-${mes}-${dia}.sql`;
-        // ----------------------------------------
-        // 4. Crear carpeta temporal
-        // ----------------------------------------
+
+        // Crear carpeta temporal
         const carpetaRespaldo = path.join(__dirname, "../respaldos");
         if (!fs.existsSync(carpetaRespaldo)) {
             fs.mkdirSync(carpetaRespaldo, {
@@ -60,9 +56,8 @@ router.post("/", verificarSesion, verificarAdministrador, async (req, res) => {
             });
         }
         const rutaArchivo = path.join(carpetaRespaldo, nombreArchivo);
-        // ----------------------------------------
-        // 5. Obtener cadena de conexión
-        // ----------------------------------------
+
+        // Obtener cadena de conexión
         const databaseUrl = process.env.BDD_URL;
         if (!databaseUrl) {
             console.error("No se encontró BDD_URL.");
@@ -70,9 +65,8 @@ router.post("/", verificarSesion, verificarAdministrador, async (req, res) => {
                 mensaje: "No se encuentra configurada la conexión a la base de datos."
             });
         }
-        // ----------------------------------------
-        // 6. Ejecutar pg_dump
-        // ----------------------------------------
+
+        // Ejecutar pg_dump
         execFile("pg_dump",
             [
                 databaseUrl, "--format=plain", "--file",
@@ -90,18 +84,16 @@ router.post("/", verificarSesion, verificarAdministrador, async (req, res) => {
                     });
                 }
                 try {
-                    // ----------------------------------------
-                    // 7. Descargar el archivo
-                    // ----------------------------------------
+
+                    // Descargar el archivo
                     res.download(rutaArchivo, nombreArchivo,
                         (errorDescarga) => {
                             if (errorDescarga) {
                                 console.error("Error durante la descarga:", errorDescarga);
                                 return;
                             }
-                            // ----------------------------------------
-                            // 8. Eliminar archivo temporal
-                            // ----------------------------------------
+
+                            // Eliminar archivo temporal
                             fs.unlink(rutaArchivo,
                                 (errorEliminacion) => {
                                     if (errorEliminacion) {

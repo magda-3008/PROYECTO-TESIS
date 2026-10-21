@@ -1,3 +1,4 @@
+"use strict";
 const express = require("express");
 const router = express.Router();
 const pool = require("../config/db");
@@ -17,43 +18,36 @@ const {
     verificarSesion,
     verificarAdministrador
 } = require("../middleware/autenticacion");
-
 router.use(verificarSesion);
 
+//Obtener productos
 router.get("/", async (req, res) => {
     try {
         const resultado = await pool.query(`
-
             SELECT
-
                 p.id_producto,
                 p.nombre,
                 p.tipo,
                 p.precio_venta,
                 p.foto_producto,
                 p.stock_minimo_p,
+                p.stock_actual,
+                p.estado,
+
+                pe.se_elabora_al_momento,
 
                 CASE
                     WHEN p.tipo = 'Reventa'
                         THEN pr.costo_compra
 
                     WHEN p.tipo = 'Elaborado'
-                        THEN COALESCE(v.costo_unitario_prod, 0.00)
+                        THEN COALESCE(
+                            v.costo_unitario_prod,
+                            0.00
+                        )
 
                     ELSE 0.00
-                END AS costo,
-
-                p.estado,
-
-                CASE
-                    WHEN p.tipo = 'Reventa'
-                        THEN pr.stock_actual_pr
-
-                    WHEN p.tipo = 'Elaborado'
-                        THEN pe.stock_actual_pe
-
-                    ELSE NULL
-                END AS stock_actual
+                END AS costo
 
             FROM producto p
 
@@ -67,17 +61,23 @@ router.get("/", async (req, res) => {
                 ON p.id_producto = v.id_producto
 
             ORDER BY p.nombre;
-
         `);
+
         res.json(resultado.rows);
+
     } catch (error) {
-        console.error("Error al obtener el inventario de productos:", error);
+        console.error(
+            "Error al obtener el inventario de productos:",
+            error
+        );
+
         res.status(500).json({
             error: "No se pudo obtener el inventario de productos."
         });
     }
 });
-// Crear producto de reventa o elaborado
+
+//Crear producto de reventa o elaborado
 router.post("/", upload.single("foto"), async (req, res) => {
     const {
         nombre,
@@ -86,12 +86,13 @@ router.post("/", upload.single("foto"), async (req, res) => {
         stock_inicial,
         stock_minimo_p,
         costo_compra,
-        // Datos de receta
+        se_elabora_al_momento,
         nombre_receta,
         cantidad_producida_base,
         descripcion_receta,
         ingredientes
     } = req.body;
+
     if (!nombre || !nombre.trim()) {
         return res.status(400).json({
             error: "El nombre del producto es obligatorio."
@@ -102,74 +103,87 @@ router.post("/", upload.single("foto"), async (req, res) => {
             error: "El tipo de producto no es válido."
         });
     }
-    if (precio_venta === undefined || Number(precio_venta) <= 0) {
+    const precioVentaNumero = Number(precio_venta);
+    if (!Number.isFinite(precioVentaNumero) || precioVentaNumero <= 0) {
         return res.status(400).json({
             error: "El precio de venta debe ser mayor que 0."
         });
     }
+
+    const tieneStockInicial = stock_inicial !== undefined && stock_inicial !== null && stock_inicial !== "";
+
+    let cantidadInicial = 0;
     if (tipo === "Reventa") {
-
-        // En Reventa el stock inicial es obligatorio
-        if (
-            stock_inicial === undefined ||
-            stock_inicial === null ||
-            stock_inicial === "" ||
-            Number(stock_inicial) < 0
-        ) {
+        // En Reventa el stock inicial es obligatorio.
+        if (!tieneStockInicial) {
             return res.status(400).json({
-                error: "El stock inicial es obligatorio para productos de reventa y no puede ser negativo."
+                error: "El stock inicial es obligatorio para productos de reventa."
             });
         }
-
+        cantidadInicial = Number(stock_inicial);
+        if (!Number.isInteger(cantidadInicial) || cantidadInicial < 0) {
+            return res.status(400).json({
+                error: "El stock inicial debe ser un número entero mayor o igual a 0."
+            });
+        }
     } else if (tipo === "Elaborado") {
-
-        // En Elaborado el stock inicial puede ser NULL
-        if (
-            stock_inicial !== undefined &&
-            stock_inicial !== null &&
-            stock_inicial !== "" &&
-            Number(stock_inicial) < 0
-        ) {
+        // Determinar si el producto se elabora al momento.
+        const seElaboraAlMomento = se_elabora_al_momento === true || se_elabora_al_momento === "true";
+        // Un producto que se elabora al momento no puede tener stock inicial.
+        if (seElaboraAlMomento && tieneStockInicial) {
             return res.status(400).json({
-                error: "El stock inicial no puede ser negativo."
+                error: "Un producto que se elabora al momento no puede tener stock inicial."
             });
         }
-
+        // Si es un Elaborado normal y se proporcionó stock inicial, debe ser entero.
+        if (!seElaboraAlMomento && tieneStockInicial) {
+            cantidadInicial = Number(stock_inicial);
+            if (!Number.isInteger(cantidadInicial) || cantidadInicial < 0) {
+                return res.status(400).json({
+                    error: "El stock inicial debe ser un número entero mayor o igual a 0."
+                });
+            }
+        }
     }
-    let stockMinimoNumero = null;
 
-    if (
-        stock_minimo_p !== undefined &&
-        stock_minimo_p !== null &&
-        stock_minimo_p !== ""
-    ) {
+    let stockMinimoNumero = 0;
+    if (stock_minimo_p !== undefined && stock_minimo_p !== null && stock_minimo_p !== "") {
         stockMinimoNumero = Number(stock_minimo_p);
-
-        if (
-            !Number.isInteger(stockMinimoNumero) ||
-            stockMinimoNumero < 0
-        ) {
+        if (!Number.isInteger(stockMinimoNumero) || stockMinimoNumero < 0) {
             return res.status(400).json({
                 error: "El stock mínimo debe ser un número entero mayor o igual a 0."
             });
         }
     }
+
+    let costoCompraNumero = null;
     if (tipo === "Reventa") {
-        if (costo_compra === undefined || Number(costo_compra) <= 0) {
+        if (costo_compra === undefined || costo_compra === null || costo_compra === "") {
+            return res.status(400).json({
+                error: "El costo de compra es obligatorio para productos de reventa."
+            });
+        }
+        costoCompraNumero = Number(costo_compra);
+        if (!Number.isFinite(costoCompraNumero) || costoCompraNumero <= 0) {
             return res.status(400).json({
                 error: "El costo de compra debe ser mayor que 0."
             });
         }
     }
+
+    let seElaboraAlMomento = false;
+    let cantidadProducidaBaseNumero = null;
     if (tipo === "Elaborado") {
+        seElaboraAlMomento = se_elabora_al_momento === true || se_elabora_al_momento === "true";
         if (!nombre_receta || !nombre_receta.trim()) {
             return res.status(400).json({
                 error: "El nombre de la receta es obligatorio."
             });
         }
-        if (cantidad_producida_base === undefined || Number(cantidad_producida_base) <= 0) {
+        cantidadProducidaBaseNumero = Number(cantidad_producida_base);
+        if (!Number.isInteger(cantidadProducidaBaseNumero) || cantidadProducidaBaseNumero <= 0) {
             return res.status(400).json({
-                error: "La cantidad producida base debe ser mayor que 0."
+                error: "La cantidad producida base debe ser un número entero mayor que 0."
             });
         }
         if (!ingredientes) {
@@ -178,27 +192,30 @@ router.post("/", upload.single("foto"), async (req, res) => {
             });
         }
     }
+
     const cliente = await pool.connect();
     let rutaImagen = null;
     try {
         await cliente.query("BEGIN");
+
         const resultadoProducto = await cliente.query(`
             INSERT INTO producto (
                 nombre,
                 tipo,
                 precio_venta,
-                stock_minimo_p
+                stock_minimo_p,
+                stock_actual
             )
-            VALUES ($1, $2, $3, $4)
+            VALUES ($1, $2, $3, $4, 0)
             RETURNING *;
-            `,
-            [
-                nombre.trim(),
-                tipo,
-                Number(precio_venta),
-                stockMinimoNumero
-            ]);
+        `, [
+            nombre.trim(),
+            tipo,
+            precioVentaNumero,
+            stockMinimoNumero
+        ]);
         const producto = resultadoProducto.rows[0];
+
         if (req.file) {
             const extension = req.file.originalname.split(".").pop().toLowerCase();
             rutaImagen = `productos/${producto.id_producto}-${Date.now()}.${extension}`;
@@ -211,43 +228,49 @@ router.post("/", upload.single("foto"), async (req, res) => {
             if (errorSubida) {
                 throw new Error(`No se pudo subir la imagen: ${errorSubida.message}`);
             }
-            // Obtener URL pública
             const {
                 data: urlData
             } = supabase.storage.from("recetaspatuboca").getPublicUrl(rutaImagen);
-            // Guardar URL
             await cliente.query(`
                 UPDATE producto
                 SET foto_producto = $1
                 WHERE id_producto = $2;
-                `,
-                [
-                    urlData.publicUrl,
-                    producto.id_producto
-                ]);
+            `, [
+                urlData.publicUrl,
+                producto.id_producto
+            ]);
             producto.foto_producto = urlData.publicUrl;
         }
+
         if (tipo === "Reventa") {
-            const cantidadInicial = Number(stock_inicial);
-            const costoCompra = Number(costo_compra);
 
             const resultadoReventa = await cliente.query(`
-                INSERT INTO producto_reventa (
-                    id_producto,
-                    costo_compra,
-                    stock_actual_pr
-                )
-                VALUES ($1, $2, $3)
-                RETURNING *;
-            `, [
+                    INSERT INTO producto_reventa (
+                        id_producto,
+                        costo_compra
+                    )
+                    VALUES ($1, $2)
+                    RETURNING *;
+                `, [
                 producto.id_producto,
-                costoCompra,
-                cantidadInicial
+                costoCompraNumero
             ]);
-
             const productoReventa = resultadoReventa.rows[0];
 
-            // Registrar la compra inicial como primer movimiento
+            const resultadoStock = await cliente.query(`
+                    UPDATE producto
+                    SET stock_actual = $1
+                    WHERE id_producto = $2
+                    RETURNING stock_actual;
+                `, [
+                cantidadInicial,
+                producto.id_producto
+            ]);
+            if (resultadoStock.rowCount === 0) {
+                throw new Error("No fue posible establecer el stock inicial del producto.");
+            }
+            producto.stock_actual = resultadoStock.rows[0].stock_actual;
+
             await cliente.query(`
                 INSERT INTO movimiento_producto (
                     id_producto,
@@ -275,42 +298,36 @@ router.post("/", upload.single("foto"), async (req, res) => {
                 );
             `, [
                 producto.id_producto,
-                cantidadInicial,
-                "Primeras unidades insertadas del producto",
-                costoCompra,
-                cantidadInicial * costoCompra
+                cantidadInicial, "Primeras unidades insertadas del producto",
+                costoCompraNumero,
+                cantidadInicial * costoCompraNumero
             ]);
-
             await cliente.query("COMMIT");
-
             return res.status(201).json({
                 mensaje: "Producto de reventa creado correctamente.",
                 producto: {
                     ...producto,
-                    ...productoReventa
+                    ...productoReventa,
+                    stock_actual: producto.stock_actual
                 }
             });
         }
+
         if (tipo === "Elaborado") {
-            const stockInicialNumero =
-                stock_inicial === undefined ||
-                    stock_inicial === null ||
-                    stock_inicial === ""
-                    ? null
-                    : Number(stock_inicial);
 
             const resultadoElaborado = await cliente.query(`
                     INSERT INTO producto_elaborado (
                         id_producto,
-                        stock_actual_pe
+                        se_elabora_al_momento
                     )
                     VALUES ($1, $2)
                     RETURNING *;
                 `, [
                 producto.id_producto,
-                stockInicialNumero
+                seElaboraAlMomento
             ]);
             const productoElaborado = resultadoElaborado.rows[0];
+
             let ingredientesParseados;
             try {
                 ingredientesParseados = JSON.parse(ingredientes);
@@ -320,41 +337,46 @@ router.post("/", upload.single("foto"), async (req, res) => {
             if (!Array.isArray(ingredientesParseados) || ingredientesParseados.length === 0) {
                 throw new Error("La receta debe contener al menos un ingrediente.");
             }
+
             for (const ingrediente of ingredientesParseados) {
-                // Validar el tipo de insumo
+
                 if (ingrediente.tipo !== "materia_prima" && ingrediente.tipo !== "producto") {
                     throw new Error("El tipo de insumo de uno de los ingredientes no es válido.");
                 }
-                // Validar que tenga el ID correspondiente
+
                 if (ingrediente.tipo === "materia_prima" && !ingrediente.id_ma) {
                     throw new Error("Todos los ingredientes de materia prima deben tener una materia prima seleccionada.");
                 }
+
                 if (ingrediente.tipo === "producto" && !ingrediente.id_producto_insumo) {
                     throw new Error("Todos los ingredientes de producto deben tener un producto elaborado seleccionado.");
                 }
-                // Validar cantidad
-                if (ingrediente.cantidad === undefined) {
+
+                if (ingrediente.cantidad === undefined || ingrediente.cantidad === null || ingrediente.cantidad === "") {
                     throw new Error("Todos los ingredientes deben tener una cantidad mayor que 0.");
                 }
                 try {
                     const cantidadNumerica = convertirTextoANumero(ingrediente.cantidad);
-                    if (cantidadNumerica <= 0) {
+                    if (!Number.isFinite(cantidadNumerica) || cantidadNumerica <= 0) {
                         throw new Error("Todos los ingredientes deben tener una cantidad mayor que 0.");
                     }
                 } catch (error) {
                     throw new Error(`La cantidad "${ingrediente.cantidad}" no es válida. ${error.message}`);
                 }
-                // Validar unidad
+
                 if (!ingrediente.unidad || !ingrediente.unidad.trim()) {
                     throw new Error("Todos los ingredientes deben tener una unidad seleccionada.");
                 }
-                // Si es producto, verificar que exista y sea Elaborado
+
                 if (ingrediente.tipo === "producto") {
                     const resultadoProductoInsumo = await cliente.query(`
-                SELECT id_producto, nombre, tipo
-                FROM producto
-                WHERE id_producto = $1;
-            `, [
+                            SELECT
+                                id_producto,
+                                nombre,
+                                tipo
+                            FROM producto
+                            WHERE id_producto = $1;
+                        `, [
                         Number(ingrediente.id_producto_insumo)
                     ]);
                     if (resultadoProductoInsumo.rowCount === 0) {
@@ -364,12 +386,14 @@ router.post("/", upload.single("foto"), async (req, res) => {
                     if (productoInsumo.tipo !== "Elaborado") {
                         throw new Error(`El producto "${productoInsumo.nombre}" no puede utilizarse como insumo porque no es un producto elaborado.`);
                     }
-                    // Evitar que un producto se utilice a sí mismo
+                    // Evitar autorreferencia
                     if (Number(ingrediente.id_producto_insumo) === Number(producto.id_producto)) {
                         throw new Error("Un producto elaborado no puede utilizarse a sí mismo como insumo.");
                     }
                 }
             }
+
+            //Crear receta
             const resultadoReceta = await cliente.query(`
                     INSERT INTO receta (
                         id_producto,
@@ -379,26 +403,29 @@ router.post("/", upload.single("foto"), async (req, res) => {
                     )
                     VALUES ($1, $2, $3, $4)
                     RETURNING *;
-                    `,
-                [
-                    producto.id_producto,
-                    nombre_receta.trim(),
-                    Number(cantidad_producida_base),
-                    descripcion_receta ? descripcion_receta.trim() : null
-                ]);
+                `, [
+                producto.id_producto,
+                nombre_receta.trim(),
+                cantidadProducidaBaseNumero,
+                descripcion_receta ? descripcion_receta.trim() : null
+            ]);
             const receta = resultadoReceta.rows[0];
+
             const detallesReceta = [];
             for (const ingrediente of ingredientesParseados) {
                 const idMa = ingrediente.tipo === "materia_prima" ? Number(ingrediente.id_ma) : null;
                 const idProductoInsumo = ingrediente.tipo === "producto" ? Number(ingrediente.id_producto_insumo) : null;
                 let cantidadUtilizada;
-                // Si es materia prima se convierte la cantidad ingresada a la unidad con la que se controla el inventario
+
                 if (ingrediente.tipo === "materia_prima") {
                     const resultadoConversion = await convertirCantidad(cliente, idMa, ingrediente.cantidad, ingrediente.unidad);
                     cantidadUtilizada = resultadoConversion.cantidadUtilizada;
-                } else if (ingrediente.tipo === "producto") {
+                }
+
+                else if (ingrediente.tipo === "producto") {
                     cantidadUtilizada = convertirTextoANumero(ingrediente.cantidad);
                 }
+
                 const resultadoDetalle = await cliente.query(`
                         INSERT INTO detalle_receta (
                             id_receta,
@@ -420,27 +447,29 @@ router.post("/", upload.single("foto"), async (req, res) => {
                 ]);
                 detallesReceta.push(resultadoDetalle.rows[0]);
             }
-            // Registrar la producción inicial.
-            // El stock_inicial representa las unidades que ya fueron elaboradas.
-            if (
-                stock_inicial !== undefined &&
-                stock_inicial !== null &&
-                stock_inicial !== ""
-            ) {
-                await registrarPrimeraProduccion(
-                    cliente,
-                    producto.id_producto,
-                    detallesReceta,
-                    Number(stock_inicial),
-                    Number(cantidad_producida_base)
-                );
+
+            if (!seElaboraAlMomento && tieneStockInicial) {
+                await registrarPrimeraProduccion(cliente, producto.id_producto, detallesReceta, cantidadInicial, cantidadProducidaBaseNumero);
+
+                const resultadoStock = await cliente.query(`
+                        SELECT stock_actual
+                        FROM producto
+                        WHERE id_producto = $1;
+                    `, [
+                    producto.id_producto
+                ]);
+                if (resultadoStock.rowCount > 0) {
+                    producto.stock_actual = resultadoStock.rows[0].stock_actual;
+                }
             }
+
             await cliente.query("COMMIT");
             return res.status(201).json({
                 mensaje: "Producto elaborado creado correctamente.",
                 producto: {
                     ...producto,
-                    ...productoElaborado
+                    ...productoElaborado,
+                    stock_actual: producto.stock_actual
                 },
                 receta: receta,
                 ingredientes: detallesReceta
@@ -448,6 +477,7 @@ router.post("/", upload.single("foto"), async (req, res) => {
         }
     } catch (error) {
         await cliente.query("ROLLBACK");
+
         if (rutaImagen) {
             try {
                 await supabase.storage.from("recetaspatuboca").remove([rutaImagen]);
@@ -465,7 +495,7 @@ router.post("/", upload.single("foto"), async (req, res) => {
     }
 });
 
-// Actualizar parcialmente un producto
+//Actualizar parcialmente un producto
 router.patch("/:id", verificarAdministrador, async (req, res) => {
     const {
         id
@@ -475,13 +505,12 @@ router.patch("/:id", verificarAdministrador, async (req, res) => {
     try {
         await client.query("BEGIN");
         const productoResult = await client.query(`
-      SELECT
-        id_producto,
-        tipo
-      FROM producto
-      WHERE id_producto = $1;
-      `,
-            [id]);
+                    SELECT
+                        id_producto,
+                        tipo
+                    FROM producto
+                    WHERE id_producto = $1;
+                `, [id]);
         if (productoResult.rowCount === 0) {
             await client.query("ROLLBACK");
             return res.status(404).json({
@@ -489,18 +518,21 @@ router.patch("/:id", verificarAdministrador, async (req, res) => {
             });
         }
         const producto = productoResult.rows[0];
+
         const camposPermitidos = ["nombre", "precio_venta", "estado", "stock_minimo_p"];
         const camposAActualizar = Object.keys(updates).filter(campo => camposPermitidos.includes(campo));
         if (camposAActualizar.length > 0) {
-            const setClause = camposAActualizar.map((campo, index) => `${campo} = $${index + 1}`).join(", ");
+            const setClause = camposAActualizar.map(
+                (campo, index) => `${campo} = $${index + 1}`).join(", ");
             const valores = camposAActualizar.map(campo => updates[campo]);
             valores.push(id);
             await client.query(`
-        UPDATE producto
-        SET ${setClause}
-        WHERE id_producto = $${valores.length};
-        `, valores);
+                    UPDATE producto
+                    SET ${setClause}
+                    WHERE id_producto = $${valores.length};
+                `, valores);
         }
+
         if (updates.costo !== undefined) {
             if (producto.tipo !== "Reventa") {
                 await client.query("ROLLBACK");
@@ -509,19 +541,21 @@ router.patch("/:id", verificarAdministrador, async (req, res) => {
                 });
             }
             const costo = Number(updates.costo);
-            if (Number.isNaN(costo) || costo < 0) {
+            if (!Number.isFinite(costo) || costo < 0) {
                 await client.query("ROLLBACK");
                 return res.status(400).json({
                     error: "El costo debe ser un valor válido mayor o igual a 0."
                 });
             }
             const resultadoCosto = await client.query(`
-        UPDATE producto_reventa
-        SET costo_compra = $1
-        WHERE id_producto = $2
-        RETURNING costo_compra;
-        `,
-                [costo, id]);
+                        UPDATE producto_reventa
+                        SET costo_compra = $1
+                        WHERE id_producto = $2
+                        RETURNING costo_compra;
+                    `, [
+                costo,
+                id
+            ]);
             if (resultadoCosto.rowCount === 0) {
                 await client.query("ROLLBACK");
                 return res.status(400).json({
@@ -529,22 +563,31 @@ router.patch("/:id", verificarAdministrador, async (req, res) => {
                 });
             }
         }
+
         const productoActualizado = await client.query(`
-      SELECT
-        p.*,
-        CASE
-          WHEN p.tipo = 'Reventa'
-            THEN pr.costo_compra
-          ELSE v.costo_unitario_prod
-        END AS costo
-      FROM producto p
-      LEFT JOIN producto_reventa pr
-        ON pr.id_producto = p.id_producto
-      LEFT JOIN v_productos_elaborados_costo_actual v
-        ON v.id_producto = p.id_producto
-      WHERE p.id_producto = $1;
-      `,
-            [id]);
+                    SELECT
+                        p.*,
+
+                        CASE
+                            WHEN p.tipo = 'Reventa'
+                                THEN pr.costo_compra
+
+                            ELSE v.costo_unitario_prod
+                        END AS costo
+
+                    FROM producto p
+
+                    LEFT JOIN producto_reventa pr
+                        ON pr.id_producto =
+                           p.id_producto
+
+                    LEFT JOIN
+                        v_productos_elaborados_costo_actual v
+                        ON v.id_producto =
+                           p.id_producto
+
+                    WHERE p.id_producto = $1;
+                `, [id]);
         await client.query("COMMIT");
         res.json({
             mensaje: "Producto actualizado correctamente.",
@@ -561,6 +604,7 @@ router.patch("/:id", verificarAdministrador, async (req, res) => {
     }
 });
 
+//Actualizar foto del producto
 router.patch("/:id/foto", verificarAdministrador, upload.single("foto"), async (req, res) => {
     const {
         id
@@ -568,13 +612,12 @@ router.patch("/:id/foto", verificarAdministrador, upload.single("foto"), async (
     let nuevaRuta = null;
     try {
         const resultadoProducto = await pool.query(`
-            SELECT
-                id_producto,
-                foto_producto
-            FROM producto
-            WHERE id_producto = $1;
-            `,
-            [id]);
+                    SELECT
+                        id_producto,
+                        foto_producto
+                    FROM producto
+                    WHERE id_producto = $1;
+                `, [id]);
         if (resultadoProducto.rowCount === 0) {
             return res.status(404).json({
                 error: "Producto no encontrado."
@@ -609,15 +652,15 @@ router.patch("/:id/foto", verificarAdministrador, upload.single("foto"), async (
         } = supabase.storage.from("recetaspatuboca").getPublicUrl(nuevaRuta);
         const nuevaUrl = urlData.publicUrl;
         const resultado = await pool.query(`
-                UPDATE producto
-                SET foto_producto = $1
-                WHERE id_producto = $2
-                RETURNING *;
-                `,
-            [
-                nuevaUrl,
-                id
-            ]);
+                    UPDATE producto
+                    SET foto_producto = $1
+                    WHERE id_producto = $2
+                    RETURNING *;
+                `, [
+            nuevaUrl,
+            id
+        ]);
+
         if (rutaImagenAnterior) {
             const {
                 error: errorEliminacion
@@ -633,6 +676,7 @@ router.patch("/:id/foto", verificarAdministrador, upload.single("foto"), async (
             producto: resultado.rows[0]
         });
     } catch (error) {
+
         if (nuevaRuta) {
             try {
                 await supabase.storage.from("recetaspatuboca").remove([

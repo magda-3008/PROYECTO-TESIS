@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../config/db");
-
 const {
     verificarSesion,
     verificarAdministrador
@@ -22,7 +21,7 @@ router.get("/", verificarSesion, verificarAdministrador, async (req, res) => {
                     nombre_usuario,
                     rol
                 FROM usuarios
-                ORDER BY id_usuario DESC;
+                ORDER BY id_usuario ASC;
             `;
         const resultado = await pool.query(consulta);
         return res.json(resultado.rows);
@@ -443,5 +442,4 @@ router.delete("/:id", verificarSesion, verificarAdministrador, async (req, res) 
         });
     }
 });
-
 module.exports = router;

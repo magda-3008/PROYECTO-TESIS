@@ -187,92 +187,176 @@ router.post("/", async (req, res) => {
     }
 });
 
+//Actualizar parcialmente una materia prima
 router.patch("/:id", verificarAdministrador, async (req, res) => {
+    const { id } = req.params;
+    const updates = req.body;
     const client = await pool.connect();
+
     try {
-        const {
-            id
-        } = req.params;
-        const {
-            nombre,
-            costo_total_ingrediente,
-            stock_minimo
-        } = req.body;
+        await client.query("BEGIN");
+
         if (!id || isNaN(Number(id))) {
+            await client.query("ROLLBACK");
             return res.status(400).json({
                 error: "El identificador de la materia prima no es válido."
             });
         }
-        if (nombre === undefined || !String(nombre).trim()) {
-            return res.status(400).json({
-                error: "El nombre de la materia prima es obligatorio."
-            });
-        }
-        if (costo_total_ingrediente === undefined || Number(costo_total_ingrediente) <= 0) {
-            return res.status(400).json({
-                error: "El costo de la materia prima debe ser mayor que 0."
-            });
-        }
-        if (stock_minimo === undefined) {
-            return res.status(400).json({
-                error: "El stock mínimo es obligatorio."
-            });
-        }
-        let stockMinimoHumano;
-        try {
-            stockMinimoHumano = convertirTextoANumero(stock_minimo);
-        } catch (error) {
-            return res.status(400).json({
-                error: error.message
-            });
-        }
-        if (!Number.isFinite(stockMinimoHumano) || stockMinimoHumano < 0) {
-            return res.status(400).json({
-                error: "El stock mínimo no puede ser negativo."
-            });
-        }
-        const resultadoMateriaPrima = await client.query(`
+
+        const materiaPrimaResult = await client.query(
+            `
                 SELECT
+                    id_ma,
                     unidad_medida,
                     unidad_existencia,
-                    unidad_por_paquete
+                    unidad_por_paquete,
+                    estado_mp
                 FROM materia_prima_y_cd
                 WHERE id_ma = $1;
-                `,
-            [Number(id)]);
-        if (resultadoMateriaPrima.rowCount === 0) {
+            `,
+            [Number(id)]
+        );
+
+        if (materiaPrimaResult.rowCount === 0) {
+            await client.query("ROLLBACK");
             return res.status(404).json({
-                error: "La materia prima no existe."
+                error: "Materia prima no encontrada."
             });
         }
-        const materiaPrimaActual = resultadoMateriaPrima.rows[0];
-        const stockMinimoNormalizado = stockMinimoHumano === 0 ? 0 : convertirCantidadAUnidadMedida(stockMinimoHumano, materiaPrimaActual);
-        const resultado = await client.query(`
-                UPDATE materia_prima_y_cd
-                SET
-                    nombre = $1,
-                    costo_total_ingrediente = $2,
-                    stock_minimo = $3
-                WHERE id_ma = $4
-                RETURNING *;
+
+        const materiaPrimaActual = materiaPrimaResult.rows[0];
+
+        const camposPermitidos = [
+            "nombre",
+            "costo_total_ingrediente",
+            "stock_minimo",
+            "estado_mp"
+        ];
+
+        const camposAActualizar = Object.keys(updates)
+            .filter(campo => camposPermitidos.includes(campo));
+
+        if (updates.nombre !== undefined) {
+            if (!String(updates.nombre).trim()) {
+                await client.query("ROLLBACK");
+                return res.status(400).json({
+                    error: "El nombre de la materia prima es obligatorio."
+                });
+            }
+
+            updates.nombre = String(updates.nombre).trim();
+        }
+
+        if (updates.costo_total_ingrediente !== undefined) {
+            const costo = Number(updates.costo_total_ingrediente);
+
+            if (!Number.isFinite(costo) || costo <= 0) {
+                await client.query("ROLLBACK");
+                return res.status(400).json({
+                    error: "El costo de la materia prima debe ser mayor que 0."
+                });
+            }
+
+            updates.costo_total_ingrediente = costo;
+        }
+
+        if (updates.stock_minimo !== undefined) {
+            let stockMinimoHumano;
+
+            try {
+                stockMinimoHumano = convertirTextoANumero(
+                    updates.stock_minimo
+                );
+            } catch (error) {
+                await client.query("ROLLBACK");
+                return res.status(400).json({
+                    error: error.message
+                });
+            }
+
+            if (
+                !Number.isFinite(stockMinimoHumano) ||
+                stockMinimoHumano < 0
+            ) {
+                await client.query("ROLLBACK");
+                return res.status(400).json({
+                    error: "El stock mínimo no puede ser negativo."
+                });
+            }
+
+            updates.stock_minimo =
+                stockMinimoHumano === 0
+                    ? 0
+                    : convertirCantidadAUnidadMedida(
+                        stockMinimoHumano,
+                        materiaPrimaActual
+                    );
+        }
+
+        if (updates.estado_mp !== undefined) {
+            const estadosPermitidos = ["Activo", "Inactivo"];
+
+            if (!estadosPermitidos.includes(updates.estado_mp)) {
+                await client.query("ROLLBACK");
+                return res.status(400).json({
+                    error: "El estado de la materia prima no es válido."
+                });
+            }
+        }
+
+        if (camposAActualizar.length > 0) {
+
+            const setClause = camposAActualizar
+                .map((campo, index) => `${campo} = $${index + 1}`)
+                .join(", ");
+
+            const valores = camposAActualizar.map(
+                campo => updates[campo]
+            );
+
+            valores.push(Number(id));
+
+            await client.query(
+                `
+                    UPDATE materia_prima_y_cd
+                    SET ${setClause}
+                    WHERE id_ma = $${valores.length};
                 `,
-            [
-                String(nombre).trim(),
-                Number(costo_total_ingrediente),
-                stockMinimoNormalizado,
-                Number(id)
-            ]);
+                valores
+            );
+        }
+
+        const materiaPrimaActualizada = await client.query(
+            `
+                SELECT *
+                FROM materia_prima_y_cd
+                WHERE id_ma = $1;
+            `,
+            [Number(id)]
+        );
+
+        await client.query("COMMIT");
+
         res.json({
             mensaje: "Materia prima actualizada correctamente.",
-            materiaPrima: resultado.rows[0]
+            materiaPrima: materiaPrimaActualizada.rows[0]
         });
+
     } catch (error) {
-        console.error("Error al actualizar materia prima:", error);
+        await client.query("ROLLBACK");
+
+        console.error(
+            "Error al actualizar materia prima:",
+            error
+        );
+
         res.status(500).json({
-            error: "Error al actualizar la materia prima."
+            error: "Error interno al actualizar la materia prima."
         });
+
     } finally {
         client.release();
     }
 });
+
 module.exports = router;

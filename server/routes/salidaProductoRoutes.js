@@ -10,8 +10,10 @@ router.use(verificarSesion);
 
 router.post("/", async (req, res) => {
 	const client = await pool.connect();
+
 	try {
 		await client.query("BEGIN");
+
 		const {
 			id_producto,
 			tipo_movimiento,
@@ -20,19 +22,41 @@ router.post("/", async (req, res) => {
 			observacion
 		} = req.body;
 
-		if (!id_producto || !tipo_movimiento || !motivo || cantidad === undefined) {
+		if (
+			id_producto === undefined ||
+			id_producto === null ||
+			tipo_movimiento === undefined ||
+			motivo === undefined ||
+			cantidad === undefined
+		) {
 			throw new Error("Datos incompletos.");
 		}
+
+		const idProductoNum = Number(id_producto);
 		const cantidadNum = Number(cantidad);
-		if (isNaN(cantidadNum) || cantidadNum <= 0) {
-			throw new Error("La cantidad debe ser mayor a 0.");
+
+		if (!Number.isInteger(idProductoNum) || idProductoNum <= 0) {
+			throw new Error("El producto seleccionado no es válido.");
+		}
+
+		if (!Number.isInteger(cantidadNum) || cantidadNum <= 0) {
+			throw new Error(
+				"La cantidad debe ser un número entero mayor a 0."
+			);
 		}
 
 		if (tipo_movimiento !== "SALIDA") {
-			throw new Error("Este endpoint solo permite registrar movimientos de salida.");
+			throw new Error(
+				"Este endpoint solo permite registrar movimientos de salida."
+			);
 		}
 
-		const motivosPermitidos = ["PERDIDA", "AJUSTE", "OTRO"];
+		const motivosPermitidos = [
+			"PERDIDA",
+			"AJUSTE",
+			"OTRO"
+		];
+
 		if (!motivosPermitidos.includes(motivo)) {
 			throw new Error("El motivo de salida no es válido.");
 		}
@@ -47,11 +71,11 @@ router.post("/", async (req, res) => {
                 p.nombre,
                 p.tipo,
                 p.precio_venta,
+                p.stock_actual,
 
-                pr.stock_actual_pr,
                 pr.costo_compra,
 
-                pe.stock_actual_pe
+                pe.se_elabora_al_momento
 
             FROM producto p
 
@@ -63,63 +87,84 @@ router.post("/", async (req, res) => {
 
             WHERE p.id_producto = $1
 
-            FOR UPDATE OF p
-            `,
-			[id_producto]);
+            FOR UPDATE OF p;
+        `, [idProductoNum]);
+
 		if (resProducto.rows.length === 0) {
 			throw new Error("Producto no encontrado.");
 		}
+
 		const producto = resProducto.rows[0];
 
-		let stockActual;
-		let costoUnitario;
-		if (producto.tipo === "Reventa") {
-			stockActual = Number(producto.stock_actual_pr || 0);
-			costoUnitario = Number(producto.costo_compra || 0);
-		} else if (producto.tipo === "Elaborado") {
-			stockActual = Number(producto.stock_actual_pe || 0);
-			const resCosto = await client.query(`
-                SELECT costo_unitario_prod
-                FROM v_productos_elaborados_costo_actual
-                WHERE id_producto = $1
-                `,
-				[id_producto]);
-			costoUnitario = resCosto.rows.length > 0 ? Number(resCosto.rows[0].costo_unitario_prod || 0) : 0;
-		} else {
+		if (
+			producto.tipo !== "Reventa" &&
+			producto.tipo !== "Elaborado"
+		) {
 			throw new Error("El producto tiene un tipo no válido.");
 		}
 
-		if (cantidadNum > stockActual) {
-			throw new Error(`Stock insuficiente. Disponible: ${stockActual}`);
+		if (
+			producto.tipo === "Elaborado" &&
+			producto.se_elabora_al_momento === true
+		) {
+			throw new Error(
+				"Este producto se elabora al momento y no mantiene stock de producto terminado. " +
+				"Su consumo debe registrarse al realizar la venta."
+			);
 		}
 
-		const nuevoStock = stockActual - cantidadNum;
+		const stockActual = Number(producto.stock_actual || 0);
+
+		if (cantidadNum > stockActual) {
+			throw new Error(
+				`Stock insuficiente. Disponible: ${stockActual}`
+			);
+		}
+
+		let costoUnitario = 0;
 
 		if (producto.tipo === "Reventa") {
-			await client.query(`
-                UPDATE producto_reventa
 
-                SET stock_actual_pr = $1
+			costoUnitario = Number(
+				producto.costo_compra || 0
+			);
 
-                WHERE id_producto = $2
-                `,
-				[
-					nuevoStock,
-					id_producto
-				]);
-		} else {
-			await client.query(`
-                UPDATE producto_elaborado
+		} else if (producto.tipo === "Elaborado") {
 
-                SET stock_actual_pe = $1
+			const resCosto = await client.query(`
+                SELECT costo_unitario_prod
+                FROM v_productos_elaborados_costo_actual
+                WHERE id_producto = $1;
+            `, [idProductoNum]);
 
-                WHERE id_producto = $2
-                `,
-				[
-					nuevoStock,
-					id_producto
-				]);
+			if (resCosto.rows.length > 0) {
+				costoUnitario = Number(
+					resCosto.rows[0].costo_unitario_prod || 0
+				);
+			}
 		}
+
+		const resStock = await client.query(`
+            UPDATE producto
+            SET stock_actual = stock_actual - $1
+            WHERE id_producto = $2
+              AND stock_actual >= $1
+            RETURNING stock_actual;
+        `, [
+			cantidadNum,
+			idProductoNum
+		]);
+
+		if (resStock.rows.length === 0) {
+			throw new Error(
+				"No fue posible actualizar el stock. " +
+				"Es posible que el stock disponible haya cambiado."
+			);
+		}
+
+		const nuevoStock = Number(
+			resStock.rows[0].stock_actual
+		);
 
 		const costoTotal = cantidadNum * costoUnitario;
 
@@ -135,7 +180,6 @@ router.post("/", async (req, res) => {
                 costo_unitario,
                 costo_total
             )
-
             VALUES (
                 $1,
                 $2,
@@ -146,33 +190,46 @@ router.post("/", async (req, res) => {
                 $7,
                 $8,
                 $9
-            )
-            `,
-			[
-				id_producto,
-				anio,
-				mes,
-				tipo_movimiento,
-				motivo,
-				cantidadNum,
-				observacion || null,
-				costoUnitario,
-				costoTotal
-			]);
+            );
+        `, [
+			idProductoNum,
+			anio,
+			mes,
+			tipo_movimiento,
+			motivo,
+			cantidadNum,
+			observacion || null,
+			costoUnitario,
+			costoTotal
+		]);
 
 		await client.query("COMMIT");
+
 		res.json({
 			mensaje: "Salida registrada correctamente.",
-			nuevo_stock_actual: nuevoStock
+			id_producto: idProductoNum,
+			cantidad: cantidadNum,
+			nuevo_stock_actual: nuevoStock,
+			costo_unitario: costoUnitario,
+			costo_total: costoTotal
 		});
+
 	} catch (error) {
+
 		await client.query("ROLLBACK");
-		console.error("Error al registrar salida:", error);
+
+		console.error(
+			"Error al registrar salida:",
+			error
+		);
+
 		res.status(500).json({
 			mensaje: error.message
 		});
+
 	} finally {
 		client.release();
 	}
 });
+
 module.exports = router;
