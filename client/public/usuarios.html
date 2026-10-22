@@ -158,6 +158,16 @@
       }
 
       configurarMenuAdministracion();
+
+      const btnCerrarSesion = document.getElementById("btnCerrarSesion");
+      if (btnCerrarSesion) {
+        btnCerrarSesion.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (typeof cerrarSesion === "function") {
+            cerrarSesion();
+          }
+        });
+      }
     </script>
 
     <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>

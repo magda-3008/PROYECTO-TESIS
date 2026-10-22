@@ -280,6 +280,16 @@
       }
 
       configurarMenuAdministracion();
+
+      const btnCerrarSesion = document.getElementById("btnCerrarSesion");
+      if (btnCerrarSesion) {
+        btnCerrarSesion.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (typeof cerrarSesion === "function") {
+            cerrarSesion();
+          }
+        });
+      }
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>

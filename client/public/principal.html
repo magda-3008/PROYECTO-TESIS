@@ -119,6 +119,16 @@
           document.getElementById("tarjetaAgregarVenta")?.remove();
         }
       });
+
+      const btnCerrarSesion = document.getElementById("btnCerrarSesion");
+      if (btnCerrarSesion) {
+        btnCerrarSesion.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (typeof cerrarSesion === "function") {
+            cerrarSesion();
+          }
+        });
+      }
     </script>
   </body>
 </html>

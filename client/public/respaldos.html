@@ -159,6 +159,16 @@
       }
 
       configurarMenuAdministracion();
+
+      const btnCerrarSesion = document.getElementById("btnCerrarSesion");
+      if (btnCerrarSesion) {
+        btnCerrarSesion.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (typeof cerrarSesion === "function") {
+            cerrarSesion();
+          }
+        });
+      }
     </script>
 
     <!-- Reautenticación -->

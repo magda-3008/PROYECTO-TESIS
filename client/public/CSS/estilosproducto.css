@@ -374,6 +374,16 @@ body {
 	box-shadow: none !important;
 	display: block !important;
 }
+
+#tablaMateriaP {
+	width: 100% !important;
+	max-width: 100% !important;
+	margin: 20px 0 0 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+	display: block !important;
+}
+
 .acciones-tabla {
 	display: flex;
 	justify-content: center;
