@@ -317,6 +317,17 @@ body {
 	display: flex;
 	flex-direction: column;
 }
+.campo input {
+	width: 100%;
+	height: 48px;
+	padding: 0 15px;
+	border: 1px solid #1a81a0;
+	background: #d3eff88e;
+	border-radius: 12px;
+	outline: none;
+	font-size: 17px;
+	transition: .25s;
+}
 .modal-botones {
 	display: flex;
 	justify-content: center;
